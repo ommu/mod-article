@@ -311,7 +311,7 @@ class Articles extends CActiveRecord
 				/*
 				$parent = 0;
 				$category = ArticleCategory::getCategory(null, $parent);
-				*/					
+				*/
 				$this->defaultColumns[] = array(
 					'name' => 'cat_id',
 					'value' => 'in_array($data->cat_id, array(9,10)) ? "Artikel" : Phrase::trans($data->cat->name, 2)',
