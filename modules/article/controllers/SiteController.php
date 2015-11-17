@@ -125,21 +125,21 @@ class SiteController extends Controller
 			'dataProvider'=>$dataProvider,
 		));
 	}
-	
+
 	/**
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
 	public function actionView($id) 
 	{
-		$setting = VideoSetting::model()->findByPk(1,array(
+		$setting = ArticleSetting::model()->findByPk(1,array(
 			'select' => 'meta_keyword',
 		));
 
 		$model=$this->loadModel($id);
 		Articles::model()->updateByPk($id, array('view'=>$model->view + 1));
 		
-		//Random Article		
+		//Random Article
 		$criteria=new CDbCriteria;
 		$criteria->condition = 'publish = :publish AND published_date <= curdate() AND article_id <> :id';
 		$criteria->params = array(
