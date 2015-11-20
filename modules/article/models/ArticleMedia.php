@@ -26,6 +26,7 @@
  * @property integer $cover
  * @property string $media
  * @property string $creation_date
+ * @property string $creation_id
  *
  * The followings are the available model relations:
  * @property OmmuArticles $article
@@ -67,7 +68,7 @@ class ArticleMedia extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('article_id', 'required'),
-			array('orders, cover', 'numerical', 'integerOnly'=>true),
+			array('orders, cover, creation_id', 'numerical', 'integerOnly'=>true),
 			array('article_id', 'length', 'max'=>11),
 			array('
 				video', 'length', 'max'=>32),
@@ -78,7 +79,7 @@ class ArticleMedia extends CActiveRecord
 				old_media, video', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('media_id, article_id, orders, cover, media, creation_date,
+			array('media_id, article_id, orders, cover, media, creation_date, creation_id,
 				article_search, type_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -107,6 +108,7 @@ class ArticleMedia extends CActiveRecord
 			'cover' => Phrase::trans(26073,1),
 			'media' => Phrase::trans(26039,1),
 			'creation_date' => Phrase::trans(26069,1),
+			'creation_id' => 'Creation',
 			'old_media' => Phrase::trans(26071,1),
 			'video' => Phrase::trans(26044,1),
 			'article_search' => Phrase::trans(26000,1),
@@ -136,6 +138,7 @@ class ArticleMedia extends CActiveRecord
 		$criteria->compare('t.media',strtolower($this->media),true);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
+		$criteria->compare('t.creation_id',$this->creation_id);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -182,6 +185,7 @@ class ArticleMedia extends CActiveRecord
 			$this->defaultColumns[] = 'cover';
 			$this->defaultColumns[] = 'media';
 			$this->defaultColumns[] = 'creation_date';
+			$this->defaultColumns[] = 'creation_id';
 		}
 
 		return $this->defaultColumns;
@@ -304,7 +308,8 @@ class ArticleMedia extends CActiveRecord
 				if($this->article->article_type == 2 && $this->media == '') {
 					$this->addError('video', Phrase::trans(26048,1));
 				}
-			}
+			} else
+				$this->creation_id = Yii::app()->user->id;
 			
 			$media = CUploadedFile::getInstance($this, 'media');
 			if($currentAction != 'media/ajaxadd' && $this->article->article_type == 1 && $media->name != '') {

@@ -27,6 +27,9 @@
  * @property string $name
  * @property string $desc
  * @property string $creation_date
+ * @property string $creation_id
+ * @property string $modified_date
+ * @property string $modified_id
  *
  * The followings are the available model relations:
  * @property OmmuArticles[] $ommuArticles
@@ -66,7 +69,7 @@ class ArticleCategory extends CActiveRecord
 		return array(
 			array('
 				title, description', 'required'),
-			array('publish, dependency, orders', 'numerical', 'integerOnly'=>true),
+			array('publish, dependency, orders, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
 			array('name, desc,
 				count_article', 'length', 'max'=>11),
 			array('
@@ -75,7 +78,7 @@ class ArticleCategory extends CActiveRecord
 				description', 'length', 'max'=>128),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('cat_id, publish, dependency, orders, name, desc, creation_date, 
+			array('cat_id, publish, dependency, orders, name, desc, creation_date, creation_id, modified_date, modified_id,
 				title, description, count_article', 'safe', 'on'=>'search'),
 		);
 	}
@@ -108,6 +111,9 @@ class ArticleCategory extends CActiveRecord
 			'title' => Phrase::trans(26016,1),
 			'description' => Phrase::trans(26017,1),
 			'creation_date' => Phrase::trans(26069,1),
+			'creation_id' => 'Creation',
+			'modified_date' => 'Modified',
+			'modified_id' => 'Modified',
 			'count_article' => Phrase::trans(26000,1),
 		);
 	}
@@ -140,6 +146,10 @@ class ArticleCategory extends CActiveRecord
 		$criteria->compare('t.desc',$this->desc,true);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
+		$criteria->compare('t.creation_id',$this->creation_id);
+		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
+			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
+		$criteria->compare('t.modified_id',$this->modified_id);
 		$criteria->compare('t.count_article',$this->count_article);
 		
 		// Custom Search
@@ -189,6 +199,9 @@ class ArticleCategory extends CActiveRecord
 			$this->defaultColumns[] = 'name';
 			$this->defaultColumns[] = 'desc';
 			$this->defaultColumns[] = 'creation_date';
+			$this->defaultColumns[] = 'creation_id';
+			$this->defaultColumns[] = 'modified_date';
+			$this->defaultColumns[] = 'modified_id';
 			$this->defaultColumns[] = 'count_article';
 		}
 
@@ -328,7 +341,10 @@ class ArticleCategory extends CActiveRecord
 		if(parent::beforeValidate()) {		
 			if($this->isNewRecord) {
 				$this->orders = 0;
-			}		
+				$this->creation_id = Yii::app()->user->id;	
+			} else
+				$this->modified_id = Yii::app()->user->id;
+
 		}
 		return true;
 	}

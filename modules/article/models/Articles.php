@@ -37,7 +37,9 @@
  * @property integer $likes
  * @property integer $download
  * @property string $creation_date
+ * @property string $creation_id
  * @property string $modified_date
+ * @property string $modified_id
  *
  * The followings are the available model relations:
  * @property OmmuArticleComment[] $ommuArticleComments
@@ -84,7 +86,7 @@ class Articles extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('cat_id, article_type, published_date', 'required'),
-			array('publish, cat_id, user_id, media_id, headline, comment_code, comment, view, likes', 'numerical', 'integerOnly'=>true),
+			array('publish, cat_id, user_id, media_id, headline, comment_code, comment, view, likes, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
 			array('user_id, media_id', 'length', 'max'=>11),
 			array('
 				video, keyword', 'length', 'max'=>32),
@@ -99,7 +101,7 @@ class Articles extends CActiveRecord
 				media, old_media, video, keyword, file, old_file', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('article_id, publish, cat_id, user_id, media_id, headline, comment_code, article_type, title, body, quote, media_file, published_date, comment, view, likes, download, creation_date, modified_date,
+			array('article_id, publish, cat_id, user_id, media_id, headline, comment_code, article_type, title, body, quote, media_file, published_date, comment, view, likes, download, creation_date, creation_id, modified_date, modified_id,
 				user_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -142,7 +144,9 @@ class Articles extends CActiveRecord
 			'likes' => Phrase::trans(26068,1),
 			'download' => 'Download',
 			'creation_date' => Phrase::trans(26069,1),
+			'creation_id' => 'Creation',
 			'modified_date' => Phrase::trans(26070,1),
+			'modified_id' => 'Modified',
 			'media' => Phrase::trans(26039,1).' (Photo)',
 			'old_media' => Phrase::trans(26071,1).' (Photo)',
 			'video' => Phrase::trans(26044,1),
@@ -217,8 +221,10 @@ class Articles extends CActiveRecord
 		$criteria->compare('t.download',$this->download);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
+		$criteria->compare('t.creation_id',$this->creation_id);
 		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
+		$criteria->compare('t.modified_id',$this->modified_id);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -275,7 +281,9 @@ class Articles extends CActiveRecord
 			$this->defaultColumns[] = 'likes';
 			$this->defaultColumns[] = 'download';
 			$this->defaultColumns[] = 'creation_date';
+			$this->defaultColumns[] = 'creation_id';
 			$this->defaultColumns[] = 'modified_date';
+			$this->defaultColumns[] = 'modified_id';
 		}
 
 		return $this->defaultColumns;
@@ -416,12 +424,12 @@ class Articles extends CActiveRecord
 	protected function beforeValidate() {
 		$controller = strtolower(Yii::app()->controller->id);
 		if(parent::beforeValidate()) {
-			if($this->article_type != 4 && $this->title == '') {
+			if($this->article_type != 4 && $this->title == '')
 				$this->addError('title', Phrase::trans(26047,1));
-			}
-			if($this->article_type == 2 && $this->video == '') {
+			
+			if($this->article_type == 2 && $this->video == '')
 				$this->addError('video', Phrase::trans(26048,1));
-			}
+			
 			if($this->article_type == 4) {
 				if($this->quote == '') {
 					$this->addError('quote', Phrase::trans(26114,1));
@@ -430,12 +438,13 @@ class Articles extends CActiveRecord
 					$this->addError('body', Phrase::trans(26115,1));
 				}
 			}
-			if($this->isNewRecord) {
+			if($this->isNewRecord)
 				$this->user_id = Yii::app()->user->id;			
-			}
-			if($this->headline == 1 && $this->publish == 0) {
+			else
+				$this->modified_id = Yii::app()->user->id;
+
+			if($this->headline == 1 && $this->publish == 0)
 				$this->addError('publish', Phrase::trans(340,0));
-			}
 			
 			$media = CUploadedFile::getInstance($this, 'media');
 			if($this->article_type == 1 && $media->name != '') {
