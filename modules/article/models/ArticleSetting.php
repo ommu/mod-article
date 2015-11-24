@@ -36,6 +36,8 @@
  * @property string $media_medium_height
  * @property string $media_small_width
  * @property string $media_small_height
+ * @property string $modified_date
+ * @property string $modified_id
  */
 class ArticleSetting extends CActiveRecord
 {
@@ -70,7 +72,7 @@ class ArticleSetting extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('license, permission, meta_keyword, meta_description, type_active, headline, media_limit, media_resize, media_large_width, media_large_height, media_medium_width, media_medium_height, media_small_width, media_small_height', 'required'),
-			array('permission, headline, media_limit, media_resize', 'numerical', 'integerOnly'=>true),
+			array('permission, headline, media_limit, media_resize, modified_id', 'numerical', 'integerOnly'=>true),
 			//array('type_active', 'length', 'max'=>64),
 			array('license', 'length', 'max'=>32),
 			array('media_large_width, media_large_height,
@@ -80,7 +82,7 @@ class ArticleSetting extends CActiveRecord
 				media_resize_width, media_resize_height', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, license, permission, meta_keyword, meta_description, type_active, headline, media_limit, media_resize, media_large_width, media_large_height, media_medium_width, media_medium_height, media_small_width, media_small_height', 'safe', 'on'=>'search'),
+			array('id, license, permission, meta_keyword, meta_description, type_active, headline, media_limit, media_resize, media_large_width, media_large_height, media_medium_width, media_medium_height, media_small_width, media_small_height, modified_date, modified_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -119,6 +121,8 @@ class ArticleSetting extends CActiveRecord
 			'media_small_height' => Phrase::trans(26103,1),
 			'media_resize_width' => Phrase::trans(261010,1),
 			'media_resize_height' => Phrase::trans(26111,1),
+			'modified_date' => 'Modified Date',
+			'modified_id' => 'Modified ID',
 		);
 	}
 	
@@ -149,6 +153,9 @@ class ArticleSetting extends CActiveRecord
 		$criteria->compare('t.media_medium_height',$this->media_medium_height);
 		$criteria->compare('t.media_small_width',$this->media_small_width);
 		$criteria->compare('t.media_small_height',$this->media_small_height);
+		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
+			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
+		$criteria->compare('t.modified_id',$this->modified_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -189,6 +196,8 @@ class ArticleSetting extends CActiveRecord
 			$this->defaultColumns[] = 'media_medium_height';
 			$this->defaultColumns[] = 'media_small_width';
 			$this->defaultColumns[] = 'media_small_height';
+			$this->defaultColumns[] = 'modified_date';
+			$this->defaultColumns[] = 'modified_id';
 		}
 
 		return $this->defaultColumns;
@@ -214,6 +223,8 @@ class ArticleSetting extends CActiveRecord
 			$this->defaultColumns[] = 'media_medium_height';
 			$this->defaultColumns[] = 'media_small_width';
 			$this->defaultColumns[] = 'media_small_height';
+			$this->defaultColumns[] = 'modified_date';
+			$this->defaultColumns[] = 'modified_id';
 		}
 		parent::afterConstruct();
 	}
@@ -257,6 +268,8 @@ class ArticleSetting extends CActiveRecord
 			
 			// Article type is active
 			$this->type_active = implode(',', $this->type_active);
+			
+			$this->modified_id = Yii::app()->user->id;
 		}
 		return true;
 	}
