@@ -1,8 +1,9 @@
 <?php
 /**
+ * Articles
  * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
- * @copyright Copyright (c) 2014 Ommu Platform (ommu.co)
- * @link http://company.ommu.co
+ * @copyright Copyright (c) 2012 Ommu Platform (ommu.co)
+ * @link https://github.com/oMMu/Ommu-Articles
  * @contact (+62)856-299-4114
  *
  * This is the template for generating the model class of a specified table.
@@ -199,11 +200,10 @@ class Articles extends CActiveRecord
 		$criteria->addInCondition('t.cat_id',$items);
 		*/
 
-		if(isset($_GET['category'])) {
+		if(isset($_GET['category']))
 			$criteria->compare('t.cat_id',$_GET['category']);
-		} else {
+		else
 			$criteria->compare('t.cat_id',$this->cat_id);
-		}
 		$criteria->compare('t.user_id',$this->user_id);
 		$criteria->compare('t.media_id',$this->media_id);
 		$criteria->compare('t.headline',$this->headline);
