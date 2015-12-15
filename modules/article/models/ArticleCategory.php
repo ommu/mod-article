@@ -39,7 +39,10 @@ class ArticleCategory extends CActiveRecord
 	public $defaultColumns = array();
 	public $title;
 	public $description;
-	public $count_article;
+	
+	// Variable Search
+	public $creation_search;
+	public $modified_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -70,8 +73,7 @@ class ArticleCategory extends CActiveRecord
 			array('
 				title, description', 'required'),
 			array('publish, dependency, orders, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
-			array('name, desc,
-				count_article', 'length', 'max'=>11),
+			array('name, desc', 'length', 'max'=>11),
 			array('
 				title', 'length', 'max'=>32),
 			array('
@@ -79,7 +81,7 @@ class ArticleCategory extends CActiveRecord
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('cat_id, publish, dependency, orders, name, desc, creation_date, creation_id, modified_date, modified_id,
-				title, description, count_article', 'safe', 'on'=>'search'),
+				title, description, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -91,8 +93,9 @@ class ArticleCategory extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'title' => array(self::BELONGS_TO, 'OmmuSystemPhrase', 'name'),
-			'description' => array(self::BELONGS_TO, 'OmmuSystemPhrase', 'desc'),
+			'view_cat' => array(self::BELONGS_TO, 'ViewArticleCategory', 'cat_id'),
+			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
+			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 		);
 	}
 
@@ -112,9 +115,10 @@ class ArticleCategory extends CActiveRecord
 			'description' => Phrase::trans(26017,1),
 			'creation_date' => Phrase::trans(26069,1),
 			'creation_id' => 'Creation',
-			'modified_date' => 'Modified',
+			'modified_date' => 'Modified Date',
 			'modified_id' => 'Modified',
-			'count_article' => Phrase::trans(26000,1),
+			'creation_search' => 'Creation',
+			'modified_search' => 'Modified',
 		);
 	}
 	
@@ -150,23 +154,28 @@ class ArticleCategory extends CActiveRecord
 		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
 		$criteria->compare('t.modified_id',$this->modified_id);
-		$criteria->compare('t.count_article',$this->count_article);
 		
 		// Custom Search
 		$criteria->with = array(
-			'title' => array(
-				'alias'=>'title',
-				'select'=>'en'
+			'view_cat' => array(
+				'alias'=>'view_cat',
+				'select'=>'category_name, category_desc'
 			),
-			'description' => array(
-				'alias'=>'description',
-				'select'=>'en'
+			'creation_relation' => array(
+				'alias'=>'creation_relation',
+				'select'=>'displayname'
+			),
+			'modified_relation' => array(
+				'alias'=>'modified_relation',
+				'select'=>'displayname'
 			),
 		);
-		$criteria->compare('title.en',strtolower($this->title), true);
-		$criteria->compare('description.en',strtolower($this->description), true);
+		$criteria->compare('view_cat.category_name',strtolower($this->title), true);
+		$criteria->compare('view_cat.category_desc',strtolower($this->description), true);
+		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
+		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
 
-		if(!isset($_GET['ArticleCategory_sort']))
+		if(isset($_GET['ArticleCategory_sort']))
 			$criteria->order = 'cat_id DESC';
 
 		return new CActiveDataProvider($this, array(
@@ -202,7 +211,6 @@ class ArticleCategory extends CActiveRecord
 			$this->defaultColumns[] = 'creation_id';
 			$this->defaultColumns[] = 'modified_date';
 			$this->defaultColumns[] = 'modified_id';
-			$this->defaultColumns[] = 'count_article';
 		}
 
 		return $this->defaultColumns;
@@ -238,9 +246,13 @@ class ArticleCategory extends CActiveRecord
 				'value' => '$data->dependency != 0 ? Phrase::trans(ArticleCategory::model()->findByPk($data->dependency)->name, 2) : "-"',
 			);
 			$this->defaultColumns[] = array(
-				'header' => 'count_article',
-				'value' => 'CHtml::link($data->count_article." ".Phrase::trans(26000,1), Yii::app()->controller->createUrl("admin/manage",array("category"=>$data->cat_id)))',
+				'header' => 'Count',
+				'value' => 'CHtml::link($data->view_cat->articles." ".Phrase::trans(26000,1), Yii::app()->controller->createUrl("admin/manage",array("category"=>$data->cat_id)))',
 				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'creation_search',
+				'value' => '$data->creation_relation->displayname',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
@@ -322,16 +334,10 @@ class ArticleCategory extends CActiveRecord
 		if($type == null) {
 			//$criteria->select = '';
 			$model = Articles::model()->findAll($criteria);
-		} else {
+		} else
 			$model = Articles::model()->count($criteria);
-		}
 		
 		return $model;
-	}
-	
-	protected function afterFind() {
-		$this->count_article = self::getArticle($this->cat_id, 'count');
-		parent::afterFind();
 	}
 
 	/**

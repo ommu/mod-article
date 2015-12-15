@@ -44,6 +44,9 @@ class ArticleSetting extends CActiveRecord
 	public $defaultColumns = array();
 	public $media_resize_width;
 	public $media_resize_height;
+	
+	// Variable Search
+	public $modified_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -82,7 +85,8 @@ class ArticleSetting extends CActiveRecord
 				media_resize_width, media_resize_height', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, license, permission, meta_keyword, meta_description, type_active, headline, media_limit, media_resize, media_large_width, media_large_height, media_medium_width, media_medium_height, media_small_width, media_small_height, modified_date, modified_id', 'safe', 'on'=>'search'),
+			array('id, license, permission, meta_keyword, meta_description, type_active, headline, media_limit, media_resize, media_large_width, media_large_height, media_medium_width, media_medium_height, media_small_width, media_small_height, modified_date, modified_id,
+				modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -94,6 +98,7 @@ class ArticleSetting extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 		);
 	}
 
@@ -122,7 +127,8 @@ class ArticleSetting extends CActiveRecord
 			'media_resize_width' => Phrase::trans(261010,1),
 			'media_resize_height' => Phrase::trans(26111,1),
 			'modified_date' => 'Modified Date',
-			'modified_id' => 'Modified ID',
+			'modified_id' => 'Modified',
+			'modified_search' => 'Modified',
 		);
 	}
 	
@@ -156,6 +162,15 @@ class ArticleSetting extends CActiveRecord
 		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
 		$criteria->compare('t.modified_id',$this->modified_id);
+		
+		// Custom Search
+		$criteria->with = array(
+			'modified_relation' => array(
+				'alias'=>'modified_relation',
+				'select'=>'displayname'
+			),
+		);
+		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -225,6 +240,10 @@ class ArticleSetting extends CActiveRecord
 			$this->defaultColumns[] = 'media_small_height';
 			$this->defaultColumns[] = 'modified_date';
 			$this->defaultColumns[] = 'modified_id';
+			$this->defaultColumns[] = array(
+				'name' => 'modified_search',
+				'value' => '$data->modified_relation->displayname',
+			);
 		}
 		parent::afterConstruct();
 	}

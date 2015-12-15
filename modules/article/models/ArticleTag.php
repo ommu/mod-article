@@ -24,6 +24,7 @@
  * @property string $article_id
  * @property string $tag_id
  * @property string $creation_date
+ * @property string $creation_id
  *
  * The followings are the available model relations:
  * @property OmmuArticles $article
@@ -36,6 +37,7 @@ class ArticleTag extends CActiveRecord
 	// Variable Search
 	public $article_search;
 	public $tag_search;
+	public $creation_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -70,7 +72,7 @@ class ArticleTag extends CActiveRecord
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, article_id, tag_id, creation_date,
-				article_search, tag_search', 'safe', 'on'=>'search'),
+				article_search, tag_search, creation_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -84,6 +86,7 @@ class ArticleTag extends CActiveRecord
 		return array(
 			'article' => array(self::BELONGS_TO, 'Articles', 'article_id'),
 			'tag' => array(self::BELONGS_TO, 'OmmuTags', 'tag_id'),
+			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 		);
 	}
 
@@ -99,6 +102,7 @@ class ArticleTag extends CActiveRecord
 			'article_search' => Phrase::trans(26000,1),
 			'tag_search' => Phrase::trans(26080,1),
 			'creation_date' => Phrase::trans(26069,1),
+			'creation_search' => 'Creation',
 		);
 	}
 	
@@ -122,6 +126,7 @@ class ArticleTag extends CActiveRecord
 		$criteria->compare('t.tag_id',$this->tag_id);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
+		$criteria->compare('t.creation_id',$this->creation_id);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -133,9 +138,14 @@ class ArticleTag extends CActiveRecord
 				'alias'=>'tag',
 				'select'=>'body'
 			),
+			'creation_relation' => array(
+				'alias'=>'creation_relation',
+				'select'=>'displayname'
+			),
 		);
 		$criteria->compare('article.title',strtolower($this->article_search), true);
 		$criteria->compare('tag.body',strtolower($this->tag_search), true);
+		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
 
 		if(!isset($_GET['ArticleTag_sort']))
 			$criteria->order = 'id DESC';
@@ -170,6 +180,7 @@ class ArticleTag extends CActiveRecord
 			$this->defaultColumns[] = 'article_id';
 			$this->defaultColumns[] = 'tag_id';
 			$this->defaultColumns[] = 'creation_date';
+			$this->defaultColumns[] = 'creation_id';
 		}
 
 		return $this->defaultColumns;
@@ -195,6 +206,14 @@ class ArticleTag extends CActiveRecord
 				);
 			}
 			$this->defaultColumns[] = array(
+				'name' => 'tag_search',
+				'value' => '$data->tag->body',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'creation_search',
+				'value' => '$data->creation_relation->displayname',
+			);
+			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
 				'value' => 'Utility::dateFormat($data->creation_date)',
 				'htmlOptions' => array(
@@ -219,10 +238,6 @@ class ArticleTag extends CActiveRecord
 						'showButtonPanel' => true,
 					),
 				), true),
-			);
-			$this->defaultColumns[] = array(
-				'name' => 'tag_search',
-				'value' => '$data->tag->body',
 			);
 
 		}
@@ -277,6 +292,7 @@ class ArticleTag extends CActiveRecord
 					}					
 				}
 			}
+			$this->creation_id = Yii::app()->user->id;
 		}
 		return true;
 	}

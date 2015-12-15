@@ -59,6 +59,8 @@ class Articles extends CActiveRecord
 	
 	// Variable Search
 	public $user_search;
+	public $creation_search;
+	public $modified_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -103,7 +105,7 @@ class Articles extends CActiveRecord
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('article_id, publish, cat_id, user_id, media_id, headline, comment_code, article_type, title, body, quote, media_file, published_date, comment, view, likes, download, creation_date, creation_id, modified_date, modified_id,
-				user_search', 'safe', 'on'=>'search'),
+				user_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -118,6 +120,8 @@ class Articles extends CActiveRecord
 			'cat' => array(self::BELONGS_TO, 'ArticleCategory', 'cat_id'),
 			'cover' => array(self::BELONGS_TO, 'ArticleMedia', 'media_id'),
 			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
+			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
+			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 		);
 	}
 
@@ -153,9 +157,11 @@ class Articles extends CActiveRecord
 			'video' => Phrase::trans(26044,1),
 			//'audio' => Phrase::trans(26045,1),
 			'keyword' => Phrase::trans(26079,1),
-			'user_search' => Phrase::trans(26041,1),
 			'file' => 'File (Download)',
 			'old_file' => 'Old File (Download)',
+			'user_search' => Phrase::trans(26041,1),
+			'creation_search' => 'Creation',
+			'modified_search' => 'Modified',
 		);
 	}
 	
@@ -232,8 +238,18 @@ class Articles extends CActiveRecord
 				'alias'=>'user',
 				'select'=>'displayname'
 			),
+			'creation_relation' => array(
+				'alias'=>'creation_relation',
+				'select'=>'displayname'
+			),
+			'modified_relation' => array(
+				'alias'=>'modified_relation',
+				'select'=>'displayname'
+			),
 		);
 		$criteria->compare('user.displayname',strtolower($this->user_search), true);
+		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
+		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
 
 		if(!isset($_GET['Articles_sort']))
 			$criteria->order = 'article_id DESC';
@@ -322,15 +338,15 @@ class Articles extends CActiveRecord
 				*/
 				$this->defaultColumns[] = array(
 					'name' => 'cat_id',
-					'value' => 'in_array($data->cat_id, array(9,10)) ? "Artikel" : Phrase::trans($data->cat->name, 2)',
+					'value' => 'Phrase::trans($data->cat->name, 2)',
 					//'filter'=> $category,
 					'filter'=> ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);
 			}
 			$this->defaultColumns[] = array(
-				'name' => 'user_search',
-				'value' => '$data->user->displayname',
+				'name' => 'creation_search',
+				'value' => '$data->creation_relation->displayname',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
@@ -614,7 +630,7 @@ class Articles extends CActiveRecord
 			if($this->media_file != '')
 				rename($article_path.'/'.$val->media_file, 'public/article/verwijderen/'.$val->article_id.'_'.$val->media_file);
 		}
-		return true;			
+		return true;
 	}
 
 	/**

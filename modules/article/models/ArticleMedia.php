@@ -38,8 +38,9 @@ class ArticleMedia extends CActiveRecord
 	public $video;
 	
 	// Variable Search
-	public $article_search;
 	public $type_search;
+	public $article_search;
+	public $creation_search;
 	
 	/**
 	 * Returns the static model of the specified AR class.
@@ -80,7 +81,7 @@ class ArticleMedia extends CActiveRecord
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('media_id, article_id, orders, cover, media, creation_date, creation_id,
-				article_search, type_search', 'safe', 'on'=>'search'),
+				article_search, creation_search, type_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -93,6 +94,7 @@ class ArticleMedia extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'article' => array(self::BELONGS_TO, 'Articles', 'article_id'),
+			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 		);
 	}
 
@@ -111,8 +113,9 @@ class ArticleMedia extends CActiveRecord
 			'creation_id' => 'Creation',
 			'old_media' => Phrase::trans(26071,1),
 			'video' => Phrase::trans(26044,1),
-			'article_search' => Phrase::trans(26000,1),
 			'type_search' => Phrase::trans(26067,1),
+			'article_search' => Phrase::trans(26000,1),
+			'creation_search' => 'Creation',
 		);
 	}
 	
@@ -146,9 +149,14 @@ class ArticleMedia extends CActiveRecord
 				'alias'=>'article',
 				'select'=>'article_type, title'
 			),
+			'creation_relation' => array(
+				'alias'=>'creation_relation',
+				'select'=>'displayname'
+			),
 		);
-		$criteria->compare('article.title',strtolower($this->article_search), true);
 		$criteria->compare('article.article_type',strtolower($this->type_search), true);
+		$criteria->compare('article.title',strtolower($this->article_search), true);
+		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
 
 		if(!isset($_GET['ArticleMedia_sort']))
 			//$criteria->order = 'media_id DESC';
@@ -226,6 +234,10 @@ class ArticleMedia extends CActiveRecord
 				'name' => 'media',
 				'value' => '$data->article->article_type == 2 ? CHtml::link("http://www.youtube.com/watch?v=".$data->media, "http://www.youtube.com/watch?v=".$data->media, array(\'target\' => \'_blank\')) : CHtml::link($data->media, Yii::app()->request->baseUrl.\'/public/article/\'.$data->article_id.\'/\'.$data->media, array(\'target\' => \'_blank\'))',
 				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'creation_search',
+				'value' => '$data->creation_relation->displayname',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'cover',
