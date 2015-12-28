@@ -93,10 +93,7 @@ class Articles extends CActiveRecord
 			array('user_id, media_id', 'length', 'max'=>11),
 			array('
 				video, keyword', 'length', 'max'=>32),
-			array('
-				media, old_media', 'length', 'max'=>64),
-			array('title,
-				media_file', 'length', 'max'=>128),
+			array('title', 'length', 'max'=>128),
 			//array('media', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
 			//array('file', 'file', 'types' => 'mp3, mp4,
 			//	pdf, doc, docx, ppt, pptx, xls, xlsx, opt', 'maxSize'=>7097152, 'allowEmpty' => true),
@@ -435,6 +432,23 @@ class Articles extends CActiveRecord
 	}
 
 	/**
+	 * Articles get information
+	 */
+	public static function getInfo($id, $column=null)
+	{
+		if($column != null) {
+			$model = self::model()->findByPk($id,array(
+				'select' => $column
+			));
+			return $model->$column;
+			
+		} else {
+			$model = self::model()->findByPk($id);
+			return $model;			
+		}
+	}
+
+	/**
 	 * before validate attributes
 	 */
 	protected function beforeValidate() {
@@ -465,14 +479,14 @@ class Articles extends CActiveRecord
 			$media = CUploadedFile::getInstance($this, 'media');
 			if($this->article_type == 1 && $media->name != '') {
 				$extension = pathinfo($media->name, PATHINFO_EXTENSION);
-				if(!in_array($extension, array('bmp','gif','jpg','png')))
+				if(!in_array(strtolower($extension), array('bmp','gif','jpg','png')))
 					$this->addError('media', 'The file "'.$media->name.'" cannot be uploaded. Only files with these extensions are allowed: bmp, gif, jpg, png.');
 			}
 			
 			$file = CUploadedFile::getInstance($this, 'file');
 			if($file->name != '') {
 				$extension = pathinfo($file->name, PATHINFO_EXTENSION);
-				if(!in_array($extension, array('mp3','mp4','pdf','doc','docx','ppt','pptx','xls','xlsx','opt','zip', 'rar', '7z')))
+				if(!in_array(strtolower($extension), array('mp3','mp4','pdf','doc','docx','ppt','pptx','xls','xlsx','opt','zip', 'rar', '7z')))
 					$this->addError('file', 'The file "'.$file->name.'" cannot be uploaded. Only files with these extensions are allowed: mp3, mp4, pdf, doc, docx, ppt, pptx, xls, xlsx, opt, zip, rar, 7z.');
 			}
 		}
@@ -512,7 +526,7 @@ class Articles extends CActiveRecord
 			if($this->isNewRecord || (!$this->isNewRecord && ArticleSetting::getInfo('media_limit') == 1)) {
 				$this->media = CUploadedFile::getInstance($this, 'media');
 				if($this->media instanceOf CUploadedFile) {
-					$fileName = time().'_'.$this->article_id.'.'.strtolower($this->media->extensionName);
+					$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media->extensionName);
 					if($this->media->saveAs($article_path.'/'.$fileName)) {
 						if($this->isNewRecord || (!$this->isNewRecord && $this->media_id == 0)) {
 							$images = new ArticleMedia;
@@ -559,7 +573,7 @@ class Articles extends CActiveRecord
 
 		$this->file = CUploadedFile::getInstance($this, 'file');
 		if($this->file instanceOf CUploadedFile) {
-			$fileName = time().'_'.$this->article_id.'.'.strtolower($this->file->extensionName);
+			$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->file->extensionName);
 			if($this->file->saveAs($article_path.'/'.$fileName)) {
 				if(!$this->isNewRecord && $this->media_file != '') {
 					rename($article_path.'/'.$this->old_file, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_file);

@@ -73,9 +73,6 @@ class ArticleMedia extends CActiveRecord
 			array('article_id', 'length', 'max'=>11),
 			array('
 				video', 'length', 'max'=>32),
-			array('media,
-				old_media', 'length', 'max'=>64),
-			//array('media', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
 			array('cover, media, caption, creation_date,
 				old_media, video', 'safe'),
 			// The following rule is used by search().
@@ -282,6 +279,23 @@ class ArticleMedia extends CActiveRecord
 	}
 
 	/**
+	 * ArticleMedia get information
+	 */
+	public static function getInfo($id, $column=null)
+	{
+		if($column != null) {
+			$model = self::model()->findByPk($id,array(
+				'select' => $column
+			));
+			return $model->$column;
+			
+		} else {
+			$model = self::model()->findByPk($id);
+			return $model;			
+		}
+	}
+
+	/**
 	 * get photo product
 	 */
 	public static function getPhoto($id, $type=null) {
@@ -326,7 +340,7 @@ class ArticleMedia extends CActiveRecord
 			$media = CUploadedFile::getInstance($this, 'media');
 			if($currentAction != 'media/ajaxadd' && $this->article->article_type == 1 && $media->name != '') {
 				$extension = pathinfo($media->name, PATHINFO_EXTENSION);
-				if(!in_array($extension, array('bmp','gif','jpg','png')))
+				if(!in_array(strtolower($extension), array('bmp','gif','jpg','png')))
 					$this->addError('media', 'The file "'.$media->name.'" cannot be uploaded. Only files with these extensions are allowed: bmp, gif, jpg, png.');
 			}
 		}
@@ -348,7 +362,7 @@ class ArticleMedia extends CActiveRecord
 					if($this->article->article_type == 1) {
 						$this->media = CUploadedFile::getInstance($this, 'media');
 						if($this->media instanceOf CUploadedFile) {
-							$fileName = time().'_'.$this->article_id.'.'.strtolower($this->media->extensionName);
+							$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->article->title).'.'.strtolower($this->media->extensionName);
 							if($this->media->saveAs($article_path.'/'.$fileName)) {
 								if($this->old_media != '')
 									rename($article_path.'/'.$this->old_media, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_media);
@@ -393,8 +407,7 @@ class ArticleMedia extends CActiveRecord
 				if($resizeSize[1] == 0)
 					$articleImg->resize($resizeSize[0]);
 				else
-					$articleImg->adaptiveResize($resizeSize[0], $resizeSize[1]);
-					
+					$articleImg->adaptiveResize($resizeSize[0], $resizeSize[1]);					
 				$articleImg->save($article_path.'/'.$this->media);
 			}
 			

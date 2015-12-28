@@ -184,7 +184,7 @@ class MediaController extends Controller
 		
 		$articlePhoto = CUploadedFile::getInstanceByName('namaFile');
 		$article_path = "public/article/".$id;
-		$fileName	= time().'_'.$id.'.'.strtolower($articlePhoto->extensionName);
+		$fileName	= time().'_'.$id.'_'.Utility::getUrlTitle(Articles::getInfo($id, 'title')).'.'.strtolower($articlePhoto->extensionName);
 		if($articlePhoto->saveAs($article_path.'/'.$fileName)) {
 			$model = new ArticleMedia;
 			$model->article_id = $id;
