@@ -42,12 +42,22 @@ class MediaController extends Controller
 	 */
 	public function init() 
 	{
-		if(ArticleSetting::getInfo('permission') == 1) {
-			$arrThemes = Utility::getCurrentTemplate('public');
-			Yii::app()->theme = $arrThemes['folder'];
-			$this->layout = $arrThemes['layout'];
+		if(!Yii::app()->user->isGuest) {
+			if(in_array(Yii::app()->user->level, array(1,2))) {
+				$arrThemes = Utility::getCurrentTemplate('admin');
+				Yii::app()->theme = $arrThemes['folder'];
+				$this->layout = $arrThemes['layout'];
+			} else {
+				$this->redirect(Yii::app()->createUrl('site/login'));
+			}
 		} else {
-			$this->redirect(Yii::app()->createUrl('site/login'));
+			if(ArticleSetting::getInfo('permission') == 1) {
+				$arrThemes = Utility::getCurrentTemplate('public');
+				Yii::app()->theme = $arrThemes['folder'];
+				$this->layout = $arrThemes['layout'];
+			} else {
+				$this->redirect(Yii::app()->createUrl('site/login'));
+			}
 		}
 	}
 
@@ -79,6 +89,11 @@ class MediaController extends Controller
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level)',
 			),
+			array('allow', // allow authenticated user to perform 'create' and 'update' actions
+				'actions'=>array('manage','edit','delete'),
+				'users'=>array('@'),
+				'expression'=>'isset(Yii::app()->user->level) && in_array(Yii::app()->user->level, array(1,2))',
+			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array(),
 				'users'=>array('admin'),
@@ -94,7 +109,7 @@ class MediaController extends Controller
 	 */
 	public function actionIndex() 
 	{
-		$this->redirect(Yii::app()->createUrl('site/index'));
+		$this->redirect(array('manage'));
 	}
 
 	/**
@@ -112,8 +127,8 @@ class MediaController extends Controller
 		if($model != null) {			
 			foreach($model as $key => $val) {
 				$image = Yii::app()->request->baseUrl.'/public/article/'.$val->article_id.'/'.$val->media;
-				$url = Yii::app()->controller->createUrl('ajaxdelete', array('id'=>$val->media_id));
-				$urlCover = Yii::app()->controller->createUrl('ajaxcover', array('id'=>$val->media_id));
+				$url = Yii::app()->controller->createUrl('ajaxdelete', array('id'=>$val->media_id,'type'=>'admin'));
+				$urlCover = Yii::app()->controller->createUrl('ajaxcover', array('id'=>$val->media_id,'type'=>'admin'));
 				$data .= '<li>';
 				if($val->cover == 0) {
 					$data .= '<a id="set-cover" href="'.$urlCover.'" title="'.Phrase::trans(26108,1).'">'.Phrase::trans(26108,1).'</a>';
@@ -126,7 +141,7 @@ class MediaController extends Controller
 		if(isset($_GET['replace'])) {
 			// begin.Upload Button
 			$class = (count($model) == $setting->media_limit) ? 'class="hide"' : '';
-			$url = Yii::app()->controller->createUrl('ajaxadd', array('id'=>$id));
+			$url = Yii::app()->controller->createUrl('ajaxadd', array('id'=>$id,'type'=>'admin'));
 			$data .= '<li id="upload" '.$class.'>';
 			$data .= '<a id="upload-gallery" href="'.$url.'" title="'.Phrase::trans(26054,1).'">'.Phrase::trans(26054,1).'</a>';
 			$data .= '<img src="'.Utility::getTimThumb(Yii::app()->request->baseUrl.'/public/article/article_default.png', 320, 250, 1).'" alt="" />';
@@ -153,7 +168,7 @@ class MediaController extends Controller
 			$model->article_id = $id;
 			$model->media = $fileName;
 			if($model->save()) {
-				$url = Yii::app()->controller->createUrl('ajaxmanage', array('id'=>$model->article_id,'replace'=>'true'));
+				$url = Yii::app()->controller->createUrl('ajaxmanage', array('id'=>$model->article_id,'type'=>'admin','replace'=>'true'));
 				echo CJSON::encode(array(
 					'id' => 'media-render',
 					'get' => $url,
@@ -177,7 +192,7 @@ class MediaController extends Controller
 				$model->cover = 1;
 				
 				if($model->update()) {
-					$url = Yii::app()->controller->createUrl('ajaxmanage', array('id'=>$model->article_id,'replace'=>'true'));
+					$url = Yii::app()->controller->createUrl('ajaxmanage', array('id'=>$model->article_id,'type'=>'admin','replace'=>'true'));
 					echo CJSON::encode(array(
 						'type' => 2,
 						'id' => 'media-render',
@@ -194,7 +209,7 @@ class MediaController extends Controller
 			$this->pageTitle = Phrase::trans(26105,1);
 			$this->pageDescription = '';
 			$this->pageMeta = '';
-			$this->render('front_cover');
+			$this->render('admin_cover');
 		}
 	}
 
@@ -205,19 +220,13 @@ class MediaController extends Controller
 	 */
 	public function actionAjaxDelete($id) 
 	{
-		if(!isset($_GET['type'])) {
-			$arrThemes = Utility::getCurrentTemplate('public');
-			Yii::app()->theme = $arrThemes['folder'];
-			$this->layout = $arrThemes['layout'];
-			Utility::applyCurrentTheme($this->module);
-		}
 		$model=$this->loadModel($id);
 
 		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
 			if(isset($id)) {
 				if($model->delete()) {
-						$url = Yii::app()->controller->createUrl('ajaxmanage', array('id'=>$model->article_id,'replace'=>'true'));
+					$url = Yii::app()->controller->createUrl('ajaxmanage', array('id'=>$model->article_id,'type'=>'admin','replace'=>'true'));
 					echo CJSON::encode(array(
 						'type' => 2,
 						'id' => 'media-render',
@@ -234,7 +243,105 @@ class MediaController extends Controller
 			$this->pageTitle = Phrase::trans(26056,1);
 			$this->pageDescription = '';
 			$this->pageMeta = '';
-			$this->render('front_delete');
+			$this->render('admin_delete');
+		}
+	}
+
+	/**
+	 * Manages all models.
+	 */
+	public function actionManage() 
+	{
+		$model=new ArticleMedia('search');
+		$model->unsetAttributes();  // clear any default values
+		if(isset($_GET['ArticleMedia'])) {
+			$model->attributes=$_GET['ArticleMedia'];
+		}
+
+		$columnTemp = array();
+		if(isset($_GET['GridColumn'])) {
+			foreach($_GET['GridColumn'] as $key => $val) {
+				if($_GET['GridColumn'][$key] == 1) {
+					$columnTemp[] = $key;
+				}
+			}
+		}
+		$columns = $model->getGridColumn($columnTemp);
+		
+		if(isset($_GET['article'])) {
+			$article = Articles::model()->findByPk($_GET['article']);
+			$title = ': '.$article->title.' '.Phrase::trans(26062,1).' '.$article->user->displayname;
+		} else {
+			$title = '';
+		}
+
+		$this->pageTitle = Phrase::trans(26074,1).$title;
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_manage',array(
+			'model'=>$model,
+			'columns' => $columns,
+		));
+	}
+
+	/**
+	 * Updates a particular model.
+	 * If update is successful, the browser will be redirected to the 'view' page.
+	 * @param integer $id the ID of the model to be updated
+	 */
+	public function actionEdit($id) 
+	{
+		$model=$this->loadModel($id);
+
+		// Uncomment the following line if AJAX validation is needed
+		$this->performAjaxValidation($model);
+
+		if(isset($_POST['ArticleMedia'])) {
+			$model->attributes=$_POST['ArticleMedia'];
+			
+			if($model->save()) {
+				Yii::app()->user->setFlash('success', Phrase::trans(26075,1));
+				$this->redirect(array('edit','id'=>$model->media_id));
+			}
+		}
+
+		$this->pageTitle = Phrase::trans(26076,1).': '.$model->article->title;
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_edit',array(
+			'model'=>$model,
+		));
+	}
+
+	/**
+	 * Deletes a particular model.
+	 * If deletion is successful, the browser will be redirected to the 'admin' page.
+	 * @param integer $id the ID of the model to be deleted
+	 */
+	public function actionDelete($id) 
+	{
+		if(Yii::app()->request->isPostRequest) {
+			// we only allow deletion via POST request
+			if(isset($id)) {
+				$this->loadModel($id)->delete();
+
+				echo CJSON::encode(array(
+					'type' => 5,
+					'get' => Yii::app()->controller->createUrl('manage'),
+					'id' => 'partial-article-media',
+					'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26078,1).'</strong></div>',
+				));
+			}
+
+		} else {
+			$this->dialogDetail = true;
+			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+			$this->dialogWidth = 350;
+
+			$this->pageTitle = Phrase::trans(26077,1);
+			$this->pageDescription = '';
+			$this->pageMeta = '';
+			$this->render('admin_delete');
 		}
 	}
 

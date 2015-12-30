@@ -486,8 +486,8 @@ class Articles extends CActiveRecord
 			$file = CUploadedFile::getInstance($this, 'file');
 			if($file->name != '') {
 				$extension = pathinfo($file->name, PATHINFO_EXTENSION);
-				if(!in_array(strtolower($extension), array('mp3','mp4','pdf','doc','docx','ppt','pptx','xls','xlsx','opt','zip', 'rar', '7z')))
-					$this->addError('file', 'The file "'.$file->name.'" cannot be uploaded. Only files with these extensions are allowed: mp3, mp4, pdf, doc, docx, ppt, pptx, xls, xlsx, opt, zip, rar, 7z.');
+				if(!in_array(strtolower($extension), array('mp3','mp4','flv','pdf','doc','opt','docx','ppt','pptx','xls','xlsx','zip', 'rar', '7z')))
+					$this->addError('file', 'The file "'.$file->name.'" cannot be uploaded. Only files with these extensions are allowed: mp3, mp4, flv, pdf, doc, docx, ppt, pptx, xls, xlsx, opt, zip, rar, 7z.');
 			}
 		}
 		return true;

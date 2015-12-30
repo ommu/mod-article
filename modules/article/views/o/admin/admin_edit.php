@@ -35,7 +35,7 @@ EOP;
 ?>
 
 <div class="form" <?php echo ($model->article_type == 1 && $setting->media_limit != 1) ? 'name="post-on"' : ''; ?>>
-	<?php echo $this->renderPartial('/admin/_form', array(
+	<?php echo $this->renderPartial('_form', array(
 		'model'=>$model,
 		'setting'=>$setting,
 		'tag'=>$tag,

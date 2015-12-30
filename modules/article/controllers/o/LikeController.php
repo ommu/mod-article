@@ -11,6 +11,8 @@
  *	Index
  *	Up
  *	Down
+ *	Manage
+ *	Delete
  *
  *	LoadModel
  *	performAjaxValidation
@@ -37,12 +39,16 @@ class LikeController extends Controller
 	 */
 	public function init() 
 	{
-		if(ArticleSetting::getInfo('permission') == 1) {
-			$arrThemes = Utility::getCurrentTemplate('public');
-			Yii::app()->theme = $arrThemes['folder'];
-			$this->layout = $arrThemes['layout'];
+		if(!Yii::app()->user->isGuest) {
+			if(in_array(Yii::app()->user->level, array(1,2))) {
+				$arrThemes = Utility::getCurrentTemplate('admin');
+				Yii::app()->theme = $arrThemes['folder'];
+				$this->layout = $arrThemes['layout'];
+			} else {
+				$this->redirect(Yii::app()->createUrl('site/login'));
+			}
 		} else {
-			$this->redirect(Yii::app()->createUrl('site/index'));
+			$this->redirect(Yii::app()->createUrl('site/login'));
 		}
 	}
 
@@ -70,10 +76,15 @@ class LikeController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('up','down'),
+				'actions'=>array(),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level)',
 				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
+			),
+			array('allow', // allow authenticated user to perform 'create' and 'update' actions
+				'actions'=>array('manage','delete'),
+				'users'=>array('@'),
+				'expression'=>'isset(Yii::app()->user->level) && in_array(Yii::app()->user->level, array(1,2))',
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
 				'actions'=>array(),
@@ -90,39 +101,75 @@ class LikeController extends Controller
 	 */
 	public function actionIndex() 
 	{
-		$this->redirect(Yii::app()->createUrl('site/index'));
+		$this->redirect(array('manage'));
 	}
-	
+
 	/**
-	 * Creates a new model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 * Manages all models.
 	 */
-	public function actionUp($id=null) 
+	public function actionManage() 
 	{
-		if($id == null) {
-			$this->redirect(array('site/index'));
-		} else {
-			$model=new ArticleLikes;
-			$model->article_id = $id;
-			if($model->save()) {
-				$this->redirect(array('site/view','id'=>$model->article_id,'t'=>Utility::getUrlTitle($model->article->title)));
-			}	
+		$model=new ArticleLikes('search');
+		$model->unsetAttributes();  // clear any default values
+		if(isset($_GET['ArticleLikes'])) {
+			$model->attributes=$_GET['ArticleLikes'];
 		}
-	}
-	
-	/**
-	 * Creates a new model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
-	 */
-	public function actionDown($id=null) 
-	{
-		if($id == null) {
-			$this->redirect(array('site/index'));
+
+		$columnTemp = array();
+		if(isset($_GET['GridColumn'])) {
+			foreach($_GET['GridColumn'] as $key => $val) {
+				if($_GET['GridColumn'][$key] == 1) {
+					$columnTemp[] = $key;
+				}
+			}
+		}
+		$columns = $model->getGridColumn($columnTemp);
+		
+		if(isset($_GET['article'])) {
+			$article = Articles::model()->findByPk($_GET['article']);
+			$title = ': '.$article->title.' '.Phrase::trans(26062,1).' '.$article->user->displayname;
 		} else {
-			$model=$this->loadModel($id);
-			if($model->delete()) {
-				$this->redirect(array('site/view','id'=>$model->article_id,'t'=>Utility::getUrlTitle($model->article->title)));
-			}	
+			$title = '';
+		}
+
+		$this->pageTitle = Phrase::trans(26065,1).$title;
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_manage',array(
+			'model'=>$model,
+			'columns' => $columns,
+		));
+	}
+
+	/**
+	 * Deletes a particular model.
+	 * If deletion is successful, the browser will be redirected to the 'admin' page.
+	 * @param integer $id the ID of the model to be deleted
+	 */
+	public function actionDelete($id) 
+	{
+		if(Yii::app()->request->isPostRequest) {
+			// we only allow deletion via POST request
+			if(isset($id)) {
+				$this->loadModel($id)->delete();
+
+				echo CJSON::encode(array(
+					'type' => 5,
+					'get' => Yii::app()->controller->createUrl('manage'),
+					'id' => 'partial-article-likes',
+					'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26064,1).'</strong></div>',
+				));
+			}
+
+		} else {
+			$this->dialogDetail = true;
+			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+			$this->dialogWidth = 350;
+
+			$this->pageTitle = Phrase::trans(26063,1);
+			$this->pageDescription = '';
+			$this->pageMeta = '';
+			$this->render('admin_delete');
 		}
 	}
 
