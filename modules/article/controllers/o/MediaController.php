@@ -237,7 +237,7 @@ class MediaController extends Controller
 
 		} else {
 			$this->dialogDetail = true;
-			$this->dialogGroundUrl = Yii::app()->controller->createUrl('admin/edit', array('id'=>$model->article_id));
+			$this->dialogGroundUrl = Yii::app()->controller->createUrl('o/admin/edit', array('id'=>$model->article_id));
 			$this->dialogWidth = 350;
 
 			$this->pageTitle = Phrase::trans(26056,1);

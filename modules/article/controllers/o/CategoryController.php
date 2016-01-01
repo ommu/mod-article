@@ -157,7 +157,7 @@ class CategoryController extends Controller
 					if($model->save()) {
 						echo CJSON::encode(array(
 							'type' => 5,
-							'get' => Yii::app()->controller->createUrl('setting/index'),
+							'get' => Yii::app()->controller->createUrl('o/setting/index'),
 							'id' => 'partial-article-category',
 							'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26023,1).'</strong></div>',
 						));
@@ -206,7 +206,7 @@ class CategoryController extends Controller
 					if($model->save()) {
 						echo CJSON::encode(array(
 							'type' => 5,
-							'get' => Yii::app()->controller->createUrl('setting/index'),
+							'get' => Yii::app()->controller->createUrl('o/setting/index'),
 							'id' => 'partial-article-category',
 							'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26025,1).'</strong></div>',
 						));
@@ -281,7 +281,7 @@ class CategoryController extends Controller
 
 				echo CJSON::encode(array(
 					'type' => 5,
-					'get' => Yii::app()->controller->createUrl('setting/index'),
+					'get' => Yii::app()->controller->createUrl('o/setting/index'),
 					'id' => 'partial-article-category',
 					'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26027,1).'</strong></div>',
 				));
@@ -324,7 +324,7 @@ class CategoryController extends Controller
 				if($model->update()) {
 					echo CJSON::encode(array(
 						'type' => 5,
-						'get' => Yii::app()->controller->createUrl('setting/index'),
+						'get' => Yii::app()->controller->createUrl('o/setting/index'),
 						'id' => 'partial-article-category',
 						'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26025,1).'</strong></div>',
 					));

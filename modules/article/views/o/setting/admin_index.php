@@ -56,21 +56,20 @@ EOP;
 						'label' => 'view',
 						'options' => array(
 							'class' => 'view',
-							'target' => '_blank',
 						),
-						'url' => 'Yii::app()->controller->createUrl("category/view",array("id"=>$data->primaryKey))'),
+						'url' => 'Yii::app()->controller->createUrl("o/category/view",array("id"=>$data->primaryKey))'),
 					'update' => array(
 						'label' => 'update',
 						'options' => array(
 							'class' => 'update'
 						),
-						'url' => 'Yii::app()->controller->createUrl("category/edit",array("id"=>$data->primaryKey))'),
+						'url' => 'Yii::app()->controller->createUrl("o/category/edit",array("id"=>$data->primaryKey))'),
 					'delete' => array(
 						'label' => 'delete',
 						'options' => array(
 							'class' => 'delete'
 						),
-						'url' => 'Yii::app()->controller->createUrl("category/delete",array("id"=>$data->primaryKey))')
+						'url' => 'Yii::app()->controller->createUrl("o/category/delete",array("id"=>$data->primaryKey))')
 				),
 				'template' => '{update}|{delete}',
 			));
