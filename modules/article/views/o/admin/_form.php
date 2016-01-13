@@ -161,7 +161,7 @@ EOP;
 						<?php 
 						if(!$model->isNewRecord) {
 							//echo $form->textField($model,'keyword',array('maxlength'=>32,'class'=>'span-6'));
-							$url = Yii::app()->controller->createUrl('tag/add', array('type'=>'article'));
+							$url = Yii::app()->controller->createUrl('o/tag/add', array('type'=>'article'));
 							$article = $model->article_id;
 							$tagId = 'Articles_keyword';
 							$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
@@ -201,7 +201,7 @@ EOP;
 							if(!$model->isNewRecord) {
 								if($tag != null) {
 									foreach($tag as $key => $val) {?>
-									<div><?php echo $val->tag->body;?><a href="<?php echo Yii::app()->controller->createUrl('tag/delete',array('id'=>$val->id,'type'=>'article'));?>" title="<?php echo Phrase::trans(173,0);?>"><?php echo Phrase::trans(173,0);?></a></div>
+									<div><?php echo $val->tag->body;?><a href="<?php echo Yii::app()->controller->createUrl('o/tag/delete',array('id'=>$val->id,'type'=>'article'));?>" title="<?php echo Phrase::trans(173,0);?>"><?php echo Phrase::trans(173,0);?></a></div>
 								<?php }
 								}
 							}?>
@@ -303,14 +303,20 @@ EOP;
 					'model'=>$model,
 					'attribute'=>quote,
 					// Redactor options
-					/* ''options'=>array(
+					'options'=>array(
 						//'lang'=>'fi',
-						buttons'=>array(
-							'formatting', '|', 'bold', 'italic', 'deleted', '|',
+						'buttons'=>array(
+							'html', 'formatting', '|', 
+							'bold', 'italic', 'deleted', '|',
 							'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
-							'image', 'video', 'link', '|', 'html',
+							'link', '|',
 						),
-					), */
+					),
+					'plugins' => array(
+						'fontcolor' => array('js' => array('fontcolor.js')),
+						'table' => array('js' => array('table.js')),
+						'fullscreen' => array('js' => array('fullscreen.js')),
+					),
 				)); ?>
 				<?php if($model->isNewRecord || (!$model->isNewRecord && $model->article_type != 4)) {?>
 					<span class="small-px"><?php echo Phrase::trans(26084,1);?></span>
@@ -331,11 +337,17 @@ EOP;
 					// Redactor options
 					'options'=>array(
 						//'lang'=>'fi',
-						/* 'buttons'=>array(
-							'formatting', '|', 'bold', 'italic', 'deleted', '|',
+						'buttons'=>array(
+							'html', 'formatting', '|', 
+							'bold', 'italic', 'deleted', '|',
 							'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
-							'image', 'video', 'link', '|', 'html',
-						), */
+							'link', '|',
+						),
+					),
+					'plugins' => array(
+						'fontcolor' => array('js' => array('fontcolor.js')),
+						'table' => array('js' => array('table.js')),
+						'fullscreen' => array('js' => array('fullscreen.js')),
 					),
 				)); ?>
 				<?php echo $form->error($model,'body'); ?>

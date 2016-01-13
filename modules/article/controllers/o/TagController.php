@@ -175,10 +175,12 @@ class TagController extends Controller
 	 */
 	public function actionDelete($id) 
 	{
+		$model=$this->loadModel($id);
+		
 		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
 			if(isset($id)) {
-				$this->loadModel($id)->delete();
+				$model->delete();
 				if(isset($_GET['type']) && $_GET['type'] == 'article') {
 					echo CJSON::encode(array(
 						'type' => 4,
@@ -195,7 +197,11 @@ class TagController extends Controller
 
 		} else {
 			$this->dialogDetail = true;
-			$this->dialogGroundUrl = Yii::app()->controller->createUrl('admin/edit', array('id'=>$id));
+			if(isset($_GET['type']) && $_GET['type'] == 'article')
+				$url = Yii::app()->controller->createUrl('o/admin/edit', array('id'=>$model->article_id));
+			else
+				$url = Yii::app()->controller->createUrl('manage');
+			$this->dialogGroundUrl = $url;
 			$this->dialogWidth = 350;
 
 			$this->pageTitle = Phrase::trans(26081,1);

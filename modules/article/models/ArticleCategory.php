@@ -247,7 +247,7 @@ class ArticleCategory extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'header' => 'Count',
-				'value' => 'CHtml::link($data->view_cat->articles." ".Phrase::trans(26000,1), Yii::app()->controller->createUrl("admin/manage",array("category"=>$data->cat_id)))',
+				'value' => 'CHtml::link($data->view_cat->articles." ".Phrase::trans(26000,1), Yii::app()->controller->createUrl("o/admin/manage",array("category"=>$data->cat_id)))',
 				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
@@ -283,7 +283,7 @@ class ArticleCategory extends CActiveRecord
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("category/publish",array("id"=>$data->cat_id)), $data->publish, 1)',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("o/category/publish",array("id"=>$data->cat_id)), $data->publish, 1)',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -347,7 +347,7 @@ class ArticleCategory extends CActiveRecord
 		if(parent::beforeValidate()) {		
 			if($this->isNewRecord) {
 				$this->orders = 0;
-				$this->creation_id = Yii::app()->user->id;	
+				$this->user_id = Yii::app()->user->id;	
 			} else
 				$this->modified_id = Yii::app()->user->id;
 

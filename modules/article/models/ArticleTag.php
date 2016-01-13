@@ -66,7 +66,7 @@ class ArticleTag extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('article_id, tag_id', 'required'),
-			array('article_id, tag_id', 'length', 'max'=>11),
+			array('article_id, tag_id, creation_id', 'length', 'max'=>11),
 			array('creation_date, 
 				body', 'safe'),
 			// The following rule is used by search().
