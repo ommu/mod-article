@@ -85,7 +85,7 @@ class ArticleTag extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'article' => array(self::BELONGS_TO, 'Articles', 'article_id'),
-			'tag' => array(self::BELONGS_TO, 'OmmuTags', 'tag_id'),
+			'tag_TO' => array(self::BELONGS_TO, 'OmmuTags', 'tag_id'),
 			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 		);
 	}
@@ -134,8 +134,8 @@ class ArticleTag extends CActiveRecord
 				'alias'=>'article',
 				'select'=>'title'
 			),
-			'tag' => array(
-				'alias'=>'tag',
+			'tag_TO' => array(
+				'alias'=>'tag_TO',
 				'select'=>'body'
 			),
 			'creation_relation' => array(
@@ -144,7 +144,7 @@ class ArticleTag extends CActiveRecord
 			),
 		);
 		$criteria->compare('article.title',strtolower($this->article_search), true);
-		$criteria->compare('tag.body',strtolower($this->tag_search), true);
+		$criteria->compare('tag_TO.body',strtolower($this->tag_search), true);
 		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
 
 		if(!isset($_GET['ArticleTag_sort']))
@@ -207,7 +207,7 @@ class ArticleTag extends CActiveRecord
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'tag_search',
-				'value' => '$data->tag->body',
+				'value' => '$data->tag_TO->body',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
@@ -260,7 +260,7 @@ class ArticleTag extends CActiveRecord
 		$tag = '';
 		if($model != null) {
 			foreach($model as $val) {
-				$tag .= ','.$val->tag->body;
+				$tag .= ','.$val->tag_TO->body;
 			}
 		}
 		

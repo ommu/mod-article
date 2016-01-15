@@ -347,7 +347,7 @@ class ArticleCategory extends CActiveRecord
 		if(parent::beforeValidate()) {		
 			if($this->isNewRecord) {
 				$this->orders = 0;
-				$this->user_id = Yii::app()->user->id;	
+				$this->creation_id = Yii::app()->user->id;	
 			} else
 				$this->modified_id = Yii::app()->user->id;
 

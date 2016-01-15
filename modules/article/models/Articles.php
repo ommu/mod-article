@@ -119,6 +119,8 @@ class Articles extends CActiveRecord
 			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
 			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'tag_MANY' => array(self::HAS_MANY, 'ArticleTag', 'article_id'),
+			'tag_ONE' => array(self::HAS_ONE, 'ArticleTag', 'article_id'),
 		);
 	}
 
