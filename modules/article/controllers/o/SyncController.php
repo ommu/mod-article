@@ -133,7 +133,7 @@ class SyncController extends Controller
 			}
 				
 			$mediaFile = $path.'old/'.$item->media_file;
-			if(file_exists($mediaFile) && $item->media_file != '') {
+			if($item->media_file != '' && file_exists($mediaFile)) {
 				rename($mediaFile, $article_path.'/'.$item->media_file);
 			}
 		}

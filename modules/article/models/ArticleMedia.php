@@ -364,7 +364,7 @@ class ArticleMedia extends CActiveRecord
 						if($this->media instanceOf CUploadedFile) {
 							$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->article->title).'.'.strtolower($this->media->extensionName);
 							if($this->media->saveAs($article_path.'/'.$fileName)) {
-								if($this->old_media != '')
+								if($this->old_media != '' && file_exists($article_path.'/'.$this->old_media))
 									rename($article_path.'/'.$this->old_media, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_media);
 								$this->media = $fileName;
 							}
@@ -431,7 +431,7 @@ class ArticleMedia extends CActiveRecord
 		parent::afterDelete();
 		//delete article image
 		$article_path = "public/article/".$this->article_id;
-		if(in_array($this->article->article_type, array(1,3)) && $this->media != '')
+		if(in_array($this->article->article_type, array(1,3)) && $this->media != '' && file_exists($article_path.'/'.$this->media))
 			rename($article_path.'/'.$this->media, 'public/article/verwijderen/'.$this->article_id.'_'.$this->media);
 
 		//reset cover in article

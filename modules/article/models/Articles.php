@@ -537,7 +537,7 @@ class Articles extends CActiveRecord
 							$images->media = $fileName;
 							$images->save();
 						} else {
-							if($this->old_media != '')
+							if($this->old_media != '' && file_exists($article_path.'/'.$this->old_media))
 								rename($article_path.'/'.$this->old_media, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_media);
 							$images = ArticleMedia::model()->findByPk($this->media_id);
 							$images->media = $fileName;
@@ -577,7 +577,7 @@ class Articles extends CActiveRecord
 		if($this->file instanceOf CUploadedFile) {
 			$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->file->extensionName);
 			if($this->file->saveAs($article_path.'/'.$fileName)) {
-				if(!$this->isNewRecord && $this->media_file != '') {
+				if(!$this->isNewRecord && $this->media_file != '' && file_exists($article_path.'/'.$this->old_file)) {
 					rename($article_path.'/'.$this->old_file, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_file);
 				}
 				$article = Articles::model()->findByPk($this->article_id);
@@ -639,11 +639,11 @@ class Articles extends CActiveRecord
 			//delete media photos
 			$article_photo = ArticleMedia::getPhoto($this->article_id);
 			foreach($article_photo as $val) {
-				if(in_array($this->article_type, array(1,3)) && $val->media != '')
+				if(in_array($this->article_type, array(1,3)) && $val->media != '' && file_exists($article_path.'/'.$val->media))
 					rename($article_path.'/'.$val->media, 'public/article/verwijderen/'.$val->article_id.'_'.$val->media);
 			}
 			//delete media file
-			if($this->media_file != '')
+			if($this->media_file != '' && file_exists($article_path.'/'.$val->media_file))
 				rename($article_path.'/'.$val->media_file, 'public/article/verwijderen/'.$val->article_id.'_'.$val->media_file);
 		}
 		return true;
