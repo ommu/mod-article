@@ -34,7 +34,7 @@ EOP;
 	($model->article_type == 1 && $setting->media_limit != 1) ? $cs->registerScript('ajaxmanage', $js, CClientScript::POS_END) : '';
 ?>
 
-<div class="form" <?php echo ($model->article_type == 1 && $setting->media_limit != 1) ? 'name="post-on"' : ''; ?>>
+<div class="form" <?php //echo ($model->article_type == 1 && $setting->media_limit != 1) ? 'name="post-on"' : ''; ?>>
 	<?php echo $this->renderPartial('_form', array(
 		'model'=>$model,
 		'setting'=>$setting,

@@ -200,6 +200,7 @@ class AdminController extends Controller
 		if(isset($_POST['Articles'])) {
 			$model->attributes=$_POST['Articles'];
 
+			/*
 			if($model->article_type == 1 && $setting->media_limit != 1) {
 				$jsonError = CActiveForm::validate($model);
 				if(strlen($jsonError) > 2) {
@@ -231,11 +232,12 @@ class AdminController extends Controller
 				Yii::app()->end();
 			
 			} else {
+			*/
 				if($model->save()) {
 					Yii::app()->user->setFlash('success', Phrase::trans(26033,1));
 					$this->redirect(array('edit','id'=>$model->article_id));
 				}
-			}
+			//}
 		}
 
 		$this->pageTitle = Phrase::trans(26032,1).': '.$model->title;
