@@ -156,7 +156,7 @@ class ArticleMedia extends CActiveRecord
 		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
 
 		if(!isset($_GET['ArticleMedia_sort']))
-			//$criteria->order = 'media_id DESC';
+			$criteria->order = 't.media_id DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

@@ -251,7 +251,7 @@ class Articles extends CActiveRecord
 		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
 
 		if(!isset($_GET['Articles_sort']))
-			$criteria->order = 'article_id DESC';
+			$criteria->order = 't.article_id DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,

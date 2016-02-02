@@ -172,6 +172,9 @@ class ArticleSetting extends CActiveRecord
 		);
 		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
 
+		if(!isset($_GET['ArticleSetting_sort']))
+			$criteria->order = 't.id DESC';
+
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));

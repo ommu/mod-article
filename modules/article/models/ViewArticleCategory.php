@@ -121,7 +121,7 @@ class ViewArticleCategory extends CActiveRecord
 		$criteria->compare('t.articles',strtolower($this->articles),true);
 
 		if(!isset($_GET['ViewArticleCategory_sort']))
-			$criteria->order = 'cat_id DESC';
+			$criteria->order = 't.cat_id DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
