@@ -9,8 +9,6 @@
  *
  * TOC :
  *	Index
- *	Up
- *	Down
  *	Manage
  *	Delete
  *

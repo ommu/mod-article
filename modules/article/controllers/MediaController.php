@@ -217,7 +217,7 @@ class MediaController extends Controller
 			// we only allow deletion via POST request
 			if(isset($id)) {
 				if($model->delete()) {
-						$url = Yii::app()->controller->createUrl('ajaxmanage', array('id'=>$model->article_id,'replace'=>'true'));
+					$url = Yii::app()->controller->createUrl('ajaxmanage', array('id'=>$model->article_id,'replace'=>'true'));
 					echo CJSON::encode(array(
 						'type' => 2,
 						'id' => 'media-render',

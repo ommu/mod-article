@@ -330,7 +330,7 @@ class Articles extends CActiveRecord
 				),
 				'type' => 'raw',
 			);
-			if(!isset($_GET['category']) && $controller == 'admin') {
+			if(!isset($_GET['category']) && $controller == 'o/admin') {
 				/*
 				$parent = 0;
 				$category = ArticleCategory::getCategory(null, $parent);

@@ -159,7 +159,7 @@ class ArticleCategory extends CActiveRecord
 		$criteria->with = array(
 			'view_cat' => array(
 				'alias'=>'view_cat',
-				'select'=>'category_name, category_desc'
+				'select'=>'category_name, category_desc, articles'
 			),
 			'creation_relation' => array(
 				'alias'=>'creation_relation',
@@ -248,6 +248,9 @@ class ArticleCategory extends CActiveRecord
 			$this->defaultColumns[] = array(
 				'header' => 'Count',
 				'value' => 'CHtml::link($data->view_cat->articles." ".Phrase::trans(26000,1), Yii::app()->controller->createUrl("o/admin/manage",array("category"=>$data->cat_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
 				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(

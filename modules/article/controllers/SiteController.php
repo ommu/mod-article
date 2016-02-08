@@ -37,9 +37,6 @@ class SiteController extends Controller
 	 */
 	public function init() 
 	{
-		//import model
-		Yii::import('application.modules.article.models.*');
-		
 		if(ArticleSetting::getInfo('permission') == 1) {
 			$arrThemes = Utility::getCurrentTemplate('public');
 			Yii::app()->theme = $arrThemes['folder'];
@@ -76,7 +73,6 @@ class SiteController extends Controller
 				'actions'=>array(),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level)',
-				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
 				'actions'=>array(),
@@ -159,7 +155,7 @@ class SiteController extends Controller
 		);
 		$criteria->compare('cat_id',$model->cat_id);
 		$criteria->order = 'RAND()';
-		$criteria->limit = 4;		
+		$criteria->limit = 4;
 		$random = Articles::model()->findAll($criteria);
 		
 		$this->pageTitleShow = true;

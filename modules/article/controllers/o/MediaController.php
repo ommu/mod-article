@@ -51,13 +51,7 @@ class MediaController extends Controller
 				$this->redirect(Yii::app()->createUrl('site/login'));
 			}
 		} else {
-			if(ArticleSetting::getInfo('permission') == 1) {
-				$arrThemes = Utility::getCurrentTemplate('public');
-				Yii::app()->theme = $arrThemes['folder'];
-				$this->layout = $arrThemes['layout'];
-			} else {
-				$this->redirect(Yii::app()->createUrl('site/login'));
-			}
+			$this->redirect(Yii::app()->createUrl('site/login'));
 		}
 	}
 
