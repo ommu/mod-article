@@ -16,6 +16,25 @@ db_table_name	:
  
 db_sql_filename	: 
 
+plugin_menu		:
+	- urlTitle: View Articles
+		urlRules: {siteType: 0,1, userLevel: 1,2}
+		urlPath: {url: o/admin/manage, attr: -, icon: -}
+		
+	- urlTitle: Article Settings
+		urlRules: {siteType: 0,1, userLevel: 1}
+		urlPath: {url: o/setting/index, attr: -, icon: -}
+		submenu :
+			- urlTitle: Photos
+				urlRules: {siteType: 0,1, userLevel: 1,2}
+				urlPath: {url: o/media/manage, attr: -, icon: -}
+			- urlTitle: Likes
+				urlRules: {siteType: 0,1, userLevel: 1,2}
+				urlPath: {url: o/like/manage, attr: -, icon: -}
+			- urlTitle: Tags
+				urlRules: {siteType: 0,1, userLevel: 1,2}
+				urlPath: {url: o/tag/manage, attr: -, icon: -}
+
 content_menu	:
 # controller o/admin
 	- urlTitle: Add Article
