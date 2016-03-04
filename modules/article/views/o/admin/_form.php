@@ -237,7 +237,7 @@ EOP;
 					<?php echo $form->labelEx($model,'published_date'); ?>
 					<div class="desc">
 						<?php 
-						$model->isNewRecord ? '' : $model->published_date = date('d-m-Y', strtotime($model->published_date));
+						$model->isNewRecord && $model->published_date == '' ? $model->published_date = date('d-m-Y') : date('d-m-Y', strtotime($model->published_date));
 						//echo $form->textField($model,'published_date', array('class'=>'span-7'));
 						$this->widget('zii.widgets.jui.CJuiDatePicker',array(
 							'model'=>$model, 

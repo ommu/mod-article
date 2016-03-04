@@ -373,7 +373,7 @@ class Articles extends CActiveRecord
 					),
 				), true),
 			);
-			if(in_array($controller, array('admin'))) {
+			if(in_array($controller, array('o/admin'))) {
 				$this->defaultColumns[] = array(
 					'name' => 'published_date',
 					'value' => 'Utility::dateFormat($data->published_date)',
