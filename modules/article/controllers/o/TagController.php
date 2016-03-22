@@ -162,7 +162,7 @@ class TagController extends Controller
 				else 
 					$url = Yii::app()->controller->createUrl('delete',array('id'=>$model->id));
 				echo CJSON::encode(array(
-					'data' => '<div>'.$model->tag_TO->body.'<a href="'.$url.'" title="'.Phrase::trans(173,0).'">'.Phrase::trans(173,0).'</a></div>',
+					'data' => '<div>'.$model->tag_TO->body.'<a href="'.$url.'" title="'.Yii::t('phrase', 'Delete').'">'.Yii::t('phrase', 'Delete').'</a></div>',
 				));
 			}
 		}
@@ -220,7 +220,7 @@ class TagController extends Controller
 	{
 		$model = ArticleTag::model()->findByPk($id);
 		if($model===null)
-			throw new CHttpException(404, Phrase::trans(193,0));
+			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;
 	}
 
