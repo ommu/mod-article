@@ -24,10 +24,10 @@
 	//'htmlOptions' => array('enctype' => 'multipart/form-data')
 )); ?>
 	<div class="dialog-content">
-		<?php echo Phrase::trans(339,0);?>
+		<?php echo Yii::t('phrase', 'Are you sure you want to headline this item?');?>
 	</div>
 	<div class="dialog-submit">
-		<?php echo CHtml::submitButton(Phrase::trans(338,0), array('onclick' => 'setEnableSave()')); ?>
+		<?php echo CHtml::submitButton(Yii::t('phrase', 'Headline'), array('onclick' => 'setEnableSave()')); ?>
 		<?php echo CHtml::button(Yii::t('phrase', 'Cancel'), array('id'=>'closed')); ?>
 	</div>
 <?php $this->endWidget(); ?>

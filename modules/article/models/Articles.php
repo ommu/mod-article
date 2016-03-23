@@ -476,7 +476,7 @@ class Articles extends CActiveRecord
 				$this->modified_id = Yii::app()->user->id;
 
 			if($this->headline == 1 && $this->publish == 0)
-				$this->addError('publish', Phrase::trans(340,0));
+				$this->addError('publish', Yii::t('phrase', 'Publish cannot be blank.'));
 			
 			$media = CUploadedFile::getInstance($this, 'media');
 			if($this->article_type == 1 && $media->name != '') {

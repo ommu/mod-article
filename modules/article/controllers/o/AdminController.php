@@ -205,7 +205,7 @@ class AdminController extends Controller
 				$jsonError = CActiveForm::validate($model);
 				if(strlen($jsonError) > 2) {
 					$errors = $model->getErrors();
-					$summary['msg'] = "<div class='errorSummary'><strong>".Phrase::trans(163,0)."</strong>";
+					$summary['msg'] = "<div class='errorSummary'><strong>".Yii::t('phrase', 'Please fix the following input errors:')."</strong>";
 					$summary['msg'] .= "<ul>";
 					foreach($errors as $key => $value) {
 						$summary['msg'] .= "<li>{$value[0]}</li>";
@@ -396,7 +396,7 @@ class AdminController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Phrase::trans(338,0);
+			$this->pageTitle = Yii::t('phrase', 'Headline');
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_headline');
