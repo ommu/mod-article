@@ -353,7 +353,6 @@ class ArticleCategory extends CActiveRecord
 				$this->creation_id = Yii::app()->user->id;	
 			} else
 				$this->modified_id = Yii::app()->user->id;
-
 		}
 		return true;
 	}
@@ -369,16 +368,15 @@ class ArticleCategory extends CActiveRecord
 				$title=new OmmuSystemPhrase;
 				$title->location = $currentAction;
 				$title->en = $this->title;
-				if($title->save()) {
+				if($title->save())
 					$this->name = $title->phrase_id;
-				}
 
 				$desc=new OmmuSystemPhrase;
 				$desc->location = $currentAction;
 				$desc->en = $this->description;
-				if($desc->save()) {
+				if($desc->save())
 					$this->desc = $desc->phrase_id;
-				}
+				
 			} else {
 				if($action == 'edit') {
 					$title = OmmuSystemPhrase::model()->findByPk($this->name);

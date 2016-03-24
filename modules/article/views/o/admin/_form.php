@@ -95,14 +95,13 @@ EOP;
 					<?php echo $form->labelEx($model,'cat_id'); ?>
 					<div class="desc">
 						<?php
-						$parent = null;				
+						$parent = null;
 						$category = ArticleCategory::getCategory(null, $parent);
 
-						if($category != null) {
+						if($category != null)
 							echo $form->dropDownList($model,'cat_id', $category);
-						} else {
-							echo $form->dropDownList($model,'cat_id', array('prompt'=>Phrase::trans(26019,1)));
-						}?>
+						else
+							echo $form->dropDownList($model,'cat_id', array('prompt'=>Phrase::trans(26019,1)));?>
 						<?php echo $form->error($model,'cat_id'); ?>
 					</div>
 				</div>
