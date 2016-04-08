@@ -451,6 +451,53 @@ class Articles extends CActiveRecord
 	}
 
 	/**
+	 * Albums get information
+	 */
+	public function searchIndexing($index)
+	{
+		Yii::import('application.modules.article.models.*');
+		
+		$criteria=new CDbCriteria;
+		$now = new CDbExpression("NOW()");
+		$criteria->compare('t.publish', 1);
+		$criteria->compare('date(published_date) <', $now);
+		$criteria->order = 'article_id DESC';
+		//$criteria->limit = 10;
+		$model = Articles::model()->findAll($criteria);
+		foreach($model as $key => $item) {
+			if($item->media_id != 0)
+				$images = Yii::app()->request->baseUrl.'/public/article/'.$item->article_id.'/'.$item->cover->media;
+			else
+				$images = '';
+			if(in_array($item->cat_id, array(2,3,5,6,7,18)))
+				$url = Yii::app()->createUrl('article/news/site/view', array('id'=>$item->article_id,'t'=>Utility::getUrlTitle($item->title)));
+			else if(in_array($item->cat_id, array(9)))
+				$url = Yii::app()->createUrl('article/site/view', array('id'=>$item->article_id,'t'=>Utility::getUrlTitle($item->title)));
+			else if(in_array($item->cat_id, array(10,15,16)))
+				$url = Yii::app()->createUrl('article/archive/site/view', array('id'=>$item->article_id,'t'=>Utility::getUrlTitle($item->title)));
+			else if(in_array($item->cat_id, array(23,24,25)))
+				$url = Yii::app()->createUrl('article/newspaper/site/view', array('id'=>$item->article_id,'t'=>Utility::getUrlTitle($item->title)));
+			else if(in_array($item->cat_id, array(13,14,20,21)))
+				$url = Yii::app()->createUrl('article/regulation/site/download', array('id'=>$item->article_id,'t'=>Utility::getUrlTitle($item->title)));
+			else if(in_array($item->cat_id, array(19)))
+				$url = Yii::app()->createUrl('article/announcement/site/download', array('id'=>$item->article_id,'t'=>Utility::getUrlTitle($item->title)));
+				
+			$doc = new Zend_Search_Lucene_Document();
+			$doc->addField(Zend_Search_Lucene_Field::UnIndexed('id', CHtml::encode($item->article_id), 'utf-8')); 
+			$doc->addField(Zend_Search_Lucene_Field::Keyword('category', CHtml::encode(Phrase::trans($item->cat->name,2)), 'utf-8'));
+			$doc->addField(Zend_Search_Lucene_Field::Text('media', CHtml::encode($images), 'utf-8'));
+			$doc->addField(Zend_Search_Lucene_Field::Text('title', CHtml::encode($item->title), 'utf-8'));
+			$doc->addField(Zend_Search_Lucene_Field::Text('body', CHtml::encode(Utility::hardDecode(Utility::softDecode($item->body))), 'utf-8'));
+			$doc->addField(Zend_Search_Lucene_Field::Text('url', CHtml::encode(Utility::getProtocol().'://'.Yii::app()->request->serverName.$url), 'utf-8'));
+			$doc->addField(Zend_Search_Lucene_Field::UnIndexed('date', CHtml::encode(Utility::dateFormat($item->published_date, true).' WIB'), 'utf-8'));
+			$doc->addField(Zend_Search_Lucene_Field::UnIndexed('creation', CHtml::encode($item->user->displayname), 'utf-8'));
+			$index->addDocument($doc);			
+		}
+		
+		return true;
+	}
+
+	/**
 	 * before validate attributes
 	 */
 	protected function beforeValidate() {
