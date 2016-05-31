@@ -4,7 +4,7 @@
  * @var $this MediaController
  * @var $model ArticleMedia
  *
- * @author Putra Sudaryanto <putra.sudaryanto@gmail.com>
+ * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2012 Ommu Platform (ommu.co)
  * @link https://github.com/oMMu/Ommu-Articles
  * @contact (+62)856-299-4114
