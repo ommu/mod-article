@@ -10,6 +10,7 @@
  * TOC :
  *	Index
  *	List
+ *	Detail
  *
  *	LoadModel
  *	performAjaxValidation
@@ -52,7 +53,7 @@ class SiteController extends ControllerApi
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','list'),
+				'actions'=>array('index','list','detail'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -163,10 +164,10 @@ class SiteController extends ControllerApi
 						'intro'=>Utility::shortText(Utility::hardDecode($item->body),200),
 						'media_image'=>$item->media_id != 0 ? $media_image : '-',
 						'media_file'=>$item->media_file != '' ? $media_file : '-',
-						'published_date'=>Utility::dateFormat($item->published_date, true),
 						'view'=>$item->view,
 						'likes'=>$item->likes,
 						'download'=>$item->download,
+						'published_date'=>Utility::dateFormat($item->published_date, true),
 						'creation_date'=>Utility::dateFormat($item->creation_date, true),
 					);					
 				}
@@ -187,6 +188,53 @@ class SiteController extends ControllerApi
 				);
 				$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));				
 			}
+			
+		} else 
+			$this->redirect(Yii::app()->createUrl('site/index'));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionDetail() 
+	{
+		if(Yii::app()->request->isPostRequest) {
+			$id = trim($_POST['id']);
+			
+			$model = Articles::model()->findByPk($id);
+			
+			if($model != null) {
+				$article_url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->request->baseUrl.'/';
+				$article_path = 'public/article/'.$model->article_id;
+					
+				if($model->media_id != 0 && file_exists($article_path.'/'.$model->cover->media))
+					$media_image = $article_url.$article_path.'/'.$model->cover->media;
+				if($model->media_file != '' && file_exists($article_path.'/'.$val->media_file))
+					$media_file = $article_url.$article_path.'/'.$model->media_file;
+				
+				$return = array(
+					'success'=>'1',
+					'id'=>$model->article_id,
+					'category'=>Phrase::trans($model->cat->name, 2),
+					'title'=>$model->title,
+					'body'=>$model->body,
+					'media_image'=>$model->media_id != 0 ? $media_image : '-',
+					'media_file'=>$model->media_file != '' ? $media_file : '-',
+					'view'=>$model->view,
+					'likes'=>$model->likes,
+					'download'=>$model->download,
+					'published_date'=>Utility::dateFormat($model->published_date, true),
+					'creation_date'=>Utility::dateFormat($model->creation_date, true),
+				);
+				
+			} else {
+				$return = array(
+					'success'=>'0',
+					'error'=>'NULL',
+					'message'=>Yii::t('phrase', 'error, article tidak ditemukan'),
+				);
+			}
+			$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));
