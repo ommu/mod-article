@@ -87,6 +87,7 @@ class SiteController extends ControllerApi
 		if(Yii::app()->request->isPostRequest) {
 			$category = trim($_POST['category']);
 			$tag = trim($_POST['tag']);
+			$paging = trim($_POST['paging']);
 			$pagesize = trim($_POST['pagesize']);
 			
 			$criteria=new CDbCriteria;
@@ -131,13 +132,19 @@ class SiteController extends ControllerApi
 			$criteria->compare('date(t.published_date) <', $now);
 			$criteria->order = 't.published_date DESC, t.article_id DESC';
 			
-			$dataProvider = new CActiveDataProvider('Articles', array(
-				'criteria'=>$criteria,
-				'pagination'=>array(
-					'pageSize'=>$pagesize != null && $pagesize != '' ? $pagesize : 20,
-				),
-			));			
-			$model = $dataProvider->getData();
+			if($paging != null && $paging != '' && $paging == 'true') {
+				$criteria->limit = $pagesize != null && $pagesize != '' ? $pagesize : 5;
+				$model = Articles::model()->findAll($criteria);
+				
+			} else {			
+				$dataProvider = new CActiveDataProvider('Articles', array(
+					'criteria'=>$criteria,
+					'pagination'=>array(
+						'pageSize'=>$pagesize != null && $pagesize != '' ? $pagesize : 20,
+					),
+				));			
+				$model = $dataProvider->getData();				
+			}
 			
 			if(!empty($model)) {
 				foreach($model as $key => $item) {
@@ -165,16 +172,21 @@ class SiteController extends ControllerApi
 				}
 			} else
 				$data = array();
-		
-			$pager = OFunction::getDataProviderPager($dataProvider);
-			$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
-			$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('search', $get)) : '-';
-			$return = array(
-				'data' => $data,
-				'pager' => $pager,
-				'nextPager' => $nextPager,
-			);
-			$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
+			
+			if($paging != null && $paging != '' && $paging == 'true')
+				$this->_sendResponse(200, CJSON::encode($this->renderJson($data)));
+			
+			else {		
+				$pager = OFunction::getDataProviderPager($dataProvider);
+				$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
+				$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('search', $get)) : '-';
+				$return = array(
+					'data' => $data,
+					'pager' => $pager,
+					'nextPager' => $nextPager,
+				);
+				$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));				
+			}
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));
