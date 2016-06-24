@@ -498,6 +498,17 @@ class Articles extends CActiveRecord
 	}
 
 	/**
+	 * User get information
+	 */
+	public static function getShareUrl($id, $t=null)
+	{
+		if($t != null && $t != '' && $t != '-')
+			return Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->controller->createUrl('site/view', array('id'=>$id, 't'=>Utility::getUrlTitle($t)));
+		else
+			return Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->controller->createUrl('site/view', array('id'=>$id));
+	}
+
+	/**
 	 * before validate attributes
 	 */
 	protected function beforeValidate() {
