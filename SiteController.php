@@ -213,26 +213,31 @@ class SiteController extends ControllerApi
 				);
 			}
 			if($category != null && $category != '') {
-				$cat = ArticleCategory::model()->findByPk($category, array(
-					'select' => 'publish, dependency',
-				));
-				if($cat->dependency != 0)
-					$criteria->compare('t.cat_id', $category);
-				else {
-					$catSub = ArticleCategory::model()->findAll(array(
-						'condition'=>'publish = :publish AND dependency = :dependency',
-						'params'=>array(
-							':dependency'=>$category,
-							':publish'=>1,
-						),
+				$catExplode = explode(',', $category);
+				$catArray = array();
+				foreach($catExplode as $val) {
+					$cat = ArticleCategory::model()->findByPk($val, array(
+						'select' => 'publish, dependency',
 					));
-					$catData = array();
-					if($catSub != null) {
-						foreach($catSub as $val)
-							$catData[] = $val->cat_id;
-					}
-					$criteria->addInCondition('t.cat_id', $catData);
-				}				
+					if($cat != null) {
+						if($cat->dependency != 0)
+							$catArray[] = $val;
+						else {
+							$catSub = ArticleCategory::model()->findAll(array(
+								'condition'=>'publish = :publish AND dependency = :dependency',
+								'params'=>array(
+									':publish'=>1,
+									':dependency'=>$val,
+								),
+							));
+							if($catSub != null) {
+								foreach($catSub as $val)
+									$catArray[] = $val->cat_id;
+							}
+							$criteria->addInCondition('t.cat_id', $catArray);
+						}
+					}					
+				}
 			}
 			$criteria->compare('t.publish', 1);
 			$criteria->compare('date(t.published_date) <', $now);
