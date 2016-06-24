@@ -9,6 +9,7 @@
  *
  * TOC :
  *	Index
+ *	Main
  *	List
  *	Detail
  *
@@ -53,7 +54,7 @@ class SiteController extends ControllerApi
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','list','detail'),
+				'actions'=>array('index','main','list','detail'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -78,6 +79,110 @@ class SiteController extends ControllerApi
 	public function actionIndex() 
 	{
 		$this->redirect(Yii::app()->createUrl('site/index'));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionMain() 
+	{		
+		if(Yii::app()->request->isPostRequest) {
+			$category = trim($_POST['category']);
+			$pagesize = trim($_POST['pagesize']);
+			
+			$catOther = array(12,17,22);
+			$catParent = 0;
+			if($category != null && $category != '') {
+				if(in_array($category, $catOther))
+					$this->redirect(Yii::app()->createUrl('site/index'));
+				
+				$cat = ArticleCategory::model()->findByPk($category, array(
+					'select' => 'cat_id, dependency',
+				));
+				if($cat->dependency == 0)
+					$catParent = $category;
+				else
+					$this->redirect(Yii::app()->createUrl('site/index'));
+			}
+		
+			$criteria=new CDbCriteria;
+			$criteria->select = array('cat_id','name');		
+			$criteria->addNotInCondition('t.cat_id', $catOther);
+			$criteria->compare('t.publish', 1);
+			$criteria->compare('t.dependency', $catParent);
+			
+			$categoryFind = ArticleCategory::model()->findAll($criteria);
+			
+			if($categoryFind != null) {
+				$return = '';
+				foreach($categoryFind as $key => $val) {
+					$criteriaArticle=new CDbCriteria;
+					$now = new CDbExpression("NOW()");
+					
+					if($category != null && $category != '')
+						$criteriaArticle->compare('t.cat_id', $val->cat_id);
+						
+					else {
+						$categorySub = ArticleCategory::model()->findAll(array(
+							'condition'=>'publish = :publish AND dependency = :dependency',
+							'params'=>array(
+								':publish'=>1,
+								':dependency'=>$val->cat_id,
+							),
+						));
+						$catData = array();
+						if($categorySub != null) {
+							foreach($categorySub as $row)
+								$catData[] = $row->cat_id;
+						}					
+						$criteriaArticle->addInCondition('t.cat_id', $catData);
+					}
+					$criteriaArticle->compare('t.publish', 1);
+					$criteriaArticle->compare('date(t.published_date) <', $now);
+					$criteriaArticle->limit = $pagesize != null && $pagesize != '' ? $pagesize : 4;
+					$criteriaArticle->order = 't.published_date DESC, t.article_id DESC';
+			
+					$article = Articles::model()->findAll($criteriaArticle);
+		
+					$data = '';					
+					if(!empty($article)) {
+						foreach($article as $key => $item) {
+							$article_url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->request->baseUrl.'/';
+							$article_path = 'public/article/'.$item->article_id.'/';
+							
+							if($item->media_id != 0 && file_exists($article_path.$item->cover->media))
+								$media_image = $article_url.$article_path.$item->cover->media;
+							
+							$data[] = array(
+								'id'=>$item->article_id,
+								'category'=>Phrase::trans($item->cat->name, 2),
+								'title'=>$item->title,
+								'intro'=>$item->body != '' ? Utility::shortText(Utility::hardDecode($item->body),200) : '-',
+								'media_image'=>$item->media_id != 0 ? $media_image : '-',
+								'view'=>$item->view,
+								'likes'=>$item->likes,
+								'download'=>$item->download,
+								'published_date'=>Utility::dateFormat($item->published_date, true),
+								'share'=>Articles::getShareUrl($item->article_id, $item->title),
+							);
+						}
+					} else
+						$data = array();
+				
+					$categoryTitle = Phrase::trans($val->name, 2);
+					$return[] = array(
+						'id'=>$val->cat_id,
+						'category'=>$categoryTitle,
+						//'count'=>$articleCount,
+						'category_source'=>Utility::getUrlTitle($categoryTitle),
+						'data'=>$data,
+					);
+				}
+			}
+			$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));	
+			
+		} else 
+			$this->redirect(Yii::app()->createUrl('site/index'));
 	}
 	
 	/**
@@ -150,25 +255,24 @@ class SiteController extends ControllerApi
 			if(!empty($model)) {
 				foreach($model as $key => $item) {
 					$article_url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->request->baseUrl.'/';
-					$article_path = 'public/article/'.$item->article_id;
+					$article_path = 'public/article/'.$item->article_id.'/';
 					
-					if($item->media_id != 0 && file_exists($article_path.'/'.$item->cover->media))
-						$media_image = $article_url.$article_path.'/'.$item->cover->media;
-					if($item->media_file != '' && file_exists($article_path.'/'.$val->media_file))
-						$media_file = $article_url.$article_path.'/'.$item->media_file;
+					if($item->media_id != 0 && file_exists($article_path.$item->cover->media))
+						$media_image = $article_url.$article_path.$item->cover->media;
+					if($item->media_file != '' && file_exists($article_path.$val->media_file))
+						$media_file = $article_url.$article_path.$item->media_file;
 					
 					$data[] = array(
 						'id'=>$item->article_id,
 						'category'=>Phrase::trans($item->cat->name, 2),
 						'title'=>$item->title,
-						'intro'=>Utility::shortText(Utility::hardDecode($item->body),200),
+						'intro'=>$item->body != '' ? Utility::shortText(Utility::hardDecode($item->body),200) : '-',
 						'media_image'=>$item->media_id != 0 ? $media_image : '-',
 						'media_file'=>$item->media_file != '' ? $media_file : '-',
 						'view'=>$item->view,
 						'likes'=>$item->likes,
 						'download'=>$item->download,
 						'published_date'=>Utility::dateFormat($item->published_date, true),
-						'creation_date'=>Utility::dateFormat($item->creation_date, true),
 					);					
 				}
 			} else
