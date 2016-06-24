@@ -220,9 +220,10 @@ class SiteController extends ControllerApi
 						'select' => 'publish, dependency',
 					));
 					if($cat != null) {
-						if($cat->dependency != 0)
-							$catArray[] = $val;
-						else {
+						if($cat->dependency != 0) {
+							if(!in_array($val, $catArray))
+								$catArray[] = $val;
+						} else {
 							$catSub = ArticleCategory::model()->findAll(array(
 								'condition'=>'publish = :publish AND dependency = :dependency',
 								'params'=>array(
@@ -231,15 +232,17 @@ class SiteController extends ControllerApi
 								),
 							));
 							if($catSub != null) {
-								foreach($catSub as $val)
-									$catArray[] = $val->cat_id;
+								foreach($catSub as $item) {
+									if(!in_array($item->cat_id, $catArray))
+										$catArray[] = $item->cat_id;
+								}
 							}
-							$criteria->addInCondition('t.cat_id', $catArray);
 						}
-					}					
+					}
 				}
 			}
 			$criteria->compare('t.publish', 1);
+			$criteria->addInCondition('t.cat_id', $catArray);
 			$criteria->compare('date(t.published_date) <', $now);
 			$criteria->order = 't.published_date DESC, t.article_id DESC';
 			
@@ -278,6 +281,7 @@ class SiteController extends ControllerApi
 						'likes'=>$item->likes,
 						'download'=>$item->download,
 						'published_date'=>Utility::dateFormat($item->published_date, true),
+						'share'=>Articles::getShareUrl($item->article_id, $item->title),
 					);					
 				}
 			} else
@@ -333,7 +337,7 @@ class SiteController extends ControllerApi
 					'likes'=>$model->likes,
 					'download'=>$model->download,
 					'published_date'=>Utility::dateFormat($model->published_date, true),
-					'creation_date'=>Utility::dateFormat($model->creation_date, true),
+						'share'=>Articles::getShareUrl($model->article_id, $model->title),
 				);
 				
 			} else {
