@@ -162,7 +162,7 @@ class SiteController extends ControllerApi
 								'view'=>$item->view,
 								'likes'=>$item->likes,
 								'download'=>$item->download,
-								'published_date'=>Utility::dateFormat($item->published_date, true),
+								'published_date'=>Utility::dateFormat($item->published_date),
 								'share'=>Articles::getShareUrl($item->article_id, $item->title),
 							);
 						}
@@ -246,18 +246,17 @@ class SiteController extends ControllerApi
 			$criteria->compare('date(t.published_date) <', $now);
 			$criteria->order = 't.published_date DESC, t.article_id DESC';
 			
-			if($paging != null && $paging != '' && $paging == 'true') {
+			if($paging != null && $paging != '' && $paging == 'false') {
 				$criteria->limit = $pagesize != null && $pagesize != '' ? $pagesize : 5;
 				$model = Articles::model()->findAll($criteria);
-				
-			} else {			
+			} else {
 				$dataProvider = new CActiveDataProvider('Articles', array(
 					'criteria'=>$criteria,
 					'pagination'=>array(
 						'pageSize'=>$pagesize != null && $pagesize != '' ? $pagesize : 20,
 					),
 				));			
-				$model = $dataProvider->getData();				
+				$model = $dataProvider->getData();
 			}
 			
 			if(!empty($model)) {
@@ -280,17 +279,17 @@ class SiteController extends ControllerApi
 						'view'=>$item->view,
 						'likes'=>$item->likes,
 						'download'=>$item->download,
-						'published_date'=>Utility::dateFormat($item->published_date, true),
+						'published_date'=>Utility::dateFormat($item->published_date),
 						'share'=>Articles::getShareUrl($item->article_id, $item->title),
 					);					
 				}
 			} else
 				$data = array();
 			
-			if($paging != null && $paging != '' && $paging == 'true')
+			if($paging != null && $paging != '' && $paging == 'false')
 				$this->_sendResponse(200, CJSON::encode($this->renderJson($data)));
-			
-			else {		
+				
+			else {
 				$pager = OFunction::getDataProviderPager($dataProvider);
 				$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
 				$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('search', $get)) : '-';
@@ -299,7 +298,7 @@ class SiteController extends ControllerApi
 					'pager' => $pager,
 					'nextPager' => $nextPager,
 				);
-				$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));				
+				$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));					
 			}
 			
 		} else 
@@ -336,8 +335,8 @@ class SiteController extends ControllerApi
 					'view'=>$model->view,
 					'likes'=>$model->likes,
 					'download'=>$model->download,
-					'published_date'=>Utility::dateFormat($model->published_date, true),
-						'share'=>Articles::getShareUrl($model->article_id, $model->title),
+					'published_date'=>Utility::dateFormat($model->published_date),
+					'share'=>Articles::getShareUrl($model->article_id, $model->title),
 				);
 				
 			} else {
