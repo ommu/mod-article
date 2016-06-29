@@ -187,27 +187,27 @@ class Articles extends CActiveRecord
 			$criteria->addInCondition('t.publish',array(0,1));
 			$criteria->compare('t.publish',$this->publish);
 		}
-
-		/* 
-		$parent = 0;
-		$category = ArticleCategory::model()->findAll(array(
-			'condition' => 'dependency = :dependency',
-			'params' => array(
-				':dependency' => $parent,
-			),
-		));
-		$items = array();
-		if($category != null) {
-			foreach($category as $key => $val) {
-				$items[] = $val->cat_id;
-			}
-		}
-		$criteria->addInCondition('t.cat_id',$items);
-		*/
-
-		if(isset($_GET['category']))
-			$criteria->compare('t.cat_id',$_GET['category']);
-		else
+		
+		if(isset($_GET['category'])) {
+			$category = ArticleCategory::model()->findByPk($_GET['category']);
+			if($category->dependency == 0) {			
+				$parent = $_GET['category'];
+				$categoryFind = ArticleCategory::model()->findAll(array(
+					'condition' => 'dependency = :dependency',
+					'params' => array(
+						':dependency' => $parent,
+					),
+				));
+				$items = array();
+				if($categoryFind != null) {
+					foreach($categoryFind as $key => $val)
+						$items[] = $val->cat_id;
+				}
+				$criteria->addInCondition('t.cat_id',$items);
+				
+			} else
+				$criteria->compare('t.cat_id',$_GET['category']);
+		} else
 			$criteria->compare('t.cat_id',$this->cat_id);
 		$criteria->compare('t.user_id',$this->user_id);
 		$criteria->compare('t.media_id',$this->media_id);
@@ -330,16 +330,16 @@ class Articles extends CActiveRecord
 				),
 				'type' => 'raw',
 			);
-			if(!isset($_GET['category']) && $controller == 'o/admin') {
-				/*
-				$parent = 0;
-				$category = ArticleCategory::getCategory(null, $parent);
-				*/
+			$category = ArticleCategory::model()->findByPk($_GET['category']);
+			if(!isset($_GET['category']) || (isset($_GET['category']) && $category->dependency == 0)) {
+				if($category->dependency == 0)
+					$parent = $_GET['category'];
+				else
+					$parent = null;
 				$this->defaultColumns[] = array(
 					'name' => 'cat_id',
 					'value' => 'Phrase::trans($data->cat->name, 2)',
-					//'filter'=> $category,
-					'filter'=> ArticleCategory::getCategory(),
+					'filter'=> ArticleCategory::getCategory(null, $parent),
 					'type' => 'raw',
 				);
 			}
