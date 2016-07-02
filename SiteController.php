@@ -255,7 +255,7 @@ class SiteController extends ControllerApi
 					'pagination'=>array(
 						'pageSize'=>$pagesize != null && $pagesize != '' ? $pagesize : 20,
 					),
-				));			
+				));
 				$model = $dataProvider->getData();
 			}
 			
@@ -292,7 +292,7 @@ class SiteController extends ControllerApi
 			else {
 				$pager = OFunction::getDataProviderPager($dataProvider);
 				$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
-				$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('search', $get)) : '-';
+				$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('list', $get)) : '-';
 				$return = array(
 					'data' => $data,
 					'pager' => $pager,
@@ -329,7 +329,7 @@ class SiteController extends ControllerApi
 					'id'=>$model->article_id,
 					'category'=>Phrase::trans($model->cat->name, 2),
 					'title'=>$model->title,
-					'body'=>$model->body,
+					'body'=>Utility::softDecode($model->body),
 					'media_image'=>$model->media_id != 0 ? $media_image : '-',
 					'media_file'=>$model->media_file != '' ? $media_file : '-',
 					'view'=>$model->view,
