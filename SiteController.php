@@ -156,7 +156,7 @@ class SiteController extends ControllerApi
 							$data[] = array(
 								'id'=>$item->article_id,
 								'category'=>Phrase::trans($item->cat->name, 2),
-								'title'=>$item->title,
+								'title'=>ucwords(strtolower($item->title)),
 								'intro'=>$item->body != '' ? Utility::shortText(Utility::hardDecode($item->body),200) : '-',
 								'media_image'=>$item->media_id != 0 ? $media_image : '-',
 								'view'=>$item->view,
@@ -272,7 +272,7 @@ class SiteController extends ControllerApi
 					$data[] = array(
 						'id'=>$item->article_id,
 						'category'=>Phrase::trans($item->cat->name, 2),
-						'title'=>$item->title,
+						'title'=>ucwords(strtolower($item->title)),
 						'intro'=>$item->body != '' ? Utility::shortText(Utility::hardDecode($item->body),200) : '-',
 						'media_image'=>$item->media_id != 0 ? $media_image : '-',
 						'media_file'=>$item->media_file != '' ? $media_file : '-',
@@ -328,7 +328,7 @@ class SiteController extends ControllerApi
 					'success'=>'1',
 					'id'=>$model->article_id,
 					'category'=>Phrase::trans($model->cat->name, 2),
-					'title'=>$model->title,
+					'title'=>ucwords(strtolower($model->title)),
 					'body'=>Utility::softDecode($model->body),
 					'media_image'=>$model->media_id != 0 ? $media_image : '-',
 					'media_file'=>$model->media_file != '' ? $media_file : '-',
