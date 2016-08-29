@@ -56,7 +56,7 @@
 			<div class="desc">
 				<?php 
 				$model->description = Phrase::trans($model->desc, 2);
-				echo $form->textArea($model,'description',array('maxlength'=>64,'class'=>'span-11 smaller')); ?>
+				echo $form->textArea($model,'description',array('maxlength'=>128,'class'=>'span-11 smaller')); ?>
 				<?php echo $form->error($model,'description'); ?>
 			</div>
 		</div>

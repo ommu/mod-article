@@ -76,16 +76,16 @@ EOP;
 								}
 							}
 							echo $form->dropDownList($model,'article_type', $arrAttrParams);
-							//echo $form->dropDownList($model,'article_type', $arrAttrParams, array('prompt'=>Phrase::trans(26042,1)));
+							//echo $form->dropDownList($model,'article_type', $arrAttrParams, array('prompt'=>Yii::t('phrase', 'Choose one')));
 						} else {
 							if($model->article_type == 1)
-								echo '<strong>'.Phrase::trans(26043,1).'</strong>';
+								echo '<strong>'.Yii::t('phrase', 'Standard').'</strong>';
 							elseif($model->article_type == 2)
-								echo '<strong>'.Phrase::trans(26044,1).'</strong>';
+								echo '<strong>'.Yii::t('phrase', 'Video').'</strong>';
 							/* elseif($model->article_type == 3)
-								echo '<strong>'.Phrase::trans(26045,1).'</strong>'; */
+								echo '<strong>'.Yii::t('phrase', 'Audio').'</strong>'; */
 							elseif($model->article_type == 4)
-								echo '<strong>'.Phrase::trans(26046,1).'</strong>';
+								echo '<strong>'.Yii::t('phrase', 'Quote').'</strong>';
 						}?>
 						<?php echo $form->error($model,'article_type'); ?>
 					</div>
@@ -101,7 +101,7 @@ EOP;
 						if($category != null)
 							echo $form->dropDownList($model,'cat_id', $category);
 						else
-							echo $form->dropDownList($model,'cat_id', array('prompt'=>Phrase::trans(26019,1)));?>
+							echo $form->dropDownList($model,'cat_id', array('prompt'=>Yii::t('phrase', 'No Parent')));?>
 						<?php echo $form->error($model,'cat_id'); ?>
 					</div>
 				</div>
@@ -315,7 +315,7 @@ EOP;
 					),
 				)); ?>
 				<?php if($model->isNewRecord || (!$model->isNewRecord && $model->article_type != 4)) {?>
-					<span class="small-px"><?php echo Phrase::trans(26084,1);?></span>
+					<span class="small-px"><?php echo Yii::t('phrase', 'Note : add {$quote} in description article');?></span>
 				<?php }?>
 				<?php echo $form->error($model,'quote'); ?>
 			</div>

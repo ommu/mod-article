@@ -73,7 +73,7 @@ class ArticleCategory extends CActiveRecord
 			array('
 				title, description', 'required'),
 			array('publish, dependency, orders, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
-			array('name, desc', 'length', 'max'=>11),
+			array('name, desc, creation_id, modified_id', 'length', 'max'=>11),
 			array('
 				title', 'length', 'max'=>32),
 			array('

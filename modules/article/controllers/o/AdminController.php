@@ -134,8 +134,8 @@ class AdminController extends Controller
 			$title = '';
 		}
 
-		$this->pageTitle = Phrase::trans(26028,1).$title;
-		$this->pageDescription = Phrase::trans(26029,1);
+		$this->pageTitle = Yii::t('phrase', 'View Articles').$title;
+		$this->pageDescription = Yii::t('phrase', 'Use this page to search for and manage article entries. To Approve or Feature an article, just click on the icon, it will automate turn on and off per that setting. To edit, delete, or manage an article, please login as that user, and perform your actions.');
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
 			'model'=>$model,
@@ -161,12 +161,12 @@ class AdminController extends Controller
 			$model->attributes=$_POST['Articles'];
 
 			if($model->save()) {
-				Yii::app()->user->setFlash('success', Phrase::trans(26031,1));
+				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Article success created.'));
 				$this->redirect(array('manage'));
 			}
 		}
 
-		$this->pageTitle = Phrase::trans(26030,1);
+		$this->pageTitle = Yii::t('phrase', 'Create Article');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_add',array(
@@ -222,7 +222,7 @@ class AdminController extends Controller
 						if($model->save()) {
 							echo CJSON::encode(array(
 								'type' => 0,
-								'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26033,1).'</strong></div>',
+								'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article success updated.').'</strong></div>',
 							));
 						} else {
 							print_r($model->getErrors());
@@ -234,7 +234,7 @@ class AdminController extends Controller
 			} else {
 			*/
 				if($model->save()) {
-					Yii::app()->user->setFlash('success', Phrase::trans(26033,1));
+					Yii::app()->user->setFlash('success', Yii::t('phrase', 'Article success updated.'));
 					$this->redirect(array('edit','id'=>$model->article_id));
 				}
 			//}
@@ -345,7 +345,7 @@ class AdminController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-articles',
-						'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26033,1).'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article success updated.').'</strong></div>',
 					));
 				}
 			}
@@ -386,7 +386,7 @@ class AdminController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-articles',
-						'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26033,1).'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article success updated.').'</strong></div>',
 					));
 				}
 			}
