@@ -396,7 +396,7 @@ class ArticleMedia extends CActiveRecord
 		}
 
 		if($this->article->article_type == 1) {
-			$setting = ArticleSetting::getInfo('media_limit, media_resize, media_resize_size, media_large_width, media_large_height', 'many');
+			$setting = ArticleSetting::getInfo('media_limit, media_resize, media_resize_size', 'many');
 			
 			//create thumb image
 			if($setting->media_resize == 1) {

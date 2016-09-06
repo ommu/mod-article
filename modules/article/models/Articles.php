@@ -401,21 +401,21 @@ class Articles extends CActiveRecord
 					), true),
 				);
 			}
-			if(OmmuSettings::getInfo('site_headline') == 1) {
-				$this->defaultColumns[] = array(
-					'name' => 'headline',
-					'value' => '$data->headline == 1 ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Utility::getPublish(Yii::app()->controller->createUrl("headline",array("id"=>$data->article_id)), $data->headline, 9)',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'filter'=>array(
-						1=>Yii::t('phrase', 'Yes'),
-						0=>Yii::t('phrase', 'No'),
-					),
-					'type' => 'raw',
-				);
-			}
 			if(!isset($_GET['type'])) {
+				if(OmmuSettings::getInfo('site_headline') == 1) {
+					$this->defaultColumns[] = array(
+						'name' => 'headline',
+						'value' => '$data->headline == 1 ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Utility::getPublish(Yii::app()->controller->createUrl("headline",array("id"=>$data->article_id)), $data->headline, 9)',
+						'htmlOptions' => array(
+							'class' => 'center',
+						),
+						'filter'=>array(
+							1=>Yii::t('phrase', 'Yes'),
+							0=>Yii::t('phrase', 'No'),
+						),
+						'type' => 'raw',
+					);
+				}
 				$this->defaultColumns[] = array(
 					'name' => 'publish',
 					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->article_id)), $data->publish, 1)',

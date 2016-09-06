@@ -86,7 +86,7 @@
 		<div class="clearfix">
 			<?php echo $form->labelEx($model,'headline'); ?>
 			<div class="desc">
-				<?php echo $form->textField($model,'headline', array('class'=>'span-2')); ?>
+				<?php echo $form->textField($model,'headline', array('maxlength'=>1, 'class'=>'span-2')); ?>
 				<?php echo $form->error($model,'headline'); ?>
 			</div>
 		</div>
