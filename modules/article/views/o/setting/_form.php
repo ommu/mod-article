@@ -25,28 +25,28 @@
 	</div>
 	<?php //begin.Messages ?>
 
-	<h3><?php echo Phrase::trans(26057,1);?></h3>
+	<h3><?php echo Yii::t('phrase', 'Public Settings');?></h3>
 	<fieldset>
 
 		<div class="clearfix">
 			<label>
 				<?php echo $model->getAttributeLabel('license');?> <span class="required">*</span><br/>
-				<span><?php echo Phrase::trans(24016,1);?></span>
+				<span><?php echo Yii::t('phrase', '24016');?></span>
 			</label>
 			<div class="desc">
 				<?php echo $form->textField($model,'license',array('maxlength'=>32,'class'=>'span-4','disabled'=>'disabled')); ?>
 				<?php echo $form->error($model,'license'); ?>
-				<span class="small-px"><?php echo Phrase::trans(28004,1);?></span>
+				<span class="small-px"><?php echo Yii::t('phrase', '28004');?></span>
 			</div>
 		</div>
 
 		<div class="clearfix">
 			<?php echo $form->labelEx($model,'permission'); ?>
 			<div class="desc">
-				<span class="small-px"><?php echo Phrase::trans(26007,1);?></span>
+				<span class="small-px"><?php echo Yii::t('phrase', 'Select whether or not you want to let the public (visitors that are not logged-in) to view the following sections of your social network. In some cases (such as Profiles, Blogs, and Albums), if you have given them the option, your users will be able to make their pages private even though you have made them publically viewable here. For more permissions settings, please visit the General Settings page.');?></span>
 				<?php echo $form->radioButtonList($model, 'permission', array(
-					1 => Phrase::trans(26008,1),
-					0 => Phrase::trans(26009,1),
+					1 => Yii::t('phrase', 'Yes, the public can view articles unless they are made private.'),
+					0 => Yii::t('phrase', 'No, the public cannot view articles.'),
 				)); ?>
 				<?php echo $form->error($model,'permission'); ?>
 			</div>
@@ -74,10 +74,10 @@
 				<?php 
 				$model->type_active = explode(',', $model->type_active);
 				echo $form->checkBoxList($model,'type_active', array(
-					'1=26043' => Phrase::trans(26043,1),
-					'2=26044' => Phrase::trans(26044,1),
-					//'3=26045' => Phrase::trans(26045,1),
-					'4=26046' => Phrase::trans(26046,1),
+					'1=Yii::t(\'phrase\', \'Standard\')' => Yii::t('phrase', 'Standard'),
+					'2=Yii::t(\'phrase\', \'Video\')' => Yii::t('phrase', 'Video'),
+					//'3=Yii::t(\'phrase\', \'Audio\')' => Yii::t('phrase', 'Audio'),
+					'4=Yii::t(\'phrase\', \'Quote\')' => Yii::t('phrase', 'Quote'),
 				)); ?>
 				<?php echo $form->error($model,'type_active'); ?>
 			</div>

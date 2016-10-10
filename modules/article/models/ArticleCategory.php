@@ -105,20 +105,20 @@ class ArticleCategory extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'cat_id' => Phrase::trans(26020,1),
-			'publish' => Phrase::trans(26021,1),
-			'dependency' => Phrase::trans(26018,1),
-			'orders' => Phrase::trans(26059,1),
-			'name' => Phrase::trans(26016,1),
-			'desc' => Phrase::trans(26017,1),
-			'title' => Phrase::trans(26016,1),
-			'description' => Phrase::trans(26017,1),
-			'creation_date' => Phrase::trans(26069,1),
-			'creation_id' => 'Creation',
-			'modified_date' => 'Modified Date',
-			'modified_id' => 'Modified',
-			'creation_search' => 'Creation',
-			'modified_search' => 'Modified',
+			'cat_id' => Yii::t('attribute', 'Category'),
+			'publish' => Yii::t('attribute', 'Publish'),
+			'dependency' => Yii::t('attribute', 'Parent'),
+			'orders' => Yii::t('attribute', 'Orders'),
+			'name' => Yii::t('attribute', 'Category'),
+			'desc' => Yii::t('attribute', 'Description'),
+			'title' => Yii::t('attribute', 'Category'),
+			'description' => Yii::t('attribute', 'Description'),
+			'creation_date' => Yii::t('attribute', 'Creation Date'),
+			'creation_id' => Yii::t('attribute', 'Creation'),
+			'modified_date' => Yii::t('attribute', 'Modified Date'),
+			'modified_id' => Yii::t('attribute', 'Modified'),
+			'creation_search' => Yii::t('attribute', 'Creation'),
+			'modified_search' => Yii::t('attribute', 'Modified'),
 		);
 	}
 	
@@ -247,7 +247,7 @@ class ArticleCategory extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'header' => 'Count',
-				'value' => 'CHtml::link($data->view_cat->articles." ".Phrase::trans(26000,1), Yii::app()->controller->createUrl("o/admin/manage",array("category"=>$data->cat_id)))',
+				'value' => 'CHtml::link($data->view_cat->articles.\' \'.Yii::t(\'attribute\', \'Article\'), Yii::app()->controller->createUrl("o/admin/manage",array("category"=>$data->cat_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),

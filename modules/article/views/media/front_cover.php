@@ -24,10 +24,10 @@
 	//'htmlOptions' => array('enctype' => 'multipart/form-data')
 )); ?>
 	<div class="dialog-content">
-		<?php echo Phrase::trans(26107,1);?>
+		<?php echo Yii::t('phrase', 'Are you sure made ​​cover this item?');?>
 	</div>
 	<div class="dialog-submit">
-		<?php echo CHtml::submitButton(Phrase::trans(26106,1), array('onclick' => 'setEnableSave()')); ?>
+		<?php echo CHtml::submitButton(Yii::t('phrase', 'Cover'), array('onclick' => 'setEnableSave()')); ?>
 		<?php echo CHtml::button(Yii::t('phrase', 'Cancel'), array('id'=>'closed')); ?>
 	</div>
 <?php $this->endWidget(); ?>

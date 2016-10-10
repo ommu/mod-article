@@ -44,7 +44,7 @@ EOP;
 	<?php //begin.Messages ?>
 
 	<div class="boxed">
-		<h3><?php echo Phrase::trans(26014,1); ?></h3>
+		<h3><?php echo Yii::t('phrase', 'Article Categories'); ?></h3>
 		<?php //begin.Grid Item ?>
 		<?php 
 			$columnData   = $columns;

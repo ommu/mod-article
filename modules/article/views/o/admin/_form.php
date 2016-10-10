@@ -71,7 +71,7 @@ EOP;
 								if(count($arrAttr) > 0) {
 									foreach($arrAttr as $row) {
 										$part = explode('=', $row);
-										$arrAttrParams[$part[0]] = Phrase::trans($part[1],1);
+										$arrAttrParams[$part[0]] = Yii::t('phrase', $part[1]);
 									}
 								}
 							}

@@ -96,13 +96,13 @@ class ArticleTag extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'id' => Phrase::trans(26080,1),
-			'article_id' => Phrase::trans(26000,1),
-			'tag_id' => Phrase::trans(26080,1),
-			'article_search' => Phrase::trans(26000,1),
-			'tag_search' => Phrase::trans(26080,1),
-			'creation_date' => Phrase::trans(26069,1),
-			'creation_search' => 'Creation',
+			'id' => Yii::t('attribute', 'Tags'),
+			'article_id' => Yii::t('attribute', 'Article'),
+			'tag_id' => Yii::t('attribute', 'Tags'),
+			'article_search' => Yii::t('attribute', 'Article'),
+			'tag_search' => Yii::t('attribute', 'Tags'),
+			'creation_date' => Yii::t('attribute', 'Creation Date'),
+			'creation_search' => Yii::t('attribute', 'Creation'),
 		);
 	}
 	

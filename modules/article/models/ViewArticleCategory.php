@@ -90,10 +90,10 @@ class ViewArticleCategory extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'cat_id' => 'Cat',
-			'category_name' => 'Category Name',
-			'category_desc' => 'Category Desc',
-			'articles' => 'Articles',
+			'cat_id' => Yii::t('attribute', 'Cat'),
+			'category_name' => Yii::t('attribute', 'Category Name'),
+			'category_desc' => Yii::t('attribute', 'Category Desc'),
+			'articles' => Yii::t('attribute', 'Articles'),
 		);
 	}
 

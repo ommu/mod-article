@@ -240,7 +240,7 @@ class AdminController extends Controller
 			//}
 		}
 
-		$this->pageTitle = Phrase::trans(26032,1).': '.$model->title;
+		$this->pageTitle = Yii::t('phrase', 'Update Article').': '.$model->title;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_edit',array(
@@ -302,7 +302,7 @@ class AdminController extends Controller
 					'type' => 5,
 					'get' => Yii::app()->controller->createUrl('manage'),
 					'id' => 'partial-articles',
-					'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26035,1).'</strong></div>',
+					'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article success deleted.').'</strong></div>',
 				));
 			}
 
@@ -311,7 +311,7 @@ class AdminController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Phrase::trans(26034,1);
+			$this->pageTitle = Yii::t('phrase', 'Delete Article');
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');

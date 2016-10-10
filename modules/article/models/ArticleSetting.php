@@ -109,26 +109,26 @@ class ArticleSetting extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'license' => Phrase::trans(26003,1),
-			'permission' => Phrase::trans(26006,1),
-			'meta_keyword' => Phrase::trans(26010,1),
-			'meta_description' => Phrase::trans(26011,1),
-			'type_active' => Phrase::trans(26104,1),
-			'headline' => Phrase::trans(26058,1),
-			'media_limit' => Phrase::trans(26012,1),
-			'media_resize' => Phrase::trans(26087,1),
-			'media_resize_size' => Phrase::trans(26109,1),
-			'media_large_width' => Phrase::trans(26098,1),
-			'media_large_height' => Phrase::trans(26099,1),
-			'media_medium_width' => Phrase::trans(26100,1),
-			'media_medium_height' => Phrase::trans(26101,1),
-			'media_small_width' => Phrase::trans(26102,1),
-			'media_small_height' => Phrase::trans(26103,1),
-			'media_resize_width' => Phrase::trans(261010,1),
-			'media_resize_height' => Phrase::trans(26111,1),
-			'modified_date' => 'Modified Date',
-			'modified_id' => 'Modified',
-			'modified_search' => 'Modified',
+			'license' => Yii::t('attribute', 'License Key'),
+			'permission' => Yii::t('attribute', 'Public Permission Defaults'),
+			'meta_keyword' => Yii::t('attribute', 'Meta Keyword'),
+			'meta_description' => Yii::t('attribute', 'Meta Description'),
+			'type_active' => Yii::t('attribute', 'Type Active'),
+			'headline' => Yii::t('attribute', 'Headline Limit'),
+			'media_limit' => Yii::t('attribute', 'Media Limit'),
+			'media_resize' => Yii::t('attribute', 'Media Resize'),
+			'media_resize_size' => Yii::t('attribute', 'Media Resize Size'),
+			'media_large_width' => Yii::t('attribute', 'Media Large Width'),
+			'media_large_height' => Yii::t('attribute', 'Media Large Height'),
+			'media_medium_width' => Yii::t('attribute', 'Media Medium Width'),
+			'media_medium_height' => Yii::t('attribute', 'Media Medium Height'),
+			'media_small_width' => Yii::t('attribute', 'Media Small Width'),
+			'media_small_height' => Yii::t('attribute', 'Media Small Height'),
+			'media_resize_width' => Yii::t('attribute', 'Media Resize Width'),
+			'media_resize_height' => Yii::t('attribute', 'Media Resize Height'),
+			'modified_date' => Yii::t('attribute', 'Modified Date'),
+			'modified_id' => Yii::t('attribute', 'Modified'),
+			'modified_search' => Yii::t('attribute', 'Modified'),
 		);
 	}
 	
@@ -276,16 +276,16 @@ class ArticleSetting extends CActiveRecord
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
 			if($this->media_resize == 1 && ($this->media_resize_width == '' || $this->media_resize_height == '')) {
-				$this->addError('media_resize_size', Phrase::trans(26112,1));
+				$this->addError('media_resize_size', Yii::t('attribute', 'Media Resize cannot be blank.'));
 			}
 			if($this->media_large_width == '' || $this->media_large_height == '') {
-				$this->addError('media_large_width', Phrase::trans(26093,1));
+				$this->addError('media_large_width', Yii::t('attribute', 'Large Size cannot be blank.'));
 			}
 			if($this->media_medium_width == '' || $this->media_medium_height == '') {
-				$this->addError('media_medium_width', Phrase::trans(26094,1));
+				$this->addError('media_medium_width', Yii::t('attribute', 'Medium Size cannot be blank.'));
 			}
 			if($this->media_small_width == '' || $this->media_small_height == '') {
-				$this->addError('media_small_width', Phrase::trans(26095,1));
+				$this->addError('media_small_width', Yii::t('attribute', 'Small Size cannot be blank.'));
 			}
 			
 			// Article type is active

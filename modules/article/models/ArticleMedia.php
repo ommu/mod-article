@@ -101,18 +101,18 @@ class ArticleMedia extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'media_id' => Phrase::trans(26039,1),
-			'article_id' => Phrase::trans(26000,1),
-			'orders' => Phrase::trans(26072,1),
-			'cover' => Phrase::trans(26073,1),
-			'media' => Phrase::trans(26039,1),
-			'creation_date' => Phrase::trans(26069,1),
-			'creation_id' => 'Creation',
-			'old_media' => Phrase::trans(26071,1),
-			'video' => Phrase::trans(26044,1),
-			'type_search' => Phrase::trans(26067,1),
-			'article_search' => Phrase::trans(26000,1),
-			'creation_search' => 'Creation',
+			'media_id' => Yii::t('attribute', 'Media'),
+			'article_id' => Yii::t('attribute', 'Article'),
+			'orders' => Yii::t('attribute', 'Orders'),
+			'cover' => Yii::t('attribute', 'Cover'),
+			'media' => Yii::t('attribute', 'Media'),
+			'creation_date' => Yii::t('attribute', 'Creation Date'),
+			'creation_id' => Yii::t('attribute', 'Creation'),
+			'old_media' => Yii::t('attribute', 'Old Media'),
+			'video' => Yii::t('attribute', 'Video'),
+			'type_search' => Yii::t('attribute', 'Article Type'),
+			'article_search' => Yii::t('attribute', 'Article'),
+			'creation_search' => Yii::t('attribute', 'Creation'),
 		);
 	}
 	
@@ -216,14 +216,14 @@ class ArticleMedia extends CActiveRecord
 				);
 				$this->defaultColumns[] = array(
 					'name' => 'type_search',
-					'value' => '$data->article->article_type == 1 ? Phrase::trans(26043,1) : ($data->article->article_type == 2 ? Phrase::trans(26044,1) : Phrase::trans(26045,1))',
+					'value' => '$data->article->article_type == 1 ? Yii::t(\'attribute\', \'Standard\') : ($data->article->article_type == 2 ? Yii::t(\'attribute\', \'Video\') : Yii::t(\'attribute\', \'Audio\'))',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
 					'filter'=>array(
-						1=>Phrase::trans(26043,1),
-						2=>Phrase::trans(26044,1),
-						3=>Phrase::trans(26045,1),
+						1=>Yii::t('attribute', 'Standard'),
+						2=>Yii::t('attribute', 'Video'),
+						3=>Yii::t('attribute', 'Audio'),
 					),
 				);
 			}
@@ -332,7 +332,7 @@ class ArticleMedia extends CActiveRecord
 			$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
 			if(!$this->isNewRecord) {
 				if($this->article->article_type == 2 && $this->media == '') {
-					$this->addError('video', Phrase::trans(26048,1));
+					$this->addError('video', Yii::t('attribute', 'Video cannot be blank.'));
 				}
 			} else
 				$this->creation_id = Yii::app()->user->id;

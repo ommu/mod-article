@@ -141,7 +141,7 @@ class SettingController extends Controller
 					if($model->update()) {
 						echo CJSON::encode(array(
 							'type' => 0,
-							'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26013,1).'</strong></div>',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article setting success updated.').'</strong></div>',
 						));
 					} else {
 						print_r($model->getErrors());
@@ -151,8 +151,8 @@ class SettingController extends Controller
 			Yii::app()->end();
 		}
 
-		$this->pageTitle = Phrase::trans(26001,1);
-		$this->pageDescription = Phrase::trans(26002,1);
+		$this->pageTitle = Yii::t('phrase', 'Article Settings');
+		$this->pageDescription = Yii::t('phrase', 'This page contains general article settings that affect your entire social network. ');
 		$this->pageMeta = '';
 		$this->render('admin_index',array(
 			'model'=>$model,

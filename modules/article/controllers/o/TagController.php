@@ -126,12 +126,12 @@ class TagController extends Controller
 		
 		if(isset($_GET['article'])) {
 			$article = Articles::model()->findByPk($_GET['article']);
-			$title = ': '.$article->title.' '.Phrase::trans(26062,1).' '.$article->user->displayname;
+			$title = ': '.$article->title.' '.Yii::t('phrase', 'by').' '.$article->user->displayname;
 		} else {
 			$title = '';
 		}
 
-		$this->pageTitle = Phrase::trans(26083,1).$title;
+		$this->pageTitle = Yii::t('phrase', 'View Article Tags').$title;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
@@ -190,7 +190,7 @@ class TagController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('manage'),
 						'id' => 'partial-article-tag',
-						'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26082,1).'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article Tags success deleted.').'</strong></div>',
 					));
 				}
 			}
@@ -204,7 +204,7 @@ class TagController extends Controller
 			$this->dialogGroundUrl = $url;
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Phrase::trans(26081,1);
+			$this->pageTitle = Yii::t('phrase', 'Delete Article Tag');
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');

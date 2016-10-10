@@ -125,12 +125,12 @@ class LikeController extends Controller
 		
 		if(isset($_GET['article'])) {
 			$article = Articles::model()->findByPk($_GET['article']);
-			$title = ': '.$article->title.' '.Phrase::trans(26062,1).' '.$article->user->displayname;
+			$title = ': '.$article->title.' '.Yii::t('phrase', 'by').' '.$article->user->displayname;
 		} else {
 			$title = '';
 		}
 
-		$this->pageTitle = Phrase::trans(26065,1).$title;
+		$this->pageTitle = Yii::t('phrase', 'Article Likes Manage').$title;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
@@ -155,7 +155,7 @@ class LikeController extends Controller
 					'type' => 5,
 					'get' => Yii::app()->controller->createUrl('manage'),
 					'id' => 'partial-article-likes',
-					'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26064,1).'</strong></div>',
+					'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Likes success deleted.').'</strong></div>',
 				));
 			}
 
@@ -164,7 +164,7 @@ class LikeController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Phrase::trans(26063,1);
+			$this->pageTitle = Yii::t('phrase', 'Delete Likes');
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');

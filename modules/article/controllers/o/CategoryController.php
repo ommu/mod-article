@@ -126,8 +126,8 @@ class CategoryController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Phrase::trans(26014,1);
-		$this->pageDescription = Phrase::trans(26015,1);
+		$this->pageTitle = Yii::t('phrase', 'Article Categories');
+		$this->pageDescription = Yii::t('phrase', 'You may want to allow your users to categorize their articles by subject, location, etc. Categorized articles make it easier for users to find and attend articles that interest them. If you want to allow article categories, you can create them (along with subcategories) below.');
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
 			'model'=>$model,
@@ -159,7 +159,7 @@ class CategoryController extends Controller
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('o/setting/index'),
 							'id' => 'partial-article-category',
-							'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26023,1).'</strong></div>',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article category success created.').'</strong></div>',
 						));
 					} else {
 						print_r($model->getErrors());
@@ -173,7 +173,7 @@ class CategoryController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 500;
 
-			$this->pageTitle = Phrase::trans(26022,1);
+			$this->pageTitle = Yii::t('phrase', 'Create Category');
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_add',array(
@@ -208,7 +208,7 @@ class CategoryController extends Controller
 							'type' => 5,
 							'get' => Yii::app()->controller->createUrl('o/setting/index'),
 							'id' => 'partial-article-category',
-							'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26025,1).'</strong></div>',
+							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article category success updated.').'</strong></div>',
 						));
 					} else {
 						print_r($model->getErrors());
@@ -283,7 +283,7 @@ class CategoryController extends Controller
 					'type' => 5,
 					'get' => Yii::app()->controller->createUrl('o/setting/index'),
 					'id' => 'partial-article-category',
-					'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26027,1).'</strong></div>',
+					'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article category success deleted.').'</strong></div>',
 				));
 			}
 
@@ -292,7 +292,7 @@ class CategoryController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Phrase::trans(26026,1);
+			$this->pageTitle = Yii::t('phrase', 'Delete Category');
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');
@@ -326,7 +326,7 @@ class CategoryController extends Controller
 						'type' => 5,
 						'get' => Yii::app()->controller->createUrl('o/setting/index'),
 						'id' => 'partial-article-category',
-						'msg' => '<div class="errorSummary success"><strong>'.Phrase::trans(26025,1).'</strong></div>',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article category success updated.').'</strong></div>',
 					));
 				}
 			}

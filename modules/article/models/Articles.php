@@ -130,37 +130,37 @@ class Articles extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'article_id' => Phrase::trans(26000,1),
-			'publish' => Phrase::trans(26021,1),
-			'cat_id' => Phrase::trans(26020,1),
-			'user_id' => Phrase::trans(26041,1),
-			'media_id' => Phrase::trans(26039,1),
-			'headline' => Phrase::trans(26066,1),
-			'comment_code' => Phrase::trans(26038,1),
-			'article_type' => Phrase::trans(26067,1),
-			'title' => Phrase::trans(26016,1),
-			'body' => Phrase::trans(26036,1),
-			'quote' => Phrase::trans(26085,1),
-			'media_file' => 'Media File',
-			'published_date' => Phrase::trans(26037,1),
-			'comment' => Phrase::trans(26038,1),
-			'view' => Phrase::trans(26040,1),
-			'likes' => Phrase::trans(26068,1),
-			'download' => 'Download',
-			'creation_date' => Phrase::trans(26069,1),
-			'creation_id' => 'Creation',
-			'modified_date' => Phrase::trans(26070,1),
-			'modified_id' => 'Modified',
-			'media' => Phrase::trans(26039,1).' (Photo)',
-			'old_media' => Phrase::trans(26071,1).' (Photo)',
-			'video' => Phrase::trans(26044,1),
-			//'audio' => Phrase::trans(26045,1),
-			'keyword' => Phrase::trans(26079,1),
-			'file' => 'File (Download)',
-			'old_file' => 'Old File (Download)',
-			'user_search' => Phrase::trans(26041,1),
-			'creation_search' => 'Creation',
-			'modified_search' => 'Modified',
+			'article_id' => Yii::t('attribute', 'Article'),
+			'publish' => Yii::t('attribute', 'Publish'),
+			'cat_id' => Yii::t('attribute', 'Category'),
+			'user_id' => Yii::t('attribute', 'User'),
+			'media_id' => Yii::t('attribute', 'Media'),
+			'headline' => Yii::t('attribute', 'Headline'),
+			'comment_code' => Yii::t('attribute', 'Comment'),
+			'article_type' => Yii::t('attribute', 'Article Type'),
+			'title' => Yii::t('attribute', 'Title'),
+			'body' => Yii::t('attribute', 'Article'),
+			'quote' => Yii::t('attribute', 'Quote'),
+			'media_file' => 'Media File'),
+			'published_date' => Yii::t('attribute', 'Published Date'),
+			'comment' => Yii::t('attribute', 'Comment'),
+			'view' => Yii::t('attribute', 'View'),
+			'likes' => Yii::t('attribute', 'Likes'),
+			'download' => Yii::t('attribute', 'Download'),
+			'creation_date' => Yii::t('attribute', 'Creation Date'),
+			'creation_id' => Yii::t('attribute', 'Creation'),
+			'modified_date' => Yii::t('attribute', 'Modified Date'),
+			'modified_id' => Yii::t('attribute', 'Modified'),
+			'media' => Yii::t('attribute', 'Media').' (Photo)',
+			'old_media' => Yii::t('attribute', 'Old Media').' (Photo)',
+			'video' => Yii::t('attribute', 'Video'),
+			//'audio' => Yii::t('attribute', 'Audio'),
+			'keyword' => Yii::t('attribute', 'Keyword'),
+			'file' => Yii::t('attribute', 'File (Download)'),
+			'old_file' => Yii::t('attribute', 'Old File (Download)'),
+			'user_search' => Yii::t('attribute', 'User'),
+			'creation_search' => Yii::t('attribute', 'Creation'),
+			'modified_search' => Yii::t('attribute', 'Modified'),
 		);
 	}
 	
@@ -515,17 +515,17 @@ class Articles extends CActiveRecord
 		$controller = strtolower(Yii::app()->controller->id);
 		if(parent::beforeValidate()) {
 			if($this->article_type != 4 && $this->title == '')
-				$this->addError('title', Phrase::trans(26047,1));
+				$this->addError('title', Yii::t('attribute', 'Title cannot be blank.'));
 			
 			if($this->article_type == 2 && $this->video == '')
-				$this->addError('video', Phrase::trans(26048,1));
+				$this->addError('video', Yii::t('attribute', 'Video cannot be blank.'));
 			
 			if($this->article_type == 4) {
 				if($this->quote == '') {
-					$this->addError('quote', Phrase::trans(26114,1));
+					$this->addError('quote', Yii::t('attribute', 'Quote cannot be blank.'));
 				}
 				if($this->body == '') {
-					$this->addError('body', Phrase::trans(26115,1));
+					$this->addError('body', Yii::t('attribute', 'Article cannot be blank.'));
 				}
 			}
 			if($this->isNewRecord)
