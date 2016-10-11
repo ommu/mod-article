@@ -141,7 +141,7 @@ class Articles extends CActiveRecord
 			'title' => Yii::t('attribute', 'Title'),
 			'body' => Yii::t('attribute', 'Article'),
 			'quote' => Yii::t('attribute', 'Quote'),
-			'media_file' => 'Media File'),
+			'media_file' => Yii::t('attribute', 'Media File'),
 			'published_date' => Yii::t('attribute', 'Published Date'),
 			'comment' => Yii::t('attribute', 'Comment'),
 			'view' => Yii::t('attribute', 'View'),
@@ -515,17 +515,17 @@ class Articles extends CActiveRecord
 		$controller = strtolower(Yii::app()->controller->id);
 		if(parent::beforeValidate()) {
 			if($this->article_type != 4 && $this->title == '')
-				$this->addError('title', Yii::t('attribute', 'Title cannot be blank.'));
+				$this->addError('title', Yii::t('phrase', 'Title cannot be blank.'));
 			
 			if($this->article_type == 2 && $this->video == '')
-				$this->addError('video', Yii::t('attribute', 'Video cannot be blank.'));
+				$this->addError('video', Yii::t('phrase', 'Video cannot be blank.'));
 			
 			if($this->article_type == 4) {
 				if($this->quote == '') {
-					$this->addError('quote', Yii::t('attribute', 'Quote cannot be blank.'));
+					$this->addError('quote', Yii::t('phrase', 'Quote cannot be blank.'));
 				}
 				if($this->body == '') {
-					$this->addError('body', Yii::t('attribute', 'Article cannot be blank.'));
+					$this->addError('body', Yii::t('phrase', 'Article cannot be blank.'));
 				}
 			}
 			if($this->isNewRecord)
@@ -540,14 +540,14 @@ class Articles extends CActiveRecord
 			if($this->article_type == 1 && $media->name != '') {
 				$extension = pathinfo($media->name, PATHINFO_EXTENSION);
 				if(!in_array(strtolower($extension), array('bmp','gif','jpg','png')))
-					$this->addError('media', 'The file "'.$media->name.'" cannot be uploaded. Only files with these extensions are allowed: bmp, gif, jpg, png.');
+					$this->addError('media', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: bmp, gif, jpg, png.', array('{name}'=>$media->name)));
 			}
 			
 			$file = CUploadedFile::getInstance($this, 'file');
 			if($file->name != '') {
 				$extension = pathinfo($file->name, PATHINFO_EXTENSION);
 				if(!in_array(strtolower($extension), array('mp3','mp4','flv','pdf','doc','opt','docx','ppt','pptx','xls','xlsx','zip', 'rar', '7z')))
-					$this->addError('file', 'The file "'.$file->name.'" cannot be uploaded. Only files with these extensions are allowed: mp3, mp4, flv, pdf, doc, docx, ppt, pptx, xls, xlsx, opt, zip, rar, 7z.');
+					$this->addError('file', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: mp3, mp4, flv, pdf, doc, docx, ppt, pptx, xls, xlsx, opt, zip, rar, 7z.', array('{name}'=>$file->name)));
 			}
 		}
 		return true;
