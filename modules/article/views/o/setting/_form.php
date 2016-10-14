@@ -74,10 +74,10 @@
 				<?php 
 				$model->type_active = explode(',', $model->type_active);
 				echo $form->checkBoxList($model,'type_active', array(
-					'1=Yii::t(\'phrase\', \'Standard\')' => Yii::t('phrase', 'Standard'),
-					'2=Yii::t(\'phrase\', \'Video\')' => Yii::t('phrase', 'Video'),
-					//'3=Yii::t(\'phrase\', \'Audio\')' => Yii::t('phrase', 'Audio'),
-					'4=Yii::t(\'phrase\', \'Quote\')' => Yii::t('phrase', 'Quote'),
+					'1=Standard' => Yii::t('phrase', 'Standard'),
+					'2=Video' => Yii::t('phrase', 'Video'),
+					//'3=Audio' => Yii::t('phrase', 'Audio'),
+					'4=Quote' => Yii::t('phrase', 'Quote'),
 				)); ?>
 				<?php echo $form->error($model,'type_active'); ?>
 			</div>
