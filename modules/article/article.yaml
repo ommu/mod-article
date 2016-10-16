@@ -29,7 +29,7 @@ plugin_menu		:
 				urlRules: {siteType: 0,1, userLevel: 1,2}
 				urlPath: {url: o/media/manage, attr: -, icon: -}
 			- urlTitle: Likes
-				urlRules: {siteType: 0,1, userLevel: 1,2}
+				urlRules: {siteType: 1, userLevel: 1,2}
 				urlPath: {url: o/like/manage, attr: -, icon: -}
 			- urlTitle: Tags
 				urlRules: {siteType: 0,1, userLevel: 1,2}
@@ -58,7 +58,7 @@ content_menu	:
 # controller o/like		
 
 	- urlTitle: Back to Article
-		urlRules: {article, o/like, manage, siteType: 0,1, userLevel: 1,2}
+		urlRules: {article, o/like, manage, siteType: 1, userLevel: 1,2}
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
 		
 # controller o/tag

@@ -31,12 +31,12 @@
 		<div class="clearfix">
 			<label>
 				<?php echo $model->getAttributeLabel('license');?> <span class="required">*</span><br/>
-				<span><?php echo Yii::t('phrase', '24016');?></span>
+				<span><?php echo Yii::t('phrase', 'Enter the your license key that is provided to you when you purchased this plugin. If you do not know your license key, please contact support team.');?></span>
 			</label>
 			<div class="desc">
 				<?php echo $form->textField($model,'license',array('maxlength'=>32,'class'=>'span-4','disabled'=>'disabled')); ?>
 				<?php echo $form->error($model,'license'); ?>
-				<span class="small-px"><?php echo Yii::t('phrase', '28004');?></span>
+				<span class="small-px"><?php echo Yii::t('phrase', 'Format: XXXX-XXXX-XXXX-XXXX');?></span>
 			</div>
 		</div>
 
