@@ -521,17 +521,9 @@ class Articles extends CActiveRecord
 				$this->addError('video', Yii::t('phrase', 'Video cannot be blank.'));
 			
 			if($this->article_type == 4) {
-				if($this->quote == '') {
-					$this->addError('quote', Yii::t('phrase', 'Quote cannot be blank.'));
-				}
-				if($this->body == '') {
+				if($this->body == '')
 					$this->addError('body', Yii::t('phrase', 'Article cannot be blank.'));
-				}
 			}
-			if($this->isNewRecord)
-				$this->user_id = Yii::app()->user->id;			
-			else
-				$this->modified_id = Yii::app()->user->id;
 
 			if($this->headline == 1 && $this->publish == 0)
 				$this->addError('publish', Yii::t('phrase', 'Publish cannot be blank.'));
@@ -549,6 +541,11 @@ class Articles extends CActiveRecord
 				if(!in_array(strtolower($extension), array('mp3','mp4','flv','pdf','doc','opt','docx','ppt','pptx','xls','xlsx','zip', 'rar', '7z')))
 					$this->addError('file', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: mp3, mp4, flv, pdf, doc, docx, ppt, pptx, xls, xlsx, opt, zip, rar, 7z.', array('{name}'=>$file->name)));
 			}
+			
+			if($this->isNewRecord)
+				$this->user_id = Yii::app()->user->id;
+			else
+				$this->modified_id = Yii::app()->user->id;
 		}
 		return true;
 	}

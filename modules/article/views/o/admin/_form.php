@@ -25,6 +25,7 @@ $js=<<<EOP
 		var id = $(this).val();
 		$('fieldset div.filter').slideUp();
 		$('div#title').slideDown();
+		$('div#quote').slideDown();
 		if(id == '1') {
 			$('div.filter#media').slideDown();
 		} else if(id == '2') {
@@ -33,6 +34,7 @@ $js=<<<EOP
 			$('div.filter#audio').slideDown();
 		} else if(id == '4') {
 			$('div#title').slideUp();
+			$('div#quote').slideUp();
 		}
 	});
 EOP;
@@ -65,14 +67,12 @@ EOP;
 					<div class="desc">
 						<?php
 						if($model->isNewRecord) {
+							$type_active = unserialize($setting->type_active);
 							$arrAttrParams = array();
-							if($setting->type_active != '') {
-								$arrAttr = explode(',', $setting->type_active);
-								if(count($arrAttr) > 0) {
-									foreach($arrAttr as $row) {
-										$part = explode('=', $row);
-										$arrAttrParams[$part[0]] = Yii::t('phrase', $part[1]);
-									}
+							if($setting->type_active != '' && !empty($type_active)) {
+								foreach($type_active as $key => $row) {
+									$part = explode('=', $row);
+									$arrAttrParams[$part[0]] = Yii::t('phrase', $part[1]);
 								}
 							}
 							echo $form->dropDownList($model,'article_type', $arrAttrParams);
@@ -293,7 +293,7 @@ EOP;
 
 	<fieldset>
 		<?php if($model->isNewRecord || (!$model->isNewRecord && $model->article_type != 4)) {?>
-		<div class="clearfix" id="quote">
+		<div class="clearfix <?php echo $model->article_type == 4 ? 'hide' : '';?>" id="quote">
 			<?php echo $form->labelEx($model,'quote'); ?>
 			<div class="desc">
 				<?php 

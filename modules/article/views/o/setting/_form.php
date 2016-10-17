@@ -72,7 +72,8 @@
 			<?php echo $form->labelEx($model,'type_active'); ?>
 			<div class="desc">
 				<?php 
-				$model->type_active = explode(',', $model->type_active);
+				if(!$model->getErrors())
+					$model->type_active = unserialize($model->type_active);
 				echo $form->checkBoxList($model,'type_active', array(
 					'1=Standard' => Yii::t('phrase', 'Standard'),
 					'2=Video' => Yii::t('phrase', 'Video'),
@@ -104,34 +105,35 @@
 			<div class="desc">
 				<p><?php echo $model->getAttributeLabel('media_resize');?></p>
 				<?php echo $form->radioButtonList($model, 'media_resize', array(
-					0 => Yii::t('phrase', 'No, not resize photo after upload.'),
-					1 => Yii::t('phrase', 'Yes, resize photo after upload.'),
+					0 => Yii::t('phrase', 'No, not resize media after upload.'),
+					1 => Yii::t('phrase', 'Yes, resize media after upload.'),
 				)); ?>
-				<?php if($model->media_resize_size != '') {
-					$resizeSize = explode(',', $model->media_resize_size);
-					$model->media_resize_width = $resizeSize[0];
-					$model->media_resize_height = $resizeSize[1];
+				
+				<?php if(!$model->getErrors()) {
+					$model->media_resize_size = unserialize($model->media_resize_size);
+					$model->media_view_size = unserialize($model->media_view_size);
 				}?>
+				
 				<div id="resize_size" class="mt-15 <?php echo $model->media_resize == 0 ? 'hide' : '';?>">
-					<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_resize_width',array('maxlength'=>4,'class'=>'span-2')); ?>&nbsp;&nbsp;&nbsp;
-					<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_resize_height',array('maxlength'=>4,'class'=>'span-2')); ?>
+					<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_resize_size[width]',array('maxlength'=>4,'class'=>'span-2')); ?>&nbsp;&nbsp;&nbsp;
+					<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_resize_size[height]',array('maxlength'=>4,'class'=>'span-2')); ?>
 					<?php echo $form->error($model,'media_resize_size'); ?>
 				</div>
 				
 				<p><?php echo Yii::t('phrase', 'Large Size');?></p>				
-				<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_large_width',array('maxlength'=>4,'class'=>'span-2')); ?>&nbsp;&nbsp;&nbsp;
-				<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_large_height',array('maxlength'=>4,'class'=>'span-2')); ?>
-				<?php echo $form->error($model,'media_large_width'); ?>
+				<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_view_size[large][width]',array('maxlength'=>4,'class'=>'span-2')); ?>&nbsp;&nbsp;&nbsp;
+				<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_view_size[large][height]',array('maxlength'=>4,'class'=>'span-2')); ?>
+				<?php echo $form->error($model,'media_view_size[large]'); ?>
 				
 				<p><?php echo Yii::t('phrase', 'Medium Size');?></p>
-				<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_medium_width',array('maxlength'=>3,'class'=>'span-2')); ?>&nbsp;&nbsp;&nbsp;
-				<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_medium_height',array('maxlength'=>3,'class'=>'span-2')); ?>
-				<?php echo $form->error($model,'media_medium_width'); ?>
+				<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_view_size[medium][width]',array('maxlength'=>3,'class'=>'span-2')); ?>&nbsp;&nbsp;&nbsp;
+				<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_view_size[medium][height]',array('maxlength'=>3,'class'=>'span-2')); ?>
+				<?php echo $form->error($model,'media_view_size[medium]'); ?>
 				
 				<p><?php echo Yii::t('phrase', 'Small Size');?></p>
-				<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_small_width',array('maxlength'=>3,'class'=>'span-2')); ?>&nbsp;&nbsp;&nbsp;
-				<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_small_height',array('maxlength'=>3,'class'=>'span-2')); ?>
-				<?php echo $form->error($model,'media_small_width'); ?>
+				<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_view_size[small][width]',array('maxlength'=>3,'class'=>'span-2')); ?>&nbsp;&nbsp;&nbsp;
+				<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_view_size[small][height]',array('maxlength'=>3,'class'=>'span-2')); ?>
+				<?php echo $form->error($model,'media_view_size[small]'); ?>
 			</div>
 		</div>
 

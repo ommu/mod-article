@@ -403,11 +403,11 @@ class ArticleMedia extends CActiveRecord
 				Yii::import('ext.phpthumb.PhpThumbFactory');
 				$article_path = "public/article/".$this->article_id;
 				$articleImg = PhpThumbFactory::create($article_path.'/'.$this->media, array('jpegQuality' => 90, 'correctPermissions' => true));
-				$resizeSize = explode(',', $setting->media_resize_size);
-				if($resizeSize[1] == 0)
-					$articleImg->resize($resizeSize[0]);
+				$resizeSize = unserialize($setting->media_resize_size);
+				if($resizeSize['height'] == 0)
+					$articleImg->resize($resizeSize['width']);
 				else
-					$articleImg->adaptiveResize($resizeSize[0], $resizeSize[1]);					
+					$articleImg->adaptiveResize($resizeSize['width'], $resizeSize['height']);		
 				$articleImg->save($article_path.'/'.$this->media);
 			}
 			
