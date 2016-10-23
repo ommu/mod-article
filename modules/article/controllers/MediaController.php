@@ -145,8 +145,18 @@ class MediaController extends Controller
 	 */
 	public function actionAjaxAdd($id) 
 	{
-		$articlePhoto = CUploadedFile::getInstanceByName('namaFile');
 		$article_path = "public/article/".$id;
+		// Add directory
+		if(!file_exists($article_path)) {
+			@mkdir($article_path, 0755, true);
+
+			// Add file in directory (index.php)
+			$newFile = $article_path.'/index.php';
+			$FileHandle = fopen($newFile, 'w');
+		}
+		
+		$articlePhoto = CUploadedFile::getInstanceByName('namaFile');
+		
 		$fileName	= time().'_'.$id.'_'.Utility::getUrlTitle(Articles::getInfo($id, 'title')).'.'.strtolower($articlePhoto->extensionName);
 		if($articlePhoto->saveAs($article_path.'/'.$fileName)) {
 			$model = new ArticleMedia;

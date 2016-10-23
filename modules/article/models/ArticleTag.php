@@ -67,7 +67,7 @@ class ArticleTag extends CActiveRecord
 		return array(
 			array('article_id, tag_id', 'required'),
 			array('article_id, tag_id, creation_id', 'length', 'max'=>11),
-			array('creation_date, 
+			array(' 
 				body', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.

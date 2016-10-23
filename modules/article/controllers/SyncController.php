@@ -117,20 +117,19 @@ class SyncController extends Controller
 		$criteria->order = 'article_id DESC';
 		$article = Articles::model()->findAll($criteria);
 		
-		$path = 'public/article/';
+		$path = 'public/article';
 		
 		foreach($article as $key => $item) {
 			// Add User Folder
-			$article_path = $path.$item->article_id;
+			$article_path = $path.'/'.$item->article_id;
 			if(!file_exists($article_path)) {
 				@mkdir($article_path, 0755, true);
 
-				// Add File in Article Folder (index.php)
+				// Add file in directory (index.php)
 				$newFile = $article_path.'/index.php';
 				$FileHandle = fopen($newFile, 'w');
-			} else {
+			} else
 				@chmod($article_path, 0755, true);
-			}
 				
 			$mediaFile = $path.'old/'.$item->media_file;
 			if($item->media_file != '' && file_exists($mediaFile)) {
@@ -158,20 +157,19 @@ class SyncController extends Controller
 		$criteria->order = 'article_id DESC';
 		$article = Articles::model()->findAll($criteria);
 		
-		$path = 'public/article/';
+		$path = 'public/article';
 		
 		foreach($article as $key => $item) {
 			// Add User Folder
-			$article_path = $path.$item->article_id;
+			$article_path = $path.'/'.$item->article_id;
 			if(!file_exists($article_path)) {
 				@mkdir($article_path, 0755, true);
 
-				// Add File in Article Folder (index.php)
+				// Add file in directory (index.php)
 				$newFile = $article_path.'/index.php';
 				$FileHandle = fopen($newFile, 'w');
-			} else {
+			} else
 				@chmod($article_path, 0755, true);
-			}
 				
 			$mediaImages = $path.'old/thumbnail/'.$item->media_image;
 			if(file_exists($mediaImages) && $item->media_id != 0 && $item->media_image != '') {

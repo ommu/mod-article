@@ -358,6 +358,14 @@ class ArticleMedia extends CActiveRecord
 			if(!$this->isNewRecord && $controller == 'media' && !Yii::app()->request->isAjaxRequest) {
 				if(in_array($this->article->article_type, array(1,3))) {
 					$article_path = "public/article/".$this->article_id;
+					if(!file_exists($article_path)) {
+						@mkdir($article_path, 0755, true);
+
+						// Add file in directory (index.php)
+						$newFile = $article_path.'/index.php';
+						$FileHandle = fopen($newFile, 'w');
+					} else
+						@chmod($article_path, 0755, true);
 					
 					if($this->article->article_type == 1) {
 						$this->media = CUploadedFile::getInstance($this, 'media');
@@ -402,6 +410,15 @@ class ArticleMedia extends CActiveRecord
 			if($setting->media_resize == 1) {
 				Yii::import('ext.phpthumb.PhpThumbFactory');
 				$article_path = "public/article/".$this->article_id;
+				if(!file_exists($article_path)) {
+					@mkdir($article_path, 0755, true);
+
+					// Add file in directory (index.php)
+					$newFile = $article_path.'/index.php';
+					$FileHandle = fopen($newFile, 'w');
+				} else
+					@chmod($article_path, 0755, true);
+				
 				$articleImg = PhpThumbFactory::create($article_path.'/'.$this->media, array('jpegQuality' => 90, 'correctPermissions' => true));
 				$resizeSize = unserialize($setting->media_resize_size);
 				if($resizeSize['height'] == 0)

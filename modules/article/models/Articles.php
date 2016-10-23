@@ -119,6 +119,7 @@ class Articles extends CActiveRecord
 			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
 			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'medias' => array(self::HAS_MANY, 'ArticleMedia', 'article_id'),
 			'tag_MANY' => array(self::HAS_MANY, 'ArticleTag', 'article_id'),
 			'tag_ONE' => array(self::HAS_ONE, 'ArticleTag', 'article_id'),
 		);
@@ -199,6 +200,7 @@ class Articles extends CActiveRecord
 					),
 				));
 				$items = array();
+				$items[] = $_GET['category'];
 				if($categoryFind != null) {
 					foreach($categoryFind as $key => $val)
 						$items[] = $val->cat_id;
@@ -568,12 +570,12 @@ class Articles extends CActiveRecord
 
 		$article_path = "public/article/".$this->article_id;
 
-		if($this->isNewRecord && in_array($this->article_type, array(1,3))) {
-			// Add article directory
+		if(in_array($this->article_type, array(1,3))) {
+			// Add directory
 			if(!file_exists($article_path)) {
-				@mkdir($article_path, 0777, true);
+				@mkdir($article_path, 0755, true);
 
-				// Add file in article directory (index.php)
+				// Add file in directory (index.php)
 				$newFile = $article_path.'/index.php';
 				$FileHandle = fopen($newFile, 'w');
 			}

@@ -196,11 +196,12 @@ class TagController extends Controller
 			}
 
 		} else {
-			$this->dialogDetail = true;
 			if(isset($_GET['type']) && $_GET['type'] == 'article')
 				$url = Yii::app()->controller->createUrl('o/admin/edit', array('id'=>$model->article_id));
 			else
 				$url = Yii::app()->controller->createUrl('manage');
+			
+			$this->dialogDetail = true;
 			$this->dialogGroundUrl = $url;
 			$this->dialogWidth = 350;
 
