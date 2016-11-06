@@ -151,7 +151,7 @@ class AdminController extends Controller
 	{
 		$model=new Articles;
 		$setting = ArticleSetting::model()->findByPk(1,array(
-			'select' => 'meta_keyword, type_active',
+			'select' => 'meta_keyword, type_active, media_file_type, upload_file_type',
 		));
 
 		// Uncomment the following line if AJAX validation is needed
@@ -185,7 +185,7 @@ class AdminController extends Controller
 		$model=$this->loadModel($id);
 
 		$setting = ArticleSetting::model()->findByPk(1,array(
-			'select' => 'type_active, media_limit, meta_keyword',
+			'select' => 'type_active, media_limit, meta_keyword, media_file_type, upload_file_type',
 		));
 		$tag = ArticleTag::model()->findAll(array(
 			'condition' => 'article_id = :id',

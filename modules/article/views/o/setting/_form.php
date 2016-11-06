@@ -137,6 +137,36 @@
 			</div>
 		</div>
 
+		<div class="clearfix">
+			<?php echo $form->labelEx($model,'media_file_type'); ?>
+			<div class="desc">
+				<?php 
+				if(!$model->getErrors()) {
+					$media_file_type = unserialize($model->media_file_type);
+					if(!empty($media_file_type))
+						$model->media_file_type = Utility::formatFileType($media_file_type, false);
+				}
+				echo $form->textField($model,'media_file_type', array('class'=>'span-6')); ?>
+				<?php echo $form->error($model,'media_file_type'); ?>
+				<span class="small-px">pisahkan jenis file dengan koma (,). example: "jpg, png, bmp"</span>
+			</div>
+		</div>
+
+		<div class="clearfix">
+			<?php echo $form->labelEx($model,'upload_file_type'); ?>
+			<div class="desc">
+				<?php				
+				if(!$model->getErrors()) {
+					$upload_file_type = unserialize($model->upload_file_type);
+					if(!empty($upload_file_type))
+						$model->upload_file_type = Utility::formatFileType($upload_file_type, false);
+				}
+				echo $form->textField($model,'upload_file_type', array('class'=>'span-6')); ?>
+				<?php echo $form->error($model,'upload_file_type'); ?>
+				<span class="small-px">pisahkan type file dengan koma (,). example: "mp3, mp4, pdf, doc, docx"</span>
+			</div>
+		</div>
+
 		<div class="submit clearfix">
 			<label>&nbsp;</label>
 			<div class="desc">

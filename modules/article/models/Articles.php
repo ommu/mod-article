@@ -120,7 +120,7 @@ class Articles extends CActiveRecord
 			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 			'medias' => array(self::HAS_MANY, 'ArticleMedia', 'article_id'),
-			'tag_MANY' => array(self::HAS_MANY, 'ArticleTag', 'article_id'),
+			'tags' => array(self::HAS_MANY, 'ArticleTag', 'article_id'),
 			'tag_ONE' => array(self::HAS_ONE, 'ArticleTag', 'article_id'),
 		);
 	}
@@ -191,7 +191,7 @@ class Articles extends CActiveRecord
 		
 		if(isset($_GET['category'])) {
 			$category = ArticleCategory::model()->findByPk($_GET['category']);
-			if($category->dependency == 0) {			
+			if($category->dependency == 0) {
 				$parent = $_GET['category'];
 				$categoryFind = ArticleCategory::model()->findAll(array(
 					'condition' => 'dependency = :dependency',
@@ -211,6 +211,7 @@ class Articles extends CActiveRecord
 				$criteria->compare('t.cat_id',$_GET['category']);
 		} else
 			$criteria->compare('t.cat_id',$this->cat_id);
+		
 		$criteria->compare('t.user_id',$this->user_id);
 		$criteria->compare('t.media_id',$this->media_id);
 		$criteria->compare('t.headline',$this->headline);
@@ -229,6 +230,7 @@ class Articles extends CActiveRecord
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		$criteria->compare('t.creation_id',$this->creation_id);
+		
 		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
 		$criteria->compare('t.modified_id',$this->modified_id);
@@ -514,7 +516,13 @@ class Articles extends CActiveRecord
 	 * before validate attributes
 	 */
 	protected function beforeValidate() {
-		$controller = strtolower(Yii::app()->controller->id);
+		$controller = strtolower(Yii::app()->controller->id);			
+		$setting = ArticleSetting::model()->findByPk(1, array(
+			'select' => 'media_file_type, upload_file_type',
+		));
+		$media_file_type = unserialize($setting->media_file_type);
+		$upload_file_type = unserialize($setting->upload_file_type);
+		
 		if(parent::beforeValidate()) {
 			if($this->article_type != 4 && $this->title == '')
 				$this->addError('title', Yii::t('phrase', 'Title cannot be blank.'));
@@ -533,15 +541,21 @@ class Articles extends CActiveRecord
 			$media = CUploadedFile::getInstance($this, 'media');
 			if($this->article_type == 1 && $media->name != '') {
 				$extension = pathinfo($media->name, PATHINFO_EXTENSION);
-				if(!in_array(strtolower($extension), array('bmp','gif','jpg','png')))
-					$this->addError('media', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: bmp, gif, jpg, png.', array('{name}'=>$media->name)));
+				if(!in_array(strtolower($extension), $media_file_type))
+					$this->addError('media', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}.', array(
+						'{name}'=>$media->name,
+						'{extensions}'=>Utility::formatFileType($media_file_type, false),
+					)));
 			}
 			
 			$file = CUploadedFile::getInstance($this, 'file');
 			if($file->name != '') {
 				$extension = pathinfo($file->name, PATHINFO_EXTENSION);
-				if(!in_array(strtolower($extension), array('mp3','mp4','flv','pdf','doc','opt','docx','ppt','pptx','xls','xlsx','zip', 'rar', '7z')))
-					$this->addError('file', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: mp3, mp4, flv, pdf, doc, docx, ppt, pptx, xls, xlsx, opt, zip, rar, 7z.', array('{name}'=>$file->name)));
+				if(!in_array(strtolower($extension), $upload_file_type))
+					$this->addError('file', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}.', array(
+						'{name}'=>$file->name,
+						'{extensions}'=>Utility::formatFileType($upload_file_type, false),
+					)));
 			}
 			
 			if($this->isNewRecord)
@@ -681,8 +695,6 @@ class Articles extends CActiveRecord
 					),
 				));
 			}
-		} else {
-			
 		}
 	}
 

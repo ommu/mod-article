@@ -306,8 +306,8 @@ class ArticleCategory extends CActiveRecord
 	 * 0 = unpublish
 	 * 1 = publish
 	 */
-	public static function getCategory($publish=null, $dependency=null) {
-		
+	public static function getCategory($publish=null, $dependency=null) 
+	{		
 		$criteria=new CDbCriteria;
 		if($publish != null)
 			$criteria->compare('t.publish',$publish);
@@ -322,9 +322,9 @@ class ArticleCategory extends CActiveRecord
 				$items[$val->cat_id] = Phrase::trans($val->name, 2);
 			}
 			return $items;
-		} else {
+			
+		} else
 			return false;
-		}
 	}
 
 	/**
