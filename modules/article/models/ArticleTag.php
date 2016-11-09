@@ -116,17 +116,6 @@ class ArticleTag extends CActiveRecord
 		// should not be searched.
 
 		$criteria=new CDbCriteria;
-
-		$criteria->compare('t.id',$this->id);
-		if(isset($_GET['article'])) {
-			$criteria->compare('t.article_id',$_GET['article']);
-		} else {
-			$criteria->compare('t.article_id',$this->article_id);
-		}
-		$criteria->compare('t.tag_id',$this->tag_id);
-		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
-			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
-		$criteria->compare('t.creation_id',$this->creation_id);
 		
 		// Custom Search
 		$criteria->with = array(
@@ -143,6 +132,18 @@ class ArticleTag extends CActiveRecord
 				'select'=>'displayname'
 			),
 		);
+
+		$criteria->compare('t.id',$this->id);
+		if(isset($_GET['article'])) {
+			$criteria->compare('t.article_id',$_GET['article']);
+		} else {
+			$criteria->compare('t.article_id',$this->article_id);
+		}
+		$criteria->compare('t.tag_id',$this->tag_id);
+		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
+			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
+		$criteria->compare('t.creation_id',$this->creation_id);
+		
 		$criteria->compare('article.title',strtolower($this->article_search), true);
 		$criteria->compare('tag_TO.body',strtolower($this->tag_search), true);
 		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
