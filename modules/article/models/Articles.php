@@ -114,6 +114,7 @@ class Articles extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'views' => array(self::BELONGS_TO, 'ViewArticles', 'article_id'),
 			'cat' => array(self::BELONGS_TO, 'ArticleCategory', 'cat_id'),
 			'cover' => array(self::BELONGS_TO, 'ArticleMedia', 'media_id'),
 			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
@@ -181,15 +182,15 @@ class Articles extends CActiveRecord
 		$criteria->with = array(
 			'user' => array(
 				'alias'=>'user',
-				'select'=>'displayname'
+				'select'=>'displayname',
 			),
 			'creation_relation' => array(
 				'alias'=>'creation_relation',
-				'select'=>'displayname'
+				'select'=>'displayname',
 			),
 			'modified_relation' => array(
 				'alias'=>'modified_relation',
-				'select'=>'displayname'
+				'select'=>'displayname',
 			),
 		);
 

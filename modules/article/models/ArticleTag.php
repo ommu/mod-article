@@ -134,11 +134,10 @@ class ArticleTag extends CActiveRecord
 		);
 
 		$criteria->compare('t.id',$this->id);
-		if(isset($_GET['article'])) {
+		if(isset($_GET['article']))
 			$criteria->compare('t.article_id',$_GET['article']);
-		} else {
+		else
 			$criteria->compare('t.article_id',$this->article_id);
-		}
 		$criteria->compare('t.tag_id',$this->tag_id);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
