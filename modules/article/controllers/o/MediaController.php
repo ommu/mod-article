@@ -162,7 +162,8 @@ class MediaController extends Controller
 			// Add file in directory (index.php)
 			$newFile = $article_path.'/index.php';
 			$FileHandle = fopen($newFile, 'w');
-		}
+		} else
+			@chmod($article_path, 0755, true);
 		
 		$articlePhoto = CUploadedFile::getInstanceByName('namaFile');
 		

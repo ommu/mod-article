@@ -114,6 +114,18 @@ class ArticleLikes extends CActiveRecord
 		// should not be searched.
 
 		$criteria=new CDbCriteria;
+		
+		// Custom Search
+		$criteria->with = array(
+			'article' => array(
+				'alias'=>'article',
+				'select'=>'title'
+			),
+			'user' => array(
+				'alias'=>'user',
+				'select'=>'displayname'
+			),
+		);
 
 		$criteria->compare('t.like_id',$this->like_id);
 		if(isset($_GET['article'])) {
@@ -130,17 +142,6 @@ class ArticleLikes extends CActiveRecord
 			$criteria->compare('date(t.likes_date)',date('Y-m-d', strtotime($this->likes_date)));
 		$criteria->compare('t.likes_ip',strtolower($this->likes_ip),true);
 		
-		// Custom Search
-		$criteria->with = array(
-			'article' => array(
-				'alias'=>'article',
-				'select'=>'title'
-			),
-			'user' => array(
-				'alias'=>'user',
-				'select'=>'displayname'
-			),
-		);
 		$criteria->compare('article.title',strtolower($this->article_search), true);
 		$criteria->compare('user.displayname',strtolower($this->user_search), true);
 

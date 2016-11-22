@@ -594,7 +594,8 @@ class Articles extends CActiveRecord
 				// Add file in directory (index.php)
 				$newFile = $article_path.'/index.php';
 				$FileHandle = fopen($newFile, 'w');
-			}
+			} else
+				@chmod($article_path, 0755, true);
 		}
 
 		if($this->article_type == 1) {
