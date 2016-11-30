@@ -215,21 +215,21 @@ EOP;
 			<div class="right">
 				<?php
 				if(!$model->isNewRecord) {
-					$model->old_file = $model->media_file;
-					echo $form->hiddenField($model,'old_file');
+					$model->old_media_file = $model->media_file;
+					echo $form->hiddenField($model,'old_media_file');
 					if($model->media_file != '') {
 						$file = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->media_file;
 						echo '<div class="clearfix">';
-						echo $form->labelEx($model,'old_file');
+						echo $form->labelEx($model,'old_media_file');
 						echo '<div class="desc"><a href="'.$file.'" title="'.$model->media_file.'">'.$model->media_file.'</a></div>';
 						echo '</div>';
 					}
 				}?>
 				<div class="clearfix">
-					<?php echo $form->labelEx($model,'file'); ?>
+					<?php echo $form->labelEx($model,'media_file'); ?>
 					<div class="desc">
-						<?php echo $form->fileField($model,'file'); ?>
-						<?php echo $form->error($model,'file'); ?>
+						<?php echo $form->fileField($model,'media_file'); ?>
+						<?php echo $form->error($model,'media_file'); ?>
 						<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType(unserialize($setting->upload_file_type), false);?></span>
 					</div>
 				</div>

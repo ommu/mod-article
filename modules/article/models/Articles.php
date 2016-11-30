@@ -55,7 +55,7 @@ class Articles extends CActiveRecord
 	public $video;
 	public $keyword;
 	public $file;
-	public $old_file;
+	public $old_media_file;
 	
 	// Variable Search
 	public $user_search;
@@ -98,7 +98,7 @@ class Articles extends CActiveRecord
 			//array('file', 'file', 'types' => 'mp3, mp4,
 			//	pdf, doc, docx, ppt, pptx, xls, xlsx, opt', 'maxSize'=>7097152, 'allowEmpty' => true),
 			array('media_id, title, body, quote, published_date, creation_date, modified_date, 
-				media, old_media, video, keyword, file, old_file', 'safe'),
+				media, old_media, video, keyword, old_media_file', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('article_id, publish, cat_id, user_id, media_id, headline, comment_code, article_type, title, body, quote, media_file, published_date, comment, view, likes, download, creation_date, creation_id, modified_date, modified_id,
@@ -143,7 +143,7 @@ class Articles extends CActiveRecord
 			'title' => Yii::t('attribute', 'Title'),
 			'body' => Yii::t('attribute', 'Article'),
 			'quote' => Yii::t('attribute', 'Quote'),
-			'media_file' => Yii::t('attribute', 'Media File'),
+			'media_file' => Yii::t('attribute', 'File (Download)'),
 			'published_date' => Yii::t('attribute', 'Published Date'),
 			'comment' => Yii::t('attribute', 'Comment'),
 			'view' => Yii::t('attribute', 'View'),
@@ -158,8 +158,7 @@ class Articles extends CActiveRecord
 			'video' => Yii::t('attribute', 'Video'),
 			//'audio' => Yii::t('attribute', 'Audio'),
 			'keyword' => Yii::t('attribute', 'Keyword'),
-			'file' => Yii::t('attribute', 'File (Download)'),
-			'old_file' => Yii::t('attribute', 'Old File (Download)'),
+			'old_media_file' => Yii::t('attribute', 'Old File (Download)'),
 			'user_search' => Yii::t('attribute', 'User'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
@@ -550,12 +549,12 @@ class Articles extends CActiveRecord
 					)));
 			}
 			
-			$file = CUploadedFile::getInstance($this, 'file');
-			if($file->name != '') {
-				$extension = pathinfo($file->name, PATHINFO_EXTENSION);
+			$media_file = CUploadedFile::getInstance($this, 'media_file');
+			if($media_file->name != '') {
+				$extension = pathinfo($media_file->name, PATHINFO_EXTENSION);
 				if(!in_array(strtolower($extension), $upload_file_type))
-					$this->addError('file', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}.', array(
-						'{name}'=>$file->name,
+					$this->addError('media_file', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}.', array(
+						'{name}'=>$media_file->name,
 						'{extensions}'=>Utility::formatFileType($upload_file_type, false),
 					)));
 			}
@@ -572,7 +571,37 @@ class Articles extends CActiveRecord
 	 * before save attributes
 	 */
 	protected function beforeSave() {
+		$action = strtolower(Yii::app()->controller->action->id);
+		
 		if(parent::beforeSave()) {
+			if(!$this->isNewRecord && $action == 'edit') {
+				$article_path = "public/article/".$this->article_id;
+				if(!in_array($this->article_type, array(2,4))) {
+					// Add directory
+					if(!file_exists($article_path)) {
+						@mkdir($article_path, 0755, true);
+
+						// Add file in directory (index.php)
+						$newFile = $article_path.'/index.php';
+						$FileHandle = fopen($newFile, 'w');
+					} else
+						@chmod($article_path, 0755, true);
+				}
+				
+				$this->media_file = CUploadedFile::getInstance($this, 'media_file');
+				if($this->media_file instanceOf CUploadedFile) {
+					$fileName = time().'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_file->extensionName);
+					if($this->media_file->saveAs($article_path.'/'.$fileName)) {
+						if($this->old_media_file != '' && file_exists($article_path.'/'.$this->old_media_file))
+							rename($article_path.'/'.$this->old_media_file, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_media_file);
+						$this->media_file = $fileName;
+					}
+				}
+					
+				if($this->media_file == '')
+					$this->media_file = $this->old_media_file;
+			}
+			
 			$this->published_date = date('Y-m-d', strtotime($this->published_date));
 		}
 		return true;
@@ -584,18 +613,52 @@ class Articles extends CActiveRecord
 	protected function afterSave() {
 		parent::afterSave();
 
-		$article_path = "public/article/".$this->article_id;
+		if($this->isNewRecord) {
+			$article_path = "public/article/".$this->article_id;
 
-		if(in_array($this->article_type, array(1,3))) {
-			// Add directory
-			if(!file_exists($article_path)) {
-				@mkdir($article_path, 0755, true);
+			if(!in_array($this->article_type, array(2,4))) {
+				// Add directory
+				if(!file_exists($article_path)) {
+					@mkdir($article_path, 0755, true);
 
-				// Add file in directory (index.php)
-				$newFile = $article_path.'/index.php';
-				$FileHandle = fopen($newFile, 'w');
-			} else
-				@chmod($article_path, 0755, true);
+					// Add file in directory (index.php)
+					$newFile = $article_path.'/index.php';
+					$FileHandle = fopen($newFile, 'w');
+				} else
+					@chmod($article_path, 0755, true);
+			}
+			
+			//upload media file (download)
+			$this->media_file = CUploadedFile::getInstance($this, 'media_file');
+			if($this->media_file instanceOf CUploadedFile) {
+				$fileName = time().'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_file->extensionName);
+				if($this->media_file->saveAs($article_path.'/'.$fileName))
+					Articles::model()->updateByPk($this->article_id, array('media_file'=>$fileName));
+			}
+			
+		} else {
+			// Add Keyword
+			if($this->keyword != '') {
+				$model = OmmuTags::model()->find(array(
+					'select' => 'tag_id, body',
+					'condition' => 'publish = 1 AND body = :body',
+					'params' => array(
+						':body' => $this->keyword,
+					),
+				));
+				$tag = new ArticleTag;
+				$tag->article_id = $this->article_id;
+				if($model != null) {
+					$tag->tag_id = $model->tag_id;
+				} else {
+					$data = new OmmuTags;
+					$data->body = $this->keyword;
+					if($data->save()) {
+						$tag->tag_id = $data->tag_id;
+					}
+				}
+				$tag->save();
+			}
 		}
 
 		if($this->article_type == 1) {
@@ -645,44 +708,6 @@ class Articles extends CActiveRecord
 					$video->update();
 				}
 			}
-		}
-
-		$this->file = CUploadedFile::getInstance($this, 'file');
-		if($this->file instanceOf CUploadedFile) {
-			$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->file->extensionName);
-			if($this->file->saveAs($article_path.'/'.$fileName)) {
-				if(!$this->isNewRecord && $this->media_file != '' && file_exists($article_path.'/'.$this->old_file)) {
-					rename($article_path.'/'.$this->old_file, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_file);
-				}
-				$article = Articles::model()->findByPk($this->article_id);
-				$article->media_file = $fileName;
-				$article->update();
-			}
-		}
-		
-		// Add Keyword
-		if(!$this->isNewRecord) {
-			if($this->keyword != '') {
-				$model = OmmuTags::model()->find(array(
-					'select' => 'tag_id, body',
-					'condition' => 'publish = 1 AND body = :body',
-					'params' => array(
-						':body' => $this->keyword,
-					),
-				));
-				$tag = new ArticleTag;
-				$tag->article_id = $this->article_id;
-				if($model != null) {
-					$tag->tag_id = $model->tag_id;
-				} else {
-					$data = new OmmuTags;
-					$data->body = $this->keyword;
-					if($data->save()) {
-						$tag->tag_id = $data->tag_id;
-					}
-				}
-				$tag->save();
-			}			
 		}
 		
 		// Reset headline
