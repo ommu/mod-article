@@ -50,11 +50,10 @@
 class Articles extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $media;
-	public $old_media;
-	public $video;
+	public $media_input;
+	public $old_media_input;
+	public $video_input;
 	public $keyword;
-	public $file;
 	public $old_media_file;
 	
 	// Variable Search
@@ -92,13 +91,11 @@ class Articles extends CActiveRecord
 			array('publish, cat_id, user_id, media_id, headline, comment_code, comment, view, likes, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
 			array('user_id, media_id', 'length', 'max'=>11),
 			array('
-				video, keyword', 'length', 'max'=>32),
+				video_input, keyword', 'length', 'max'=>32),
 			array('title', 'length', 'max'=>128),
-			//array('media', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
-			//array('file', 'file', 'types' => 'mp3, mp4,
-			//	pdf, doc, docx, ppt, pptx, xls, xlsx, opt', 'maxSize'=>7097152, 'allowEmpty' => true),
+			//array('media_input', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
 			array('media_id, title, body, quote, published_date, creation_date, modified_date, 
-				media, old_media, video, keyword, old_media_file', 'safe'),
+				media_input, old_media_input, video_input, keyword, old_media_file', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('article_id, publish, cat_id, user_id, media_id, headline, comment_code, article_type, title, body, quote, media_file, published_date, comment, view, likes, download, creation_date, creation_id, modified_date, modified_id,
@@ -153,9 +150,9 @@ class Articles extends CActiveRecord
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
-			'media' => Yii::t('attribute', 'Media').' (Photo)',
-			'old_media' => Yii::t('attribute', 'Old Media').' (Photo)',
-			'video' => Yii::t('attribute', 'Video'),
+			'media_input' => Yii::t('attribute', 'Media').' (Photo)',
+			'old_media_input' => Yii::t('attribute', 'Old Media').' (Photo)',
+			'video_input' => Yii::t('attribute', 'Video'),
 			//'audio' => Yii::t('attribute', 'Audio'),
 			'keyword' => Yii::t('attribute', 'Keyword'),
 			'old_media_file' => Yii::t('attribute', 'Old File (Download)'),
@@ -528,8 +525,8 @@ class Articles extends CActiveRecord
 			if($this->article_type != 4 && $this->title == '')
 				$this->addError('title', Yii::t('phrase', 'Title cannot be blank.'));
 			
-			if($this->article_type == 2 && $this->video == '')
-				$this->addError('video', Yii::t('phrase', 'Video cannot be blank.'));
+			if($this->article_type == 2 && $this->video_input == '')
+				$this->addError('video_input', Yii::t('phrase', 'Video cannot be blank.'));
 			
 			if($this->article_type == 4) {
 				if($this->body == '')
@@ -539,12 +536,12 @@ class Articles extends CActiveRecord
 			if($this->headline == 1 && $this->publish == 0)
 				$this->addError('publish', Yii::t('phrase', 'Publish cannot be blank.'));
 			
-			$media = CUploadedFile::getInstance($this, 'media');
-			if($this->article_type == 1 && $media->name != '') {
-				$extension = pathinfo($media->name, PATHINFO_EXTENSION);
+			$media_input = CUploadedFile::getInstance($this, 'media_input');
+			if($this->article_type == 1 && $media_input->name != '') {
+				$extension = pathinfo($media_input->name, PATHINFO_EXTENSION);
 				if(!in_array(strtolower($extension), $media_file_type))
-					$this->addError('media', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}.', array(
-						'{name}'=>$media->name,
+					$this->addError('media_input', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}.', array(
+						'{name}'=>$media_input->name,
 						'{extensions}'=>Utility::formatFileType($media_file_type, false),
 					)));
 			}
@@ -576,7 +573,7 @@ class Articles extends CActiveRecord
 		if(parent::beforeSave()) {
 			if(!$this->isNewRecord && $action == 'edit') {
 				$article_path = "public/article/".$this->article_id;
-				if(!in_array($this->article_type, array(2,4))) {
+				if(!in_array($this->article_type, array(4))) {
 					// Add directory
 					if(!file_exists($article_path)) {
 						@mkdir($article_path, 0755, true);
@@ -612,11 +609,11 @@ class Articles extends CActiveRecord
 	 */
 	protected function afterSave() {
 		parent::afterSave();
+		
+		$article_path = "public/article/".$this->article_id;
 
 		if($this->isNewRecord) {
-			$article_path = "public/article/".$this->article_id;
-
-			if(!in_array($this->article_type, array(2,4))) {
+			if(!in_array($this->article_type, array(4))) {
 				// Add directory
 				if(!file_exists($article_path)) {
 					@mkdir($article_path, 0755, true);
@@ -663,10 +660,10 @@ class Articles extends CActiveRecord
 
 		if($this->article_type == 1) {
 			if($this->isNewRecord || (!$this->isNewRecord && ArticleSetting::getInfo('media_limit') == 1)) {
-				$this->media = CUploadedFile::getInstance($this, 'media');
-				if($this->media instanceOf CUploadedFile) {
-					$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media->extensionName);
-					if($this->media->saveAs($article_path.'/'.$fileName)) {
+				$this->media_input = CUploadedFile::getInstance($this, 'media_input');
+				if($this->media_input instanceOf CUploadedFile) {
+					$fileName = time().'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_input->extensionName);
+					if($this->media_input->saveAs($article_path.'/'.$fileName)) {
 						if($this->isNewRecord || (!$this->isNewRecord && $this->media_id == 0)) {
 							$images = new ArticleMedia;
 							$images->article_id = $this->article_id;
@@ -674,11 +671,9 @@ class Articles extends CActiveRecord
 							$images->media = $fileName;
 							$images->save();
 						} else {
-							if($this->old_media != '' && file_exists($article_path.'/'.$this->old_media))
-								rename($article_path.'/'.$this->old_media, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_media);
-							$images = ArticleMedia::model()->findByPk($this->media_id);
-							$images->media = $fileName;
-							$images->update();
+							if($this->old_media_input != '' && file_exists($article_path.'/'.$this->old_media_input))
+								rename($article_path.'/'.$this->old_media_input, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_media_input);
+							ArticleMedia::model()->updateByPk($this->media_id, array('media'=>$fileName));
 						}
 					}
 				}
@@ -689,24 +684,19 @@ class Articles extends CActiveRecord
 				$video = new ArticleMedia;
 				$video->article_id = $this->article_id;
 				$video->cover = 1;
-				$video->media = $this->video;
+				$video->media = $this->video_input;
 				$video->save();
 			} else {
 				if($this->media_id == 0) {
 					$video = new ArticleMedia;
 					$video->article_id = $this->article_id;
 					$video->cover = 1;
-					$video->media = $this->video;
-					if($video->save()) {
-						$data = Articles::model()->findByPk($this->article_id);
-						$data->media_id = $video->media_id;
-						$data->update();
-					}
-				} else {
-					$video = ArticleMedia::model()->findByPk($this->media_id);
-					$video->media = $this->video;
-					$video->update();
-				}
+					$video->media = $this->video_input;
+					if($video->save())
+						Articles::model()->updateByPk($this->article_id, array('media_id'=>$video->media_id));
+					
+				} else
+					ArticleMedia::model()->updateByPk($this->media_id, array('media'=>$this->video_input));
 			}
 		}
 		

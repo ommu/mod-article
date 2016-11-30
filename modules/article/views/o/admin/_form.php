@@ -114,44 +114,40 @@ EOP;
 					</div>
 				</div>
 	
-				<?php if(!$model->isNewRecord && ($model->article_type == 3 || ($model->article_type == 1 && $setting->media_limit == 1))) {
-					$model->old_media = $model->cover->media;
-					echo $form->hiddenField($model,'old_media');
+				<?php if(!$model->isNewRecord && ($model->article_type == 1 && $setting->media_limit == 1)) {
+					$model->old_media_input = $model->cover->media;
+					echo $form->hiddenField($model,'old_media_input');
 					if($model->media_id != 0) {
-						$file = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->cover->media;
-						if($model->article_type == 1) {
-							$media = '<img src="'.Utility::getTimThumb($file, 320, 150, 1).'" alt="">';
-						} elseif($model->article_type == 3) {
-							$media = '<audio src="'.$file.'" controls="true" loop="true" autoplay="false"></audio>';
-						}
+						$image = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_media_input;
+						$media = '<img src="'.Utility::getTimThumb($image, 320, 150, 1).'" alt="">';
 						echo '<div class="clearfix">';
-						echo $form->labelEx($model,'old_media');
+						echo $form->labelEx($model,'old_media_input');
 						echo '<div class="desc">'.$media.'</div>';
 						echo '</div>';
 					}
 				}?>
 
-				<?php if($model->isNewRecord || (!$model->isNewRecord && ($model->article_type == 1 && $setting->media_limit == 1))) {?>
-				<div id="media" class="clearfix filter">
-					<?php echo $form->labelEx($model,'media'); ?>
-					<div class="desc">
-						<?php echo $form->fileField($model,'media'); ?>
-						<?php echo $form->error($model,'media'); ?>
-						<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType(unserialize($setting->media_file_type), false);?></span>
-					</div>
-				</div>
-				<?php }?>
-
 				<?php if($model->isNewRecord || (!$model->isNewRecord && $model->article_type == 2)) {?>
 					<div id="video" class="clearfix filter <?php echo $model->isNewRecord ? 'hide' : ''?>">
-						<label for="Articles_video"><?php echo $model->getAttributeLabel('video');?> <span class="required">*</span></label>
+						<label for="Articles_video"><?php echo $model->getAttributeLabel('video_input');?> <span class="required">*</span></label>
 						<div class="desc">
-							<?php $model->video = $model->cover->media;
-							echo $form->textField($model,'video',array('maxlength'=>32, 'class'=>'span-8')); ?>
-							<?php echo $form->error($model,'video'); ?>
+							<?php $model->video_input = $model->cover->media;
+							echo $form->textField($model,'video_input',array('maxlength'=>32, 'class'=>'span-8')); ?>
+							<?php echo $form->error($model,'video_input'); ?>
 							<span class="small-px">http://www.youtube.com/watch?v=<strong>HOAqSoDZSho</strong></span>
 						</div>
 					</div>
+				<?php }?>
+
+				<?php if($model->isNewRecord || (!$model->isNewRecord && ($model->article_type == 1 && $setting->media_limit == 1))) {?>
+				<div id="media" class="clearfix filter">
+					<?php echo $form->labelEx($model,'media_input'); ?>
+					<div class="desc">
+						<?php echo $form->fileField($model,'media_input'); ?>
+						<?php echo $form->error($model,'media_input'); ?>
+						<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType(unserialize($setting->media_file_type), false);?></span>
+					</div>
+				</div>
 				<?php }?>
 		
 				<?php if(!$model->isNewRecord || ($model->isNewRecord && $setting->meta_keyword != '')) {?>
