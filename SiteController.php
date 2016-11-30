@@ -147,11 +147,11 @@ class SiteController extends ControllerApi
 					$data = '';					
 					if(!empty($article)) {
 						foreach($article as $key => $item) {
-							$article_url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->request->baseUrl.'/';
-							$article_path = 'public/article/'.$item->article_id.'/';
+							$article_url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->request->baseUrl;
+							$article_path = 'public/article/'.$item->article_id;
 							
-							if($item->media_id != 0 && file_exists($article_path.$item->cover->media))
-								$media_image = $article_url.$article_path.$item->cover->media;
+							if($item->media_id != 0 && file_exists($article_path.'/'.$item->cover->media))
+								$media_image = $article_url.'/'.$article_path.'/'.$item->cover->media;
 							
 							$data[] = array(
 								'id'=>$item->article_id,
@@ -261,13 +261,13 @@ class SiteController extends ControllerApi
 			
 			if(!empty($model)) {
 				foreach($model as $key => $item) {
-					$article_url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->request->baseUrl.'/';
-					$article_path = 'public/article/'.$item->article_id.'/';
+					$article_url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->request->baseUrl;
+					$article_path = 'public/article/'.$item->article_id;
 					
-					if($item->media_id != 0 && file_exists($article_path.$item->cover->media))
-						$media_image = $article_url.$article_path.$item->cover->media;
-					if($item->media_file != '' && file_exists($article_path.$val->media_file))
-						$media_file = $article_url.$article_path.$item->media_file;
+					if($item->media_id != 0 && file_exists($article_path.'/'.$item->cover->media))
+						$media_image = $article_url.'/'.$article_path.'/'.$item->cover->media;
+					if($item->media_file != '' && file_exists($article_path.'/'.$val->media_file))
+						$media_file = $article_url.'/'.$article_path.'/'.$item->media_file;
 					
 					$data[] = array(
 						'id'=>$item->article_id,
@@ -316,13 +316,13 @@ class SiteController extends ControllerApi
 			$model = Articles::model()->findByPk($id);
 			
 			if($model != null) {
-				$article_url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->request->baseUrl.'/';
+				$article_url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->request->baseUrl;
 				$article_path = 'public/article/'.$model->article_id;
 					
 				if($model->media_id != 0 && file_exists($article_path.'/'.$model->cover->media))
-					$media_image = $article_url.$article_path.'/'.$model->cover->media;
+					$media_image = $article_url.'/'.$article_path.'/'.$model->cover->media;
 				if($model->media_file != '' && file_exists($article_path.'/'.$val->media_file))
-					$media_file = $article_url.$article_path.'/'.$model->media_file;
+					$media_file = $article_url.'/'.$article_path.'/'.$model->media_file;
 				
 				$return = array(
 					'success'=>'1',
