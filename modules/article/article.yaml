@@ -23,7 +23,7 @@ plugin_menu		:
 		
 	- urlTitle: Article Settings
 		urlRules: {siteType: 0,1, userLevel: 1}
-		urlPath: {url: o/setting/index, attr: -, icon: -}
+		urlPath: {url: o/setting/edit, attr: -, icon: -}
 		submenu :
 			- urlTitle: Photos
 				urlRules: {siteType: 0,1, userLevel: 1,2}

@@ -68,7 +68,7 @@ class SettingController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array(),
+				'actions'=>array('index'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -78,7 +78,7 @@ class SettingController extends Controller
 				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('index'),
+				'actions'=>array('edit'),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level == 1)',
 			),
@@ -97,8 +97,14 @@ class SettingController extends Controller
 	 */
 	public function actionIndex() 
 	{
-		$model=$this->loadModel(1);
-
+		$this->redirect(array('edit'));
+	}
+	
+	/**
+	 * Lists all models.
+	 */
+	public function actionEdit() 
+	{
 		$category=new ArticleCategory('search');
 		$category->unsetAttributes();  // clear any default values
 		if(isset($_GET['ArticleCategory'])) {
@@ -114,6 +120,10 @@ class SettingController extends Controller
 			}
 		}
 		$columns = $category->getGridColumn($columnTemp);
+		
+		$model = ArticleSetting::model()->findByPk(1);
+		if($model == null)
+			$model=new ArticleSetting;
 
 		// Uncomment the following line if AJAX validation is needed
 		$this->performAjaxValidation($model);
@@ -154,7 +164,7 @@ class SettingController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Article Settings');
 		$this->pageDescription = Yii::t('phrase', 'This page contains general article settings that affect your entire social network. ');
 		$this->pageMeta = '';
-		$this->render('admin_index',array(
+		$this->render('admin_edit',array(
 			'model'=>$model,
 			'category' => $category,
 			'columns' => $columns,
