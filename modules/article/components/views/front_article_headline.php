@@ -27,7 +27,7 @@
 				<?php //begin.Tools ?>
 				<div class="tools">
 					<?php if(Yii::app()->params['article_mod_comment'] == 1) {?><span class="comment"><?php echo $val->comment;?></span><?php }?>
-					<?php if(Yii::app()->params['article_mod_view'] == 1) {?><span class="view"><?php echo $val->view;?></span><?php }?>
+					<?php if(Yii::app()->params['article_mod_view'] == 1) {?><span class="view"><?php echo $val->view->views;?></span><?php }?>
 					<?php if(Yii::app()->params['article_mod_like'] == 1) {?><span class="like"><?php echo $val->likes;?></span><?php }?>
 				</div>
 				<?php //end.Tools ?>

@@ -25,6 +25,8 @@
  * The followings are the available columns in table '_view_articles':
  * @property string $article_id
  * @property string $category_name
+ * @property string $views
+ * @property string $view_all
  */
 class ViewArticles extends CActiveRecord
 {
@@ -65,12 +67,12 @@ class ViewArticles extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('article_id', 'numerical', 'integerOnly'=>true),
+			array('article_id, views, view_all', 'numerical', 'integerOnly'=>true),
 			array('article_id', 'length', 'max'=>11),
 			array('category_name', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('article_id, category_name', 'safe', 'on'=>'search'),
+			array('article_id, category_name, views, view_all', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -93,6 +95,8 @@ class ViewArticles extends CActiveRecord
 		return array(
 			'article_id' => Yii::t('attribute', 'Article'),
 			'category_name' => Yii::t('attribute', 'Category Name'),
+			'views' => Yii::t('attribute', 'View'),
+			'view_all' => Yii::t('attribute', 'All View'),
 		);
 		/*
 			'Article' => 'Article',
@@ -122,6 +126,8 @@ class ViewArticles extends CActiveRecord
 
 		$criteria->compare('t.article_id',strtolower($this->article_id),true);
 		$criteria->compare('t.category_name',strtolower($this->category_name),true);
+		$criteria->compare('t.views',strtolower($this->views),true);
+		$criteria->compare('t.view_all',strtolower($this->view_all),true);
 
 		if(!isset($_GET['ViewArticles_sort']))
 			$criteria->order = 't.article_id DESC';
@@ -154,6 +160,8 @@ class ViewArticles extends CActiveRecord
 		} else {
 			$this->defaultColumns[] = 'article_id';
 			$this->defaultColumns[] = 'category_name';
+			$this->defaultColumns[] = 'views';
+			$this->defaultColumns[] = 'view_all';
 		}
 
 		return $this->defaultColumns;
@@ -164,20 +172,14 @@ class ViewArticles extends CActiveRecord
 	 */
 	protected function afterConstruct() {
 		if(count($this->defaultColumns) == 0) {
-			/*
-			$this->defaultColumns[] = array(
-				'class' => 'CCheckBoxColumn',
-				'name' => 'id',
-				'selectableRows' => 2,
-				'checkBoxHtmlOptions' => array('name' => 'trash_id[]')
-			);
-			*/
 			$this->defaultColumns[] = array(
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = 'article_id';
 			$this->defaultColumns[] = 'category_name';
+			$this->defaultColumns[] = 'views';
+			$this->defaultColumns[] = 'view_all';
 		}
 		parent::afterConstruct();
 	}
