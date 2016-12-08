@@ -35,6 +35,10 @@
 class ArticleViews extends CActiveRecord
 {
 	public $defaultColumns = array();
+	
+	// Variable Search
+	public $article_search;
+	public $user_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -63,14 +67,15 @@ class ArticleViews extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('article_id, user_id, views_date, views_ip', 'required'),
+			array('article_id, user_id, views_ip', 'required'),
 			array('publish, views', 'numerical', 'integerOnly'=>true),
 			array('article_id, user_id', 'length', 'max'=>11),
 			array('views_ip', 'length', 'max'=>20),
-			array('deleted_date', 'safe'),
+			array('', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('view_id, publish, article_id, user_id, views, views_date, views_ip, deleted_date', 'safe', 'on'=>'search'),
+			array('view_id, publish, article_id, user_id, views, views_date, views_ip, deleted_date,
+				article_search, user_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -82,6 +87,8 @@ class ArticleViews extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'article' => array(self::BELONGS_TO, 'Articles', 'article_id'),
+			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
 		);
 	}
 
@@ -99,6 +106,8 @@ class ArticleViews extends CActiveRecord
 			'views_date' => Yii::t('attribute', 'Views Date'),
 			'views_ip' => Yii::t('attribute', 'Views Ip'),
 			'deleted_date' => Yii::t('attribute', 'Deleted Date'),
+			'article_search' => Yii::t('attribute', 'Article'),
+			'user_search' => Yii::t('attribute', 'User'),
 		);
 		/*
 			'View' => 'View',
@@ -130,6 +139,18 @@ class ArticleViews extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
+		
+		// Custom Search
+		$criteria->with = array(
+			'article' => array(
+				'alias'=>'article',
+				'select'=>'title'
+			),
+			'user' => array(
+				'alias'=>'user',
+				'select'=>'displayname'
+			),
+		);
 
 		$criteria->compare('t.view_id',strtolower($this->view_id),true);
 		if(isset($_GET['type']) && $_GET['type'] == 'publish')
@@ -142,7 +163,10 @@ class ArticleViews extends CActiveRecord
 			$criteria->addInCondition('t.publish',array(0,1));
 			$criteria->compare('t.publish',$this->publish);
 		}
-		$criteria->compare('t.article_id',strtolower($this->article_id),true);
+		if(isset($_GET['article']))
+			$criteria->compare('t.article_id',$_GET['article']);
+		else
+			$criteria->compare('t.article_id',$this->article_id);
 		if(isset($_GET['user']))
 			$criteria->compare('t.user_id',$_GET['user']);
 		else
@@ -153,6 +177,9 @@ class ArticleViews extends CActiveRecord
 		$criteria->compare('t.views_ip',strtolower($this->views_ip),true);
 		if($this->deleted_date != null && !in_array($this->deleted_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.deleted_date)',date('Y-m-d', strtotime($this->deleted_date)));
+		
+		$criteria->compare('article.title',strtolower($this->article_search), true);
+		$criteria->compare('user.displayname',strtolower($this->user_search), true);
 
 		if(!isset($_GET['ArticleViews_sort']))
 			$criteria->order = 't.view_id DESC';
@@ -213,23 +240,27 @@ class ArticleViews extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			if(!isset($_GET['type'])) {
+			if(!isset($_GET['article'])) {
 				$this->defaultColumns[] = array(
-					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->view_id)), $data->publish, 1)',
+					'name' => 'article_search',
+					'value' => '$data->article->title."<br/><span>".Utility::shortText(Utility::hardDecode($data->article->body),150)."</span>"',
 					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'filter'=>array(
-						1=>Yii::t('phrase', 'Yes'),
-						0=>Yii::t('phrase', 'No'),
+						'class' => 'bold',
 					),
 					'type' => 'raw',
 				);
 			}
-			$this->defaultColumns[] = 'article_id';
-			$this->defaultColumns[] = 'user_id';
-			$this->defaultColumns[] = 'views';
+			$this->defaultColumns[] = array(
+				'name' => 'user_search',
+				'value' => '$data->user->displayname',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'views',
+				'value' => '$data->views',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
 			$this->defaultColumns[] = array(
 				'name' => 'views_date',
 				'value' => 'Utility::dateFormat($data->views_date)',
@@ -256,7 +287,13 @@ class ArticleViews extends CActiveRecord
 					),
 				), true),
 			);
-			$this->defaultColumns[] = 'views_ip';
+			$this->defaultColumns[] = array(
+				'name' => 'views_ip',
+				'value' => '$data->views_ip',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
 			$this->defaultColumns[] = array(
 				'name' => 'deleted_date',
 				'value' => 'Utility::dateFormat($data->deleted_date)',
@@ -283,6 +320,20 @@ class ArticleViews extends CActiveRecord
 					),
 				), true),
 			);
+			if(!isset($_GET['type'])) {
+				$this->defaultColumns[] = array(
+					'name' => 'publish',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->view_id)), $data->publish, 1)',
+					'htmlOptions' => array(
+						'class' => 'center',
+					),
+					'filter'=>array(
+						1=>Yii::t('phrase', 'Yes'),
+						0=>Yii::t('phrase', 'No'),
+					),
+					'type' => 'raw',
+				);
+			}
 		}
 		parent::afterConstruct();
 	}
@@ -307,68 +358,14 @@ class ArticleViews extends CActiveRecord
 	/**
 	 * before validate attributes
 	 */
-	/*
 	protected function beforeValidate() {
-		if(parent::beforeValidate()) {
-			// Create action
+		if(parent::beforeValidate()) {		
+			if($this->isNewRecord) {
+				$this->user_id = Yii::app()->user->id;
+				$this->views_ip = $_SERVER['REMOTE_ADDR'];
+			}		
 		}
 		return true;
 	}
-	*/
-
-	/**
-	 * after validate attributes
-	 */
-	/*
-	protected function afterValidate()
-	{
-		parent::afterValidate();
-			// Create action
-		return true;
-	}
-	*/
-	
-	/**
-	 * before save attributes
-	 */
-	/*
-	protected function beforeSave() {
-		if(parent::beforeSave()) {
-		}
-		return true;	
-	}
-	*/
-	
-	/**
-	 * After save attributes
-	 */
-	/*
-	protected function afterSave() {
-		parent::afterSave();
-		// Create action
-	}
-	*/
-
-	/**
-	 * Before delete attributes
-	 */
-	/*
-	protected function beforeDelete() {
-		if(parent::beforeDelete()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * After delete attributes
-	 */
-	/*
-	protected function afterDelete() {
-		parent::afterDelete();
-		// Create action
-	}
-	*/
 
 }

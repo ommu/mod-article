@@ -31,6 +31,9 @@
 class ArticleViewDetail extends CActiveRecord
 {
 	public $defaultColumns = array();
+	
+	// Variable Search
+	public $article_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -65,7 +68,8 @@ class ArticleViewDetail extends CActiveRecord
 			array('views_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, view_id, views_date, views_ip', 'safe', 'on'=>'search'),
+			array('id, view_id, views_date, views_ip,
+				article_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -77,6 +81,7 @@ class ArticleViewDetail extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'view' => array(self::BELONGS_TO, 'ArticleViews', 'view_id'),
 		);
 	}
 
@@ -117,6 +122,17 @@ class ArticleViewDetail extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
+		
+		// Custom Search
+		$criteria->with = array(
+			'view' => array(
+				'alias'=>'view',
+			),
+			'view.article' => array(
+				'alias'=>'article',
+				'select'=>'title'
+			),
+		);
 
 		$criteria->compare('t.id',strtolower($this->id),true);
 		if(isset($_GET['view']))
@@ -126,6 +142,8 @@ class ArticleViewDetail extends CActiveRecord
 		if($this->views_date != null && !in_array($this->views_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.views_date)',date('Y-m-d', strtotime($this->views_date)));
 		$criteria->compare('t.views_ip',strtolower($this->views_ip),true);
+		
+		$criteria->compare('article.title',strtolower($this->article_search), true);
 
 		if(!isset($_GET['ArticleViewDetail_sort']))
 			$criteria->order = 't.id DESC';
@@ -170,19 +188,20 @@ class ArticleViewDetail extends CActiveRecord
 	 */
 	protected function afterConstruct() {
 		if(count($this->defaultColumns) == 0) {
-			/*
-			$this->defaultColumns[] = array(
-				'class' => 'CCheckBoxColumn',
-				'name' => 'id',
-				'selectableRows' => 2,
-				'checkBoxHtmlOptions' => array('name' => 'trash_id[]')
-			);
-			*/
 			$this->defaultColumns[] = array(
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			$this->defaultColumns[] = 'view_id';
+			if(!isset($_GET['view'])) {
+				$this->defaultColumns[] = array(
+					'name' => 'article_search',
+					'value' => '$data->view->article->title."<br/><span>".Utility::shortText(Utility::hardDecode($data->view->article->body),150)."</span>"',
+					'htmlOptions' => array(
+						'class' => 'bold',
+					),
+					'type' => 'raw',
+				);
+			}
 			$this->defaultColumns[] = array(
 				'name' => 'views_date',
 				'value' => 'Utility::dateFormat($data->views_date)',
@@ -209,7 +228,13 @@ class ArticleViewDetail extends CActiveRecord
 					),
 				), true),
 			);
-			$this->defaultColumns[] = 'views_ip';
+			$this->defaultColumns[] = array(
+				'name' => 'views_ip',
+				'value' => '$data->views_ip',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
 		}
 		parent::afterConstruct();
 	}
@@ -230,73 +255,5 @@ class ArticleViewDetail extends CActiveRecord
 			return $model;			
 		}
 	}
-
-	/**
-	 * before validate attributes
-	 */
-	/*
-	protected function beforeValidate() {
-		if(parent::beforeValidate()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * after validate attributes
-	 */
-	/*
-	protected function afterValidate()
-	{
-		parent::afterValidate();
-			// Create action
-		return true;
-	}
-	*/
-	
-	/**
-	 * before save attributes
-	 */
-	/*
-	protected function beforeSave() {
-		if(parent::beforeSave()) {
-			//$this->views_date = date('Y-m-d', strtotime($this->views_date));
-		}
-		return true;	
-	}
-	*/
-	
-	/**
-	 * After save attributes
-	 */
-	/*
-	protected function afterSave() {
-		parent::afterSave();
-		// Create action
-	}
-	*/
-
-	/**
-	 * Before delete attributes
-	 */
-	/*
-	protected function beforeDelete() {
-		if(parent::beforeDelete()) {
-			// Create action
-		}
-		return true;
-	}
-	*/
-
-	/**
-	 * After delete attributes
-	 */
-	/*
-	protected function afterDelete() {
-		parent::afterDelete();
-		// Create action
-	}
-	*/
 
 }
