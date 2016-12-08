@@ -27,6 +27,7 @@
  * @property string $category_name
  * @property string $views
  * @property string $view_all
+ * @property string $downloads
  */
 class ViewArticles extends CActiveRecord
 {
@@ -67,12 +68,12 @@ class ViewArticles extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('article_id, views, view_all', 'numerical', 'integerOnly'=>true),
+			array('article_id, views, view_all, downloads', 'numerical', 'integerOnly'=>true),
 			array('article_id', 'length', 'max'=>11),
 			array('category_name', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('article_id, category_name, views, view_all', 'safe', 'on'=>'search'),
+			array('article_id, category_name, views, view_all, downloads', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -97,6 +98,7 @@ class ViewArticles extends CActiveRecord
 			'category_name' => Yii::t('attribute', 'Category Name'),
 			'views' => Yii::t('attribute', 'View'),
 			'view_all' => Yii::t('attribute', 'All View'),
+			'downloads' => Yii::t('attribute', 'Downloads'),
 		);
 		/*
 			'Article' => 'Article',
@@ -128,6 +130,7 @@ class ViewArticles extends CActiveRecord
 		$criteria->compare('t.category_name',strtolower($this->category_name),true);
 		$criteria->compare('t.views',strtolower($this->views),true);
 		$criteria->compare('t.view_all',strtolower($this->view_all),true);
+		$criteria->compare('t.downloads',strtolower($this->downloads),true);
 
 		if(!isset($_GET['ViewArticles_sort']))
 			$criteria->order = 't.article_id DESC';
@@ -162,6 +165,7 @@ class ViewArticles extends CActiveRecord
 			$this->defaultColumns[] = 'category_name';
 			$this->defaultColumns[] = 'views';
 			$this->defaultColumns[] = 'view_all';
+			$this->defaultColumns[] = 'downloads';
 		}
 
 		return $this->defaultColumns;
@@ -180,6 +184,7 @@ class ViewArticles extends CActiveRecord
 			$this->defaultColumns[] = 'category_name';
 			$this->defaultColumns[] = 'views';
 			$this->defaultColumns[] = 'view_all';
+			$this->defaultColumns[] = 'downloads';
 		}
 		parent::afterConstruct();
 	}

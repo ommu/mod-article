@@ -35,7 +35,6 @@
  * @property string $published_date
  * @property integer $comment
  * @property integer $likes
- * @property integer $download
  * @property string $creation_date
  * @property string $creation_id
  * @property string $modified_date
@@ -97,7 +96,7 @@ class Articles extends CActiveRecord
 				media_input, old_media_input, video_input, keyword, old_media_file', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('article_id, publish, cat_id, user_id, media_id, headline, comment_code, article_type, title, body, quote, media_file, published_date, comment, likes, download, creation_date, creation_id, modified_date, modified_id,
+			array('article_id, publish, cat_id, user_id, media_id, headline, comment_code, article_type, title, body, quote, media_file, published_date, comment, likes, creation_date, creation_id, modified_date, modified_id,
 				user_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -143,7 +142,6 @@ class Articles extends CActiveRecord
 			'published_date' => Yii::t('attribute', 'Published Date'),
 			'comment' => Yii::t('attribute', 'Comment'),
 			'likes' => Yii::t('attribute', 'Likes'),
-			'download' => Yii::t('attribute', 'Download'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
@@ -236,7 +234,6 @@ class Articles extends CActiveRecord
 			$criteria->compare('date(t.published_date)',date('Y-m-d', strtotime($this->published_date)));
 		$criteria->compare('t.comment',$this->comment);
 		$criteria->compare('t.likes',$this->likes);
-		$criteria->compare('t.download',$this->download);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		$criteria->compare('t.creation_id',$this->creation_id);
@@ -292,7 +289,6 @@ class Articles extends CActiveRecord
 			$this->defaultColumns[] = 'published_date';
 			$this->defaultColumns[] = 'comment';
 			$this->defaultColumns[] = 'likes';
-			$this->defaultColumns[] = 'download';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
 			$this->defaultColumns[] = 'modified_date';
