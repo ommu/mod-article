@@ -21,10 +21,12 @@
  *
  * The followings are the available columns in table 'ommu_article_likes':
  * @property string $like_id
+ * @property integer $publish
  * @property string $article_id
  * @property string $user_id
  * @property string $likes_date
  * @property string $likes_ip
+ * @property string $deleted_date
  *
  * The followings are the available model relations:
  * @property OmmuArticles $article
@@ -63,14 +65,14 @@ class ArticleLikes extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('article_id, 
-				user_id, likes_ip', 'required'),
+			array('publish, article_id, user_id', 'required'),
+			array('publish', 'numerical', 'integerOnly'=>true),
 			array('article_id, user_id', 'length', 'max'=>11),
 			array('likes_ip', 'length', 'max'=>20),
-			array('likes_date', 'safe'),
+			array('', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('like_id, article_id, user_id, likes_date, likes_ip,
+			array('like_id, publish, article_id, user_id, likes_date, likes_ip, deleted_date,
 				article_search, user_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -95,10 +97,12 @@ class ArticleLikes extends CActiveRecord
 	{
 		return array(
 			'like_id' => Yii::t('attribute', 'Likes'),
+			'publish' => Yii::t('attribute', 'Publish'),
 			'article_id' => Yii::t('attribute', 'Article'),
 			'user_id' => Yii::t('attribute', 'User'),
 			'likes_date' => Yii::t('attribute', 'Likes Date'),
 			'likes_ip' => Yii::t('attribute', 'Likes Ip'),
+			'deleted_date' => Yii::t('attribute', 'Deleted Date'),
 			'article_search' => Yii::t('attribute', 'Article'),
 			'user_search' => Yii::t('attribute', 'User'),
 		);
@@ -128,6 +132,16 @@ class ArticleLikes extends CActiveRecord
 		);
 
 		$criteria->compare('t.like_id',$this->like_id);
+		if(isset($_GET['type']) && $_GET['type'] == 'publish')
+			$criteria->compare('t.publish',1);
+		elseif(isset($_GET['type']) && $_GET['type'] == 'unpublish')
+			$criteria->compare('t.publish',0);
+		elseif(isset($_GET['type']) && $_GET['type'] == 'trash')
+			$criteria->compare('t.publish',2);
+		else {
+			$criteria->addInCondition('t.publish',array(0,1));
+			$criteria->compare('t.publish',$this->publish);
+		}
 		if(isset($_GET['article'])) {
 			$criteria->compare('t.article_id',$_GET['article']);
 		} else {
@@ -141,6 +155,8 @@ class ArticleLikes extends CActiveRecord
 		if($this->likes_date != null && !in_array($this->likes_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.likes_date)',date('Y-m-d', strtotime($this->likes_date)));
 		$criteria->compare('t.likes_ip',strtolower($this->likes_ip),true);
+		if($this->deleted_date != null && !in_array($this->deleted_date, array('0000-00-00 00:00:00', '0000-00-00')))
+			$criteria->compare('date(t.deleted_date)',date('Y-m-d', strtotime($this->deleted_date)));
 		
 		$criteria->compare('article.title',strtolower($this->article_search), true);
 		$criteria->compare('user.displayname',strtolower($this->user_search), true);
@@ -175,10 +191,12 @@ class ArticleLikes extends CActiveRecord
 			}
 		}else {
 			//$this->defaultColumns[] = 'like_id';
+			$this->defaultColumns[] = 'publish';
 			$this->defaultColumns[] = 'article_id';
 			$this->defaultColumns[] = 'user_id';
 			$this->defaultColumns[] = 'likes_date';
 			$this->defaultColumns[] = 'likes_ip';
+			$this->defaultColumns[] = 'deleted_date';
 		}
 
 		return $this->defaultColumns;
@@ -203,10 +221,12 @@ class ArticleLikes extends CActiveRecord
 					'type' => 'raw',
 				);
 			}
-			$this->defaultColumns[] = array(
-				'name' => 'user_search',
-				'value' => '$data->user->displayname',
-			);
+			if(!isset($_GET['user'])) {
+				$this->defaultColumns[] = array(
+					'name' => 'user_search',
+					'value' => '$data->user->displayname',
+				);
+			}
 			$this->defaultColumns[] = array(
 				'name' => 'likes_date',
 				'value' => 'Utility::dateFormat($data->likes_date)',
@@ -240,6 +260,46 @@ class ArticleLikes extends CActiveRecord
 					'class' => 'center',
 				),
 			);
+			$this->defaultColumns[] = array(
+				'name' => 'deleted_date',
+				'value' => 'Utility::dateFormat($data->deleted_date)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter' => Yii::app()->controller->widget('zii.widgets.jui.CJuiDatePicker', array(
+					'model'=>$this,
+					'attribute'=>'deleted_date',
+					'language' => 'ja',
+					'i18nScriptFile' => 'jquery.ui.datepicker-en.js',
+					//'mode'=>'datetime',
+					'htmlOptions' => array(
+						'id' => 'deleted_date_filter',
+					),
+					'options'=>array(
+						'showOn' => 'focus',
+						'dateFormat' => 'dd-mm-yy',
+						'showOtherMonths' => true,
+						'selectOtherMonths' => true,
+						'changeMonth' => true,
+						'changeYear' => true,
+						'showButtonPanel' => true,
+					),
+				), true),
+			);
+			if(!isset($_GET['type'])) {
+				$this->defaultColumns[] = array(
+					'name' => 'publish',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->like_id)), $data->publish, 1)',
+					'htmlOptions' => array(
+						'class' => 'center',
+					),
+					'filter'=>array(
+						1=>Yii::t('phrase', 'Yes'),
+						0=>Yii::t('phrase', 'No'),
+					),
+					'type' => 'raw',
+				);
+			}
 		}
 		parent::afterConstruct();
 	}
@@ -250,7 +310,7 @@ class ArticleLikes extends CActiveRecord
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {		
 			if($this->isNewRecord) {
-				$this->user_id = Yii::app()->user->id;
+				$this->user_id = !Yii::app()->user->isGuest ? Yii::app()->user->id : 0;
 				$this->likes_ip = $_SERVER['REMOTE_ADDR'];
 			}		
 		}

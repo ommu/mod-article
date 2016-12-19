@@ -10,7 +10,9 @@
  * TOC :
  *	Index
  *	Manage
+ *	RunAction
  *	Delete
+ *	Publish
  *
  *	LoadModel
  *	performAjaxValidation
@@ -80,7 +82,7 @@ class LikeController extends Controller
 				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('manage','delete'),
+				'actions'=>array('manage','runaction','delete','publish'),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level) && in_array(Yii::app()->user->level, array(1,2))',
 			),
@@ -140,6 +142,42 @@ class LikeController extends Controller
 	}
 
 	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionRunAction() {
+		$id       = $_POST['trash_id'];
+		$criteria = null;
+		$actions  = $_GET['action'];
+
+		if(count($id) > 0) {
+			$criteria = new CDbCriteria;
+			$criteria->addInCondition('id', $id);
+
+			if($actions == 'publish') {
+				ArticleLikes::model()->updateAll(array(
+					'publish' => 1,
+				),$criteria);
+			} elseif($actions == 'unpublish') {
+				ArticleLikes::model()->updateAll(array(
+					'publish' => 0,
+				),$criteria);
+			} elseif($actions == 'trash') {
+				ArticleLikes::model()->updateAll(array(
+					'publish' => 2,
+				),$criteria);
+			} elseif($actions == 'delete') {
+				ArticleLikes::model()->deleteAll($criteria);
+			}
+		}
+
+		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+		if(!isset($_GET['ajax'])) {
+			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('manage'));
+		}
+	}
+
+	/**
 	 * Deletes a particular model.
 	 * If deletion is successful, the browser will be redirected to the 'admin' page.
 	 * @param integer $id the ID of the model to be deleted
@@ -168,6 +206,54 @@ class LikeController extends Controller
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');
+		}
+	}
+
+	/**
+	 * Deletes a particular model.
+	 * If deletion is successful, the browser will be redirected to the 'admin' page.
+	 * @param integer $id the ID of the model to be deleted
+	 */
+	public function actionPublish($id) 
+	{
+		$model=$this->loadModel($id);
+		
+		if($model->publish == 1) {
+			$title = Yii::t('phrase', 'Unpublish');
+			$replace = 0;
+		} else {
+			$title = Yii::t('phrase', 'Publish');
+			$replace = 1;
+		}
+
+		if(Yii::app()->request->isPostRequest) {
+			// we only allow deletion via POST request
+			if(isset($id)) {
+				//change value active or publish
+				$model->publish = $replace;
+
+				if($model->update()) {
+					echo CJSON::encode(array(
+						'type' => 5,
+						'get' => Yii::app()->controller->createUrl('manage'),
+						'id' => 'partial-article-likes',
+						'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArticleLikes success updated.').'</strong></div>',
+					));
+				}
+			}
+
+		} else {
+			$this->dialogDetail = true;
+			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+			$this->dialogWidth = 350;
+
+			$this->pageTitle = $title;
+			$this->pageDescription = '';
+			$this->pageMeta = '';
+			$this->render('admin_publish',array(
+				'title'=>$title,
+				'model'=>$model,
+			));
 		}
 	}
 
