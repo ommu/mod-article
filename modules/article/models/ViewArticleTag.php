@@ -1,11 +1,11 @@
 <?php
 /**
- * ViewArticles
+ * ViewArticleTag
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2016 Ommu Platform (ommu.co)
- * @created date 9 November 2016, 18:13 WIB
+ * @created date 19 December 2016, 16:48 WIB
  * @link http://company.ommu.co
  * @contact (+62)856-299-4114
  *
@@ -20,20 +20,14 @@
  *
  * --------------------------------------------------------------------------------------
  *
- * This is the model class for table "_view_articles".
+ * This is the model class for table "_view_article_tag".
  *
- * The followings are the available columns in table '_view_articles':
- * @property string $article_id
- * @property string $category_name
- * @property string $medias
- * @property string $likes
- * @property string $like_all
- * @property string $views
- * @property string $view_all
- * @property string $downloads
- * @property string $tags
+ * The followings are the available columns in table '_view_article_tag':
+ * @property string $tag_id
+ * @property string $articles
+ * @property string $article_all
  */
-class ViewArticles extends CActiveRecord
+class ViewArticleTag extends CActiveRecord
 {
 	public $defaultColumns = array();
 
@@ -41,7 +35,7 @@ class ViewArticles extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return ViewArticles the static model class
+	 * @return ViewArticleTag the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -53,7 +47,7 @@ class ViewArticles extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return '_view_articles';
+		return '_view_article_tag';
 	}
 
 	/**
@@ -61,7 +55,7 @@ class ViewArticles extends CActiveRecord
 	 */
 	public function primaryKey()
 	{
-		return 'article_id';
+		return 'tag_id';
 	}
 
 	/**
@@ -72,12 +66,13 @@ class ViewArticles extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('article_id, medias, likes, like_all, views, view_all, downloads, tags', 'numerical', 'integerOnly'=>true),
-			array('article_id', 'length', 'max'=>11),
-			array('category_name', 'safe'),
+			array('tag_id', 'required'),
+			array('tag_id', 'length', 'max'=>11),
+			array('articles', 'length', 'max'=>23),
+			array('article_all', 'length', 'max'=>21),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('article_id, category_name, medias, likes, like_all, views, view_all, downloads, tags', 'safe', 'on'=>'search'),
+			array('tag_id, articles, article_all', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -98,20 +93,14 @@ class ViewArticles extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'article_id' => Yii::t('attribute', 'Article'),
-			'category_name' => Yii::t('attribute', 'Category Name'),
-			'medias' => Yii::t('attribute', 'Medias'),
-			'likes' => Yii::t('attribute', 'Likes'),
-			'like_all' => Yii::t('attribute', 'Like All'),
-			'views' => Yii::t('attribute', 'View'),
-			'view_all' => Yii::t('attribute', 'All View'),
-			'downloads' => Yii::t('attribute', 'Downloads'),
-			'tags' => Yii::t('attribute', 'Tags'),
+			'tag_id' => Yii::t('attribute', 'Tag'),
+			'articles' => Yii::t('attribute', 'Articles'),
+			'article_all' => Yii::t('attribute', 'Article All'),
 		);
 		/*
-			'Article' => 'Article',
-			'Category Name' => 'Category Name',
-			'Location' => 'Location',
+			'Tag' => 'Tag',
+			'Articles' => 'Articles',
+			'Article All' => 'Article All',
 		
 		*/
 	}
@@ -134,18 +123,12 @@ class ViewArticles extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('t.article_id',strtolower($this->article_id),true);
-		$criteria->compare('t.category_name',strtolower($this->category_name),true);
-		$criteria->compare('t.medias',strtolower($this->medias),true);
-		$criteria->compare('t.likes',strtolower($this->likes),true);
-		$criteria->compare('t.like_all',strtolower($this->like_all),true);
-		$criteria->compare('t.views',strtolower($this->views),true);
-		$criteria->compare('t.view_all',strtolower($this->view_all),true);
-		$criteria->compare('t.downloads',strtolower($this->downloads),true);
-		$criteria->compare('t.tags',strtolower($this->tags),true);
+		$criteria->compare('t.tag_id',strtolower($this->tag_id),true);
+		$criteria->compare('t.articles',strtolower($this->articles),true);
+		$criteria->compare('t.article_all',strtolower($this->article_all),true);
 
-		if(!isset($_GET['ViewArticles_sort']))
-			$criteria->order = 't.article_id DESC';
+		if(!isset($_GET['ViewArticleTag_sort']))
+			$criteria->order = 't.tag_id DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -173,15 +156,9 @@ class ViewArticles extends CActiveRecord
 				$this->defaultColumns[] = $val;
 			}
 		} else {
-			$this->defaultColumns[] = 'article_id';
-			$this->defaultColumns[] = 'category_name';
-			$this->defaultColumns[] = 'medias';
-			$this->defaultColumns[] = 'likes';
-			$this->defaultColumns[] = 'like_all';
-			$this->defaultColumns[] = 'views';
-			$this->defaultColumns[] = 'view_all';
-			$this->defaultColumns[] = 'downloads';
-			$this->defaultColumns[] = 'tags';
+			$this->defaultColumns[] = 'tag_id';
+			$this->defaultColumns[] = 'articles';
+			$this->defaultColumns[] = 'article_all';
 		}
 
 		return $this->defaultColumns;
@@ -196,15 +173,9 @@ class ViewArticles extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			$this->defaultColumns[] = 'article_id';
-			$this->defaultColumns[] = 'category_name';
-			$this->defaultColumns[] = 'medias';
-			$this->defaultColumns[] = 'likes';
-			$this->defaultColumns[] = 'like_all';
-			$this->defaultColumns[] = 'views';
-			$this->defaultColumns[] = 'view_all';
-			$this->defaultColumns[] = 'downloads';
-			$this->defaultColumns[] = 'tags';
+			$this->defaultColumns[] = 'tag_id';
+			$this->defaultColumns[] = 'articles';
+			$this->defaultColumns[] = 'article_all';
 		}
 		parent::afterConstruct();
 	}
