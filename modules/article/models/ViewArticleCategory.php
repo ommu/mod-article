@@ -24,9 +24,9 @@
  * @property string $category_name
  * @property string $category_desc
  * @property string $articles
- * @property string $article_publish
  * @property string $article_pending
  * @property string $article_unpublish
+ * @property string $article_all
  * @property string $article_id
  */
 class ViewArticleCategory extends CActiveRecord
@@ -69,11 +69,11 @@ class ViewArticleCategory extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('cat_id', 'numerical', 'integerOnly'=>true),
-			array('articles, article_publish, article_pending, article_unpublish, article_id', 'length', 'max'=>21),
+			array('articles, article_pending, article_unpublish, article_all, article_id', 'length', 'max'=>21),
 			array('category_name, category_desc', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('cat_id, category_name, category_desc, articles, article_publish, article_pending, article_unpublish, article_id', 'safe', 'on'=>'search'),
+			array('cat_id, category_name, category_desc, articles, article_pending, article_unpublish, article_all, article_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -99,9 +99,9 @@ class ViewArticleCategory extends CActiveRecord
 			'category_name' => Yii::t('attribute', 'Category Name'),
 			'category_desc' => Yii::t('attribute', 'Category Desc'),
 			'articles' => Yii::t('attribute', 'Articles'),
-			'article_publish' => Yii::t('attribute', 'Article Publish'),
 			'article_pending' => Yii::t('attribute', 'Article Pending'),
 			'article_unpublish' => Yii::t('attribute', 'Article Unpublish'),
+			'article_all' => Yii::t('attribute', 'Article All'),
 			'article_id' => Yii::t('attribute', 'Article'),
 		);
 	}
@@ -128,9 +128,9 @@ class ViewArticleCategory extends CActiveRecord
 		$criteria->compare('t.category_name',strtolower($this->category_name),true);
 		$criteria->compare('t.category_desc',strtolower($this->category_desc),true);
 		$criteria->compare('t.articles',strtolower($this->articles),true);
-		$criteria->compare('t.article_publish',strtolower($this->article_publish),true);
 		$criteria->compare('t.article_pending',strtolower($this->article_pending),true);
 		$criteria->compare('t.article_unpublish',strtolower($this->article_unpublish),true);
+		$criteria->compare('t.article_all',strtolower($this->article_all),true);
 		$criteria->compare('t.article_id',strtolower($this->article_id),true);
 
 		if(!isset($_GET['ViewArticleCategory_sort']))
@@ -166,9 +166,9 @@ class ViewArticleCategory extends CActiveRecord
 			$this->defaultColumns[] = 'category_name';
 			$this->defaultColumns[] = 'category_desc';
 			$this->defaultColumns[] = 'articles';
-			$this->defaultColumns[] = 'article_publish';
 			$this->defaultColumns[] = 'article_pending';
 			$this->defaultColumns[] = 'article_unpublish';
+			$this->defaultColumns[] = 'article_all';
 			$this->defaultColumns[] = 'article_id';
 		}
 
@@ -188,9 +188,9 @@ class ViewArticleCategory extends CActiveRecord
 			$this->defaultColumns[] = 'category_name';
 			$this->defaultColumns[] = 'category_desc';
 			$this->defaultColumns[] = 'articles';
-			$this->defaultColumns[] = 'article_publish';
 			$this->defaultColumns[] = 'article_pending';
 			$this->defaultColumns[] = 'article_unpublish';
+			$this->defaultColumns[] = 'article_all';
 			$this->defaultColumns[] = 'article_id';
 		}
 		parent::afterConstruct();
