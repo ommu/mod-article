@@ -21,8 +21,6 @@
  *
  * The followings are the available columns in table '_view_article_category':
  * @property integer $cat_id
- * @property string $category_name
- * @property string $category_desc
  * @property string $articles
  * @property string $article_pending
  * @property string $article_unpublish
@@ -70,10 +68,9 @@ class ViewArticleCategory extends CActiveRecord
 		return array(
 			array('cat_id', 'numerical', 'integerOnly'=>true),
 			array('articles, article_pending, article_unpublish, article_all, article_id', 'length', 'max'=>21),
-			array('category_name, category_desc', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('cat_id, category_name, category_desc, articles, article_pending, article_unpublish, article_all, article_id', 'safe', 'on'=>'search'),
+			array('cat_id, articles, article_pending, article_unpublish, article_all, article_id', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -95,9 +92,7 @@ class ViewArticleCategory extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'cat_id' => Yii::t('attribute', 'Cat'),
-			'category_name' => Yii::t('attribute', 'Category Name'),
-			'category_desc' => Yii::t('attribute', 'Category Desc'),
+			'cat_id' => Yii::t('attribute', 'Category'),
 			'articles' => Yii::t('attribute', 'Articles'),
 			'article_pending' => Yii::t('attribute', 'Article Pending'),
 			'article_unpublish' => Yii::t('attribute', 'Article Unpublish'),
@@ -125,8 +120,6 @@ class ViewArticleCategory extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.cat_id',$this->cat_id);
-		$criteria->compare('t.category_name',strtolower($this->category_name),true);
-		$criteria->compare('t.category_desc',strtolower($this->category_desc),true);
 		$criteria->compare('t.articles',strtolower($this->articles),true);
 		$criteria->compare('t.article_pending',strtolower($this->article_pending),true);
 		$criteria->compare('t.article_unpublish',strtolower($this->article_unpublish),true);
@@ -163,8 +156,6 @@ class ViewArticleCategory extends CActiveRecord
 			}
 		} else {
 			$this->defaultColumns[] = 'cat_id';
-			$this->defaultColumns[] = 'category_name';
-			$this->defaultColumns[] = 'category_desc';
 			$this->defaultColumns[] = 'articles';
 			$this->defaultColumns[] = 'article_pending';
 			$this->defaultColumns[] = 'article_unpublish';
@@ -185,8 +176,6 @@ class ViewArticleCategory extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = 'cat_id';
-			$this->defaultColumns[] = 'category_name';
-			$this->defaultColumns[] = 'category_desc';
 			$this->defaultColumns[] = 'articles';
 			$this->defaultColumns[] = 'article_pending';
 			$this->defaultColumns[] = 'article_unpublish';

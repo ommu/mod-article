@@ -129,7 +129,7 @@ class AdminController extends Controller
 		
 		if(isset($_GET['category'])) {
 			$category = ArticleCategory::model()->findByPk($_GET['category']);
-			$title = ': '.Phrase::trans($category->name, 2);
+			$title = ': '.Phrase::trans($category->name);
 		} else {
 			$title = '';
 		}

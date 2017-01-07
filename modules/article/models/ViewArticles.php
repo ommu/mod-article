@@ -24,7 +24,6 @@
  *
  * The followings are the available columns in table '_view_articles':
  * @property string $article_id
- * @property string $category_name
  * @property string $medias
  * @property string $likes
  * @property string $like_all
@@ -74,10 +73,9 @@ class ViewArticles extends CActiveRecord
 		return array(
 			array('article_id, medias, likes, like_all, views, view_all, downloads, tags', 'numerical', 'integerOnly'=>true),
 			array('article_id', 'length', 'max'=>11),
-			array('category_name', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('article_id, category_name, medias, likes, like_all, views, view_all, downloads, tags', 'safe', 'on'=>'search'),
+			array('article_id, medias, likes, like_all, views, view_all, downloads, tags', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -99,7 +97,6 @@ class ViewArticles extends CActiveRecord
 	{
 		return array(
 			'article_id' => Yii::t('attribute', 'Article'),
-			'category_name' => Yii::t('attribute', 'Category Name'),
 			'medias' => Yii::t('attribute', 'Medias'),
 			'likes' => Yii::t('attribute', 'Likes'),
 			'like_all' => Yii::t('attribute', 'Like All'),
@@ -135,7 +132,6 @@ class ViewArticles extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.article_id',strtolower($this->article_id),true);
-		$criteria->compare('t.category_name',strtolower($this->category_name),true);
 		$criteria->compare('t.medias',strtolower($this->medias),true);
 		$criteria->compare('t.likes',strtolower($this->likes),true);
 		$criteria->compare('t.like_all',strtolower($this->like_all),true);
@@ -174,7 +170,6 @@ class ViewArticles extends CActiveRecord
 			}
 		} else {
 			$this->defaultColumns[] = 'article_id';
-			$this->defaultColumns[] = 'category_name';
 			$this->defaultColumns[] = 'medias';
 			$this->defaultColumns[] = 'likes';
 			$this->defaultColumns[] = 'like_all';
@@ -197,7 +192,6 @@ class ViewArticles extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = 'article_id';
-			$this->defaultColumns[] = 'category_name';
 			$this->defaultColumns[] = 'medias';
 			$this->defaultColumns[] = 'likes';
 			$this->defaultColumns[] = 'like_all';
