@@ -34,6 +34,9 @@
 class ArticleDownloadDetail extends CActiveRecord
 {
 	public $defaultColumns = array();
+	
+	// Variable Search
+	public $article_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -68,7 +71,8 @@ class ArticleDownloadDetail extends CActiveRecord
 			array('download_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, download_id, download_date, download_ip', 'safe', 'on'=>'search'),
+			array('id, download_id, download_date, download_ip,
+				article_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -94,6 +98,7 @@ class ArticleDownloadDetail extends CActiveRecord
 			'download_id' => Yii::t('attribute', 'Download'),
 			'download_date' => Yii::t('attribute', 'Download Date'),
 			'download_ip' => Yii::t('attribute', 'Download Ip'),
+			'article_search' => Yii::t('attribute', 'Article'),
 		);
 		/*
 			'ID' => 'ID',
@@ -121,6 +126,17 @@ class ArticleDownloadDetail extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
+		
+		// Custom Search
+		$criteria->with = array(
+			'download' => array(
+				'alias'=>'download',
+			),
+			'download.article' => array(
+				'alias'=>'article',
+				'select'=>'title'
+			),
+		);
 
 		$criteria->compare('t.id',strtolower($this->id),true);
 		if(isset($_GET['download']))
@@ -130,6 +146,8 @@ class ArticleDownloadDetail extends CActiveRecord
 		if($this->download_date != null && !in_array($this->download_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.download_date)',date('Y-m-d', strtotime($this->download_date)));
 		$criteria->compare('t.download_ip',strtolower($this->download_ip),true);
+
+		$criteria->compare('article.title',strtolower($this->article_search), true);
 
 		if(!isset($_GET['ArticleDownloadDetail_sort']))
 			$criteria->order = 't.id DESC';
@@ -178,8 +196,16 @@ class ArticleDownloadDetail extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			if(!isset($_GET['download']))
-				$this->defaultColumns[] = 'download_id';
+			if(!isset($_GET['download'])) {
+				$this->defaultColumns[] = array(
+					'name' => 'article_search',
+					'value' => '$data->download->article->title."<br/><span>".Utility::shortText(Utility::hardDecode($data->download->article->body),150)."</span>"',
+					'htmlOptions' => array(
+						'class' => 'bold',
+					),
+					'type' => 'raw',
+				);
+			}
 			$this->defaultColumns[] = array(
 				'name' => 'download_date',
 				'value' => 'Utility::dateFormat($data->download_date)',
