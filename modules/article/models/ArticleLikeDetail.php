@@ -35,6 +35,9 @@
 class ArticleLikeDetail extends CActiveRecord
 {
 	public $defaultColumns = array();
+	
+	// Variable Search
+	public $article_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -70,7 +73,8 @@ class ArticleLikeDetail extends CActiveRecord
 			array('likes_date', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, publish, like_id, likes_date, likes_ip', 'safe', 'on'=>'search'),
+			array('id, publish, like_id, likes_date, likes_ip,
+				article_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -97,6 +101,7 @@ class ArticleLikeDetail extends CActiveRecord
 			'like_id' => Yii::t('attribute', 'Like'),
 			'likes_date' => Yii::t('attribute', 'Likes Date'),
 			'likes_ip' => Yii::t('attribute', 'Likes Ip'),
+			'article_search' => Yii::t('attribute', 'Article'),
 		);
 		/*
 			'ID' => 'ID',
@@ -125,6 +130,17 @@ class ArticleLikeDetail extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
+		
+		// Custom Search
+		$criteria->with = array(
+			'like' => array(
+				'alias'=>'like',
+			),
+			'like.article' => array(
+				'alias'=>'article',
+				'select'=>'title'
+			),
+		);
 
 		$criteria->compare('t.id',strtolower($this->id),true);
 		if(isset($_GET['type']) && $_GET['type'] == 'publish')
@@ -144,6 +160,8 @@ class ArticleLikeDetail extends CActiveRecord
 		if($this->likes_date != null && !in_array($this->likes_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.likes_date)',date('Y-m-d', strtotime($this->likes_date)));
 		$criteria->compare('t.likes_ip',strtolower($this->likes_ip),true);
+
+		$criteria->compare('article.title',strtolower($this->article_search), true);
 
 		if(!isset($_GET['ArticleLikeDetail_sort']))
 			$criteria->order = 't.id DESC';
@@ -193,8 +211,16 @@ class ArticleLikeDetail extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			if(!isset($_GET['like']))
-				$this->defaultColumns[] = 'like_id';
+			if(!isset($_GET['like'])) {
+				$this->defaultColumns[] = array(
+					'name' => 'article_search',
+					'value' => '$data->like->article->title."<br/><span>".Utility::shortText(Utility::hardDecode($data->like->article->body),150)."</span>"',
+					'htmlOptions' => array(
+						'class' => 'bold',
+					),
+					'type' => 'raw',
+				);				
+			}
 			$this->defaultColumns[] = array(
 				'name' => 'likes_date',
 				'value' => 'Utility::dateFormat($data->likes_date)',

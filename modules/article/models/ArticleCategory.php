@@ -262,7 +262,7 @@ class ArticleCategory extends CActiveRecord
 				'value' => '$data->dependency != 0 ? Phrase::trans(ArticleCategory::model()->findByPk($data->dependency)->name) : "-"',
 			);
 			$this->defaultColumns[] = array(
-				'header' => 'Count',
+				'header' => Yii::t('phrase', 'Articles'),
 				'value' => 'CHtml::link($data->view->articles.\' \'.Yii::t(\'attribute\', \'Article\'), Yii::app()->controller->createUrl("o/admin/manage",array("category"=>$data->cat_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
