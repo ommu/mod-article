@@ -112,11 +112,11 @@ class Articles extends CActiveRecord
 			'cat' => array(self::BELONGS_TO, 'ArticleCategory', 'cat_id'),
 			'cover' => array(self::BELONGS_TO, 'ArticleMedia', 'media_id'),
 			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
-			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
-			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
+			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'tag' => array(self::HAS_ONE, 'ArticleTag', 'article_id'),
 			'medias' => array(self::HAS_MANY, 'ArticleMedia', 'article_id'),
 			'tags' => array(self::HAS_MANY, 'ArticleTag', 'article_id'),
-			'tag_ONE' => array(self::HAS_ONE, 'ArticleTag', 'article_id'),
 		);
 	}
 
@@ -174,12 +174,12 @@ class Articles extends CActiveRecord
 				'alias'=>'user',
 				'select'=>'displayname',
 			),
-			'creation_relation' => array(
-				'alias'=>'creation_relation',
+			'creation' => array(
+				'alias'=>'creation',
 				'select'=>'displayname',
 			),
-			'modified_relation' => array(
-				'alias'=>'modified_relation',
+			'modified' => array(
+				'alias'=>'modified',
 				'select'=>'displayname',
 			),
 		);
@@ -239,8 +239,8 @@ class Articles extends CActiveRecord
 		$criteria->compare('t.modified_id',$this->modified_id);
 		
 		$criteria->compare('user.displayname',strtolower($this->user_search), true);
-		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
-		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
+		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
+		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
 
 		if(!isset($_GET['Articles_sort']))
 			$criteria->order = 't.article_id DESC';
@@ -334,7 +334,7 @@ class Articles extends CActiveRecord
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
-				'value' => '$data->creation_relation->displayname',
+				'value' => '$data->creation->displayname',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
@@ -700,14 +700,17 @@ class Articles extends CActiveRecord
 			$article_path = "public/article/".$this->article_id;
 			
 			//delete media photos
-			$article_photo = ArticleMedia::getPhoto($this->article_id);
-			foreach($article_photo as $val) {
-				if(in_array($this->article_type, array(1,3)) && $val->media != '' && file_exists($article_path.'/'.$val->media))
-					rename($article_path.'/'.$val->media, 'public/article/verwijderen/'.$val->article_id.'_'.$val->media);
+			$medias = $this->medias;
+			if(!empty($medias)) {
+				foreach($medias as $val) {
+					if(in_array($this->article_type, array(1,3)) && $val->media != '' && file_exists($article_path.'/'.$val->media))
+						rename($article_path.'/'.$val->media, 'public/article/verwijderen/'.$val->article_id.'_'.$val->media);					
+				}
 			}
+			
 			//delete media file
-			if($this->media_file != '' && file_exists($article_path.'/'.$val->media_file))
-				rename($article_path.'/'.$val->media_file, 'public/article/verwijderen/'.$val->article_id.'_'.$val->media_file);
+			if($this->media_file != '' && file_exists($article_path.'/'.$this->media_file))
+				rename($article_path.'/'.$this->media_file, 'public/article/verwijderen/'.$this->article_id.'_'.$this->media_file);
 		}
 		return true;
 	}

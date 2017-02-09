@@ -96,8 +96,8 @@ class ArticleCategory extends CActiveRecord
 			'view' => array(self::BELONGS_TO, 'ViewArticleCategory', 'cat_id'),
 			'title' => array(self::BELONGS_TO, 'OmmuSystemPhrase', 'name'),
 			'description' => array(self::BELONGS_TO, 'OmmuSystemPhrase', 'desc'),
-			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
-			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
+			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 		);
 	}
 
@@ -154,12 +154,12 @@ class ArticleCategory extends CActiveRecord
 				'alias'=>'description',
 				'select'=>$language,
 			),
-			'creation_relation' => array(
-				'alias'=>'creation_relation',
+			'creation' => array(
+				'alias'=>'creation',
 				'select'=>'displayname'
 			),
-			'modified_relation' => array(
-				'alias'=>'modified_relation',
+			'modified' => array(
+				'alias'=>'modified',
 				'select'=>'displayname'
 			),
 		);
@@ -188,8 +188,8 @@ class ArticleCategory extends CActiveRecord
 		
 		$criteria->compare('title.'.$language,strtolower($this->title), true);
 		$criteria->compare('description.'.$language,strtolower($this->description), true);
-		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
-		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
+		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
+		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
 
 		if(!isset($_GET['ArticleCategory_sort']))
 			$criteria->order = 't.cat_id DESC';
@@ -271,7 +271,7 @@ class ArticleCategory extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
-				'value' => '$data->creation_relation->displayname',
+				'value' => '$data->creation->displayname',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
@@ -341,22 +341,6 @@ class ArticleCategory extends CActiveRecord
 			
 		} else
 			return false;
-	}
-
-	/**
-	 * Get Article
-	 */
-	public static function getArticle($id, $type=null) {
-		$criteria=new CDbCriteria;
-		$criteria->compare('cat_id',$id);
-		
-		if($type == null) {
-			//$criteria->select = '';
-			$model = Articles::model()->findAll($criteria);
-		} else
-			$model = Articles::model()->count($criteria);
-		
-		return $model;
 	}
 
 	/**

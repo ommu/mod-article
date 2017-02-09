@@ -94,8 +94,8 @@ class ArticleMedia extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'article' => array(self::BELONGS_TO, 'Articles', 'article_id'),
-			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
-			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
+			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 		);
 	}
 
@@ -140,12 +140,12 @@ class ArticleMedia extends CActiveRecord
 				'alias'=>'article',
 				'select'=>'article_type, title',
 			),
-			'creation_relation' => array(
-				'alias'=>'creation_relation',
+			'creation' => array(
+				'alias'=>'creation',
 				'select'=>'displayname',
 			),
-			'modified_relation' => array(
-				'alias'=>'modified_relation',
+			'modified' => array(
+				'alias'=>'modified',
 				'select'=>'displayname',
 			),
 		);
@@ -168,8 +168,8 @@ class ArticleMedia extends CActiveRecord
 		
 		$criteria->compare('article.article_type',strtolower($this->type_search), true);
 		$criteria->compare('article.title',strtolower($this->article_search), true);
-		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
-		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
+		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
+		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
 
 		if(!isset($_GET['ArticleMedia_sort']))
 			$criteria->order = 't.media_id DESC';
@@ -252,7 +252,7 @@ class ArticleMedia extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
-				'value' => '$data->creation_relation->displayname',
+				'value' => '$data->creation->displayname',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'cover',
@@ -468,6 +468,7 @@ class ArticleMedia extends CActiveRecord
 		parent::afterDelete();
 		//delete article image
 		$article_path = "public/article/".$this->article_id;
+		
 		if(in_array($this->article->article_type, array(1,3)) && $this->media != '' && file_exists($article_path.'/'.$this->media))
 			rename($article_path.'/'.$this->media, 'public/article/verwijderen/'.$this->article_id.'_'.$this->media);
 

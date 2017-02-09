@@ -85,8 +85,8 @@ class ArticleTag extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'article' => array(self::BELONGS_TO, 'Articles', 'article_id'),
-			'tag_TO' => array(self::BELONGS_TO, 'OmmuTags', 'tag_id'),
-			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
+			'tag' => array(self::BELONGS_TO, 'OmmuTags', 'tag_id'),
+			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 		);
 	}
 
@@ -123,12 +123,12 @@ class ArticleTag extends CActiveRecord
 				'alias'=>'article',
 				'select'=>'title'
 			),
-			'tag_TO' => array(
-				'alias'=>'tag_TO',
+			'tag' => array(
+				'alias'=>'tag',
 				'select'=>'body'
 			),
-			'creation_relation' => array(
-				'alias'=>'creation_relation',
+			'creation' => array(
+				'alias'=>'creation',
 				'select'=>'displayname'
 			),
 		);
@@ -144,8 +144,8 @@ class ArticleTag extends CActiveRecord
 		$criteria->compare('t.creation_id',$this->creation_id);
 		
 		$criteria->compare('article.title',strtolower($this->article_search), true);
-		$criteria->compare('tag_TO.body',strtolower($this->tag_search), true);
-		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
+		$criteria->compare('tag.body',strtolower($this->tag_search), true);
+		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
 
 		if(!isset($_GET['ArticleTag_sort']))
 			$criteria->order = 't.id DESC';
@@ -207,11 +207,11 @@ class ArticleTag extends CActiveRecord
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'tag_search',
-				'value' => '$data->tag_TO->body',
+				'value' => '$data->tag->body',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
-				'value' => '$data->creation_relation->displayname',
+				'value' => '$data->creation->displayname',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
@@ -260,7 +260,7 @@ class ArticleTag extends CActiveRecord
 		$tag = '';
 		if($model != null) {
 			foreach($model as $val) {
-				$tag .= ','.$val->tag_TO->body;
+				$tag .= ','.$val->tag->body;
 			}
 		}
 		
