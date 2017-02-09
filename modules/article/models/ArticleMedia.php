@@ -27,6 +27,8 @@
  * @property string $media
  * @property string $creation_date
  * @property string $creation_id
+ * @property string $modified_date
+ * @property string $modified_id
  *
  * The followings are the available model relations:
  * @property OmmuArticles $article
@@ -41,6 +43,7 @@ class ArticleMedia extends CActiveRecord
 	public $type_search;
 	public $article_search;
 	public $creation_search;
+	public $modified_search;
 	
 	/**
 	 * Returns the static model of the specified AR class.
@@ -69,16 +72,16 @@ class ArticleMedia extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('article_id', 'required'),
-			array('orders, cover, creation_id', 'numerical', 'integerOnly'=>true),
+			array('orders, cover, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
 			array('article_id', 'length', 'max'=>11),
 			array('
 				video', 'length', 'max'=>32),
-			array('cover, media, caption, creation_date,
+			array('cover, media, caption, creation_date, modified_date,
 				old_media, video', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('media_id, article_id, orders, cover, media, creation_date, creation_id,
-				article_search, creation_search, type_search', 'safe', 'on'=>'search'),
+			array('media_id, article_id, orders, cover, media, creation_date, creation_id, modified_date, modified_id,
+				article_search, creation_search, modified_search, type_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -92,6 +95,7 @@ class ArticleMedia extends CActiveRecord
 		return array(
 			'article' => array(self::BELONGS_TO, 'Articles', 'article_id'),
 			'creation_relation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
+			'modified_relation' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 		);
 	}
 
@@ -108,11 +112,14 @@ class ArticleMedia extends CActiveRecord
 			'media' => Yii::t('attribute', 'Media'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
+			'modified_date' => Yii::t('attribute', 'Modified Date'),
+			'modified_id' => Yii::t('attribute', 'Modified'),
 			'old_media' => Yii::t('attribute', 'Old Media'),
 			'video' => Yii::t('attribute', 'Video'),
 			'type_search' => Yii::t('attribute', 'Article Type'),
 			'article_search' => Yii::t('attribute', 'Article'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
+			'modified_search' => Yii::t('attribute', 'Modified'),
 		);
 	}
 	
@@ -137,6 +144,10 @@ class ArticleMedia extends CActiveRecord
 				'alias'=>'creation_relation',
 				'select'=>'displayname',
 			),
+			'modified_relation' => array(
+				'alias'=>'modified_relation',
+				'select'=>'displayname',
+			),
 		);
 
 		$criteria->compare('t.media_id',$this->media_id);
@@ -151,10 +162,14 @@ class ArticleMedia extends CActiveRecord
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		$criteria->compare('t.creation_id',$this->creation_id);
+		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
+			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
+		$criteria->compare('t.modified_id',$this->modified_id);
 		
 		$criteria->compare('article.article_type',strtolower($this->type_search), true);
 		$criteria->compare('article.title',strtolower($this->article_search), true);
 		$criteria->compare('creation_relation.displayname',strtolower($this->creation_search), true);
+		$criteria->compare('modified_relation.displayname',strtolower($this->modified_search), true);
 
 		if(!isset($_GET['ArticleMedia_sort']))
 			$criteria->order = 't.media_id DESC';
@@ -192,6 +207,8 @@ class ArticleMedia extends CActiveRecord
 			$this->defaultColumns[] = 'media';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
+			$this->defaultColumns[] = 'modified_date';
+			$this->defaultColumns[] = 'modified_id';
 		}
 
 		return $this->defaultColumns;
@@ -335,6 +352,8 @@ class ArticleMedia extends CActiveRecord
 				if($this->article->article_type == 2 && $this->media == '') {
 					$this->addError('video', Yii::t('attribute', 'Video cannot be blank.'));
 				}
+				$this->modified_id = Yii::app()->user->id;
+				
 			} else
 				$this->creation_id = Yii::app()->user->id;
 			
