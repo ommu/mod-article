@@ -8,19 +8,18 @@
 		<?php foreach($model as $key => $val) {?>
 		<div class="sep">
 			<?php
-			if($val->article_type == 1) {
-				if($val->cover->media != '') {
+			if($val->article_type == 'standard') {
+				if($val->cover->media != '')
 					$media = Yii::app()->request->baseUrl.'/public/article/'.$val->article_id.'/'.$val->cover->media;
-				} else {
+				else
 					$media = Yii::app()->request->baseUrl.'/public/article/article_default.png';
-				}
-			} else if($val->article_type == 2) {
+				
+			} else if($val->article_type == 'video')
 				$media = Yii::app()->request->baseUrl.'/public/article/article_default_video.png';
-			} else if($val->article_type == 3) {
-				$media = Yii::app()->request->baseUrl.'/public/article/article_default_audio.png';
-			} else if($val->article_type == 4) {
-				$media = Yii::app()->request->baseUrl.'/public/article/article_default_quote.png';
-			}?>
+			
+			else if($val->article_type == 'quote')
+				$media = Yii::app()->request->baseUrl.'/public/article/article_default_quote.png';?>
+
 			<a class="img" href="<?php echo Yii::app()->createUrl('article/'.$controller.'/view', array('id'=>$val->article_id, 't'=>Utility::getUrlTitle($val->title)));?>" title="<?php echo $val->title;?>"><img src="<?php echo Utility::getTimThumb($media, 400, 270, 1);?>"></a> 
 			<div class="date">
 				<?php echo Utility::dateFormat($val->creation_date, true);?>

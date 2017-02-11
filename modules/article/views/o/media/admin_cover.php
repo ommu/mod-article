@@ -14,7 +14,7 @@
 
 	$this->breadcrumbs=array(
 		'Article Medias'=>array('manage'),
-		'Delete',
+		'Cover',
 	);
 ?>
 

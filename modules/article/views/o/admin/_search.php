@@ -59,21 +59,6 @@
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('comment'); ?><br/>
-			<?php echo $form->textField($model,'comment'); ?>
-		</li>
-
-		<li>
-			<?php echo $model->getAttributeLabel('view'); ?><br/>
-			<?php echo $form->textField($model,'view'); ?>
-		</li>
-
-		<li>
-			<?php echo $model->getAttributeLabel('media_id'); ?><br/>
-			<?php echo $form->textField($model,'media_id',array('size'=>60,'maxlength'=>64)); ?>
-		</li>
-
-		<li>
 			<?php echo $model->getAttributeLabel('title'); ?><br/>
 			<?php echo $form->textField($model,'title',array('size'=>60,'maxlength'=>256)); ?>
 		</li>

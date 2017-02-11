@@ -21,9 +21,9 @@
  *
  * The followings are the available columns in table 'ommu_article_media':
  * @property string $media_id
- * @property string $article_id
- * @property integer $orders
  * @property integer $cover
+ * @property integer $orders
+ * @property string $article_id
  * @property string $media
  * @property string $creation_date
  * @property string $creation_id
@@ -36,8 +36,8 @@
 class ArticleMedia extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $old_media;
-	public $video;
+	public $video_input;
+	public $old_media_input;
 	
 	// Variable Search
 	public $type_search;
@@ -72,15 +72,15 @@ class ArticleMedia extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('article_id', 'required'),
-			array('orders, cover, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
+			array('cover, orders, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
 			array('article_id', 'length', 'max'=>11),
 			array('
-				video', 'length', 'max'=>32),
+				video_input', 'length', 'max'=>32),
 			array('cover, media, caption, creation_date, modified_date,
-				old_media, video', 'safe'),
+				old_media_input, video_input', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('media_id, article_id, orders, cover, media, creation_date, creation_id, modified_date, modified_id,
+			array('media_id, cover, orders, article_id, media, creation_date, creation_id, modified_date, modified_id,
 				article_search, creation_search, modified_search, type_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -106,16 +106,16 @@ class ArticleMedia extends CActiveRecord
 	{
 		return array(
 			'media_id' => Yii::t('attribute', 'Media'),
-			'article_id' => Yii::t('attribute', 'Article'),
-			'orders' => Yii::t('attribute', 'Orders'),
 			'cover' => Yii::t('attribute', 'Cover'),
-			'media' => Yii::t('attribute', 'Media'),
+			'orders' => Yii::t('attribute', 'Orders'),
+			'article_id' => Yii::t('attribute', 'Article'),
+			'media' => Yii::t('attribute', 'Media (Photo)'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
-			'old_media' => Yii::t('attribute', 'Old Media'),
-			'video' => Yii::t('attribute', 'Video'),
+			'old_media_input' => Yii::t('attribute', 'Old Media'),
+			'video_input' => Yii::t('attribute', 'Video'),
 			'type_search' => Yii::t('attribute', 'Article Type'),
 			'article_search' => Yii::t('attribute', 'Article'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
@@ -151,13 +151,13 @@ class ArticleMedia extends CActiveRecord
 		);
 
 		$criteria->compare('t.media_id',$this->media_id);
+		$criteria->compare('t.cover',$this->cover);
+		$criteria->compare('t.orders',$this->orders);
 		if(isset($_GET['article'])) {
 			$criteria->compare('t.article_id',$_GET['article']);
 		} else {
 			$criteria->compare('t.article_id',$this->article_id);
 		}
-		$criteria->compare('t.orders',$this->orders);
-		$criteria->compare('t.cover',$this->cover);
 		$criteria->compare('t.media',strtolower($this->media),true);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
@@ -201,9 +201,9 @@ class ArticleMedia extends CActiveRecord
 			}
 		}else {
 			//$this->defaultColumns[] = 'media_id';
-			$this->defaultColumns[] = 'article_id';
-			$this->defaultColumns[] = 'orders';
 			$this->defaultColumns[] = 'cover';
+			$this->defaultColumns[] = 'orders';
+			$this->defaultColumns[] = 'article_id';
 			$this->defaultColumns[] = 'media';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
@@ -234,20 +234,20 @@ class ArticleMedia extends CActiveRecord
 				);
 				$this->defaultColumns[] = array(
 					'name' => 'type_search',
-					'value' => '$data->article->article_type == 1 ? Yii::t(\'attribute\', \'Standard\') : ($data->article->article_type == 2 ? Yii::t(\'attribute\', \'Video\') : Yii::t(\'attribute\', \'Audio\'))',
+					'value' => '$data->article->article_type == \'standard\' ? Yii::t(\'attribute\', \'Standard\') : ($data->article->article_type == \'video\' ? Yii::t(\'attribute\', \'Video\') : Yii::t(\'attribute\', \'Audio\'))',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
 					'filter'=>array(
-						1=>Yii::t('attribute', 'Standard'),
-						2=>Yii::t('attribute', 'Video'),
-						3=>Yii::t('attribute', 'Audio'),
+						'standard'=>Yii::t('attribute', 'Standard'),
+						'video'=>Yii::t('attribute', 'Video'),
+						'quote'=>Yii::t('attribute', 'Quote'),
 					),
 				);
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'media',
-				'value' => '$data->article->article_type == 2 ? CHtml::link("http://www.youtube.com/watch?v=".$data->media, "http://www.youtube.com/watch?v=".$data->media, array(\'target\' => \'_blank\')) : CHtml::link($data->media, Yii::app()->request->baseUrl.\'/public/article/\'.$data->article_id.\'/\'.$data->media, array(\'target\' => \'_blank\'))',
+				'value' => '$data->article->article_type == \'video\' ? CHtml::link("http://www.youtube.com/watch?v=".$data->media, "http://www.youtube.com/watch?v=".$data->media, array(\'target\' => \'_blank\')) : CHtml::link($data->media, Yii::app()->request->baseUrl.\'/public/article/\'.$data->article_id.\'/\'.$data->media, array(\'target\' => \'_blank\'))',
 				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
@@ -314,6 +314,22 @@ class ArticleMedia extends CActiveRecord
 	}
 
 	/**
+	 * Resize Photo
+	 */
+	public static function resizePhoto($photo, $size) {
+		Yii::import('ext.phpthumb.PhpThumbFactory');
+		$resizePhoto = PhpThumbFactory::create($photo, array('jpegQuality' => 90, 'correctPermissions' => true));
+		if($size['height'] == 0)
+			$resizePhoto->resize($size['width']);
+		else			
+			$resizePhoto->adaptiveResize($size['width'], $size['height']);
+		
+		$resizePhoto->save($photo);
+		
+		return true;
+	}
+
+	/**
 	 * get photo product
 	 */
 	public static function getPhoto($id, $type=null) {
@@ -329,10 +345,10 @@ class ArticleMedia extends CActiveRecord
 		} else {
 			$model = self::model()->findAll(array(
 				//'select' => 'article_id, orders, media',
-				'condition' => 'article_id = :id AND cover = :cover',
+				'condition' => 'cover = :cover AND article_id = :id',
 				'params' => array(
-					':id' => $id,
 					':cover' => $type,
+					':id' => $id,
 				),
 				'limit' => 20,
 				//'order'=> 'orders ASC',
@@ -346,22 +362,37 @@ class ArticleMedia extends CActiveRecord
 	 * before validate attributes
 	 */
 	protected function beforeValidate() {
-		if(parent::beforeValidate()) {		
-			$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
+		$controller = strtolower(Yii::app()->controller->id);
+		$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
+		$setting = ArticleSetting::model()->findByPk(1, array(
+			'select' => 'media_file_type',
+		));
+		$media_file_type = unserialize($setting->media_file_type);
+		
+		if(parent::beforeValidate()) 
+		{
 			if(!$this->isNewRecord) {
-				if($this->article->article_type == 2 && $this->media == '') {
-					$this->addError('video', Yii::t('attribute', 'Video cannot be blank.'));
-				}
+				if($this->article->article_type == 'video' && $this->video_input == '')
+					$this->addError('video_input', Yii::t('attribute', 'Video cannot be blank.'));
 				$this->modified_id = Yii::app()->user->id;
 				
 			} else
 				$this->creation_id = Yii::app()->user->id;
 			
-			$media = CUploadedFile::getInstance($this, 'media');
-			if($currentAction != 'media/ajaxadd' && $this->article->article_type == 1 && $media->name != '') {
-				$extension = pathinfo($media->name, PATHINFO_EXTENSION);
-				if(!in_array(strtolower($extension), array('bmp','gif','jpg','png')))
-					$this->addError('media', 'The file "'.$media->name.'" cannot be uploaded. Only files with these extensions are allowed: bmp, gif, jpg, png.');
+			if($currentAction != 'o/admin/insertcover') {
+				$media = CUploadedFile::getInstance($this, 'media');
+				if($media != null && $this->article->article_type == 'standard') {
+					$extension = pathinfo($media->name, PATHINFO_EXTENSION);
+					if(!in_array(strtolower($extension), $media_file_type))
+						$this->addError('media', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}.', array(
+							'{name}'=>$media->name,
+							'{extensions}'=>Utility::formatFileType($media_file_type, false),
+						)));
+					
+				} else {
+					if($this->isNewRecord && $controller == 'o/media')
+						$this->addError('media', 'Media (Photo) cannot be blank.');				
+				}
 			}
 		}
 		return true;
@@ -371,65 +402,14 @@ class ArticleMedia extends CActiveRecord
 	 * before save attributes
 	 */
 	protected function beforeSave() {
+		$controller = strtolower(Yii::app()->controller->id);
+		$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
+		
 		if(parent::beforeSave()) {
+			$article_path = "public/article/".$this->article_id;
 			
 			//Update album photo
-			$controller = strtolower(Yii::app()->controller->id);
-			if(!$this->isNewRecord && $controller == 'media' && !Yii::app()->request->isAjaxRequest) {
-				if(in_array($this->article->article_type, array(1,3))) {
-					$article_path = "public/article/".$this->article_id;
-					if(!file_exists($article_path)) {
-						@mkdir($article_path, 0755, true);
-
-						// Add file in directory (index.php)
-						$newFile = $article_path.'/index.php';
-						$FileHandle = fopen($newFile, 'w');
-					} else
-						@chmod($article_path, 0755, true);
-					
-					if($this->article->article_type == 1) {
-						$this->media = CUploadedFile::getInstance($this, 'media');
-						if($this->media instanceOf CUploadedFile) {
-							$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->article->title).'.'.strtolower($this->media->extensionName);
-							if($this->media->saveAs($article_path.'/'.$fileName)) {
-								if($this->old_media != '' && file_exists($article_path.'/'.$this->old_media))
-									rename($article_path.'/'.$this->old_media, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_media);
-								$this->media = $fileName;
-							}
-						}
-					}
-					if($this->media == '') {
-						$this->media = $this->old_media;
-					}
-				} else if($this->article->article_type == 2) {
-					$this->media = $this->video;
-				}
-			}
-		}
-		return true;
-	}
-	
-	/**
-	 * After save attributes
-	 */
-	protected function afterSave() {
-		parent::afterSave();
-
-		//set flex cover in article
-		//if($this->cover == 1 || count(self::getPhoto($this->article_id)) == 1) {
-		if($this->cover == 1) {
-			$cover = Articles::model()->findByPk($this->article_id);
-			$cover->media_id = $this->media_id;
-			$cover->update();
-		}
-
-		if($this->article->article_type == 1) {
-			$setting = ArticleSetting::getInfo('media_limit, media_resize, media_resize_size', 'many');
-			
-			//create thumb image
-			if($setting->media_resize == 1) {
-				Yii::import('ext.phpthumb.PhpThumbFactory');
-				$article_path = "public/article/".$this->article_id;
+			if($this->article->article_type == 'standard') {				
 				if(!file_exists($article_path)) {
 					@mkdir($article_path, 0755, true);
 
@@ -439,26 +419,76 @@ class ArticleMedia extends CActiveRecord
 				} else
 					@chmod($article_path, 0755, true);
 				
-				$articleImg = PhpThumbFactory::create($article_path.'/'.$this->media, array('jpegQuality' => 90, 'correctPermissions' => true));
-				$resizeSize = unserialize($setting->media_resize_size);
-				if($resizeSize['height'] == 0)
-					$articleImg->resize($resizeSize['width']);
-				else
-					$articleImg->adaptiveResize($resizeSize['width'], $resizeSize['height']);		
-				$articleImg->save($article_path.'/'.$this->media);
-			}
+				if(!$this->isNewRecord && in_array($currentAction, array('o/media/add','o/media/edit'))) {
+					$this->media = CUploadedFile::getInstance($this, 'media');
+					if($this->media != null) {
+						if($this->media instanceOf CUploadedFile) {
+							$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->article->title).'.'.strtolower($this->media->extensionName);
+							if($this->media->saveAs($article_path.'/'.$fileName)) {
+								if(!$this->isNewRecord) {
+									if($this->old_media_input != '' && file_exists($article_path.'/'.$this->old_media_input))
+										rename($article_path.'/'.$this->old_media_input, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_media_input);
+								}
+								$this->media = $fileName;
+							}
+						}
+					} else {
+						if(!$this->isNewRecord && $this->media == '')
+							$this->media = $this->old_media_input;						
+					}
+				}
+				
+			} else if($this->article->article_type == 'video' && $controller == 'o/media')
+				$this->media = $this->video_input;
+		}
+		return true;
+	}
+	
+	/**
+	 * After save attributes
+	 */
+	protected function afterSave() {
+		parent::afterSave();
+		
+		$setting = ArticleSetting::model()->findByPk(1, array(
+			'select' => 'media_limit, media_resize, media_resize_size',
+		));
+		$media_resize_size = unserialize($setting->media_resize_size);
+		$article_path = "public/article/".$this->article_id;
+		
+		if($this->article->article_type == 'standard') {
+			if(!file_exists($article_path)) {
+				@mkdir($article_path, 0755, true);
+
+				// Add file in directory (index.php)
+				$newFile = $article_path.'/index.php';
+				$FileHandle = fopen($newFile, 'w');
+			} else
+				@chmod($article_path, 0755, true);
+		
+			//resize cover after upload
+			if($setting->media_resize == 1 && $this->media != '')
+				self::resizePhoto($article_path.'/'.$this->media, $media_resize_size);
 			
 			//delete other media (if media_limit = 1)
 			if($setting->media_limit == 1) {
-				self::model()->deleteAll(array(
-					'condition'=> 'article_id = :id AND cover = :cover',
+				$medias = self::model()->findAll(array(
+					'condition'=> 'media_id <> :media_id AND article_id = :article_id',
 					'params'=>array(
-						':id'=>$this->article_id,
-						':cover'=>0,
+						':media_id'=>$this->media_id,
+						':article_id'=>$this->article_id,
 					),
 				));
+				if($medias != null) {
+					foreach($medias as $key => $val)
+						self::model()->findByPk($val->media_id)->delete();
+				}				
 			}
 		}
+		
+		//update if new cover (cover = 1)
+		if($this->cover == 1)
+			self::model()->updateAll(array('cover'=>0), 'media_id <> :media AND article_id = :article', array(':media'=>$this->media_id,':article'=>$this->article_id));		
 	}
 
 	/**
@@ -469,22 +499,13 @@ class ArticleMedia extends CActiveRecord
 		//delete article image
 		$article_path = "public/article/".$this->article_id;
 		
-		if(in_array($this->article->article_type, array(1,3)) && $this->media != '' && file_exists($article_path.'/'.$this->media))
+		if($this->article->article_type == 'standard' && $this->media != '' && file_exists($article_path.'/'.$this->media))
 			rename($article_path.'/'.$this->media, 'public/article/verwijderen/'.$this->article_id.'_'.$this->media);
 
 		//reset cover in article
-		$data = self::getPhoto($this->article_id);
-		if($data != null) {
-			if($this->cover == 1) {				
-				$photo = self::model()->findByPk($data[0]->media_id);
-				$photo->cover = 1;
-				if($photo->update()) {
-					$cover = Articles::model()->findByPk($this->article_id);
-					$cover->media_id = $photo->media_id;
-					$cover->update();
-				}
-			}
-		}
+		$medias = $this->article->medias;
+		if($medias != null && $this->cover == 1)
+			self::model()->updateByPk($medias[0]->media_id, array('cover'=>1));
 	}
 
 }

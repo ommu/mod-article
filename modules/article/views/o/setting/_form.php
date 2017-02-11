@@ -82,10 +82,10 @@
 				if(!$model->getErrors())
 					$model->type_active = unserialize($model->type_active);
 				echo $form->checkBoxList($model,'type_active', array(
-					'1=Standard' => Yii::t('phrase', 'Standard'),
-					'2=Video' => Yii::t('phrase', 'Video'),
-					//'3=Audio' => Yii::t('phrase', 'Audio'),
-					'4=Quote' => Yii::t('phrase', 'Quote'),
+					'standard=Standard' => Yii::t('phrase', 'Standard'),
+					'video=Video' => Yii::t('phrase', 'Video'),
+					//'audio=Audio' => Yii::t('phrase', 'Audio'),
+					'quote=Quote' => Yii::t('phrase', 'Quote'),
 				)); ?>
 				<?php echo $form->error($model,'type_active'); ?>
 			</div>

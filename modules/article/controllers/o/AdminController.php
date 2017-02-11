@@ -16,6 +16,8 @@
  *	Delete
  *	Publish
  *	Headline
+ *	Getcover
+ *	Insertcover
  *
  *	LoadModel
  *	performAjaxValidation
@@ -82,7 +84,7 @@ class AdminController extends Controller
 				'expression'=>'isset(Yii::app()->user->level)',
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('manage','add','edit','runaction','delete','publish','headline'),
+				'actions'=>array('manage','add','edit','runaction','delete','publish','headline','getcover','insertcover'),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level) && in_array(Yii::app()->user->level, array(1,2))',
 			),
@@ -157,6 +159,11 @@ class AdminController extends Controller
 
 		if(isset($_POST['Articles'])) {
 			$model->attributes=$_POST['Articles'];
+			
+			if($model->article_type == 'standard')
+				$model->scenario = 'formStandard';
+			else if($model->article_type == 'video')
+				$model->scenario = 'formVideo';
 
 			if($model->save()) {
 				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Article success created.'));
@@ -183,13 +190,7 @@ class AdminController extends Controller
 		$model=$this->loadModel($id);
 
 		$setting = ArticleSetting::model()->findByPk(1,array(
-			'select' => 'type_active, media_limit, meta_keyword, media_file_type, upload_file_type',
-		));
-		$tag = ArticleTag::model()->findAll(array(
-			'condition' => 'article_id = :id',
-			'params' => array(
-				':id' => $model->article_id,
-			),
+			'select' => 'meta_keyword, type_active, media_limit, media_file_type, upload_file_type',
 		));
 
 		// Uncomment the following line if AJAX validation is needed
@@ -197,9 +198,14 @@ class AdminController extends Controller
 
 		if(isset($_POST['Articles'])) {
 			$model->attributes=$_POST['Articles'];
+			
+			if($model->article_type == 'standard')
+				$model->scenario = 'formStandard';
+			else if($model->article_type == 'video')
+				$model->scenario = 'formVideo';
 
 			/*
-			if($model->article_type == 1 && $setting->media_limit != 1) {
+			if($model->article_type == 'standard' && $setting->media_limit != 1) {
 				$jsonError = CActiveForm::validate($model);
 				if(strlen($jsonError) > 2) {
 					$errors = $model->getErrors();
@@ -244,7 +250,6 @@ class AdminController extends Controller
 		$this->render('admin_edit',array(
 			'model'=>$model,
 			'setting'=>$setting,
-			'tag'=>$tag,
 		));
 	}
 
@@ -399,6 +404,67 @@ class AdminController extends Controller
 			$this->pageMeta = '';
 			$this->render('admin_headline');
 		}
+	}
+	
+	/**
+	 * Creates a new model.
+	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 */
+	public function actionGetcover($id) 
+	{
+		$model=$this->loadModel($id);
+		$setting = ArticleSetting::model()->findByPk(1,array(
+			'select' => 'media_limit',
+		));		
+		$medias = $model->medias;
+
+		$data = '';
+		if(isset($_GET['replace']))
+			$data .= $this->renderPartial('_form_cover', array('model'=>$model, 'medias'=>$medias, 'setting'=>$setting), true, false);
+		
+		if($medias != null) {			
+			foreach($medias as $key => $val)
+				$data .= $this->renderPartial('_form_view_covers', array('data'=>$val), true, false);
+		}
+		
+		$data .= '';
+		$result['data'] = $data;
+		echo CJSON::encode($result);
+	}
+
+	/**
+	 * Creates a new model.
+	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 */
+	public function actionInsertcover($id) 
+	{
+		$setting = ArticleSetting::model()->findByPk(1,array(
+			'select' => 'media_limit, media_file_type',
+		));
+		$media_file_type = unserialize($setting->media_file_type);
+		$article_path = "public/article/".$id;
+			
+		//if(Yii::app()->request->isAjaxRequest) {
+			$model = $this->loadModel($id);
+			
+			$uploadPhoto = CUploadedFile::getInstanceByName('namaFile');
+			$fileName = time().'_'.$model->article_id.'_'.Utility::getUrlTitle($model->title).'.'.strtolower($uploadPhoto->extensionName);
+			if($uploadPhoto->saveAs($article_path.'/'.$fileName)) {
+				$photo = new ArticleMedia;
+				$photo->cover = $model->medias == null ? '1' : '0';
+				$photo->article_id = $model->article_id;
+				$photo->media = $fileName;
+				if($photo->save()) {
+					$url = Yii::app()->controller->createUrl('getcover', array('id'=>$model->article_id,'replace'=>'true'));
+					echo CJSON::encode(array(
+						'id' => 'media-render',
+						'get' => $url,
+					));
+				}
+			}
+			
+		//} else
+		//	throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 	}
 
 	/**
