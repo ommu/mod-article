@@ -525,8 +525,6 @@ class Articles extends CActiveRecord
 	 * before save attributes
 	 */
 	protected function beforeSave() {
-		$action = strtolower(Yii::app()->controller->action->id);
-		
 		if(parent::beforeSave()) {
 			if(!$this->isNewRecord && $this->article_type != 'quote') {				
 				$article_path = "public/article/".$this->article_id;
