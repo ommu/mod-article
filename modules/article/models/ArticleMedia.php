@@ -419,7 +419,7 @@ class ArticleMedia extends CActiveRecord
 				} else
 					@chmod($article_path, 0755, true);
 				
-				if(!$this->isNewRecord && in_array($currentAction, array('o/media/add','o/media/edit'))) {
+				if(in_array($currentAction, array('o/media/add','o/media/edit'))) {
 					$this->media = CUploadedFile::getInstance($this, 'media');
 					if($this->media != null) {
 						if($this->media instanceOf CUploadedFile) {

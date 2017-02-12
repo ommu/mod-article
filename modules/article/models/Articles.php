@@ -482,8 +482,7 @@ class Articles extends CActiveRecord
 	/**
 	 * before validate attributes
 	 */
-	protected function beforeValidate() {
-		$controller = strtolower(Yii::app()->controller->id);			
+	protected function beforeValidate() {		
 		$setting = ArticleSetting::model()->findByPk(1, array(
 			'select' => 'media_file_type, upload_file_type',
 		));
@@ -586,16 +585,6 @@ class Articles extends CActiveRecord
 					@chmod($article_path, 0755, true);
 			}
 			
-			//upload media file (download)
-			$this->media_file = CUploadedFile::getInstance($this, 'media_file');
-			if($this->media_file != null) {
-				if($this->media_file instanceOf CUploadedFile) {
-					$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_file->extensionName);
-					if($this->media_file->saveAs($article_path.'/'.$fileName))
-						Articles::model()->updateByPk($this->article_id, array('media_file'=>$fileName));
-				}				
-			}
-			
 			//input keyword
 			if(trim($this->keyword_input) != '') {
 				$keyword_input = Utility::formatFileType($this->keyword_input);
@@ -608,12 +597,22 @@ class Articles extends CActiveRecord
 						$subject->save();
 					}
 				}
-			}			
+			}	
+			
+			//upload media file (download)
+			$this->media_file = CUploadedFile::getInstance($this, 'media_file');
+			if($this->media_file != null) {
+				if($this->media_file instanceOf CUploadedFile) {
+					$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_file->extensionName);
+					if($this->media_file->saveAs($article_path.'/'.$fileName))
+						Articles::model()->updateByPk($this->article_id, array('media_file'=>$fileName));
+				}				
+			}		
 		}
 
 		if($this->article_type == 'standard') {
 			$this->media_input = CUploadedFile::getInstance($this, 'media_input');
-			if($this->media_input != null) {
+			if($this->media_input != null && ($this->isNewRecord || (!$this->isNewRecord && $setting->media_limit == 1))) {
 				if($this->media_input instanceOf CUploadedFile) {
 					$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_input->extensionName);
 					if($this->media_input->saveAs($article_path.'/'.$fileName)) {
@@ -653,10 +652,10 @@ class Articles extends CActiveRecord
 			self::model()->updateAll(array(
 				'headline' => 0,	
 			), array(
-				'condition'=> 'article_id != :id AND cat_id = :cat',
+				'condition'=> 'article_id != :article_id AND cat_id = :cat_id',
 				'params'=>array(
-					':id'=>$this->article_id,
-					':cat'=>$this->cat_id,
+					':article_id'=>$this->article_id,
+					':cat_id'=>$this->cat_id,
 				),
 			));
 		}
@@ -673,7 +672,7 @@ class Articles extends CActiveRecord
 			$medias = $this->medias;
 			if(!empty($medias)) {
 				foreach($medias as $val) {
-					if($this->article_type != 'quote' && $val->media != '' && file_exists($article_path.'/'.$val->media))
+					if($val->media != '' && file_exists($article_path.'/'.$val->media))
 						rename($article_path.'/'.$val->media, 'public/article/verwijderen/'.$val->article_id.'_'.$val->media);					
 				}
 			}
