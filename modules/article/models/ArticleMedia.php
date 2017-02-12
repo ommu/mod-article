@@ -21,6 +21,7 @@
  *
  * The followings are the available columns in table 'ommu_article_media':
  * @property string $media_id
+ * @property integer $publish
  * @property integer $cover
  * @property string $article_id
  * @property string $media
@@ -71,7 +72,7 @@ class ArticleMedia extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('article_id', 'required'),
-			array('cover, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
+			array('publish, cover, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
 			array('article_id', 'length', 'max'=>11),
 			array('
 				video_input', 'length', 'max'=>32),
@@ -79,7 +80,7 @@ class ArticleMedia extends CActiveRecord
 				old_media_input, video_input', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('media_id, cover, article_id, media, creation_date, creation_id, modified_date, modified_id,
+			array('media_id, publish, cover, article_id, media, creation_date, creation_id, modified_date, modified_id,
 				article_search, creation_search, modified_search, type_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -105,6 +106,7 @@ class ArticleMedia extends CActiveRecord
 	{
 		return array(
 			'media_id' => Yii::t('attribute', 'Media'),
+			'publish' => Yii::t('attribute', 'Publish'),
 			'cover' => Yii::t('attribute', 'Cover'),
 			'article_id' => Yii::t('attribute', 'Article'),
 			'media' => Yii::t('attribute', 'Media (Photo)'),
@@ -136,7 +138,7 @@ class ArticleMedia extends CActiveRecord
 		$criteria->with = array(
 			'article' => array(
 				'alias'=>'article',
-				'select'=>'article_type, title',
+				'select'=>'publish, article_type, title',
 			),
 			'creation' => array(
 				'alias'=>'creation',
@@ -149,6 +151,16 @@ class ArticleMedia extends CActiveRecord
 		);
 
 		$criteria->compare('t.media_id',$this->media_id);
+		if(isset($_GET['type']) && $_GET['type'] == 'publish')
+			$criteria->compare('t.publish',1);
+		elseif(isset($_GET['type']) && $_GET['type'] == 'unpublish')
+			$criteria->compare('t.publish',0);
+		elseif(isset($_GET['type']) && $_GET['type'] == 'trash')
+			$criteria->compare('t.publish',2);
+		else {
+			$criteria->addInCondition('t.publish',array(0,1));
+			$criteria->compare('t.publish',$this->publish);
+		}
 		$criteria->compare('t.cover',$this->cover);
 		if(isset($_GET['article'])) {
 			$criteria->compare('t.article_id',$_GET['article']);
@@ -165,6 +177,8 @@ class ArticleMedia extends CActiveRecord
 		
 		$criteria->compare('article.article_type',strtolower($this->type_search), true);
 		$criteria->compare('article.title',strtolower($this->article_search), true);
+		if(isset($_GET['article']) && isset($_GET['publish']))
+			$criteria->compare('article.publish',$_GET['publish']);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
 		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
 
@@ -198,6 +212,7 @@ class ArticleMedia extends CActiveRecord
 			}
 		}else {
 			//$this->defaultColumns[] = 'media_id';
+			$this->defaultColumns[] = 'publish';
 			$this->defaultColumns[] = 'cover';
 			$this->defaultColumns[] = 'article_id';
 			$this->defaultColumns[] = 'media';
@@ -288,6 +303,20 @@ class ArticleMedia extends CActiveRecord
 					),
 				), true),
 			);
+			if(!isset($_GET['type'])) {
+				$this->defaultColumns[] = array(
+					'name' => 'publish',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->media_id)), $data->publish, 1)',
+					'htmlOptions' => array(
+						'class' => 'center',
+					),
+					'filter'=>array(
+						1=>Yii::t('phrase', 'Yes'),
+						0=>Yii::t('phrase', 'No'),
+					),
+					'type' => 'raw',
+				);
+			}
 		}
 		parent::afterConstruct();
 	}
