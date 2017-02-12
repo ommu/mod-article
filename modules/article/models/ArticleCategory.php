@@ -23,7 +23,6 @@
  * @property integer $cat_id
  * @property integer $publish
  * @property integer $dependency
- * @property integer $orders
  * @property string $name
  * @property string $desc
  * @property string $creation_date
@@ -72,7 +71,7 @@ class ArticleCategory extends CActiveRecord
 		return array(
 			array('
 				title, description', 'required'),
-			array('publish, dependency, orders, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
+			array('publish, dependency, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
 			array('name, desc, creation_id, modified_id', 'length', 'max'=>11),
 			array('
 				title', 'length', 'max'=>32),
@@ -80,7 +79,7 @@ class ArticleCategory extends CActiveRecord
 				description', 'length', 'max'=>128),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('cat_id, publish, dependency, orders, name, desc, creation_date, creation_id, modified_date, modified_id,
+			array('cat_id, publish, dependency, name, desc, creation_date, creation_id, modified_date, modified_id,
 				title, description, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -110,7 +109,6 @@ class ArticleCategory extends CActiveRecord
 			'cat_id' => Yii::t('attribute', 'Category'),
 			'publish' => Yii::t('attribute', 'Publish'),
 			'dependency' => Yii::t('attribute', 'Parent'),
-			'orders' => Yii::t('attribute', 'Orders'),
 			'name' => Yii::t('attribute', 'Category'),
 			'desc' => Yii::t('attribute', 'Description'),
 			'title' => Yii::t('attribute', 'Category'),
@@ -176,7 +174,6 @@ class ArticleCategory extends CActiveRecord
 			$criteria->compare('t.publish',$this->publish);
 		}
 		$criteria->compare('t.dependency',$this->dependency);
-		$criteria->compare('t.orders',$this->orders);
 		$criteria->compare('t.name',$this->name,true);
 		$criteria->compare('t.desc',$this->desc,true);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
@@ -220,7 +217,6 @@ class ArticleCategory extends CActiveRecord
 			//$this->defaultColumns[] = 'cat_id';
 			$this->defaultColumns[] = 'publish';
 			$this->defaultColumns[] = 'dependency';
-			$this->defaultColumns[] = 'orders';
 			$this->defaultColumns[] = 'name';
 			$this->defaultColumns[] = 'desc';
 			$this->defaultColumns[] = 'creation_date';
@@ -348,10 +344,9 @@ class ArticleCategory extends CActiveRecord
 	 */
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {		
-			if($this->isNewRecord) {
-				$this->orders = 0;
+			if($this->isNewRecord)
 				$this->creation_id = Yii::app()->user->id;	
-			} else
+			else
 				$this->modified_id = Yii::app()->user->id;
 		}
 		return true;

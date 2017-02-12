@@ -22,7 +22,6 @@
  * The followings are the available columns in table 'ommu_article_media':
  * @property string $media_id
  * @property integer $cover
- * @property integer $orders
  * @property string $article_id
  * @property string $media
  * @property string $creation_date
@@ -72,7 +71,7 @@ class ArticleMedia extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('article_id', 'required'),
-			array('cover, orders, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
+			array('cover, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
 			array('article_id', 'length', 'max'=>11),
 			array('
 				video_input', 'length', 'max'=>32),
@@ -80,7 +79,7 @@ class ArticleMedia extends CActiveRecord
 				old_media_input, video_input', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('media_id, cover, orders, article_id, media, creation_date, creation_id, modified_date, modified_id,
+			array('media_id, cover, article_id, media, creation_date, creation_id, modified_date, modified_id,
 				article_search, creation_search, modified_search, type_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -107,7 +106,6 @@ class ArticleMedia extends CActiveRecord
 		return array(
 			'media_id' => Yii::t('attribute', 'Media'),
 			'cover' => Yii::t('attribute', 'Cover'),
-			'orders' => Yii::t('attribute', 'Orders'),
 			'article_id' => Yii::t('attribute', 'Article'),
 			'media' => Yii::t('attribute', 'Media (Photo)'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
@@ -152,7 +150,6 @@ class ArticleMedia extends CActiveRecord
 
 		$criteria->compare('t.media_id',$this->media_id);
 		$criteria->compare('t.cover',$this->cover);
-		$criteria->compare('t.orders',$this->orders);
 		if(isset($_GET['article'])) {
 			$criteria->compare('t.article_id',$_GET['article']);
 		} else {
@@ -202,7 +199,6 @@ class ArticleMedia extends CActiveRecord
 		}else {
 			//$this->defaultColumns[] = 'media_id';
 			$this->defaultColumns[] = 'cover';
-			$this->defaultColumns[] = 'orders';
 			$this->defaultColumns[] = 'article_id';
 			$this->defaultColumns[] = 'media';
 			$this->defaultColumns[] = 'creation_date';
@@ -335,7 +331,7 @@ class ArticleMedia extends CActiveRecord
 	public static function getPhoto($id, $type=null) {
 		if($type == null) {
 			$model = self::model()->findAll(array(
-				//'select' => 'article_id, orders, media',
+				//'select' => 'article_id, media',
 				'condition' => 'article_id = :id',
 				'params' => array(
 					':id' => $id,
@@ -344,14 +340,13 @@ class ArticleMedia extends CActiveRecord
 			));
 		} else {
 			$model = self::model()->findAll(array(
-				//'select' => 'article_id, orders, media',
+				//'select' => 'article_id, media',
 				'condition' => 'cover = :cover AND article_id = :id',
 				'params' => array(
 					':cover' => $type,
 					':id' => $id,
 				),
 				'limit' => 20,
-				//'order'=> 'orders ASC',
 			));
 		}
 

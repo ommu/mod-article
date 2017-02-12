@@ -29,11 +29,6 @@
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('orders'); ?><br/>
-			<?php echo $form->textField($model,'orders'); ?>
-		</li>
-
-		<li>
 			<?php echo $model->getAttributeLabel('cover'); ?><br/>
 			<?php echo $form->textField($model,'cover'); ?>
 		</li>
