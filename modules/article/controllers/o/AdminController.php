@@ -149,10 +149,10 @@ class AdminController extends Controller
 	 */
 	public function actionAdd() 
 	{
-		$model=new Articles;
 		$setting = ArticleSetting::model()->findByPk(1,array(
 			'select' => 'meta_keyword, type_active, media_file_type, upload_file_type',
 		));
+		$model=new Articles;
 
 		// Uncomment the following line if AJAX validation is needed
 		$this->performAjaxValidation($model);
@@ -187,11 +187,10 @@ class AdminController extends Controller
 	 */
 	public function actionEdit($id) 
 	{
-		$model=$this->loadModel($id);
-
 		$setting = ArticleSetting::model()->findByPk(1,array(
 			'select' => 'meta_keyword, type_active, media_limit, media_file_type, upload_file_type',
 		));
+		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		$this->performAjaxValidation($model);
