@@ -97,6 +97,7 @@ class ArticleCategory extends CActiveRecord
 			'description' => array(self::BELONGS_TO, 'OmmuSystemPhrase', 'desc'),
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
+			'articles' => array(self::BELONGS_TO, 'Articles', 'article_id'),
 		);
 	}
 
