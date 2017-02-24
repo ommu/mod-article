@@ -282,7 +282,7 @@ class ArticleSetting extends CActiveRecord
 				$this->addError('media_limit', Yii::t('phrase', 'Photo Limit lebih besar dari 0'));
 			
 			if($this->media_resize == 1 && ($this->media_resize_size['width'] == '' || $this->media_resize_size['height'] == ''))
-				$this->addError('media_resize_size', Yii::t('attribute', 'Media Resize cannot be blank.'));
+				$this->addError('media_resize_size', Yii::t('phrase', 'Media Resize cannot be blank.'));
 			
 			if($this->media_view_size['large']['width'] == '' || $this->media_view_size['large']['height'] == '')
 				$this->addError('media_view_size[large]', Yii::t('phrase', 'Large Size cannot be blank.'));

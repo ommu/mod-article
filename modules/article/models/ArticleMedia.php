@@ -397,7 +397,7 @@ class ArticleMedia extends CActiveRecord
 		{
 			if(!$this->isNewRecord) {
 				if($this->article->article_type == 'video' && $this->video_input == '')
-					$this->addError('video_input', Yii::t('attribute', 'Video cannot be blank.'));
+					$this->addError('video_input', Yii::t('phrase', 'Video cannot be blank.'));
 				$this->modified_id = Yii::app()->user->id;
 				
 			} else
