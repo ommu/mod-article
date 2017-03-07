@@ -294,14 +294,13 @@ class ArticleTag extends CActiveRecord
 							':body' => strtolower(trim($this->tag_input)),
 						),
 					));
-					if($tag != null) {
+					if($tag != null)
 						$this->tag_id = $tag->tag_id;
-					} else {
+					else {
 						$data = new OmmuTags;
 						$data->body = $this->tag_input;
-						if($data->save()) {
+						if($data->save())
 							$this->tag_id = $data->tag_id;
-						}
 					}					
 				}
 			}
