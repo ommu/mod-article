@@ -291,7 +291,7 @@ class ArticleTag extends CActiveRecord
 						'select' => 'tag_id, body',
 						'condition' => 'body = :body',
 						'params' => array(
-							':body' => strtolower(trim($this->tag_input)),
+							':body' => Utility::getUrlTitle(strtolower(trim($this->tag_input))),
 						),
 					));
 					if($tag != null)
