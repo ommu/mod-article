@@ -30,6 +30,9 @@
 class ViewArticleTag extends CActiveRecord
 {
 	public $defaultColumns = array();
+	
+	// Variable Search
+	public $tag_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -72,7 +75,8 @@ class ViewArticleTag extends CActiveRecord
 			array('article_all', 'length', 'max'=>21),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('tag_id, articles, article_all', 'safe', 'on'=>'search'),
+			array('tag_id, articles, article_all,
+				tag_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -84,6 +88,7 @@ class ViewArticleTag extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'tag' => array(self::BELONGS_TO, 'OmmuTags', 'tag_id'),
 		);
 	}
 
@@ -96,6 +101,7 @@ class ViewArticleTag extends CActiveRecord
 			'tag_id' => Yii::t('attribute', 'Tag'),
 			'articles' => Yii::t('attribute', 'Articles'),
 			'article_all' => Yii::t('attribute', 'Article All'),
+			'tag_search' => Yii::t('attribute', 'Tag'),
 		);
 		/*
 			'Tag' => 'Tag',
@@ -122,10 +128,20 @@ class ViewArticleTag extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
+		
+		// Custom Search
+		$criteria->with = array(
+			'tag' => array(
+				'alias'=>'tag',
+				'select'=>'body'
+			),
+		);
 
 		$criteria->compare('t.tag_id',strtolower($this->tag_id),true);
 		$criteria->compare('t.articles',strtolower($this->articles),true);
 		$criteria->compare('t.article_all',strtolower($this->article_all),true);
+		
+		$criteria->compare('tag.body',Utility::getUrlTitle(strtolower(trim($this->tag_search))), true);
 
 		if(!isset($_GET['ViewArticleTag_sort']))
 			$criteria->order = 't.tag_id DESC';
@@ -173,7 +189,11 @@ class ViewArticleTag extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			$this->defaultColumns[] = 'tag_id';
+			//$this->defaultColumns[] = 'tag_id';
+			$this->defaultColumns[] = array(
+				'name' => 'tag_search',
+				'value' => 'str_replace(\'-\', \' \', $data->tag->body)',
+			);
 			$this->defaultColumns[] = 'articles';
 			$this->defaultColumns[] = 'article_all';
 		}

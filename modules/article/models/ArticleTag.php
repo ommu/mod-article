@@ -146,7 +146,7 @@ class ArticleTag extends CActiveRecord
 		$criteria->compare('t.creation_id',$this->creation_id);
 		
 		$criteria->compare('article.title',strtolower($this->article_search), true);
-		$criteria->compare('tag.body',strtolower($this->tag_search), true);
+		$criteria->compare('tag.body',Utility::getUrlTitle(strtolower(trim($this->tag_search))), true);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
 
 		if(!isset($_GET['ArticleTag_sort']))
@@ -209,7 +209,7 @@ class ArticleTag extends CActiveRecord
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'tag_search',
-				'value' => '$data->tag->body',
+				'value' => 'str_replace(\'-\', \' \', $data->tag->body)',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
