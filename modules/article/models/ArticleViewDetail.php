@@ -207,11 +207,7 @@ class ArticleViewDetail extends CActiveRecord
 			if(!isset($_GET['view'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'article_search',
-					'value' => '$data->view->article->title."<br/><span>".Utility::shortText(Utility::hardDecode($data->view->article->body),150)."</span>"',
-					'htmlOptions' => array(
-						'class' => 'bold',
-					),
-					'type' => 'raw',
+					'value' => '$data->view->article->title',
 				);
 			}
 			$this->defaultColumns[] = array(

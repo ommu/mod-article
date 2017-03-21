@@ -199,11 +199,7 @@ class ArticleDownloadDetail extends CActiveRecord
 			if(!isset($_GET['download'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'article_search',
-					'value' => '$data->download->article->title."<br/><span>".Utility::shortText(Utility::hardDecode($data->download->article->body),150)."</span>"',
-					'htmlOptions' => array(
-						'class' => 'bold',
-					),
-					'type' => 'raw',
+					'value' => '$data->download->article->title',
 				);
 			}
 			$this->defaultColumns[] = array(

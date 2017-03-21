@@ -214,11 +214,7 @@ class ArticleLikeDetail extends CActiveRecord
 			if(!isset($_GET['like'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'article_search',
-					'value' => '$data->like->article->title."<br/><span>".Utility::shortText(Utility::hardDecode($data->like->article->body),150)."</span>"',
-					'htmlOptions' => array(
-						'class' => 'bold',
-					),
-					'type' => 'raw',
+					'value' => '$data->like->article->title',
 				);				
 			}
 			$this->defaultColumns[] = array(

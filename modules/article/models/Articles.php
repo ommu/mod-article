@@ -308,11 +308,7 @@ class Articles extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'title',
-				'value' => '$data->title."<br/><span>".Utility::shortText(Utility::hardDecode($data->body),200)."</span>"',
-				'htmlOptions' => array(
-					'class' => 'bold',
-				),
-				'type' => 'raw',
+				'value' => '$data->title',
 			);
 			$category = ArticleCategory::model()->findByPk($_GET['category']);
 			if(!isset($_GET['category']) || (isset($_GET['category']) && $category->dependency == 0)) {

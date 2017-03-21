@@ -239,11 +239,7 @@ class ArticleMedia extends CActiveRecord
 			if(!isset($_GET['article'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'article_search',
-					'value' => '$data->article->title."<br/><span>".Utility::shortText(Utility::hardDecode($data->article->body),150)."</span>"',
-					'htmlOptions' => array(
-						'class' => 'bold',
-					),
-					'type' => 'raw',
+					'value' => '$data->article->title',
 				);
 				$this->defaultColumns[] = array(
 					'name' => 'type_search',
@@ -266,18 +262,6 @@ class ArticleMedia extends CActiveRecord
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
 				'value' => '$data->creation->displayname',
-			);
-			$this->defaultColumns[] = array(
-				'name' => 'cover',
-				'value' => '$data->cover == 1 ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'filter'=>array(
-					1=>Yii::t('phrase', 'Yes'),
-					0=>Yii::t('phrase', 'No'),
-				),
-				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
@@ -304,6 +288,18 @@ class ArticleMedia extends CActiveRecord
 						'showButtonPanel' => true,
 					),
 				), true),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'cover',
+				'value' => '$data->cover == 1 ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Yes'),
+					0=>Yii::t('phrase', 'No'),
+				),
+				'type' => 'raw',
 			);
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(
