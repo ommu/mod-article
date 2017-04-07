@@ -38,12 +38,27 @@
 class ArticleCategory extends CActiveRecord
 {
 	public $defaultColumns = array();
-	public $title;
-	public $description;
+	public $title_i;
+	public $description_i;
 	
 	// Variable Search
 	public $creation_search;
 	public $modified_search;
+
+	/**
+	 * Behaviors for this model
+	 */
+	public function behaviors() 
+	{
+		return array(
+			'sluggable' => array(
+				'class'=>'ext.yii-behavior-sluggable.SluggableBehavior',
+				'columns' => array('title.en_us'),
+				'unique' => true,
+				'update' => true,
+			),
+		);
+	}
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -72,17 +87,17 @@ class ArticleCategory extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('
-				title, description', 'required'),
+				title_i, description_i', 'required'),
 			array('publish, dependency, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
 			array('name, desc, creation_id, modified_id', 'length', 'max'=>11),
 			array('
-				title', 'length', 'max'=>32),
+				title_i', 'length', 'max'=>32),
 			array('
-				description', 'length', 'max'=>128),
+				description_i', 'length', 'max'=>128),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('cat_id, publish, dependency, name, desc, creation_date, creation_id, modified_date, modified_id,
-				title, description, creation_search, modified_search', 'safe', 'on'=>'search'),
+				title_i, description_i, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -114,8 +129,8 @@ class ArticleCategory extends CActiveRecord
 			'dependency' => Yii::t('attribute', 'Parent'),
 			'name' => Yii::t('attribute', 'Category'),
 			'desc' => Yii::t('attribute', 'Description'),
-			'title' => Yii::t('attribute', 'Category'),
-			'description' => Yii::t('attribute', 'Description'),
+			'title_i' => Yii::t('attribute', 'Category'),
+			'description_i' => Yii::t('attribute', 'Description'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
@@ -186,8 +201,8 @@ class ArticleCategory extends CActiveRecord
 			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
 		$criteria->compare('t.modified_id',$this->modified_id);
 		
-		$criteria->compare('title.'.$language,strtolower($this->title), true);
-		$criteria->compare('description.'.$language,strtolower($this->description), true);
+		$criteria->compare('title.'.$language,strtolower($this->title_i), true);
+		$criteria->compare('description.'.$language,strtolower($this->description_i), true);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
 		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
 
@@ -249,11 +264,11 @@ class ArticleCategory extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'title',
+				'name' => 'title_i',
 				'value' => 'Phrase::trans($data->name)',
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'description',
+				'name' => 'description_i',
 				'value' => 'Phrase::trans($data->desc)',
 			);
 			$this->defaultColumns[] = array(
@@ -321,25 +336,29 @@ class ArticleCategory extends CActiveRecord
 	 * 0 = unpublish
 	 * 1 = publish
 	 */
-	public static function getCategory($publish=null, $dependency=null) 
+	public static function getCategory($publish=null, $parent=null, $type=null) 
 	{		
 		$criteria=new CDbCriteria;
 		if($publish != null)
 			$criteria->compare('t.publish',$publish);
-		if($dependency != null)
-			$criteria->compare('t.dependency',$dependency);
+		if($parent != null)
+			$criteria->compare('t.dependency',$parent);
 		
 		$model = self::model()->findAll($criteria);
 
-		$items = array();
-		if($model != null) {
-			foreach($model as $key => $val) {
-				$items[$val->cat_id] = Phrase::trans($val->name);
-			}
-			return $items;
+		if($type == null) {
+			$items = array();
+			if($model != null) {
+				foreach($model as $key => $val) {
+					$items[$val->cat_id] = Phrase::trans($val->name);
+				}
+				return $items;
+				
+			} else
+				return false;
 			
-		} else
-			return false;
+		} else if($type == 'data')
+			return $model;
 	}
 
 	/**
@@ -364,23 +383,23 @@ class ArticleCategory extends CActiveRecord
 				$location = strtolower(Yii::app()->controller->module->id.'/'.Yii::app()->controller->id);
 				$title=new OmmuSystemPhrase;
 				$title->location = $location.'_title';
-				$title->en_us = $this->title;
+				$title->en_us = $this->title_i;
 				if($title->save())
 					$this->name = $title->phrase_id;
 
 				$desc=new OmmuSystemPhrase;
 				$desc->location = $location.'_description';
-				$desc->en_us = $this->description;
+				$desc->en_us = $this->description_i;
 				if($desc->save())
 					$this->desc = $desc->phrase_id;
 				
 			} else {
 				$title = OmmuSystemPhrase::model()->findByPk($this->name);
-				$title->en_us = $this->title;
+				$title->en_us = $this->title_i;
 				$title->save();
 
 				$desc = OmmuSystemPhrase::model()->findByPk($this->desc);
-				$desc->en_us = $this->description;
+				$desc->en_us = $this->description_i;
 				$desc->save();
 			}
 		}

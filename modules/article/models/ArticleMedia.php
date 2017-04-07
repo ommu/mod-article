@@ -27,6 +27,7 @@
  * @property integer $cover
  * @property string $article_id
  * @property string $media
+ * @property string $caption
  * @property string $creation_date
  * @property string $creation_id
  * @property string $modified_date
@@ -82,7 +83,7 @@ class ArticleMedia extends CActiveRecord
 				old_media_input, video_input', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('media_id, publish, cover, article_id, media, creation_date, creation_id, modified_date, modified_id,
+			array('media_id, publish, cover, article_id, media, caption, creation_date, creation_id, modified_date, modified_id,
 				article_search, creation_search, modified_search, type_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -112,6 +113,7 @@ class ArticleMedia extends CActiveRecord
 			'cover' => Yii::t('attribute', 'Cover'),
 			'article_id' => Yii::t('attribute', 'Article'),
 			'media' => Yii::t('attribute', 'Media (Photo)'),
+			'caption' => Yii::t('attribute', 'Caption'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
@@ -170,6 +172,7 @@ class ArticleMedia extends CActiveRecord
 			$criteria->compare('t.article_id',$this->article_id);
 		}
 		$criteria->compare('t.media',strtolower($this->media),true);
+		$criteria->compare('t.caption',strtolower($this->caption),true);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		$criteria->compare('t.creation_id',$this->creation_id);
@@ -218,6 +221,7 @@ class ArticleMedia extends CActiveRecord
 			$this->defaultColumns[] = 'cover';
 			$this->defaultColumns[] = 'article_id';
 			$this->defaultColumns[] = 'media';
+			$this->defaultColumns[] = 'caption';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
 			$this->defaultColumns[] = 'modified_date';
@@ -288,6 +292,18 @@ class ArticleMedia extends CActiveRecord
 						'showButtonPanel' => true,
 					),
 				), true),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'caption',
+				'value' => '$data->caption != \'\' ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Yes'),
+					0=>Yii::t('phrase', 'No'),
+				),
+				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'cover',

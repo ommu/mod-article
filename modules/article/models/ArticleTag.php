@@ -245,24 +245,19 @@ class ArticleTag extends CActiveRecord
 	/**
 	 * get article tag
 	 */
-	public static function getKeyword($keyword, $id) {
-		$model = self::model()->findAll(array(
-			'condition' => 'article_id = :id',
-			'params' => array(
-				':id' => $id,
-			),
-			'order' => 'id ASC',
-			'limit' => 30,
-		));
+	public static function getKeyword($keyword, $tags) 
+	{
+		if(empty($tags))
+			return $keyword;
 		
-		$tag = '';
-		if($model != null) {
-			foreach($model as $val) {
-				$tag .= ','.$val->tag->body;
-			}
+		else {
+			$tag = array();
+			foreach($tags as $val)
+				$tag[] = $val->tag->body;
+				
+			$implodeTag = Utility::formatFileType($tag, false);
+			return $keyword.', '.$implodeTag;
 		}
-		
-		return $keyword.$tag;
 	}
 
 	/**

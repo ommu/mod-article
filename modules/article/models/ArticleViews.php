@@ -70,7 +70,7 @@ class ArticleViews extends CActiveRecord
 			array('publish, article_id, user_id', 'required'),
 			array('publish, views', 'numerical', 'integerOnly'=>true),
 			array('article_id, user_id, views', 'length', 'max'=>11),
-			array('views_ip', 'length', 'max'=>20),
+			array('view_ip', 'length', 'max'=>20),
 			array('', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -361,15 +361,13 @@ class ArticleViews extends CActiveRecord
 	 */
 	public static function insertView($article_id)
 	{
-		$findView = self::model()->find(array(
-			'select' => 'view_id, publish, article_id, user_id, views',
-			'condition' => 'publish = :publish AND article_id = :article AND user_id = :user',
-			'params' => array(
-				':publish' => '1',
-				':article' => $article_id,
-				':user' => !Yii::app()->user->isGuest ? Yii::app()->user->id : '0',
-			),
-		));
+		$criteria=new CDbCriteria;
+		$criteria->select = 't.view_id, t.publish, t.article_id, t.user_id, t.views';
+		$criteria->compare('t.publish', 1);
+		$criteria->compare('t.article_id', $article_id);
+		$criteria->compare('t.user_id', !Yii::app()->user->isGuest ? Yii::app()->user->id : '0');
+		$findView = self::model()->find($criteria);
+		
 		if($findView != null)
 			self::model()->updateByPk($findView->view_id, array('views'=>$findView->views + 1));
 		

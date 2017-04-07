@@ -152,7 +152,7 @@ class TagController extends Controller
 		if(isset($_POST['article_id'], $_POST['tag_id'], $_POST['tag'])) {
 			$model->article_id = $_POST['article_id'];
 			$model->tag_id = $_POST['tag_id'];
-			$model->body = $_POST['tag'];
+			$model->tag_input = $_POST['tag'];
 
 			if($model->save()) {
 				if(isset($_GET['type']) && $_GET['type'] == 'article')

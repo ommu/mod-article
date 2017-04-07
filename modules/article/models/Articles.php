@@ -38,6 +38,7 @@
  * @property string $creation_id
  * @property string $modified_date
  * @property string $modified_id
+ * @property string $headline_date
  *
  * The followings are the available model relations:
  * @property OmmuArticleComment[] $ommuArticleComments
@@ -58,6 +59,21 @@ class Articles extends CActiveRecord
 	public $creation_search;
 	public $modified_search;
 
+	/**
+	 * Behaviors for this model
+	 */
+	public function behaviors() 
+	{
+		return array(
+			'sluggable' => array(
+				'class'=>'ext.yii-behavior-sluggable.SluggableBehavior',
+				'columns' => array('title'),
+				'unique' => true,
+				'update' => true,
+			),
+		);
+	}
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -94,11 +110,11 @@ class Articles extends CActiveRecord
 				video_input', 'length', 'max'=>32),
 			array('title', 'length', 'max'=>128),
 			//array('media_input', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
-			array('article_type, title, body, quote, published_date, creation_date, modified_date, 
+			array('article_type, title, body, quote, published_date, creation_date, modified_date, headline_date, 
 				media_input, old_media_input, video_input, keyword_input, old_media_file_input', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('article_id, publish, cat_id, user_id, headline, comment_code, article_type, title, body, quote, media_file, published_date, creation_date, creation_id, modified_date, modified_id,
+			array('article_id, publish, cat_id, user_id, headline, comment_code, article_type, title, body, quote, media_file, published_date, creation_date, creation_id, modified_date, modified_id, headline_date,
 				user_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -117,7 +133,7 @@ class Articles extends CActiveRecord
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 			'tag' => array(self::HAS_ONE, 'ArticleTag', 'article_id'),
-			'medias' => array(self::HAS_MANY, 'ArticleMedia', 'article_id'),
+			'medias' => array(self::HAS_MANY, 'ArticleMedia', 'article_id', 'on'=>'medias.publish=1'),
 			'tags' => array(self::HAS_MANY, 'ArticleTag', 'article_id'),
 		);
 	}
@@ -144,6 +160,7 @@ class Articles extends CActiveRecord
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
+			'headline_date' => Yii::t('attribute', 'Headline Date'),
 			'media_input' => Yii::t('attribute', 'Media').' (Photo)',
 			'old_media_input' => Yii::t('attribute', 'Old Media').' (Photo)',
 			'video_input' => Yii::t('attribute', 'Video'),
@@ -234,6 +251,8 @@ class Articles extends CActiveRecord
 		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
 		$criteria->compare('t.modified_id',$this->modified_id);
+		if($this->headline_date != null && !in_array($this->headline_date, array('0000-00-00 00:00:00', '0000-00-00')))
+			$criteria->compare('date(t.headline_date)',date('Y-m-d', strtotime($this->headline_date)));
 		
 		$criteria->compare('user.displayname',strtolower($this->user_search), true);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
@@ -283,6 +302,7 @@ class Articles extends CActiveRecord
 			$this->defaultColumns[] = 'creation_id';
 			$this->defaultColumns[] = 'modified_date';
 			$this->defaultColumns[] = 'modified_id';
+			$this->defaultColumns[] = 'headline_date';
 		}
 
 		return $this->defaultColumns;
@@ -291,8 +311,13 @@ class Articles extends CActiveRecord
 	/**
 	 * Set default columns to display
 	 */
-	protected function afterConstruct() {
+	protected function afterConstruct() 
+	{
 		$controller = strtolower(Yii::app()->controller->id);
+		$setting = ArticleSetting::model()->findByPk(1, array(
+			'select' => 'headline',
+		));
+		
 		if(count($this->defaultColumns) == 0) {
 			/*
 			$this->defaultColumns[] = array(
@@ -323,10 +348,12 @@ class Articles extends CActiveRecord
 					'type' => 'raw',
 				);
 			}
+			/*
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
 				'value' => '$data->creation->displayname',
 			);
+			*/
 			$this->defaultColumns[] = array(
 				'name' => 'creation_date',
 				'value' => 'Utility::dateFormat($data->creation_date)',
@@ -381,10 +408,10 @@ class Articles extends CActiveRecord
 					), true),
 				);
 			}
-			if(OmmuSettings::getInfo('site_headline') == 1) {
+			if($setting->headline == 1) {
 				$this->defaultColumns[] = array(
 					'name' => 'headline',
-					'value' => '$data->headline == 1 ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Utility::getPublish(Yii::app()->controller->createUrl("headline",array("id"=>$data->article_id)), $data->headline, 9)',
+					'value' => 'in_array($data->cat_id, ArticleSetting::getHeadlineCategory()) ? ($data->headline == 1 ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Utility::getPublish(Yii::app()->controller->createUrl("headline",array("id"=>$data->article_id)), $data->headline, 9)) : \'-\'',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -428,6 +455,37 @@ class Articles extends CActiveRecord
 			$model = self::model()->findByPk($id);
 			return $model;			
 		}
+	}
+
+	/**
+	 * Articles get information
+	 */
+	public static function getHeadline()
+	{
+		$setting = ArticleSetting::model()->findByPk(1, array(
+			'select' => 'headline_limit, headline_category',
+		));
+		$headline_category = unserialize($setting->headline_category);
+					
+		$criteria=new CDbCriteria;
+		$criteria->compare('t.publish', 1);
+		$criteria->compare('t.headline', 1);
+		$criteria->addInCondition('t.cat_id', $headline_category);
+		$criteria->order = 't.headline_date DESC';
+		
+		$model = self::model()->findAll($criteria);
+		
+		$headline = array();
+		if(!empty($model)) {
+			$i=0;
+			foreach($model as $key => $val) {
+				$i++;
+				if($i <= $setting->headline_limit)
+					$headline[] = $val->article_id;
+			}
+		}
+		
+		return $headline;
 	}
 
 	/**
@@ -480,7 +538,7 @@ class Articles extends CActiveRecord
 	/**
 	 * before validate attributes
 	 */
-	protected function beforeValidate() {		
+	protected function beforeValidate() {
 		$setting = ArticleSetting::model()->findByPk(1, array(
 			'select' => 'media_file_type, upload_file_type',
 		));
@@ -645,15 +703,11 @@ class Articles extends CActiveRecord
 		
 		// Reset headline
 		if($setting->headline == 1 && $this->headline == 1) {
-			self::model()->updateAll(array(
-				'headline' => 0,	
-			), array(
-				'condition'=> 'article_id != :article_id AND cat_id = :cat_id',
-				'params'=>array(
-					':article_id'=>$this->article_id,
-					':cat_id'=>$this->cat_id,
-				),
-			));
+			$headline = Articles::getHeadline();
+			
+			$criteria=new CDbCriteria;
+			$criteria->addNotInCondition('article_id', $headline);
+			self::model()->updateAll(array('headline'=>0), $criteria);
 		}
 	}
 

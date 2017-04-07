@@ -24,7 +24,10 @@
  *
  * The followings are the available columns in table '_view_articles':
  * @property string $article_id
+ * @property string $media_cover
+ * @property string $media_caption
  * @property string $medias
+ * @property string $media_all
  * @property string $likes
  * @property string $like_all
  * @property string $views
@@ -71,11 +74,11 @@ class ViewArticles extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('article_id, medias, likes, like_all, views, view_all, downloads, tags', 'numerical', 'integerOnly'=>true),
+			array('article_id, media_cover, media_caption, medias, media_all, likes, like_all, views, view_all, downloads, tags', 'numerical', 'integerOnly'=>true),
 			array('article_id', 'length', 'max'=>11),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('article_id, medias, likes, like_all, views, view_all, downloads, tags', 'safe', 'on'=>'search'),
+			array('article_id, media_cover, media_caption, medias, media_all, likes, like_all, views, view_all, downloads, tags', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -97,7 +100,10 @@ class ViewArticles extends CActiveRecord
 	{
 		return array(
 			'article_id' => Yii::t('attribute', 'Article'),
+			'media_cover' => Yii::t('attribute', 'Cover'),
+			'media_caption' => Yii::t('attribute', 'Caption'),
 			'medias' => Yii::t('attribute', 'Medias'),
+			'media_all' => Yii::t('attribute', 'Media All'),
 			'likes' => Yii::t('attribute', 'Likes'),
 			'like_all' => Yii::t('attribute', 'Like All'),
 			'views' => Yii::t('attribute', 'View'),
@@ -131,14 +137,17 @@ class ViewArticles extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('t.article_id',strtolower($this->article_id),true);
-		$criteria->compare('t.medias',strtolower($this->medias),true);
-		$criteria->compare('t.likes',strtolower($this->likes),true);
-		$criteria->compare('t.like_all',strtolower($this->like_all),true);
-		$criteria->compare('t.views',strtolower($this->views),true);
-		$criteria->compare('t.view_all',strtolower($this->view_all),true);
-		$criteria->compare('t.downloads',strtolower($this->downloads),true);
-		$criteria->compare('t.tags',strtolower($this->tags),true);
+		$criteria->compare('t.article_id',$this->article_id);
+		$criteria->compare('t.media_cover',strtolower($this->media_cover),true);
+		$criteria->compare('t.media_caption',strtolower($this->media_caption),true);
+		$criteria->compare('t.medias',$this->medias);
+		$criteria->compare('t.media_all',$this->media_all);
+		$criteria->compare('t.likes',$this->likes);
+		$criteria->compare('t.like_all',$this->like_all);
+		$criteria->compare('t.views',$this->views);
+		$criteria->compare('t.view_all',$this->view_all);
+		$criteria->compare('t.downloads',$this->downloads);
+		$criteria->compare('t.tags',$this->tags);
 
 		if(!isset($_GET['ViewArticles_sort']))
 			$criteria->order = 't.article_id DESC';
@@ -170,7 +179,10 @@ class ViewArticles extends CActiveRecord
 			}
 		} else {
 			$this->defaultColumns[] = 'article_id';
+			$this->defaultColumns[] = 'media_cover';
+			$this->defaultColumns[] = 'media_caption';
 			$this->defaultColumns[] = 'medias';
+			$this->defaultColumns[] = 'media_all';
 			$this->defaultColumns[] = 'likes';
 			$this->defaultColumns[] = 'like_all';
 			$this->defaultColumns[] = 'views';
@@ -192,7 +204,10 @@ class ViewArticles extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			$this->defaultColumns[] = 'article_id';
+			$this->defaultColumns[] = 'media_cover';
+			$this->defaultColumns[] = 'media_caption';
 			$this->defaultColumns[] = 'medias';
+			$this->defaultColumns[] = 'media_all';
 			$this->defaultColumns[] = 'likes';
 			$this->defaultColumns[] = 'like_all';
 			$this->defaultColumns[] = 'views';

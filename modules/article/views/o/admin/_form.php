@@ -277,7 +277,7 @@ EOP;
 					echo $form->hiddenField($model,'comment_code');
 				}?>
 	
-				<?php if(OmmuSettings::getInfo('site_headline') == 1) {?>
+				<?php if($setting->headline == 1) {?>
 				<div class="clearfix publish">
 					<?php echo $form->labelEx($model,'headline'); ?>
 					<div class="desc">

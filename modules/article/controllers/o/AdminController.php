@@ -150,7 +150,7 @@ class AdminController extends Controller
 	public function actionAdd() 
 	{
 		$setting = ArticleSetting::model()->findByPk(1,array(
-			'select' => 'meta_keyword, type_active, media_file_type, upload_file_type',
+			'select' => 'meta_keyword, type_active, headline, media_file_type, upload_file_type',
 		));
 		$model=new Articles;
 
@@ -188,7 +188,7 @@ class AdminController extends Controller
 	public function actionEdit($id) 
 	{
 		$setting = ArticleSetting::model()->findByPk(1,array(
-			'select' => 'meta_keyword, type_active, media_limit, media_file_type, upload_file_type',
+			'select' => 'meta_keyword, type_active, headline, media_limit, media_file_type, upload_file_type',
 		));
 		$model=$this->loadModel($id);
 

@@ -11,7 +11,7 @@
  * @contact (+62)856-299-4114
  *
  */
-
+	
 	$this->breadcrumbs=array(
 		'Articles'=>array('manage'),
 		'Manage',
