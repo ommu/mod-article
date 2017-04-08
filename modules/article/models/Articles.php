@@ -110,7 +110,7 @@ class Articles extends CActiveRecord
 				video_input', 'length', 'max'=>32),
 			array('title', 'length', 'max'=>128),
 			//array('media_input', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
-			array('article_type, title, body, quote, published_date, creation_date, modified_date, headline_date, 
+			array('article_type, title, body, quote, published_date, 
 				media_input, old_media_input, video_input, keyword_input, old_media_file_input', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.

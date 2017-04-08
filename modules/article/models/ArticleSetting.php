@@ -30,7 +30,7 @@
  * @property string $type_active
  * @property integer $headline
  * @property integer $headline_limit
- * @property integer $headline_category
+ * @property string $headline_category
  * @property integer $media_limit
  * @property integer $media_resize
  * @property string $media_resize_size
@@ -302,10 +302,10 @@ class ArticleSetting extends CActiveRecord
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
 			if($this->headline == 1) {
-				if($this->headline_category == '')
-					$this->addError('headline_category', Yii::t('phrase', 'Headline Category cannot be blank.'));
 				if($this->headline_limit != '' && $this->headline_limit <= 0)
 					$this->addError('headline_limit', Yii::t('phrase', 'Headline Limit lebih besar dari 0'));
+				if($this->headline_category == '')
+					$this->addError('headline_category', Yii::t('phrase', 'Headline Category cannot be blank.'));
 			}
 			
 			if($this->media_limit != '' && $this->media_limit <= 0)

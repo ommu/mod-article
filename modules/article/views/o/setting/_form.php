@@ -24,7 +24,7 @@ $js=<<<EOP
 		}
 	});
 EOP;
-	$cs->registerScript('type', $js, CClientScript::POS_END);
+	$cs->registerScript('js', $js, CClientScript::POS_END);
 ?>
 
 <?php $form=$this->beginWidget('application.components.system.OActiveForm', array(
@@ -130,9 +130,9 @@ EOP;
 				<div class="desc">
 					<?php 
 					$parent = null;
-					$category = ArticleCategory::getCategory(null, $parent);
+					$category = ArticleCategory::getCategory(1, $parent);
 					if(!$model->getErrors())
-						$model->headline_category = unserialize(headline_category);
+						$model->headline_category = unserialize($model->headline_category);
 					echo $form->checkBoxList($model,'headline_category', $category); ?>
 					<?php echo $form->error($model,'headline_category'); ?>
 				</div>
