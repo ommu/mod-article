@@ -269,7 +269,7 @@ class ArticleLikes extends CActiveRecord
 					'model'=>$this,
 					'attribute'=>'likes_date',
 					'language' => 'en',
-					'i18nScriptFile' => 'jquery-ui-i18n.min.js'
+					'i18nScriptFile' => 'jquery-ui-i18n.min.js',
 					//'mode'=>'datetime',
 					'htmlOptions' => array(
 						'id' => 'likes_date_filter',
@@ -302,7 +302,7 @@ class ArticleLikes extends CActiveRecord
 					'model'=>$this,
 					'attribute'=>'updated_date',
 					'language' => 'en',
-					'i18nScriptFile' => 'jquery-ui-i18n.min.js'
+					'i18nScriptFile' => 'jquery-ui-i18n.min.js',
 					//'mode'=>'datetime',
 					'htmlOptions' => array(
 						'id' => 'updated_date_filter',
