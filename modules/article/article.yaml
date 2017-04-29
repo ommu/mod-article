@@ -21,19 +21,29 @@ plugin_menu		:
 		urlRules: {siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
 		
-	- urlTitle: Article Settings
+	- urlTitle: Datas
 		urlRules: {siteType: "0,1", userLevel: 1}
-		urlPath: {url: o/setting/edit, attr: -, icon: -}
+		urlPath: {url: -, attr: -, icon: -}
 		submenu :
+			- urlTitle: Categories
+				urlRules: {siteType: "0,1", userLevel: "1,2"}
+				urlPath: {url: o/category/manage, attr: -, icon: -}
 			- urlTitle: Photos
 				urlRules: {siteType: "0,1", userLevel: "1,2"}
 				urlPath: {url: o/media/manage, attr: -, icon: -}
+			- urlTitle: Downloads
+				urlRules: {siteType: "0,1", userLevel: "1,2"}
+				urlPath: {url: o/download/manage, attr: -, icon: -}
 			- urlTitle: Likes
 				urlRules: {siteType: 1, userLevel: "1,2"}
 				urlPath: {url: o/like/manage, attr: -, icon: -}
 			- urlTitle: Tags
 				urlRules: {siteType: "0,1", userLevel: "1,2"}
 				urlPath: {url: o/tag/manage, attr: -, icon: -}
+		
+	- urlTitle: Settings
+		urlRules: {siteType: "0,1", userLevel: 1}
+		urlPath: {url: o/setting/edit, attr: -, icon: -}
 
 content_menu	:
 # controller o/admin

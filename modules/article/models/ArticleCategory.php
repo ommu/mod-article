@@ -24,7 +24,7 @@
  * The followings are the available columns in table 'ommu_article_category':
  * @property integer $cat_id
  * @property integer $publish
- * @property integer $dependency
+ * @property integer $parent
  * @property string $name
  * @property string $desc
  * @property string $creation_date
@@ -88,7 +88,7 @@ class ArticleCategory extends CActiveRecord
 		return array(
 			array('
 				title_i, description_i', 'required'),
-			array('publish, dependency, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
+			array('publish, parent, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
 			array('name, desc, creation_id, modified_id', 'length', 'max'=>11),
 			array('
 				title_i', 'length', 'max'=>32),
@@ -96,7 +96,7 @@ class ArticleCategory extends CActiveRecord
 				description_i', 'length', 'max'=>128),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('cat_id, publish, dependency, name, desc, creation_date, creation_id, modified_date, modified_id,
+			array('cat_id, publish, parent, name, desc, creation_date, creation_id, modified_date, modified_id,
 				title_i, description_i, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -126,7 +126,7 @@ class ArticleCategory extends CActiveRecord
 		return array(
 			'cat_id' => Yii::t('attribute', 'Category'),
 			'publish' => Yii::t('attribute', 'Publish'),
-			'dependency' => Yii::t('attribute', 'Parent'),
+			'parent' => Yii::t('attribute', 'Parent'),
 			'name' => Yii::t('attribute', 'Category'),
 			'desc' => Yii::t('attribute', 'Description'),
 			'title_i' => Yii::t('attribute', 'Category'),
@@ -191,7 +191,7 @@ class ArticleCategory extends CActiveRecord
 			$criteria->addInCondition('t.publish',array(0,1));
 			$criteria->compare('t.publish',$this->publish);
 		}
-		$criteria->compare('t.dependency',$this->dependency);
+		$criteria->compare('t.parent',$this->parent);
 		$criteria->compare('t.name',$this->name,true);
 		$criteria->compare('t.desc',$this->desc,true);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
@@ -234,7 +234,7 @@ class ArticleCategory extends CActiveRecord
 		}else {
 			//$this->defaultColumns[] = 'cat_id';
 			$this->defaultColumns[] = 'publish';
-			$this->defaultColumns[] = 'dependency';
+			$this->defaultColumns[] = 'parent';
 			$this->defaultColumns[] = 'name';
 			$this->defaultColumns[] = 'desc';
 			$this->defaultColumns[] = 'creation_date';
@@ -272,8 +272,8 @@ class ArticleCategory extends CActiveRecord
 				'value' => 'Phrase::trans($data->desc)',
 			);
 			$this->defaultColumns[] = array(
-				'name' => 'dependency',
-				'value' => '$data->dependency != 0 ? Phrase::trans(ArticleCategory::model()->findByPk($data->dependency)->name) : "-"',
+				'name' => 'parent',
+				'value' => '$data->parent != 0 ? Phrase::trans(ArticleCategory::model()->findByPk($data->parent)->name) : "-"',
 			);
 			$this->defaultColumns[] = array(
 				'header' => Yii::t('phrase', 'Articles'),
@@ -342,7 +342,7 @@ class ArticleCategory extends CActiveRecord
 		if($publish != null)
 			$criteria->compare('t.publish',$publish);
 		if($parent != null)
-			$criteria->compare('t.dependency',$parent);
+			$criteria->compare('t.parent',$parent);
 		
 		$model = self::model()->findAll($criteria);
 
@@ -377,10 +377,13 @@ class ArticleCategory extends CActiveRecord
 	/**
 	 * before save attributes
 	 */
-	protected function beforeSave() {
+	protected function beforeSave() 
+	{
+		$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
+		$location = Utility::getUrlTitle($currentAction);
+				
 		if(parent::beforeSave()) {
 			if($this->isNewRecord) {
-				$location = strtolower(Yii::app()->controller->module->id.'/'.Yii::app()->controller->id);
 				$title=new OmmuSystemPhrase;
 				$title->location = $location.'_title';
 				$title->en_us = $this->title_i;
@@ -392,6 +395,8 @@ class ArticleCategory extends CActiveRecord
 				$desc->en_us = $this->description_i;
 				if($desc->save())
 					$this->desc = $desc->phrase_id;
+				
+				$this->slug = Utility::getUrlTitle($this->title_i);				
 				
 			} else {
 				$title = OmmuSystemPhrase::model()->findByPk($this->name);

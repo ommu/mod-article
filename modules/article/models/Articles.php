@@ -214,12 +214,12 @@ class Articles extends CActiveRecord
 		
 		if(isset($_GET['category'])) {
 			$category = ArticleCategory::model()->findByPk($_GET['category']);
-			if($category->dependency == 0) {
+			if($category->parent == 0) {
 				$parent = $_GET['category'];
 				$categoryFind = ArticleCategory::model()->findAll(array(
-					'condition' => 'dependency = :dependency',
+					'condition' => 'parent = :parent',
 					'params' => array(
-						':dependency' => $parent,
+						':parent' => $parent,
 					),
 				));
 				$items = array();
@@ -336,8 +336,8 @@ class Articles extends CActiveRecord
 				'value' => '$data->title',
 			);
 			$category = ArticleCategory::model()->findByPk($_GET['category']);
-			if(!isset($_GET['category']) || (isset($_GET['category']) && $category->dependency == 0)) {
-				if($category->dependency == 0)
+			if(!isset($_GET['category']) || (isset($_GET['category']) && $category->parent == 0)) {
+				if($category->parent == 0)
 					$parent = $_GET['category'];
 				else
 					$parent = null;

@@ -31,14 +31,15 @@
 		<?php //begin.Messages ?>
 		
 		<div class="clearfix">
-			<?php echo $form->labelEx($model,'dependency'); ?>
+			<?php echo $form->labelEx($model,'parent'); ?>
 			<div class="desc">
-				<?php if(ArticleCategory::getCategory() != null) {
-					echo $form->dropDownList($model,'dependency', ArticleCategory::getCategory(), array('prompt'=>Yii::t('phrase', 'No Parent')));
-				} else {
-					echo $form->dropDownList($model,'dependency', array(0=>Yii::t('phrase', 'No Parent')));
-				}?>
-				<?php echo $form->error($model,'dependency'); ?>
+				<?php 
+				$category = ArticleCategory::getCategory();
+				if($category != null)
+					echo $form->dropDownList($model,'parent', $category, array('prompt'=>Yii::t('phrase', 'No Parent')));
+				else
+					echo $form->dropDownList($model,'parent', array(0=>Yii::t('phrase', 'No Parent')));?>
+				<?php echo $form->error($model,'parent'); ?>
 			</div>
 		</div>
 

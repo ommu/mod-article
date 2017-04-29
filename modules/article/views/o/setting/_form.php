@@ -133,7 +133,10 @@ EOP;
 					$category = ArticleCategory::getCategory(1, $parent);
 					if(!$model->getErrors())
 						$model->headline_category = unserialize($model->headline_category);
-					echo $form->checkBoxList($model,'headline_category', $category); ?>
+					if($category != null)
+						echo $form->checkBoxList($model,'headline_category', $category);
+					else
+						echo $form->checkBoxList($model,'headline_category', array('prompt'=>Yii::t('phrase', 'No Parent'))); ?>
 					<?php echo $form->error($model,'headline_category'); ?>
 				</div>
 			</div>
