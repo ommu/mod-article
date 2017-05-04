@@ -166,8 +166,8 @@ class ArticleLikes extends CActiveRecord
 		if($this->updated_date != null && !in_array($this->updated_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.updated_date)',date('Y-m-d', strtotime($this->updated_date)));
 
-		$criteria->compare('view.likes',strtolower($this->like_search), true);
-		$criteria->compare('view.unlikes',strtolower($this->unlike_search), true);
+		$criteria->compare('view.likes',$this->like_search);
+		$criteria->compare('view.unlikes',$this->unlike_search);
 		$criteria->compare('article.title',strtolower($this->article_search), true);
 		if(isset($_GET['article']) && isset($_GET['publish']))
 			$criteria->compare('digital.publish',$_GET['publish']);
@@ -245,7 +245,7 @@ class ArticleLikes extends CActiveRecord
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'like_search',
-				'value' => 'CHtml::link($data->view->likes != 0 ? $data->view->likes : \'0\', Yii::app()->controller->createUrl("o/likedetail/manage",array(\'like\'=>$data->like_id,\'type\'=>\'publish\')))',
+				'value' => 'CHtml::link($data->view->likes ? $data->view->likes : 0, Yii::app()->controller->createUrl("o/likedetail/manage",array(\'like\'=>$data->like_id,\'type\'=>\'publish\')))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -253,7 +253,7 @@ class ArticleLikes extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'unlike_search',
-				'value' => 'CHtml::link($data->view->unlikes != 0 ? $data->view->unlikes : \'0\', Yii::app()->controller->createUrl("o/likedetail/manage",array(\'like\'=>$data->like_id,\'type\'=>\'unpublish\')))',
+				'value' => 'CHtml::link($data->view->unlikes ? $data->view->unlikes : 0, Yii::app()->controller->createUrl("o/likedetail/manage",array(\'like\'=>$data->like_id,\'type\'=>\'unpublish\')))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),

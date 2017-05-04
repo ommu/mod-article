@@ -18,26 +18,30 @@
 		$model->title=>array('view','id'=>$model->article_id),
 		'Update',
 	);
+	
 	$medias = $model->medias;
+	$media_limit = $setting->media_limit;
 ?>
 
-<div class="form" <?php //echo ($model->article_type == 'standard' && $setting->media_limit != 1) ? 'name="post-on"' : ''; ?>>
+<div class="form" <?php //echo ($model->article_type == 'standard' && $media_limit != 1) ? 'name="post-on"' : ''; ?>>
 	<?php echo $this->renderPartial('_form', array(
 		'model'=>$model,
 		'setting'=>$setting,
+		'media_file_type'=>$media_file_type,
+		'upload_file_type'=>$upload_file_type,
 	)); ?>
 </div>
 
-<?php if($model->article_type == 'standard' && $setting->media_limit != 1) {?>
+<?php if($model->article_type == 'standard' && $media_limit != 1) {?>
 <div class="boxed mt-15">
 	<h3><?php echo Yii::t('phrase', 'Article Photo'); ?></h3>
 	<div class="clearfix horizontal-data" name="four">
 		<ul id="media-render">
 			<?php 
-			$this->renderPartial('_form_cover', array('model'=>$model, 'medias'=>$medias, 'setting'=>$setting));
-			if($medias != null) {
-				foreach($medias as $key => $val)
-					$this->renderPartial('_form_view_covers', array('data'=>$val));
+			$this->renderPartial('_form_cover', array('model'=>$model, 'medias'=>$medias, 'media_limit'=>$media_limit));
+			if(!empty($medias)) {
+				foreach($medias as $key => $data)
+					$this->renderPartial('_form_view_covers', array('data'=>$data));
 			}?>
 		</ul>
 	</div>

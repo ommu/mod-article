@@ -256,7 +256,7 @@ class ArticleViews extends CActiveRecord
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'views',
-				'value' => 'CHtml::link($data->views != null ? $data->views : "0", Yii::app()->controller->createUrl("o/viewdetail/manage",array(\'view\'=>$data->view_id)))',
+				'value' => 'CHtml::link($data->views ? $data->views : 0, Yii::app()->controller->createUrl("o/viewdetail/manage",array(\'view\'=>$data->view_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),

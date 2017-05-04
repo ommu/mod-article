@@ -9,8 +9,8 @@
 		<div class="sep">
 			<?php
 			if($val->article_type == 'standard') {
-				if($val->cover->media != '')
-					$media = Yii::app()->request->baseUrl.'/public/article/'.$val->article_id.'/'.$val->cover->media;
+				if($val->view->media_cover != '')
+					$media = Yii::app()->request->baseUrl.'/public/article/'.$val->article_id.'/'.$val->view->media_cover;
 				else
 					$media = Yii::app()->request->baseUrl.'/public/article/article_default.png';
 				
@@ -25,9 +25,9 @@
 				<?php echo Utility::dateFormat($val->creation_date, true);?>
 				<?php //begin.Tools ?>
 				<div class="tools">
-					<?php if(Yii::app()->params['article_mod_comment'] == 1) {?><span class="comment"><?php echo $val->comment;?></span><?php }?>
+					<?php /* if(Yii::app()->params['article_mod_comment'] == 1) {?><span class="comment"><?php echo $val->comment;?></span><?php } */?>
 					<?php if(Yii::app()->params['article_mod_view'] == 1) {?><span class="view"><?php echo $val->view->views;?></span><?php }?>
-					<?php if(Yii::app()->params['article_mod_like'] == 1) {?><span class="like"><?php echo $val->likes;?></span><?php }?>
+					<?php if(Yii::app()->params['article_mod_like'] == 1) {?><span class="like"><?php echo $val->view->likes;?></span><?php }?>
 				</div>
 				<?php //end.Tools ?>
 			</div>

@@ -179,7 +179,7 @@ class TagController extends Controller
 			// we only allow deletion via POST request
 			if(isset($id)) {
 				$model->delete();
-				if(isset($_GET['type']) && $_GET['type'] == 'article') {
+				if((isset($_GET['type']) && $_GET['type'] == 'article') || isset($_GET['c'])) {
 					echo CJSON::encode(array(
 						'type' => 4,
 					));
@@ -196,8 +196,14 @@ class TagController extends Controller
 		} else {
 			if(isset($_GET['type']) && $_GET['type'] == 'article')
 				$url = Yii::app()->controller->createUrl('o/admin/edit', array('id'=>$model->article_id));
-			else
-				$url = Yii::app()->controller->createUrl('manage');
+			else {
+				if(isset($_GET['c']) && count($_GET) > 2)
+					$url = Yii::app()->controller->createUrl($_GET['c'].'/'.$_GET['d'].'/edit', array('id'=>$model->article_id));
+				else if(isset($_GET['c']))
+					$url = Yii::app()->controller->createUrl($_GET['c'].'/edit', array('id'=>$model->article_id));
+				else
+					$url = Yii::app()->controller->createUrl('manage');
+			}
 			
 			$this->dialogDetail = true;
 			$this->dialogGroundUrl = $url;

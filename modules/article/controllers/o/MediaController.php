@@ -240,7 +240,7 @@ class MediaController extends Controller
 			if(isset($_GET['hook']) && $_GET['hook'] == 'admin')
 				$dialogGroundUrl = Yii::app()->controller->createUrl('o/admin/edit', array('id'=>$model->article_id));
 			else 
-				$dialogGroundUrl = Yii::app()->controller->createUrl('manage');			
+				$dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogDetail = true;
 			$this->dialogGroundUrl = $dialogGroundUrl;
 			$this->dialogWidth = 350;

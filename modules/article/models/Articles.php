@@ -45,6 +45,7 @@
  * @property OmmuArticleMedia[] $ommuArticleMedias
  * @property OmmuArticleCategory $cat
  */
+
 class Articles extends CActiveRecord
 {
 	public $defaultColumns = array();
@@ -110,6 +111,8 @@ class Articles extends CActiveRecord
 				video_input', 'length', 'max'=>32),
 			array('title', 'length', 'max'=>128),
 			//array('media_input', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
+			//array('file', 'file', 'types' => 'mp3, mp4,
+			//	pdf, doc, docx, ppt, pptx, xls, xlsx, opt', 'maxSize'=>7097152, 'allowEmpty' => true),
 			array('article_type, title, body, quote, published_date, 
 				media_input, old_media_input, video_input, keyword_input, old_media_file_input', 'safe'),
 			// The following rule is used by search().
@@ -211,7 +214,7 @@ class Articles extends CActiveRecord
 			$criteria->addInCondition('t.publish',array(0,1));
 			$criteria->compare('t.publish',$this->publish);
 		}
-		
+
 		if(isset($_GET['category'])) {
 			$category = ArticleCategory::model()->findByPk($_GET['category']);
 			if($category->parent == 0) {
@@ -229,12 +232,12 @@ class Articles extends CActiveRecord
 						$items[] = $val->cat_id;
 				}
 				$criteria->addInCondition('t.cat_id',$items);
+				$criteria->compare('t.cat_id',$this->cat_id);
 				
 			} else
 				$criteria->compare('t.cat_id',$_GET['category']);
 		} else
 			$criteria->compare('t.cat_id',$this->cat_id);
-		
 		$criteria->compare('t.user_id',$this->user_id);
 		$criteria->compare('t.headline',$this->headline);
 		$criteria->compare('t.comment_code',$this->comment_code);
@@ -466,11 +469,13 @@ class Articles extends CActiveRecord
 			'select' => 'headline_limit, headline_category',
 		));
 		$headline_category = unserialize($setting->headline_category);
+		if(empty($headline_category))
+			$headline_category = array();
 					
 		$criteria=new CDbCriteria;
 		$criteria->compare('t.publish', 1);
-		$criteria->compare('t.headline', 1);
 		$criteria->addInCondition('t.cat_id', $headline_category);
+		$criteria->compare('t.headline', 1);
 		$criteria->order = 't.headline_date DESC';
 		
 		$model = self::model()->findAll($criteria);
@@ -503,16 +508,17 @@ class Articles extends CActiveRecord
 		$model = Articles::model()->findAll($criteria);
 		foreach($model as $key => $item) {
 			$medias = $item->medias;
-			if($medias != null)
-				$images = Yii::app()->request->baseUrl.'/public/article/'.$item->article_id.'/'.$medias[0]->media;
-			else
-				$images = '';
+			if(!empty($medias)) {
+				$media = $item->view->media_cover ? $item->view->media_cover : $medias[0]->media;
+				$image = Yii::app()->request->baseUrl.'/public/article/'.$item->article_id.'/'.$media;
+			} else 
+				$image = '';
 			$url = Yii::app()->createUrl('article/site/view', array('id'=>$item->article_id,'t'=>Utility::getUrlTitle($item->title)));
 				
 			$doc = new Zend_Search_Lucene_Document();
 			$doc->addField(Zend_Search_Lucene_Field::UnIndexed('id', CHtml::encode($item->article_id), 'utf-8')); 
 			$doc->addField(Zend_Search_Lucene_Field::Keyword('category', CHtml::encode(Phrase::trans($item->cat->name)), 'utf-8'));
-			$doc->addField(Zend_Search_Lucene_Field::Text('media', CHtml::encode($images), 'utf-8'));
+			$doc->addField(Zend_Search_Lucene_Field::Text('media', CHtml::encode($image), 'utf-8'));
 			$doc->addField(Zend_Search_Lucene_Field::Text('title', CHtml::encode($item->title), 'utf-8'));
 			$doc->addField(Zend_Search_Lucene_Field::Text('body', CHtml::encode(Utility::hardDecode(Utility::softDecode($item->body))), 'utf-8'));
 			$doc->addField(Zend_Search_Lucene_Field::Text('url', CHtml::encode(Utility::getProtocol().'://'.Yii::app()->request->serverName.$url), 'utf-8'));
@@ -538,14 +544,19 @@ class Articles extends CActiveRecord
 	/**
 	 * before validate attributes
 	 */
-	protected function beforeValidate() {
+	protected function beforeValidate() 
+	{
 		$setting = ArticleSetting::model()->findByPk(1, array(
 			'select' => 'media_file_type, upload_file_type',
 		));
 		$media_file_type = unserialize($setting->media_file_type);
+		if(empty($media_file_type))
+			$media_file_type = array();
 		$upload_file_type = unserialize($setting->upload_file_type);
+		if(empty($upload_file_type))
+			$upload_file_type = array();
 		
-		if(parent::beforeValidate()) {			
+		if(parent::beforeValidate()) {
 			if($this->isNewRecord)
 				$this->user_id = Yii::app()->user->id;
 			else
@@ -580,7 +591,8 @@ class Articles extends CActiveRecord
 	/**
 	 * before save attributes
 	 */
-	protected function beforeSave() {
+	protected function beforeSave() 
+	{
 		if(parent::beforeSave()) {
 			if(!$this->isNewRecord && $this->article_type != 'quote') {				
 				$article_path = "public/article/".$this->article_id;
@@ -618,27 +630,28 @@ class Articles extends CActiveRecord
 	/**
 	 * After save attributes
 	 */
-	protected function afterSave() {
-		parent::afterSave();			
+	protected function afterSave() 
+	{
+		parent::afterSave();
 		$setting = ArticleSetting::model()->findByPk(1, array(
-			'select' => 'media_limit, media_resize, media_resize_size, headline',
+			'select' => 'headline, media_limit, media_resize, media_resize_size',
 		));
 		$media_resize_size = unserialize($setting->media_resize_size);
-		$article_path = "public/article/".$this->article_id;
+		
+		$article_path = "public/article/".$this->article_id;		
+		if($this->article_type != 'quote') {
+			// Add directory
+			if(!file_exists($article_path)) {
+				@mkdir($article_path, 0755, true);
+
+				// Add file in directory (index.php)
+				$newFile = $article_path.'/index.php';
+				$FileHandle = fopen($newFile, 'w');
+			} else
+				@chmod($article_path, 0755, true);
+		}
 
 		if($this->isNewRecord) {
-			if($this->article_type != 'quote') {
-				// Add directory
-				if(!file_exists($article_path)) {
-					@mkdir($article_path, 0755, true);
-
-					// Add file in directory (index.php)
-					$newFile = $article_path.'/index.php';
-					$FileHandle = fopen($newFile, 'w');
-				} else
-					@chmod($article_path, 0755, true);
-			}
-			
 			//input keyword
 			if(trim($this->keyword_input) != '') {
 				$keyword_input = Utility::formatFileType($this->keyword_input);
@@ -660,8 +673,8 @@ class Articles extends CActiveRecord
 					$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_file->extensionName);
 					if($this->media_file->saveAs($article_path.'/'.$fileName))
 						Articles::model()->updateByPk($this->article_id, array('media_file'=>$fileName));
-				}				
-			}		
+				}
+			}
 		}
 
 		if($this->article_type == 'standard') {
@@ -703,7 +716,7 @@ class Articles extends CActiveRecord
 		
 		// Reset headline
 		if($setting->headline == 1 && $this->headline == 1) {
-			$headline = Articles::getHeadline();
+			$headline = self::getHeadline();
 			
 			$criteria=new CDbCriteria;
 			$criteria->addNotInCondition('article_id', $headline);
@@ -726,7 +739,6 @@ class Articles extends CActiveRecord
 						rename($article_path.'/'.$val->media, 'public/article/verwijderen/'.$val->article_id.'_'.$val->media);					
 				}
 			}
-			
 			//delete media file
 			if($this->media_file != '' && file_exists($article_path.'/'.$this->media_file))
 				rename($article_path.'/'.$this->media_file, 'public/article/verwijderen/'.$this->article_id.'_'.$this->media_file);

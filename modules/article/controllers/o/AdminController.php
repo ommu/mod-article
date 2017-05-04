@@ -151,7 +151,14 @@ class AdminController extends Controller
 	{
 		$setting = ArticleSetting::model()->findByPk(1,array(
 			'select' => 'meta_keyword, type_active, headline, media_file_type, upload_file_type',
-		));
+		));	
+		$media_file_type = unserialize($setting->media_file_type);
+		if(empty($media_file_type))
+			$media_file_type = array();
+		$upload_file_type = unserialize($setting->upload_file_type);
+		if(empty($upload_file_type))
+			$upload_file_type = array();
+		
 		$model=new Articles;
 
 		// Uncomment the following line if AJAX validation is needed
@@ -177,6 +184,8 @@ class AdminController extends Controller
 		$this->render('admin_add',array(
 			'model'=>$model,
 			'setting'=>$setting,
+			'media_file_type'=>$media_file_type,
+			'upload_file_type'=>$upload_file_type,
 		));
 	}
 
@@ -190,6 +199,13 @@ class AdminController extends Controller
 		$setting = ArticleSetting::model()->findByPk(1,array(
 			'select' => 'meta_keyword, type_active, headline, media_limit, media_file_type, upload_file_type',
 		));
+		$media_file_type = unserialize($setting->media_file_type);
+		if(empty($media_file_type))
+			$media_file_type = array();
+		$upload_file_type = unserialize($setting->upload_file_type);
+		if(empty($upload_file_type))
+			$upload_file_type = array();
+		
 		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
@@ -249,6 +265,8 @@ class AdminController extends Controller
 		$this->render('admin_edit',array(
 			'model'=>$model,
 			'setting'=>$setting,
+			'media_file_type'=>$media_file_type,
+			'upload_file_type'=>$upload_file_type,
 		));
 	}
 
@@ -411,17 +429,19 @@ class AdminController extends Controller
 	 */
 	public function actionGetcover($id) 
 	{
-		$model=$this->loadModel($id);
 		$setting = ArticleSetting::model()->findByPk(1,array(
 			'select' => 'media_limit',
 		));		
+		$media_limit = $setting->media_limit;
+		
+		$model=$this->loadModel($id);
 		$medias = $model->medias;
 
 		$data = '';
 		if(isset($_GET['replace']))
-			$data .= $this->renderPartial('_form_cover', array('model'=>$model, 'medias'=>$medias, 'setting'=>$setting), true, false);
+			$data .= $this->renderPartial('_form_cover', array('model'=>$model, 'medias'=>$medias, 'media_limit'=>$media_limit), true, false);
 		
-		if($medias != null) {			
+		if(!empty($medias)) {	
 			foreach($medias as $key => $val)
 				$data .= $this->renderPartial('_form_view_covers', array('data'=>$val), true, false);
 		}
@@ -440,14 +460,25 @@ class AdminController extends Controller
 		$setting = ArticleSetting::model()->findByPk(1,array(
 			'select' => 'media_limit, media_file_type',
 		));
+		$media_limit = $setting->media_limit;
 		$media_file_type = unserialize($setting->media_file_type);
+		
 		$article_path = "public/article/".$id;
+		// Add directory
+		if(!file_exists($article_path)) {
+			@mkdir($article_path, 0755, true);
+
+			// Add file in directory (index.php)
+			$newFile = $article_path.'/index.php';
+			$FileHandle = fopen($newFile, 'w');
+		} else
+			@chmod($article_path, 0755, true);
 			
 		//if(Yii::app()->request->isAjaxRequest) {
 			$model = $this->loadModel($id);
 			
 			$uploadPhoto = CUploadedFile::getInstanceByName('namaFile');
-			$fileName = time().'_'.$model->article_id.'_'.Utility::getUrlTitle($model->title).'.'.strtolower($uploadPhoto->extensionName);
+			$fileName = time().'_'.Utility::getUrlTitle($model->title).'.'.strtolower($uploadPhoto->extensionName);
 			if($uploadPhoto->saveAs($article_path.'/'.$fileName)) {
 				$photo = new ArticleMedia;
 				$photo->cover = $model->medias == null ? '1' : '0';

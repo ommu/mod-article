@@ -150,18 +150,22 @@ class SiteController extends ControllerApi
 							$article_url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->request->baseUrl;
 							$article_path = 'public/article/'.$item->article_id;
 							
-							if($item->media_id != 0 && file_exists($article_path.'/'.$item->cover->media))
-								$media_image = $article_url.'/'.$article_path.'/'.$item->cover->media;
+							$medias = $item->medias;
+							if(!empty($medias)) {
+								$media = $item->view->media_cover ? $item->view->media_cover : $medias[0]->media;
+								if(file_exists($article_path.'/'.$media))
+									$media_image = $article_url.'/'.$article_path.'/'.$media;
+							}
 							
 							$data[] = array(
 								'id'=>$item->article_id,
-								'category'=>Phrase::trans($item->cat->name, 2),
+								'category'=>Phrase::trans($item->cat->name),
 								'title'=>ucwords(strtolower($item->title)),
 								'intro'=>$item->body != '' ? Utility::shortText(Utility::hardDecode($item->body),200) : '-',
-								'media_image'=>$item->media_id != 0 ? $media_image : '-',
-								'view'=>$item->view,
-								'likes'=>$item->likes,
-								'download'=>$item->download,
+								'media_image'=>!empty($medias) ? $media_image : '-',
+								'view'=>$item->view->views,
+								'likes'=>$item->view->likes,
+								'download'=>$item->view->downloads,
 								'published_date'=>Utility::dateFormat($item->published_date),
 								'share'=>Articles::getShareUrl($item->article_id, $item->title),
 							);
@@ -169,7 +173,7 @@ class SiteController extends ControllerApi
 					} else
 						$data = array();
 				
-					$categoryTitle = Phrase::trans($val->name, 2);
+					$categoryTitle = Phrase::trans($val->name);
 					$return[] = array(
 						'id'=>$val->cat_id,
 						'category'=>$categoryTitle,
@@ -263,22 +267,26 @@ class SiteController extends ControllerApi
 				foreach($model as $key => $item) {
 					$article_url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->request->baseUrl;
 					$article_path = 'public/article/'.$item->article_id;
-					
-					if($item->media_id != 0 && file_exists($article_path.'/'.$item->cover->media))
-						$media_image = $article_url.'/'.$article_path.'/'.$item->cover->media;
-					if($item->media_file != '' && file_exists($article_path.'/'.$val->media_file))
+							
+					$medias = $item->medias;
+					if(!empty($medias)) {
+						$media = $item->view->media_cover ? $item->view->media_cover : $medias[0]->media;
+						if(file_exists($article_path.'/'.$media))
+							$media_image = $article_url.'/'.$article_path.'/'.$media;
+					}					
+					if($item->media_file != '' && file_exists($article_path.'/'.$item->media_file))
 						$media_file = $article_url.'/'.$article_path.'/'.$item->media_file;
 					
 					$data[] = array(
 						'id'=>$item->article_id,
-						'category'=>Phrase::trans($item->cat->name, 2),
+						'category'=>Phrase::trans($item->cat->name),
 						'title'=>ucwords(strtolower($item->title)),
 						'intro'=>$item->body != '' ? Utility::shortText(Utility::hardDecode($item->body),200) : '-',
-						'media_image'=>$item->media_id != 0 ? $media_image : '-',
+						'media_image'=>!empty($medias) ? $media_image : '-',
 						'media_file'=>$item->media_file != '' ? $media_file : '-',
-						'view'=>$item->view,
-						'likes'=>$item->likes,
-						'download'=>$item->download,
+						'view'=>$item->view->views,
+						'likes'=>$item->view->likes,
+						'download'=>$item->view->downloads,
 						'published_date'=>Utility::dateFormat($item->published_date),
 						'share'=>Articles::getShareUrl($item->article_id, $item->title),
 					);					
@@ -318,23 +326,27 @@ class SiteController extends ControllerApi
 			if($model != null) {
 				$article_url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->request->baseUrl;
 				$article_path = 'public/article/'.$model->article_id;
-					
-				if($model->media_id != 0 && file_exists($article_path.'/'.$model->cover->media))
-					$media_image = $article_url.'/'.$article_path.'/'.$model->cover->media;
-				if($model->media_file != '' && file_exists($article_path.'/'.$val->media_file))
+							
+				$medias = $model->medias;
+				if(!empty($medias)) {
+					$media = $model->view->media_cover ? $model->view->media_cover : $medias[0]->media;
+					if(file_exists($article_path.'/'.$media))
+						$media_image = $article_url.'/'.$article_path.'/'.$media;
+				}				
+				if($model->media_file != '' && file_exists($article_path.'/'.$model->media_file))
 					$media_file = $article_url.'/'.$article_path.'/'.$model->media_file;
 				
 				$return = array(
 					'success'=>'1',
 					'id'=>$model->article_id,
-					'category'=>Phrase::trans($model->cat->name, 2),
+					'category'=>Phrase::trans($model->cat->name),
 					'title'=>ucwords(strtolower($model->title)),
 					'body'=>Utility::softDecode($model->body),
-					'media_image'=>$model->media_id != 0 ? $media_image : '-',
+					'media_image'=>!empty($medias) ? $media_image : '-',
 					'media_file'=>$model->media_file != '' ? $media_file : '-',
-					'view'=>$model->view,
-					'likes'=>$model->likes,
-					'download'=>$model->download,
+					'view'=>$model->view->views,
+					'likes'=>$model->view->likes,
+					'download'=>$model->view->downloads,
 					'published_date'=>Utility::dateFormat($model->published_date),
 					'share'=>Articles::getShareUrl($model->article_id, $model->title),
 				);

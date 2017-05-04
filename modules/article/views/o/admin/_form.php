@@ -14,15 +14,14 @@
  */
 
 	$controller = strtolower(Yii::app()->controller->id);
-	if($model->isNewRecord || (!$model->isNewRecord && $model->article_type == 'standard' && $setting->media_limit == 1)) {
+	if($model->isNewRecord || (!$model->isNewRecord && $model->article_type == 'standard' && $setting->media_limit == 1))
 		$validation = false;
-	} else {
+	else
 		$validation = true;
-	}
 
 	$cs = Yii::app()->getClientScript();
 $js=<<<EOP
-	$('select#Articles_article_type').live('change', function() {
+	$('select#Articles_article_type').on('change', function() {
 		var id = $(this).val();
 		$('fieldset div.filter').slideUp();
 		$('div#title').slideDown();
@@ -116,9 +115,10 @@ EOP;
 	
 				<?php if(!$model->isNewRecord && $model->article_type == 'standard' && $setting->media_limit == 1) {
 					$medias = $model->medias;
-					if($medias != null) {
+					if(!empty($medias)) {
+						$media = $model->view->media_cover ? $model->view->media_cover : $medias[0]->media;
 						if(!$model->getErrors())
-							$model->old_media_input = $medias[0]->media;
+							$model->old_media_input = $media;
 						echo $form->hiddenField($model,'old_media_input');
 						$image = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_media_input;
 						$media = '<img src="'.Utility::getTimThumb($image, 320, 150, 1).'" alt="">';
@@ -128,26 +128,28 @@ EOP;
 						echo '</div>';
 					}
 				}?>
-				
+
 				<?php if($model->isNewRecord || (!$model->isNewRecord && $setting->media_limit == 1 && $model->article_type == 'standard')) {?>
 				<div id="media" class="<?php echo (($model->isNewRecord && !$model->getErrors()) || ($model->article_type == 'standard' && (($model->isNewRecord && $model->getErrors()) || (!$model->isNewRecord && $setting->media_limit == 1)))) ? '' : 'hide';?> clearfix filter">
 					<?php echo $form->labelEx($model,'media_input'); ?>
 					<div class="desc">
 						<?php echo $form->fileField($model,'media_input'); ?>
 						<?php echo $form->error($model,'media_input'); ?>
-						<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType(unserialize($setting->media_file_type), false);?></span>
+						<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($media_file_type, false);?></span>
 					</div>
 				</div>
 				<?php }?>
 
 				<?php if($model->isNewRecord || (!$model->isNewRecord && $model->article_type == 'video')) {?>
 					<div id="video" class="<?php echo ($model->article_type == 'video' && (($model->isNewRecord && $model->getErrors()) || !$model->isNewRecord)) ? '' : 'hide';?> clearfix filter">
-						<label for="Articles_video"><?php echo $model->getAttributeLabel('video_input');?> <span class="required">*</span></label>
+						<label for="Articles_video_input"><?php echo $model->getAttributeLabel('video_input');?> <span class="required">*</span></label>
 						<div class="desc">
 							<?php
 							$medias = $model->medias;
+							if(!empty($medias))
+								$media = $model->view->media_cover ? $model->view->media_cover : $medias[0]->media;
 							if(!$model->getErrors())
-								$model->video_input = $medias[0]->media;
+								$model->video_input = $media;
 							echo $form->textField($model,'video_input',array('maxlength'=>32, 'class'=>'span-8'));?>
 							<?php echo $form->error($model,'video_input'); ?>
 							<span class="small-px">http://www.youtube.com/watch?v=<strong>HOAqSoDZSho</strong></span>
@@ -197,11 +199,11 @@ EOP;
 						}?>
 						<div id="keyword-suggest" class="suggest clearfix">
 							<?php 
-							if($setting->meta_keyword != '') {
+							if($setting->meta_keyword && $setting->meta_keyword != '-') {
 								$arrKeyword = explode(',', $setting->meta_keyword);
 								foreach($arrKeyword as $row) {?>
 									<div class="d"><?php echo $row;?></div>
-							<?php }								
+							<?php }						
 							}
 							if(!$model->isNewRecord) {
 								$tags = $model->tags;
@@ -238,7 +240,7 @@ EOP;
 					<div class="desc">
 						<?php echo $form->fileField($model,'media_file'); ?>
 						<?php echo $form->error($model,'media_file'); ?>
-						<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType(unserialize($setting->upload_file_type), false);?></span>
+						<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($upload_file_type, false);?></span>
 					</div>
 				</div>
 				<?php }?>

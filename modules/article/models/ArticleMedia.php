@@ -369,43 +369,18 @@ class ArticleMedia extends CActiveRecord
 	}
 
 	/**
-	 * get photo product
-	 */
-	public static function getPhoto($id, $type=null) {
-		if($type == null) {
-			$model = self::model()->findAll(array(
-				//'select' => 'article_id, media',
-				'condition' => 'article_id = :id',
-				'params' => array(
-					':id' => $id,
-				),
-				'limit' => 20,
-			));
-		} else {
-			$model = self::model()->findAll(array(
-				//'select' => 'article_id, media',
-				'condition' => 'cover = :cover AND article_id = :id',
-				'params' => array(
-					':cover' => $type,
-					':id' => $id,
-				),
-				'limit' => 20,
-			));
-		}
-
-		return $model;
-	}
-
-	/**
 	 * before validate attributes
 	 */
-	protected function beforeValidate() {
+	protected function beforeValidate() 
+	{
 		$controller = strtolower(Yii::app()->controller->id);
 		$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
 		$setting = ArticleSetting::model()->findByPk(1, array(
 			'select' => 'media_file_type',
 		));
 		$media_file_type = unserialize($setting->media_file_type);
+		if(empty($media_file_type))
+			$media_file_type = array();
 		
 		if(parent::beforeValidate()) 
 		{
@@ -439,15 +414,16 @@ class ArticleMedia extends CActiveRecord
 	/**
 	 * before save attributes
 	 */
-	protected function beforeSave() {
+	protected function beforeSave() 
+	{
 		$controller = strtolower(Yii::app()->controller->id);
 		$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
 		
 		if(parent::beforeSave()) {
 			$article_path = "public/article/".$this->article_id;
-			
-			//Update album photo
-			if($this->article->article_type == 'standard') {				
+
+			if($this->article->article_type == 'standard') {			
+				// Add directory
 				if(!file_exists($article_path)) {
 					@mkdir($article_path, 0755, true);
 
@@ -456,12 +432,13 @@ class ArticleMedia extends CActiveRecord
 					$FileHandle = fopen($newFile, 'w');
 				} else
 					@chmod($article_path, 0755, true);
-				
+			
+				//Update album photo
 				if(in_array($currentAction, array('o/media/add','o/media/edit'))) {
 					$this->media = CUploadedFile::getInstance($this, 'media');
 					if($this->media != null) {
 						if($this->media instanceOf CUploadedFile) {
-							$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->article->title).'.'.strtolower($this->media->extensionName);
+							$fileName = time().'_'.Utility::getUrlTitle($this->article->title).'.'.strtolower($this->media->extensionName);
 							if($this->media->saveAs($article_path.'/'.$fileName)) {
 								if(!$this->isNewRecord) {
 									if($this->old_media_input != '' && file_exists($article_path.'/'.$this->old_media_input))
@@ -511,22 +488,22 @@ class ArticleMedia extends CActiveRecord
 			//delete other media (if media_limit = 1)
 			if($setting->media_limit == 1) {
 				$medias = self::model()->findAll(array(
-					'condition'=> 'media_id <> :media_id AND article_id = :article_id',
+					'condition'=> 'media_id <> :media AND article_id = :article',
 					'params'=>array(
-						':media_id'=>$this->media_id,
-						':article_id'=>$this->article_id,
+						':media'=>$this->media_id,
+						':article'=>$this->article_id,
 					),
 				));
 				if($medias != null) {
 					foreach($medias as $key => $val)
 						self::model()->findByPk($val->media_id)->delete();
-				}				
+				}
 			}
 		}
 		
 		//update if new cover (cover = 1)
 		if($this->cover == 1)
-			self::model()->updateAll(array('cover'=>0), 'media_id <> :media AND article_id = :article', array(':media'=>$this->media_id,':article'=>$this->article_id));		
+			self::model()->updateAll(array('cover'=>0), 'media_id <> :media AND article_id = :article', array(':media'=>$this->media_id,':article'=>$this->article_id));
 	}
 
 	/**

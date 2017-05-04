@@ -15,7 +15,16 @@
 
 	$cs = Yii::app()->getClientScript();
 $js=<<<EOP
-	$('select#ArticleSetting_headline').live('change', function() {
+	$('input[name="ArticleSetting[media_resize]"]').on('change', function() {
+		var id = $(this).val();
+		if(id == '1') {
+			$('div#resize_size').slideDown();
+		} else {
+			$('div#resize_size').slideUp();
+		}
+	});
+	
+	$('select#ArticleSetting_headline').on('change', function() {
 		var id = $(this).val();
 		if(id == '1') {
 			$('div#headline').slideDown();
@@ -65,7 +74,10 @@ EOP;
 			<?php echo $form->labelEx($model,'permission'); ?>
 			<div class="desc">
 				<span class="small-px"><?php echo Yii::t('phrase', 'Select whether or not you want to let the public (visitors that are not logged-in) to view the following sections of your social network. In some cases (such as Profiles, Blogs, and Albums), if you have given them the option, your users will be able to make their pages private even though you have made them publically viewable here. For more permissions settings, please visit the General Settings page.');?></span>
-				<?php echo $form->radioButtonList($model, 'permission', array(
+				<?php 
+				if($model->isNewRecord && !$model->getErrors())
+					$model->permission = 1;
+				echo $form->radioButtonList($model, 'permission', array(
 					1 => Yii::t('phrase', 'Yes, the public can view articles unless they are made private.'),
 					0 => Yii::t('phrase', 'No, the public cannot view articles.'),
 				)); ?>
@@ -108,7 +120,10 @@ EOP;
 		<div class="clearfix">
 			<?php echo $form->labelEx($model,'headline'); ?>
 			<div class="desc">
-				<?php echo $form->dropDownLIst($model,'headline', array(
+				<?php 
+				if($model->isNewRecord && !$model->getErrors())
+					$model->headline = 1;
+				echo $form->dropDownLIst($model,'headline', array(
 					'1' => Yii::t('phrase', 'Enable'),
 					'0' => Yii::t('phrase', 'Disable'),
 				)); ?>
@@ -120,7 +135,10 @@ EOP;
 			<div class="clearfix">
 				<?php echo $form->labelEx($model,'headline_limit'); ?>
 				<div class="desc">
-					<?php echo $form->textField($model,'headline_limit', array('maxlength'=>3, 'class'=>'span-2')); ?>
+					<?php 
+					if($model->isNewRecord && !$model->getErrors())
+						$model->headline_limit = 0;
+					echo $form->textField($model,'headline_limit', array('maxlength'=>3, 'class'=>'span-2')); ?>
 					<?php echo $form->error($model,'headline_limit'); ?>
 				</div>
 			</div>
@@ -154,7 +172,10 @@ EOP;
 			<label><?php echo Yii::t('phrase', 'Media Setting');?> <span class="required">*</span></label>
 			<div class="desc">
 				<p><?php echo $model->getAttributeLabel('media_resize');?></p>
-				<?php echo $form->radioButtonList($model, 'media_resize', array(
+				<?php 
+				if($model->isNewRecord && !$model->getErrors())
+					$model->media_resize = 0;
+				echo $form->radioButtonList($model, 'media_resize', array(
 					0 => Yii::t('phrase', 'No, not resize media after upload.'),
 					1 => Yii::t('phrase', 'Yes, resize media after upload.'),
 				)); ?>
@@ -195,6 +216,8 @@ EOP;
 					$media_file_type = unserialize($model->media_file_type);
 					if(!empty($media_file_type))
 						$model->media_file_type = Utility::formatFileType($media_file_type, false);
+					else
+						$model->media_file_type = 'jpg, png, bmp';
 				}
 				echo $form->textField($model,'media_file_type', array('class'=>'span-6')); ?>
 				<?php echo $form->error($model,'media_file_type'); ?>
@@ -210,6 +233,8 @@ EOP;
 					$upload_file_type = unserialize($model->upload_file_type);
 					if(!empty($upload_file_type))
 						$model->upload_file_type = Utility::formatFileType($upload_file_type, false);
+					else
+						$model->upload_file_type = 'mp3, mp4, pdf, doc, docx';
 				}
 				echo $form->textField($model,'upload_file_type', array('class'=>'span-6')); ?>
 				<?php echo $form->error($model,'upload_file_type'); ?>

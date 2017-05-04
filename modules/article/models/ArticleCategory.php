@@ -277,7 +277,7 @@ class ArticleCategory extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'header' => Yii::t('phrase', 'Articles'),
-				'value' => 'CHtml::link($data->view->articles.\' \'.Yii::t(\'attribute\', \'Article\'), Yii::app()->controller->createUrl("o/admin/manage",array("category"=>$data->cat_id)))',
+				'value' => 'CHtml::link($data->view->articles ? $data->view->articles : 0, Yii::app()->controller->createUrl("o/admin/manage",array("category"=>$data->cat_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
