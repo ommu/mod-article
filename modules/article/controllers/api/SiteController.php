@@ -97,9 +97,9 @@ class SiteController extends ControllerApi
 					$this->redirect(Yii::app()->createUrl('site/index'));
 				
 				$cat = ArticleCategory::model()->findByPk($category, array(
-					'select' => 'cat_id, dependency',
+					'select' => 'cat_id, parent',
 				));
-				if($cat->dependency == 0)
+				if($cat->parent == 0)
 					$catParent = $category;
 				else
 					$this->redirect(Yii::app()->createUrl('site/index'));
@@ -109,7 +109,7 @@ class SiteController extends ControllerApi
 			$criteria->select = array('cat_id','name');		
 			$criteria->addNotInCondition('t.cat_id', $catOther);
 			$criteria->compare('t.publish', 1);
-			$criteria->compare('t.dependency', $catParent);
+			$criteria->compare('t.parent', $catParent);
 			
 			$categoryFind = ArticleCategory::model()->findAll($criteria);
 			
@@ -124,10 +124,10 @@ class SiteController extends ControllerApi
 						
 					else {
 						$categorySub = ArticleCategory::model()->findAll(array(
-							'condition'=>'publish = :publish AND dependency = :dependency',
+							'condition'=>'publish = :publish AND parent = :parent',
 							'params'=>array(
 								':publish'=>1,
-								':dependency'=>$val->cat_id,
+								':parent'=>$val->cat_id,
 							),
 						));
 						$catData = array();
@@ -221,18 +221,18 @@ class SiteController extends ControllerApi
 				$catArray = array();
 				foreach($catExplode as $val) {
 					$cat = ArticleCategory::model()->findByPk($val, array(
-						'select' => 'publish, dependency',
+						'select' => 'publish, parent',
 					));
 					if($cat != null) {
-						if($cat->dependency != 0) {
+						if($cat->parent != 0) {
 							if(!in_array($val, $catArray))
 								$catArray[] = $val;
 						} else {
 							$catSub = ArticleCategory::model()->findAll(array(
-								'condition'=>'publish = :publish AND dependency = :dependency',
+								'condition'=>'publish = :publish AND parent = :parent',
 								'params'=>array(
 									':publish'=>1,
-									':dependency'=>$val,
+									':parent'=>$val,
 								),
 							));
 							if($catSub != null) {

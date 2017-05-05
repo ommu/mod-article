@@ -30,11 +30,6 @@
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('user_id'); ?><br/>
-			<?php echo $form->textField($model,'user_id',array('size'=>11,'maxlength'=>11)); ?>
-		</li>
-
-		<li>
 			<?php echo $model->getAttributeLabel('publish'); ?><br/>
 			<?php echo $form->textField($model,'publish'); ?>
 		</li>

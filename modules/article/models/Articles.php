@@ -25,15 +25,14 @@
  * @property string $article_id
  * @property integer $publish
  * @property integer $cat_id
- * @property string $user_id
- * @property integer $headline
- * @property integer $comment_code
  * @property integer $article_type
  * @property string $title
  * @property string $body
  * @property string $quote 
  * @property string $media_file
  * @property string $published_date
+ * @property integer $headline
+ * @property integer $comment_code
  * @property string $creation_date
  * @property string $creation_id
  * @property string $modified_date
@@ -56,7 +55,6 @@ class Articles extends CActiveRecord
 	public $old_media_file_input;
 	
 	// Variable Search
-	public $user_search;
 	public $creation_search;
 	public $modified_search;
 
@@ -105,8 +103,8 @@ class Articles extends CActiveRecord
 			array('title', 'required', 'on'=>'formStandard'),
 			array('title,
 				video_input', 'required', 'on'=>'formVideo'),
-			array('publish, cat_id, user_id, headline, comment_code, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
-			array('user_id', 'length', 'max'=>11),
+			array('publish, cat_id, headline, comment_code, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
+			array('creation_id, modified_id', 'length', 'max'=>11),
 			array('
 				video_input', 'length', 'max'=>32),
 			array('title', 'length', 'max'=>128),
@@ -117,8 +115,8 @@ class Articles extends CActiveRecord
 				media_input, old_media_input, video_input, keyword_input, old_media_file_input', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('article_id, publish, cat_id, user_id, headline, comment_code, article_type, title, body, quote, media_file, published_date, creation_date, creation_id, modified_date, modified_id, headline_date,
-				user_search, creation_search, modified_search', 'safe', 'on'=>'search'),
+			array('article_id, publish, cat_id, article_type, title, body, quote, media_file, published_date, headline, comment_code, creation_date, creation_id, modified_date, modified_id, headline_date,
+				creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -132,7 +130,6 @@ class Articles extends CActiveRecord
 		return array(
 			'view' => array(self::BELONGS_TO, 'ViewArticles', 'article_id'),
 			'cat' => array(self::BELONGS_TO, 'ArticleCategory', 'cat_id'),
-			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 			'tag' => array(self::HAS_ONE, 'ArticleTag', 'article_id'),
@@ -150,15 +147,14 @@ class Articles extends CActiveRecord
 			'article_id' => Yii::t('attribute', 'Article'),
 			'publish' => Yii::t('attribute', 'Publish'),
 			'cat_id' => Yii::t('attribute', 'Category'),
-			'user_id' => Yii::t('attribute', 'User'),
-			'headline' => Yii::t('attribute', 'Headline'),
-			'comment_code' => Yii::t('attribute', 'Comment'),
 			'article_type' => Yii::t('attribute', 'Article Type'),
 			'title' => Yii::t('attribute', 'Title'),
 			'body' => Yii::t('attribute', 'Article'),
 			'quote' => Yii::t('attribute', 'Quote'),
 			'media_file' => Yii::t('attribute', 'File (Download)'),
 			'published_date' => Yii::t('attribute', 'Published Date'),
+			'headline' => Yii::t('attribute', 'Headline'),
+			'comment_code' => Yii::t('attribute', 'Comment'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
@@ -169,7 +165,6 @@ class Articles extends CActiveRecord
 			'video_input' => Yii::t('attribute', 'Video'),
 			'keyword_input' => Yii::t('attribute', 'Keyword'),
 			'old_media_file_input' => Yii::t('attribute', 'Old File (Download)'),
-			'user_search' => Yii::t('attribute', 'User'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
 		);
@@ -189,10 +184,6 @@ class Articles extends CActiveRecord
 		
 		// Custom Search
 		$criteria->with = array(
-			'user' => array(
-				'alias'=>'user',
-				'select'=>'displayname',
-			),
 			'creation' => array(
 				'alias'=>'creation',
 				'select'=>'displayname',
@@ -238,9 +229,6 @@ class Articles extends CActiveRecord
 				$criteria->compare('t.cat_id',$_GET['category']);
 		} else
 			$criteria->compare('t.cat_id',$this->cat_id);
-		$criteria->compare('t.user_id',$this->user_id);
-		$criteria->compare('t.headline',$this->headline);
-		$criteria->compare('t.comment_code',$this->comment_code);
 		$criteria->compare('t.article_type',$this->article_type);
 		$criteria->compare('t.title',strtolower($this->title),true);
 		$criteria->compare('t.body',strtolower($this->body),true);
@@ -248,6 +236,8 @@ class Articles extends CActiveRecord
 		$criteria->compare('t.media_file',strtolower($this->media_file),true);
 		if($this->published_date != null && !in_array($this->published_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.published_date)',date('Y-m-d', strtotime($this->published_date)));
+		$criteria->compare('t.headline',$this->headline);
+		$criteria->compare('t.comment_code',$this->comment_code);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		$criteria->compare('t.creation_id',$this->creation_id);
@@ -257,7 +247,6 @@ class Articles extends CActiveRecord
 		if($this->headline_date != null && !in_array($this->headline_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.headline_date)',date('Y-m-d', strtotime($this->headline_date)));
 		
-		$criteria->compare('user.displayname',strtolower($this->user_search), true);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
 		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
 
@@ -292,15 +281,14 @@ class Articles extends CActiveRecord
 			//$this->defaultColumns[] = 'article_id';
 			$this->defaultColumns[] = 'publish';
 			$this->defaultColumns[] = 'cat_id';
-			$this->defaultColumns[] = 'user_id';
-			$this->defaultColumns[] = 'headline';
-			$this->defaultColumns[] = 'comment_code';
 			$this->defaultColumns[] = 'article_type';
 			$this->defaultColumns[] = 'title';
 			$this->defaultColumns[] = 'body';
 			$this->defaultColumns[] = 'quote';
 			$this->defaultColumns[] = 'media_file';
 			$this->defaultColumns[] = 'published_date';
+			$this->defaultColumns[] = 'headline';
+			$this->defaultColumns[] = 'comment_code';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
 			$this->defaultColumns[] = 'modified_date';
@@ -523,7 +511,7 @@ class Articles extends CActiveRecord
 			$doc->addField(Zend_Search_Lucene_Field::Text('body', CHtml::encode(Utility::hardDecode(Utility::softDecode($item->body))), 'utf-8'));
 			$doc->addField(Zend_Search_Lucene_Field::Text('url', CHtml::encode(Utility::getProtocol().'://'.Yii::app()->request->serverName.$url), 'utf-8'));
 			$doc->addField(Zend_Search_Lucene_Field::UnIndexed('date', CHtml::encode($item->published_date), 'utf-8'));
-			$doc->addField(Zend_Search_Lucene_Field::UnIndexed('creation', CHtml::encode($item->user->displayname), 'utf-8'));
+			$doc->addField(Zend_Search_Lucene_Field::UnIndexed('creation', CHtml::encode($item->creation->displayname), 'utf-8'));
 			$index->addDocument($doc);			
 		}
 		
@@ -558,7 +546,7 @@ class Articles extends CActiveRecord
 		
 		if(parent::beforeValidate()) {
 			if($this->isNewRecord)
-				$this->user_id = Yii::app()->user->id;
+				$this->creation_id = Yii::app()->user->id;
 			else
 				$this->modified_id = Yii::app()->user->id;
 			
