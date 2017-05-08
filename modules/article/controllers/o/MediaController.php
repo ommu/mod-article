@@ -147,6 +147,13 @@ class MediaController extends Controller
 	 */
 	public function actionEdit($id) 
 	{
+		$setting = ArticleSetting::model()->findByPk(1,array(
+			'select' => 'media_file_type',
+		));
+		$media_file_type = unserialize($setting->media_file_type);
+		if(empty($media_file_type))
+			$media_file_type = array();
+		
 		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
@@ -166,6 +173,7 @@ class MediaController extends Controller
 		$this->pageMeta = '';
 		$this->render('admin_edit',array(
 			'model'=>$model,
+			'media_file_type'=>$media_file_type,
 		));
 	}
 
