@@ -4,6 +4,7 @@
  * @var $this LikeController
  * @var $model ArticleLikes
  * @var $form CActiveForm
+ * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)

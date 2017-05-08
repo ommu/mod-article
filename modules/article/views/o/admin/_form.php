@@ -203,7 +203,7 @@ EOP;
 								$arrKeyword = explode(',', $setting->meta_keyword);
 								foreach($arrKeyword as $row) {?>
 									<div class="d"><?php echo $row;?></div>
-							<?php }						
+							<?php }
 							}
 							if(!$model->isNewRecord) {
 								$tags = $model->tags;
