@@ -501,7 +501,7 @@ class Articles extends CActiveRecord
 				$image = Yii::app()->request->baseUrl.'/public/article/'.$item->article_id.'/'.$media;
 			} else 
 				$image = '';
-			$url = Yii::app()->createUrl('article/site/view', array('id'=>$item->article_id,'t'=>Utility::getUrlTitle($item->title)));
+			$url = Yii::app()->createUrl('article/site/view', array('id'=>$item->article_id,'slug'=>Utility::getUrlTitle($item->title)));
 				
 			$doc = new Zend_Search_Lucene_Document();
 			$doc->addField(Zend_Search_Lucene_Field::UnIndexed('id', CHtml::encode($item->article_id), 'utf-8')); 
@@ -524,7 +524,7 @@ class Articles extends CActiveRecord
 	public static function getShareUrl($id, $t=null)
 	{
 		if($t != null && $t != '' && $t != '-')
-			return Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->controller->createUrl('site/view', array('id'=>$id, 't'=>Utility::getUrlTitle($t)));
+			return Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->controller->createUrl('site/view', array('id'=>$id, 'slug'=>Utility::getUrlTitle($t)));
 		else
 			return Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->controller->createUrl('site/view', array('id'=>$id));
 	}
@@ -582,7 +582,7 @@ class Articles extends CActiveRecord
 	protected function beforeSave() 
 	{
 		if(parent::beforeSave()) {
-			if(!$this->isNewRecord && $this->article_type != 'quote') {				
+			if(!$this->isNewRecord && $this->article_type != 'quote') {
 				$article_path = "public/article/".$this->article_id;
 				// Add directory
 				if(!file_exists($article_path)) {
@@ -597,7 +597,7 @@ class Articles extends CActiveRecord
 				$this->media_file = CUploadedFile::getInstance($this, 'media_file');
 				if($this->media_file != null) {
 					if($this->media_file instanceOf CUploadedFile) {
-						$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_file->extensionName);
+						$fileName = time().'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_file->extensionName);
 						if($this->media_file->saveAs($article_path.'/'.$fileName)) {
 							if($this->old_media_file_input != '' && file_exists($article_path.'/'.$this->old_media_file_input))
 								rename($article_path.'/'.$this->old_media_file_input, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_media_file_input);
@@ -658,7 +658,7 @@ class Articles extends CActiveRecord
 			$this->media_file = CUploadedFile::getInstance($this, 'media_file');
 			if($this->media_file != null) {
 				if($this->media_file instanceOf CUploadedFile) {
-					$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_file->extensionName);
+					$fileName = time().'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_file->extensionName);
 					if($this->media_file->saveAs($article_path.'/'.$fileName))
 						Articles::model()->updateByPk($this->article_id, array('media_file'=>$fileName));
 				}
@@ -669,7 +669,7 @@ class Articles extends CActiveRecord
 			$this->media_input = CUploadedFile::getInstance($this, 'media_input');
 			if($this->media_input != null && ($this->isNewRecord || (!$this->isNewRecord && $setting->media_limit == 1))) {
 				if($this->media_input instanceOf CUploadedFile) {
-					$fileName = time().'_'.$this->article_id.'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_input->extensionName);
+					$fileName = time().'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_input->extensionName);
 					if($this->media_input->saveAs($article_path.'/'.$fileName)) {
 						if($this->isNewRecord || (!$this->isNewRecord && $this->medias == null)) {
 							$images = new ArticleMedia;
@@ -681,7 +681,8 @@ class Articles extends CActiveRecord
 							if($this->old_media_input != '' && file_exists($article_path.'/'.$this->old_media_input))
 								rename($article_path.'/'.$this->old_media_input, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_media_input);
 							$medias = $this->medias;
-							if(ArticleMedia::model()->updateByPk($medias[0]->media_id, array('media'=>$fileName))) {
+							$media_id = $this->view->media_id ? $this->view->media_id : $medias[0]->media_id;
+							if(ArticleMedia::model()->updateByPk($media_id, array('media'=>$fileName))) {
 								if($setting->media_resize == 1)
 									ArticleMedia::resizePhoto($article_path.'/'.$fileName, $media_resize_size);
 							}
