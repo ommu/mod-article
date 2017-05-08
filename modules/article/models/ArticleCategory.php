@@ -337,7 +337,9 @@ class ArticleCategory extends CActiveRecord
 	 * 1 = publish
 	 */
 	public static function getCategory($publish=null, $parent=null, $type=null) 
-	{		
+	{
+		$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
+		
 		$criteria=new CDbCriteria;
 		if($publish != null)
 			$criteria->compare('t.publish',$publish);
@@ -350,7 +352,10 @@ class ArticleCategory extends CActiveRecord
 			$items = array();
 			if($model != null) {
 				foreach($model as $key => $val) {
-					$items[$val->cat_id] = Phrase::trans($val->name);
+					if($currentAction == 'o/setting/edit' && $val->parent != 0)
+						$items[$val->cat_id] = Phrase::trans(ArticleCategory::model()->findByPk($val->parent)->name).' / '.Phrase::trans($val->name);
+					else
+						$items[$val->cat_id] = Phrase::trans($val->name);
 				}
 				return $items;
 				
