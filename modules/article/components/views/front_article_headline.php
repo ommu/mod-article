@@ -20,7 +20,7 @@
 			else if($val->article_type == 'quote')
 				$media = Yii::app()->request->baseUrl.'/public/article/article_default_quote.png';?>
 
-			<a class="img" href="<?php echo Yii::app()->createUrl('article/'.$controller.'/view', array('id'=>$val->article_id, 't'=>Utility::getUrlTitle($val->title)));?>" title="<?php echo $val->title;?>"><img src="<?php echo Utility::getTimThumb($media, 400, 270, 1);?>"></a> 
+			<a class="img" href="<?php echo Yii::app()->createUrl('article/'.$controller.'/view', array('id'=>$val->article_id, 'slug'=>Utility::getUrlTitle($val->title)));?>" title="<?php echo $val->title;?>"><img src="<?php echo Utility::getTimThumb($media, 400, 270, 1);?>"></a> 
 			<div class="date">
 				<?php echo Utility::dateFormat($val->creation_date, true);?>
 				<?php //begin.Tools ?>
@@ -31,7 +31,7 @@
 				</div>
 				<?php //end.Tools ?>
 			</div>
-			<a class="title" href="<?php echo Yii::app()->createUrl('article/'.$controller.'/view', array('id'=>$val->article_id, 't'=>Utility::getUrlTitle($val->title)));?>" title="<?php echo $val->title;?>"><?php echo $val->title;?></a><br/>
+			<a class="title" href="<?php echo Yii::app()->createUrl('article/'.$controller.'/view', array('id'=>$val->article_id, 'slug'=>Utility::getUrlTitle($val->title)));?>" title="<?php echo $val->title;?>"><?php echo $val->title;?></a><br/>
 			<p><?php echo Utility::shortText(Utility::hardDecode($val->body),300,' ...'); ?></p>
 		</div>
 		<?php }?>

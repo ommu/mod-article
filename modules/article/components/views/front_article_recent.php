@@ -14,13 +14,13 @@
 			}
 			if($i == 1) {?>
 				<li <?php echo !empty($medias) ? 'class="solid"' : '';?>>
-					<a href="<?php echo Yii::app()->createUrl('article/site/view', array('id'=>$val->article_id, 't'=>Utility::getUrlTitle($val->title)))?>" title="<?php echo $val->title?>">
+					<a href="<?php echo Yii::app()->createUrl('article/site/view', array('id'=>$val->article_id, 'slug'=>Utility::getUrlTitle($val->title)))?>" title="<?php echo $val->title?>">
 						<?php if(!empty($medias)) {?><img src="<?php echo Utility::getTimThumb($image, 230, 100, 1)?>" alt="<?php echo $val->title?>" /><?php }?>
 						<?php echo $val->title?>
 					</a>
 				</li>
 			<?php } else {?>
-				<li><a href="<?php echo Yii::app()->createUrl('article/site/view', array('id'=>$val->article_id, 't'=>Utility::getUrlTitle($val->title)))?>" title="<?php echo $val->title?>"><?php echo $val->title?></a></li>
+				<li><a href="<?php echo Yii::app()->createUrl('article/site/view', array('id'=>$val->article_id, 'slug'=>Utility::getUrlTitle($val->title)))?>" title="<?php echo $val->title?>"><?php echo $val->title?></a></li>
 			<?php }
 		}?>
 	</ul>
