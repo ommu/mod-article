@@ -266,7 +266,11 @@ class ArticleSetting extends CActiveRecord
 			'select' => 'headline_category',
 		));
 		
-		return unserialize($setting->headline_category);		
+		$headline_category = unserialize($setting->headline_category);
+		if(empty($headline_category))
+			$headline_category = array();
+		
+		return $headline_category;		
 	}
 
 	/**

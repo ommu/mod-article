@@ -296,7 +296,7 @@ class ArticleDownloads extends CActiveRecord
 		$findDownload = self::model()->find($criteria);
 		
 		if($findDownload != null)
-			self::model()->updateByPk($findDownload->download_id, array('downloads'=>$findDownload->downloads + 1));
+			self::model()->updateByPk($findDownload->download_id, array('downloads'=>$findDownload->downloads + 1, 'download_ip'=>$_SERVER['REMOTE_ADDR']));
 		
 		else {
 			$download=new ArticleDownloads;
