@@ -521,10 +521,10 @@ class Articles extends CActiveRecord
 	/**
 	 * User get information
 	 */
-	public static function getShareUrl($id, $t=null)
+	public static function getShareUrl($id, $slug=null)
 	{
-		if($t != null && $t != '' && $t != '-')
-			return Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->controller->createUrl('site/view', array('id'=>$id, 'slug'=>Utility::getUrlTitle($t)));
+		if($slug && $slug != '-')
+			return Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->controller->createUrl('site/view', array('id'=>$id, 'slug'=>Utility::getUrlTitle($slug)));
 		else
 			return Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->controller->createUrl('site/view', array('id'=>$id));
 	}

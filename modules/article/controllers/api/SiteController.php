@@ -35,42 +35,13 @@ class SiteController extends ControllerApi
 	public $defaultAction = 'index';
 
 	/**
-	 * @return array action filters
+	 * Initialize public template
 	 */
-	public function filters() 
+	public function init() 
 	{
-		return array(
-			'accessControl', // perform access control for CRUD operations
-			//'postOnly + delete', // we only allow deletion via POST request
-		);
-	}
-
-	/**
-	 * Specifies the access control rules.
-	 * This method is used by the 'accessControl' filter.
-	 * @return array access control rules
-	 */
-	public function accessRules() 
-	{
-		return array(
-			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','main','list','detail'),
-				'users'=>array('*'),
-			),
-			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array(),
-				'users'=>array('@'),
-				'expression'=>'isset(Yii::app()->user->level)',
-				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
-			),
-			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array(),
-				'users'=>array('admin'),
-			),
-			array('deny',  // deny all users
-				'users'=>array('*'),
-			),
-		);
+		$arrThemes = Utility::getCurrentTemplate('public');
+		Yii::app()->theme = $arrThemes['folder'];
+		$this->layout = $arrThemes['layout'];
 	}
 	
 	/**
@@ -87,13 +58,14 @@ class SiteController extends ControllerApi
 	public function actionMain() 
 	{		
 		if(Yii::app()->request->isPostRequest) {
+			$cat_ignore = trim($_POST['cat_ignore']);
 			$category = trim($_POST['category']);
 			$pagesize = trim($_POST['pagesize']);
 			
-			$catOther = array(12,17,22);
+			$catIgnore = array($cat_ignore);
 			$catParent = 0;
-			if($category != null && $category != '') {
-				if(in_array($category, $catOther))
+			if($category) {
+				if($cat_ignore && in_array($category, $catIgnore))
 					$this->redirect(Yii::app()->createUrl('site/index'));
 				
 				$cat = ArticleCategory::model()->findByPk($category, array(
@@ -106,8 +78,9 @@ class SiteController extends ControllerApi
 			}
 		
 			$criteria=new CDbCriteria;
-			$criteria->select = array('cat_id','name');		
-			$criteria->addNotInCondition('t.cat_id', $catOther);
+			$criteria->select = array('cat_id','name');
+			if($cat_ignore)
+				$criteria->addNotInCondition('t.cat_id', $catIgnore);
 			$criteria->compare('t.publish', 1);
 			$criteria->compare('t.parent', $catParent);
 			
@@ -117,34 +90,33 @@ class SiteController extends ControllerApi
 				$return = '';
 				foreach($categoryFind as $key => $val) {
 					$criteriaArticle=new CDbCriteria;
-					$now = new CDbExpression("NOW()");
-					
-					if($category != null && $category != '')
-						$criteriaArticle->compare('t.cat_id', $val->cat_id);
-						
+					$criteriaArticle->condition = 't.publish = :publish AND t.published_date <= curdate()';
+					$criteriaArticle->params = array(
+						':publish' => 1,
+					);
+					if($category)
+						$criteriaArticle->compare('t.cat_id', $val->cat_id);						
 					else {
-						$categorySub = ArticleCategory::model()->findAll(array(
-							'condition'=>'publish = :publish AND parent = :parent',
-							'params'=>array(
-								':publish'=>1,
-								':parent'=>$val->cat_id,
+						$subCategoryFind = ArticleCategory::model()->findAll(array(
+							'condition' => 'publish = :publish AND parent = :parent',
+							'params' => array(
+								':publish' => 1,
+								':parent' => $val->cat_id,
 							),
 						));
-						$catData = array();
-						if($categorySub != null) {
-							foreach($categorySub as $row)
-								$catData[] = $row->cat_id;
+						$subCategoryData = array();
+						if($subCategoryFind != null) {
+							foreach($subCategoryFind as $row)
+								$subCategoryData[] = $row->cat_id;
 						}					
-						$criteriaArticle->addInCondition('t.cat_id', $catData);
+						$criteriaArticle->addInCondition('t.cat_id', $subCategoryData);
 					}
-					$criteriaArticle->compare('t.publish', 1);
-					$criteriaArticle->compare('date(t.published_date) <', $now);
-					$criteriaArticle->limit = $pagesize != null && $pagesize != '' ? $pagesize : 4;
+					$criteriaArticle->limit = $pagesize ? $pagesize : 4;
 					$criteriaArticle->order = 't.published_date DESC, t.article_id DESC';
 			
 					$article = Articles::model()->findAll($criteriaArticle);
 		
-					$data = '';					
+					$data = '';
 					if(!empty($article)) {
 						foreach($article as $key => $item) {
 							$article_url = Utility::getProtocol().'://'.Yii::app()->request->serverName.Yii::app()->request->baseUrl;
@@ -153,21 +125,22 @@ class SiteController extends ControllerApi
 							$medias = $item->medias;
 							if(!empty($medias)) {
 								$media = $item->view->media_cover ? $item->view->media_cover : $medias[0]->media;
-								if(file_exists($article_path.'/'.$media))
-									$media_image = $article_url.'/'.$article_path.'/'.$media;
+								if($media && file_exists($article_path.'/'.$media))
+									$cover_url_path = $article_url.'/'.$article_path.'/'.$media;
 							}
 							
 							$data[] = array(
-								'id'=>$item->article_id,
-								'category'=>Phrase::trans($item->cat->name),
-								'title'=>ucwords(strtolower($item->title)),
-								'intro'=>$item->body != '' ? Utility::shortText(Utility::hardDecode($item->body),200) : '-',
-								'media_image'=>!empty($medias) ? $media_image : '-',
-								'view'=>$item->view->views ? $item->view->views : 0,
-								'likes'=>$item->view->likes ? $item->view->likes : 0,
-								'download'=>$item->view->downloads ? $item->view->downloads : 0,
-								'published_date'=>Utility::dateFormat($item->published_date),
-								'share'=>Articles::getShareUrl($item->article_id, $item->title),
+								'id' => $item->article_id,
+								'category' => Phrase::trans($item->cat->name),
+								'title' => $item->title,
+								'intro' => $item->body != '' ? Utility::shortText(Utility::hardDecode($item->body),200) : '-',
+								'media_image' => $cover_url_path ? $cover_url_path : '-',
+								'view' => $item->view->views ? $item->view->views : 0,
+								'likes' => $item->view->likes ? $item->view->likes : 0,
+								'download' => $item->view->downloads ? $item->view->downloads : 0,
+								'published_date' => date_timestamp_get(date_create($item->published_date)),
+								'creation_date' => date_timestamp_get(date_create($item->creation_date)),
+								'share' => Articles::getShareUrl($item->article_id, $item->slug),
 							);
 						}
 					} else
@@ -175,11 +148,11 @@ class SiteController extends ControllerApi
 				
 					$categoryTitle = Phrase::trans($val->name);
 					$return[] = array(
-						'id'=>$val->cat_id,
-						'category'=>$categoryTitle,
-						//'count'=>$articleCount,
-						'category_source'=>Utility::getUrlTitle($categoryTitle),
-						'data'=>$data,
+						'id' => $val->cat_id,
+						'category' => $categoryTitle,
+						//'count' => $articleCount,
+						'category_slug' => $val->slug ? $val->slug : Utility::getUrlTitle($categoryTitle),
+						'data' => $data,
 					);
 				}
 			}
@@ -201,6 +174,7 @@ class SiteController extends ControllerApi
 			$pagesize = trim($_POST['pagesize']);
 			
 			$criteria=new CDbCriteria;
+			/*
 			$criteria->with = array(
 				'tag_ONE' => array(
 					'alias'=>'a',
@@ -209,58 +183,61 @@ class SiteController extends ControllerApi
 					'alias'=>'b',
 				),
 			);
-			$now = new CDbExpression("NOW()");
-			if($tag != null && $tag != '') {
+			if($tag) {
 				$criteria->condition = 'b.body = :body';
 				$criteria->params = array(
 					':body'=>$tag,
 				);
 			}
-			if($category != null && $category != '') {
-				$catExplode = explode(',', $category);
-				$catArray = array();
-				foreach($catExplode as $val) {
-					$cat = ArticleCategory::model()->findByPk($val, array(
+			*/
+			
+			$catData = array();
+			if($category) {
+				$categoryExplode = explode(',', $category);
+				foreach($categoryExplode as $val) {
+					$categoryFind = ArticleCategory::model()->findByPk($val, array(
 						'select' => 'publish, parent',
 					));
-					if($cat != null) {
-						if($cat->parent != 0) {
-							if(!in_array($val, $catArray))
-								$catArray[] = $val;
+					if($categoryFind != null && $categoryFind->publish == 1) {
+						if($categoryFind->parent != 0) {
+							if(!in_array($val, $catData))
+								$catData[] = $val;
 						} else {
-							$catSub = ArticleCategory::model()->findAll(array(
-								'condition'=>'publish = :publish AND parent = :parent',
-								'params'=>array(
-									':publish'=>1,
-									':parent'=>$val,
+							$subCategoryFind = ArticleCategory::model()->findAll(array(
+								'condition' => 'publish = :publish AND parent = :parent',
+								'params' => array(
+									':publish' => 1,
+									':parent' => $val,
 								),
 							));
-							if($catSub != null) {
-								foreach($catSub as $item) {
-									if(!in_array($item->cat_id, $catArray))
-										$catArray[] = $item->cat_id;
+							if($subCategoryFind != null) {
+								foreach($subCategoryFind as $row) {
+									if(!in_array($row->cat_id, $catData))
+										$catData[] = $row->cat_id;
 								}
 							}
 						}
 					}
 				}
 			}
-			$criteria->compare('t.publish', 1);
-			$criteria->addInCondition('t.cat_id', $catArray);
-			$criteria->compare('date(t.published_date) <', $now);
+			$criteria->condition = 't.publish = :publish AND t.published_date <= curdate()';
+			$criteria->params = array(
+				':publish' => 1,
+			);
+			$criteria->addInCondition('t.cat_id', $catData);
 			$criteria->order = 't.published_date DESC, t.article_id DESC';
 			
-			if($paging != null && $paging != '' && $paging == 'false') {
-				$criteria->limit = $pagesize != null && $pagesize != '' ? $pagesize : 5;
-				$model = Articles::model()->findAll($criteria);
-			} else {
+			if($paging && $paging == 'true') {
 				$dataProvider = new CActiveDataProvider('Articles', array(
-					'criteria'=>$criteria,
-					'pagination'=>array(
-						'pageSize'=>$pagesize != null && $pagesize != '' ? $pagesize : 20,
+					'criteria' => $criteria,
+					'pagination' => array(
+						'pageSize' => $pagesize ? $pagesize : 20,
 					),
 				));
 				$model = $dataProvider->getData();
+			} else {
+				$criteria->limit = $pagesize ? $pagesize : 5;
+				$model = Articles::model()->findAll($criteria);
 			}
 			
 			if(!empty($model)) {
@@ -271,43 +248,43 @@ class SiteController extends ControllerApi
 					$medias = $item->medias;
 					if(!empty($medias)) {
 						$media = $item->view->media_cover ? $item->view->media_cover : $medias[0]->media;
-						if(file_exists($article_path.'/'.$media))
-							$media_image = $article_url.'/'.$article_path.'/'.$media;
+						if($media && file_exists($article_path.'/'.$media))
+							$cover_url_path = $article_url.'/'.$article_path.'/'.$media;
 					}					
-					if($item->media_file != '' && file_exists($article_path.'/'.$item->media_file))
-						$media_file = $article_url.'/'.$article_path.'/'.$item->media_file;
+					if($item->media_file && file_exists($article_path.'/'.$item->media_file))
+						$file_url_path = $article_url.'/'.$article_path.'/'.$item->media_file;
 					
 					$data[] = array(
-						'id'=>$item->article_id,
-						'category'=>Phrase::trans($item->cat->name),
-						'title'=>ucwords(strtolower($item->title)),
-						'intro'=>$item->body != '' ? Utility::shortText(Utility::hardDecode($item->body),200) : '-',
-						'media_image'=>!empty($medias) ? $media_image : '-',
-						'media_file'=>$item->media_file != '' ? $media_file : '-',
-						'view'=>$item->view->views,
-						'likes'=>$item->view->likes,
-						'download'=>$item->view->downloads,
-						'published_date'=>Utility::dateFormat($item->published_date),
-						'share'=>Articles::getShareUrl($item->article_id, $item->title),
+						'id' => $item->article_id,
+						'category' => Phrase::trans($item->cat->name),
+						'title' => $item->title,
+						'intro' => $item->body != '' ? Utility::shortText(Utility::hardDecode($item->body),200) : '-',
+						'media_image' => $cover_url_path ? $cover_url_path : '-',
+						'media_file' => $file_url_path ? $file_url_path : '-',
+						'view' => $item->view->views ? $item->view->views : 0,
+						'likes' => $item->view->likes ? $item->view->likes : 0,
+						'download' => $item->view->downloads ? $item->view->downloads : 0,
+						'published_date' => date_timestamp_get(date_create($item->published_date)),
+						'creation_date' => date_timestamp_get(date_create($item->creation_date)),
+						'share' => Articles::getShareUrl($item->article_id, $item->slug),
 					);					
 				}
 			} else
 				$data = array();
 			
-			if($paging != null && $paging != '' && $paging == 'false')
-				$this->_sendResponse(200, CJSON::encode($this->renderJson($data)));
-				
-			else {
+			if($paging && $paging == 'true') {
 				$pager = OFunction::getDataProviderPager($dataProvider);
-				$get = array_merge($_GET, array($pager['pageVar']=>$pager['nextPage']));
+				$get = array_merge($_GET, array($pager['pageVar'] => $pager['nextPage']));
 				$nextPager = $pager['nextPage'] != 0 ? OFunction::validHostURL(Yii::app()->controller->createUrl('list', $get)) : '-';
 				$return = array(
 					'data' => $data,
 					'pager' => $pager,
 					'nextPager' => $nextPager,
 				);
-				$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));					
-			}
+				$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
+				
+			} else
+				$this->_sendResponse(200, CJSON::encode($this->renderJson($data)));
 			
 		} else 
 			$this->redirect(Yii::app()->createUrl('site/index'));
@@ -330,25 +307,26 @@ class SiteController extends ControllerApi
 				$medias = $model->medias;
 				if(!empty($medias)) {
 					$media = $model->view->media_cover ? $model->view->media_cover : $medias[0]->media;
-					if(file_exists($article_path.'/'.$media))
-						$media_image = $article_url.'/'.$article_path.'/'.$media;
+					if($media && file_exists($article_path.'/'.$media))
+						$cover_url_path = $article_url.'/'.$article_path.'/'.$media;
 				}				
-				if($model->media_file != '' && file_exists($article_path.'/'.$model->media_file))
-					$media_file = $article_url.'/'.$article_path.'/'.$model->media_file;
+				if($model->media_file && file_exists($article_path.'/'.$model->media_file))
+					$file_url_path = $article_url.'/'.$article_path.'/'.$model->media_file;
 				
 				$return = array(
 					'success'=>'1',
 					'id'=>$model->article_id,
 					'category'=>Phrase::trans($model->cat->name),
-					'title'=>ucwords(strtolower($model->title)),
+					'title'=>$model->title,
 					'body'=>Utility::softDecode($model->body),
-					'media_image'=>!empty($medias) ? $media_image : '-',
-					'media_file'=>$model->media_file != '' ? $media_file : '-',
+					'cover_url_path'=>$cover_url_path ? $cover_url_path : '-',
+					'media_file'=>$file_url_path ? $file_url_path : '-',
 					'view'=>$model->view->views ? $model->view->views : 0,
 					'likes'=>$model->view->likes ? $model->view->likes : 0,
 					'download'=>$model->view->downloads ? $model->view->downloads : 0,
-					'published_date'=>Utility::dateFormat($model->published_date),
-					'share'=>Articles::getShareUrl($model->article_id, $model->title),
+					'published_date' => date_timestamp_get(date_create($model->published_date)),
+					'creation_date' => date_timestamp_get(date_create($model->creation_date)),
+					'share'=>Articles::getShareUrl($model->article_id, $model->slug),
 				);
 				
 			} else {
