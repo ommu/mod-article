@@ -138,8 +138,8 @@ class SiteController extends ControllerApi
 								'view' => $item->view->views ? $item->view->views : 0,
 								'likes' => $item->view->likes ? $item->view->likes : 0,
 								'download' => $item->view->downloads ? $item->view->downloads : 0,
-								'published_date' => date_timestamp_get(date_create($item->published_date)),
-								'creation_date' => date_timestamp_get(date_create($item->creation_date)),
+								'published_date' => strtotime($item->published_date),
+								'creation_date' => strtotime($item->creation_date),
 								'share' => Articles::getShareUrl($item->article_id, $item->slug),
 							);
 						}
@@ -177,16 +177,16 @@ class SiteController extends ControllerApi
 			/*
 			$criteria->with = array(
 				'tag_ONE' => array(
-					'alias'=>'a',
+					'alias' => 'a',
 				),
 				'tag_ONE.tag_TO' => array(
-					'alias'=>'b',
+					'alias' => 'b',
 				),
 			);
 			if($tag) {
 				$criteria->condition = 'b.body = :body';
 				$criteria->params = array(
-					':body'=>$tag,
+					':body' => $tag,
 				);
 			}
 			*/
@@ -264,8 +264,8 @@ class SiteController extends ControllerApi
 						'view' => $item->view->views ? $item->view->views : 0,
 						'likes' => $item->view->likes ? $item->view->likes : 0,
 						'download' => $item->view->downloads ? $item->view->downloads : 0,
-						'published_date' => date_timestamp_get(date_create($item->published_date)),
-						'creation_date' => date_timestamp_get(date_create($item->creation_date)),
+						'published_date' => strtotime($item->published_date),
+						'creation_date' => strtotime($item->creation_date),
 						'share' => Articles::getShareUrl($item->article_id, $item->slug),
 					);					
 				}
@@ -314,26 +314,26 @@ class SiteController extends ControllerApi
 					$file_url_path = $article_url.'/'.$article_path.'/'.$model->media_file;
 				
 				$return = array(
-					'success'=>'1',
-					'id'=>$model->article_id,
-					'category'=>Phrase::trans($model->cat->name),
-					'title'=>$model->title,
-					'body'=>Utility::softDecode($model->body),
-					'cover_url_path'=>$cover_url_path ? $cover_url_path : '-',
-					'media_file'=>$file_url_path ? $file_url_path : '-',
-					'view'=>$model->view->views ? $model->view->views : 0,
-					'likes'=>$model->view->likes ? $model->view->likes : 0,
-					'download'=>$model->view->downloads ? $model->view->downloads : 0,
-					'published_date' => date_timestamp_get(date_create($model->published_date)),
-					'creation_date' => date_timestamp_get(date_create($model->creation_date)),
-					'share'=>Articles::getShareUrl($model->article_id, $model->slug),
+					'success' => '1',
+					'id' => $model->article_id,
+					'category' => Phrase::trans($model->cat->name),
+					'title' => $model->title,
+					'body' => Utility::softDecode($model->body),
+					'media_image' => $cover_url_path ? $cover_url_path : '-',
+					'media_file' => $file_url_path ? $file_url_path : '-',
+					'view' => $model->view->views ? $model->view->views : 0,
+					'likes' => $model->view->likes ? $model->view->likes : 0,
+					'download' => $model->view->downloads ? $model->view->downloads : 0,
+					'published_date' => strtotime($model->published_date),
+					'creation_date' => strtotime($model->creation_date),
+					'share' => Articles::getShareUrl($model->article_id, $model->slug),
 				);
 				
 			} else {
 				$return = array(
-					'success'=>'0',
-					'error'=>'NULL',
-					'message'=>Yii::t('phrase', 'error, article tidak ditemukan'),
+					'success' => '0',
+					'error' => 'NULL',
+					'message' => Yii::t('phrase', 'error, article tidak ditemukan'),
 				);
 			}
 			$this->_sendResponse(200, CJSON::encode($this->renderJson($return)));
