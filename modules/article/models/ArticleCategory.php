@@ -27,6 +27,7 @@
  * @property integer $parent
  * @property string $name
  * @property string $desc
+ * @property string $single_photo
  * @property string $creation_date
  * @property string $creation_id
  * @property string $modified_date
@@ -88,7 +89,7 @@ class ArticleCategory extends CActiveRecord
 		return array(
 			array('
 				title_i, description_i', 'required'),
-			array('publish, parent, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
+			array('publish, parent, single_photo, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
 			array('name, desc, creation_id, modified_id', 'length', 'max'=>11),
 			array('
 				title_i', 'length', 'max'=>32),
@@ -96,7 +97,7 @@ class ArticleCategory extends CActiveRecord
 				description_i', 'length', 'max'=>128),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('cat_id, publish, parent, name, desc, creation_date, creation_id, modified_date, modified_id,
+			array('cat_id, publish, parent, name, desc, single_photo, creation_date, creation_id, modified_date, modified_id,
 				title_i, description_i, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -129,12 +130,13 @@ class ArticleCategory extends CActiveRecord
 			'parent' => Yii::t('attribute', 'Parent'),
 			'name' => Yii::t('attribute', 'Category'),
 			'desc' => Yii::t('attribute', 'Description'),
-			'title_i' => Yii::t('attribute', 'Category'),
-			'description_i' => Yii::t('attribute', 'Description'),
+			'single_photo' => Yii::t('attribute', 'Single Photo'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
+			'title_i' => Yii::t('attribute', 'Category'),
+			'description_i' => Yii::t('attribute', 'Description'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
 		);
@@ -192,8 +194,9 @@ class ArticleCategory extends CActiveRecord
 			$criteria->compare('t.publish',$this->publish);
 		}
 		$criteria->compare('t.parent',$this->parent);
-		$criteria->compare('t.name',$this->name,true);
-		$criteria->compare('t.desc',$this->desc,true);
+		$criteria->compare('t.name',$this->name);
+		$criteria->compare('t.desc',$this->desc);
+		$criteria->compare('t.single_photo',$this->single_photo);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		$criteria->compare('t.creation_id',$this->creation_id);
@@ -237,6 +240,7 @@ class ArticleCategory extends CActiveRecord
 			$this->defaultColumns[] = 'parent';
 			$this->defaultColumns[] = 'name';
 			$this->defaultColumns[] = 'desc';
+			$this->defaultColumns[] = 'single_photo';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
 			$this->defaultColumns[] = 'modified_date';
@@ -312,6 +316,18 @@ class ArticleCategory extends CActiveRecord
 						'showButtonPanel' => true,
 					),
 				), true),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'single_photo',
+				'value' => '$data->single_photo == 1 ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Yes'),
+					0=>Yii::t('phrase', 'No'),
+				),
+				'type' => 'raw',
 			);
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(

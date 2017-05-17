@@ -147,7 +147,7 @@ class SettingController extends Controller
 
 			} else {
 				if(isset($_GET['enablesave']) && $_GET['enablesave'] == 1) {
-					if($model->update()) {
+					if($model->save()) {
 						echo CJSON::encode(array(
 							'type' => 0,
 							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article setting success updated.').'</strong></div>',

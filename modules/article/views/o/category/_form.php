@@ -64,6 +64,15 @@
 		</div>
 
 		<div class="clearfix publish">
+			<?php echo $form->labelEx($model,'single_photo'); ?>
+			<div class="desc">
+				<?php echo $form->checkBox($model,'single_photo'); ?>
+				<?php echo $form->labelEx($model,'single_photo'); ?>
+				<?php echo $form->error($model,'single_photo'); ?>
+			</div>
+		</div>
+
+		<div class="clearfix publish">
 			<?php echo $form->labelEx($model,'publish'); ?>
 			<div class="desc">
 				<?php echo $form->checkBox($model,'publish'); ?>
