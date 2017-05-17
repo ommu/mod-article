@@ -290,9 +290,9 @@ class ArticleDownloads extends CActiveRecord
 	public static function insertDownload($article_id)
 	{
 		$criteria=new CDbCriteria;
-		$criteria->select = 't.download_id, t.article_id, t.user_id, t.downloads';
-		$criteria->compare('t.article_id', $article_id);
-		$criteria->compare('t.user_id', !Yii::app()->user->isGuest ? Yii::app()->user->id : '0');
+		$criteria->select = 'download_id, article_id, user_id, downloads';
+		$criteria->compare('article_id', $article_id);
+		$criteria->compare('user_id', !Yii::app()->user->isGuest ? Yii::app()->user->id : '0');
 		$findDownload = self::model()->find($criteria);
 		
 		if($findDownload != null)

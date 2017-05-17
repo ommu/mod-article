@@ -219,8 +219,9 @@ class Articles extends CActiveRecord
 				$items = array();
 				$items[] = $_GET['category'];
 				if($categoryFind != null) {
-					foreach($categoryFind as $key => $val)
+					foreach($categoryFind as $key => $val) {
 						$items[] = $val->cat_id;
+					}
 				}
 				$criteria->addInCondition('t.cat_id',$items);
 				$criteria->compare('t.cat_id',$this->cat_id);
@@ -461,10 +462,10 @@ class Articles extends CActiveRecord
 			$headline_category = array();
 					
 		$criteria=new CDbCriteria;
-		$criteria->compare('t.publish', 1);
-		$criteria->addInCondition('t.cat_id', $headline_category);
-		$criteria->compare('t.headline', 1);
-		$criteria->order = 't.headline_date DESC';
+		$criteria->compare('publish', 1);
+		$criteria->addInCondition('cat_id', $headline_category);
+		$criteria->compare('headline', 1);
+		$criteria->order = 'headline_date DESC';
 		
 		$model = self::model()->findAll($criteria);
 		
@@ -489,9 +490,9 @@ class Articles extends CActiveRecord
 		Yii::import('application.modules.article.models.*');
 		
 		$criteria=new CDbCriteria;
-		$criteria->compare('t.publish', 1);
-		$criteria->compare('date(t.published_date) <', date('Y-m-d H:i:s'));
-		$criteria->order = 't.article_id DESC';
+		$criteria->compare('publish', 1);
+		$criteria->compare('date(published_date) <', date('Y-m-d H:i:s'));
+		$criteria->order = 'article_id DESC';
 		//$criteria->limit = 10;
 		$model = Articles::model()->findAll($criteria);
 		foreach($model as $key => $item) {

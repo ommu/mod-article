@@ -18,7 +18,7 @@
 		$model->title=>array('view','id'=>$model->article_id),
 		'Update',
 	);
-	
+
 	$medias = $model->medias;
 	$media_limit = $setting->media_limit;
 	$condition = 0;

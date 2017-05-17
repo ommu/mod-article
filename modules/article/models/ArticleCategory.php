@@ -358,9 +358,9 @@ class ArticleCategory extends CActiveRecord
 		
 		$criteria=new CDbCriteria;
 		if($publish != null)
-			$criteria->compare('t.publish',$publish);
+			$criteria->compare('publish',$publish);
 		if($parent != null)
-			$criteria->compare('t.parent',$parent);
+			$criteria->compare('parent',$parent);
 		
 		$model = self::model()->findAll($criteria);
 
@@ -402,31 +402,35 @@ class ArticleCategory extends CActiveRecord
 	{
 		$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
 		$location = Utility::getUrlTitle($currentAction);
-				
+		
 		if(parent::beforeSave()) {
-			if($this->isNewRecord) {
+			if($this->isNewRecord || (!$this->isNewRecord && $this->name == 0)) {
 				$title=new OmmuSystemPhrase;
 				$title->location = $location.'_title';
 				$title->en_us = $this->title_i;
 				if($title->save())
 					$this->name = $title->phrase_id;
-
+				
+				$this->slug = Utility::getUrlTitle($this->title_i);	
+				
+			} else {
+				$title = OmmuSystemPhrase::model()->findByPk($this->name);
+				$title->en_us = $this->title_i;
+				$title->save();
+			}
+			
+			if($this->isNewRecord || (!$this->isNewRecord && $this->desc == 0)) {
 				$desc=new OmmuSystemPhrase;
 				$desc->location = $location.'_description';
 				$desc->en_us = $this->description_i;
 				if($desc->save())
 					$this->desc = $desc->phrase_id;
 				
-				$this->slug = Utility::getUrlTitle($this->title_i);				
-				
 			} else {
-				$title = OmmuSystemPhrase::model()->findByPk($this->name);
-				$title->en_us = $this->title_i;
-				$title->save();
-
 				$desc = OmmuSystemPhrase::model()->findByPk($this->desc);
 				$desc->en_us = $this->description_i;
 				$desc->save();
+				
 			}
 		}
 		return true;
