@@ -667,7 +667,7 @@ class Articles extends CActiveRecord
 
 		if($this->article_type == 'standard') {
 			$this->media_input = CUploadedFile::getInstance($this, 'media_input');
-			if($this->media_input != null && ($this->isNewRecord || (!$this->isNewRecord && $setting->media_limit == 1))) {
+			if($this->media_input != null && ($this->isNewRecord || (!$this->isNewRecord && ($setting->media_limit == 1 || ($setting->media_limit != 1 && $this->cat->single_photo == 1))))) {
 				if($this->media_input instanceOf CUploadedFile) {
 					$fileName = time().'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_input->extensionName);
 					if($this->media_input->saveAs($article_path.'/'.$fileName)) {

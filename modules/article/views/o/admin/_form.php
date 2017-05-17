@@ -130,7 +130,7 @@ EOP;
 				}?>
 
 				<?php if($model->isNewRecord || (!$model->isNewRecord && $condition == 0)) {?>
-				<div id="media" class="<?php echo (($model->isNewRecord && !$model->getErrors()) || ($model->article_type == 'standard' && (($model->isNewRecord && $model->getErrors()) || (!$model->isNewRecord && $setting->media_limit == 1)))) ? '' : 'hide';?> clearfix filter">
+				<div id="media" class="<?php echo (($model->isNewRecord && !$model->getErrors()) || ($model->article_type == 'standard' && (($model->isNewRecord && $model->getErrors()) || (!$model->isNewRecord && ($setting->media_limit == 1 || ($setting->media_limit != 1 && $model->cat->single_photo == 1)))))) ? '' : 'hide';?> clearfix filter">
 					<?php echo $form->labelEx($model,'media_input'); ?>
 					<div class="desc">
 						<?php echo $form->fileField($model,'media_input'); ?>
