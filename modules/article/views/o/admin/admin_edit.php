@@ -21,18 +21,22 @@
 	
 	$medias = $model->medias;
 	$media_limit = $setting->media_limit;
+	$condition = 0;
+	if($model->article_type == 'standard' && $media_limit != 1 && $model->cat->single_photo == 0)
+		$condition = 1;
 ?>
 
 <div class="form" <?php //echo ($model->article_type == 'standard' && $media_limit != 1) ? 'name="post-on"' : ''; ?>>
 	<?php echo $this->renderPartial('_form', array(
 		'model'=>$model,
 		'setting'=>$setting,
+		'condition'=>$condition,
 		'media_file_type'=>$media_file_type,
 		'upload_file_type'=>$upload_file_type,
 	)); ?>
 </div>
 
-<?php if($model->article_type == 'standard' && $media_limit != 1) {?>
+<?php if($condition == 1) {?>
 <div class="boxed mt-15">
 	<h3><?php echo Yii::t('phrase', 'Article Photo'); ?></h3>
 	<div class="clearfix horizontal-data" name="four">

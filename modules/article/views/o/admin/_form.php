@@ -14,7 +14,7 @@
  */
 
 	$controller = strtolower(Yii::app()->controller->id);
-	if($model->isNewRecord || (!$model->isNewRecord && $model->article_type == 'standard' && $setting->media_limit == 1))
+	if($model->isNewRecord || (!$model->isNewRecord && $condition == 0))
 		$validation = false;
 	else
 		$validation = true;
@@ -113,7 +113,7 @@ EOP;
 					</div>
 				</div>
 	
-				<?php if(!$model->isNewRecord && $model->article_type == 'standard' && $setting->media_limit == 1) {
+				<?php if(!$model->isNewRecord && $condition == 0) {
 					$medias = $model->medias;
 					if(!empty($medias)) {
 						$media = $model->view->media_cover ? $model->view->media_cover : $medias[0]->media;
@@ -129,7 +129,7 @@ EOP;
 					}
 				}?>
 
-				<?php if($model->isNewRecord || (!$model->isNewRecord && $setting->media_limit == 1 && $model->article_type == 'standard')) {?>
+				<?php if($model->isNewRecord || (!$model->isNewRecord && $condition == 0)) {?>
 				<div id="media" class="<?php echo (($model->isNewRecord && !$model->getErrors()) || ($model->article_type == 'standard' && (($model->isNewRecord && $model->getErrors()) || (!$model->isNewRecord && $setting->media_limit == 1)))) ? '' : 'hide';?> clearfix filter">
 					<?php echo $form->labelEx($model,'media_input'); ?>
 					<div class="desc">
