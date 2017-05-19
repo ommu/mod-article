@@ -13,7 +13,6 @@
  *
  */
 
-	$controller = strtolower(Yii::app()->controller->id);
 	if($model->isNewRecord || (!$model->isNewRecord && $condition == 0))
 		$validation = false;
 	else
