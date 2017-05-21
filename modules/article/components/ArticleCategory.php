@@ -21,7 +21,15 @@ class ArticleCategory extends CWidget
 		$this->renderContent();
 	}
 
-	protected function renderContent() {
+	protected function renderContent() 
+	{
+		$module = strtolower(Yii::app()->controller->module->id);
+		$controller = strtolower(Yii::app()->controller->id);
+		$action = strtolower(Yii::app()->controller->action->id);
+		$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
+		$currentModule = strtolower(Yii::app()->controller->module->id.'/'.Yii::app()->controller->id);
+		$currentModuleAction = strtolower(Yii::app()->controller->module->id.'/'.Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
+		
 		//import model
 		Yii::import('application.modules.article.models.ArticleCategory');
 
@@ -36,6 +44,12 @@ class ArticleCategory extends CWidget
 
 		$this->render('article_category',array(
 			'model' => $model,
+			'module'=>$module,
+			'controller'=>$controller,
+			'action'=>$action,
+			'currentAction'=>$currentAction,
+			'currentModule'=>$currentModule,
+			'currentModuleAction'=>$currentModuleAction,
 		));	
 	}
 }
