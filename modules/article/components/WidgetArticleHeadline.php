@@ -1,6 +1,6 @@
 <?php
 /**
- * ArticleCategory
+ * WidgetArticleHeadline
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
@@ -10,9 +10,8 @@
  *
  */
 
-class ArticleCategory extends CWidget
+class WidgetArticleHeadline extends CWidget
 {
-	public $publish = null;
 
 	public function init() {
 	}
@@ -31,18 +30,24 @@ class ArticleCategory extends CWidget
 		$currentModuleAction = strtolower(Yii::app()->controller->module->id.'/'.Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
 		
 		//import model
-		Yii::import('application.modules.article.models.ArticleCategory');
+		Yii::import('application.modules.article.models.Articles');
+		Yii::import('application.modules.article.models.ArticleMedia');
+		Yii::import('application.modules.article.models.ArticleSetting');
+		
+		//$cat = ($controller == 'site') ? 1 : 2;
+		$model = Articles::model()->findAll(array(
+			'condition' => 'publish = :publish AND headline = :headline AND published_date <= curdate()',
+			//'condition' => 'publish = :publish AND cat_id = :cat AND headline = :headline AND published_date <= curdate()',
+			'params' => array(
+				':publish' => 1,
+				':headline' => 1,
+				//':cat' => $cat,
+			),
+			'order' => 'article_id DESC',
+			'limit' => 1,
+		));
 
-		$criteria=new CDbCriteria;
-		if($this->publish != null) {
-			$criteria->condition = 'publish = :publish';
-			$criteria->params = array(
-				':publish'=>$this->publish,
-			);			
-		}
-		$model = ArticleCategory::model()->findAll($criteria);
-
-		$this->render('article_category',array(
+		$this->render('article_headline',array(
 			'model' => $model,
 			'module'=>$module,
 			'controller'=>$controller,
@@ -50,6 +55,6 @@ class ArticleCategory extends CWidget
 			'currentAction'=>$currentAction,
 			'currentModule'=>$currentModule,
 			'currentModuleAction'=>$currentModuleAction,
-		));	
+		));
 	}
 }

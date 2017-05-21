@@ -1,6 +1,6 @@
 <?php
 /**
- * ArticleRecent
+ * WidgetArticleRecent
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
@@ -10,7 +10,7 @@
  *
  */
 
-class ArticleRecent extends CWidget
+class WidgetArticleRecent extends CWidget
 {
 
 	public function init() {

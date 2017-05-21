@@ -1,6 +1,6 @@
 <?php
 /**
- * ArticlePopular
+ * WidgetArticlePopular
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
@@ -10,7 +10,7 @@
  *
  */
 
-class ArticlePopular extends CWidget
+class WidgetArticlePopular extends CWidget
 {
 
 	public function init() {

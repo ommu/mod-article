@@ -1,6 +1,6 @@
 <?php
 /**
- * ArticleKeyword
+ * WidgetArticleCategory
  * version: 0.0.1
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
@@ -10,8 +10,9 @@
  *
  */
 
-class ArticleKeyword extends CWidget
+class WidgetArticleCategory extends CWidget
 {
+	public $publish = null;
 
 	public function init() {
 	}
@@ -29,13 +30,26 @@ class ArticleKeyword extends CWidget
 		$currentModule = strtolower(Yii::app()->controller->module->id.'/'.Yii::app()->controller->id);
 		$currentModuleAction = strtolower(Yii::app()->controller->module->id.'/'.Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
 		
-		$this->render('article_keyword', array(
+		//import model
+		Yii::import('application.modules.article.models.ArticleCategory');
+
+		$criteria=new CDbCriteria;
+		if($this->publish != null) {
+			$criteria->condition = 'publish = :publish';
+			$criteria->params = array(
+				':publish'=>$this->publish,
+			);			
+		}
+		$model = ArticleCategory::model()->findAll($criteria);
+
+		$this->render('article_category',array(
+			'model' => $model,
 			'module'=>$module,
 			'controller'=>$controller,
 			'action'=>$action,
 			'currentAction'=>$currentAction,
 			'currentModule'=>$currentModule,
-			'currentModuleAction'=>$currentModuleAction,		
+			'currentModuleAction'=>$currentModuleAction,
 		));	
 	}
 }
