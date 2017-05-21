@@ -1,6 +1,16 @@
 <?php
+/**
+ * ArticleCategory
+ * version: 0.0.1
+ *
+ * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @copyright Copyright (c) 2014 Ommu Platform (opensource.ommu.co)
+ * @link https://github.com/ommu/mod-article
+ * @contact (+62)856-299-4114
+ *
+ */
 
-class FrontArticleCategory extends CWidget
+class ArticleCategory extends CWidget
 {
 	public $publish = null;
 
@@ -24,7 +34,7 @@ class FrontArticleCategory extends CWidget
 		}
 		$model = ArticleCategory::model()->findAll($criteria);
 
-		$this->render('front_article_category',array(
+		$this->render('article_category',array(
 			'model' => $model,
 		));	
 	}

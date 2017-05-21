@@ -1,6 +1,16 @@
 <?php
+/**
+ * ArticleRecent
+ * version: 0.0.1
+ *
+ * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @copyright Copyright (c) 2014 Ommu Platform (opensource.ommu.co)
+ * @link https://github.com/ommu/mod-article
+ * @contact (+62)856-299-4114
+ *
+ */
 
-class FrontArticleRecent extends CWidget
+class ArticleRecent extends CWidget
 {
 
 	public function init() {
@@ -34,7 +44,7 @@ class FrontArticleRecent extends CWidget
 			
 		$model = Articles::model()->findAll($criteria);
 
-		$this->render('front_article_recent',array(
+		$this->render('article_recent',array(
 			'model' => $model,
 		));	
 	}

@@ -1,6 +1,16 @@
 <?php
+/**
+ * ArticleHeadline
+ * version: 0.0.1
+ *
+ * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @copyright Copyright (c) 2014 Ommu Platform (opensource.ommu.co)
+ * @link https://github.com/ommu/mod-article
+ * @contact (+62)856-299-4114
+ *
+ */
 
-class FrontArticleHeadline extends CWidget
+class ArticleHeadline extends CWidget
 {
 
 	public function init() {
@@ -34,7 +44,7 @@ class FrontArticleHeadline extends CWidget
 			'limit' => 1,
 		));
 
-		$this->render('front_article_headline',array(
+		$this->render('article_headline',array(
 			'model' => $model,
 		));
 	}
