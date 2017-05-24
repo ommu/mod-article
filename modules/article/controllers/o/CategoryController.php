@@ -4,7 +4,7 @@
  * @var $this CategoryController
  * @var $model ArticleCategory
  * @var $form CActiveForm
- * version: 0.0.1
+ * version: 1.3.0
  * Reference start
  *
  * TOC :

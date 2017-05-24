@@ -3,7 +3,7 @@
  * Articles (articles)
  * @var $this AdminController
  * @var $model Articles
- * version: 0.0.1
+ * version: 1.3.0
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)

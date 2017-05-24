@@ -1,7 +1,7 @@
 <?php
 /**
  * ViewArticleCategory
- * version: 0.0.1
+ * version: 1.3.0
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @copyright Copyright (c) 2015 Ommu Platform (opensource.ommu.co)
