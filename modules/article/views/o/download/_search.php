@@ -22,17 +22,17 @@
 	<ul>
 		<li>
 			<?php echo $model->getAttributeLabel('download_id'); ?><br/>
-			<?php echo $form->textField($model,'download_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'download_id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('article_id'); ?><br/>
-			<?php echo $form->textField($model,'article_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'article_id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('user_id'); ?><br/>
-			<?php echo $form->textField($model,'user_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'user_id'); ?>
 		</li>
 
 		<li>
@@ -47,7 +47,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('download_ip'); ?><br/>
-			<?php echo $form->textField($model,'download_ip',array('size'=>20,'maxlength'=>20)); ?>
+			<?php echo $form->textField($model,'download_ip'); ?>
 		</li>
 
 		<li class="submit">

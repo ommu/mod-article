@@ -21,12 +21,12 @@
 	<ul>
 		<li>
 			<?php echo $model->getAttributeLabel('media_id'); ?><br/>
-			<?php echo $form->textField($model,'media_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'media_id'); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('article_id'); ?><br/>
-			<?php echo $form->textField($model,'article_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $model->getAttributeLabel('publish'); ?><br/>
+			<?php echo $form->textField($model,'publish'); ?>
 		</li>
 
 		<li>
@@ -35,13 +35,33 @@
 		</li>
 
 		<li>
+			<?php echo $model->getAttributeLabel('article_id'); ?><br/>
+			<?php echo $form->textField($model,'article_id'); ?>
+		</li>
+
+		<li>
 			<?php echo $model->getAttributeLabel('media'); ?><br/>
-			<?php echo $form->textField($model,'media',array('size'=>60,'maxlength'=>64)); ?>
+			<?php echo $form->textField($model,'media'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('creation_date'); ?><br/>
 			<?php echo $form->textField($model,'creation_date'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('creation_id'); ?><br/>
+			<?php echo $form->textField($model,'creation_id'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('modified_date'); ?><br/>
+			<?php echo $form->textField($model,'modified_date'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('modified_id'); ?><br/>
+			<?php echo $form->textField($model,'modified_id'); ?>
 		</li>
 
 		<li class="submit">

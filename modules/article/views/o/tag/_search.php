@@ -21,17 +21,27 @@
 	<ul>
 		<li>
 			<?php echo $model->getAttributeLabel('id'); ?><br/>
-			<?php echo $form->textField($model,'id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('article_id'); ?><br/>
-			<?php echo $form->textField($model,'article_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'article_id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('tag_id'); ?><br/>
-			<?php echo $form->textField($model,'tag_id',array('size'=>11,'maxlength'=>11)); ?>
+			<?php echo $form->textField($model,'tag_id'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('creation_id'); ?><br/>
+			<?php echo $form->textField($model,'creation_id'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('modified_date'); ?><br/>
+			<?php echo $form->textField($model,'modified_date'); ?>
 		</li>
 
 		<li class="submit">

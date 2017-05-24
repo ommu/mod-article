@@ -16,7 +16,43 @@
 		'Article Categories'=>array('manage'),
 		'Manage',
 	);
+	$this->menu=array(
+		array(
+			'label' => Yii::t('phrase', 'Filter'), 
+			'url' => array('javascript:void(0);'),
+			'itemOptions' => array('class' => 'search-button'),
+			'linkOptions' => array(
+				'title' => Yii::t('phrase', 'Filter'),
+				'off_address' => '',
+			),
+		),
+		array(
+			'label' => Yii::t('phrase', 'Grid Options'), 
+			'url' => array('javascript:void(0);'),
+			'itemOptions' => array('class' => 'grid-button'),
+			'linkOptions' => array(
+				'title' => Yii::t('phrase', 'Grid Options'),
+				'off_address' => '',
+			),
+		),
+	);
 ?>
+
+<?php //begin.Search ?>
+<div class="search-form">
+<?php $this->renderPartial('_search',array(
+	'model'=>$model,
+)); ?>
+</div>
+<?php //end.Search ?>
+
+<?php //begin.Grid Option ?>
+<div class="grid-form">
+<?php $this->renderPartial('_option_form',array(
+	'model'=>$model,
+)); ?>
+</div>
+<?php //end.Grid Option ?>
 
 <div id="partial-article-category">
 	<?php //begin.Messages ?>

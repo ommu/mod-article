@@ -1,14 +1,13 @@
 <?php
 /**
- * Article Download Details (article-download-detail)
- * @var $this DownloaddetailController
- * @var $model ArticleDownloadDetail
+ * Article Category (article-category)
+ * @var $this CategoryController
+ * @var $model ArticleCategory
  * @var $form CActiveForm
  * version: 1.3.0
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
- * @copyright Copyright (c) 2017 Ommu Platform (opensource.ommu.co)
- * @created date 8 January 2017, 21:21 WIB
+ * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
  * @link https://github.com/ommu/mod-article
  * @contact (+62)856-299-4114
  *
@@ -21,13 +20,23 @@
 )); ?>
 	<ul>
 		<li>
-			<?php echo $model->getAttributeLabel('id'); ?><br/>
-			<?php echo $form->textField($model,'id'); ?>
+			<?php echo $model->getAttributeLabel('download_id'); ?><br/>
+			<?php echo $form->textField($model,'download_id'); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('download_id'); ?><br/>
-			<?php echo $form->textField($model,'download_id'); ?>
+			<?php echo $model->getAttributeLabel('article_id'); ?><br/>
+			<?php echo $form->textField($model,'article_id'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('user_id'); ?><br/>
+			<?php echo $form->textField($model,'user_id'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('downloads'); ?><br/>
+			<?php echo $form->textField($model,'downloads'); ?>
 		</li>
 
 		<li>
