@@ -26,24 +26,7 @@
 	<b><?php echo CHtml::encode($data->getAttributeLabel('cat_id')); ?>:</b>
 	<?php echo CHtml::encode($data->cat_id); ?>
 	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('user_id')); ?>:</b>
-	<?php echo CHtml::encode($data->user_id); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('media_id')); ?>:</b>
-	<?php echo CHtml::encode($data->media_id); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('headline')); ?>:</b>
-	<?php echo CHtml::encode($data->headline); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('comment_code')); ?>:</b>
-	<?php echo CHtml::encode($data->comment_code); ?>
-	<br />
-
-	<?php /*
+	
 	<b><?php echo CHtml::encode($data->getAttributeLabel('article_type')); ?>:</b>
 	<?php echo CHtml::encode($data->article_type); ?>
 	<br />
@@ -68,30 +51,36 @@
 	<?php echo CHtml::encode($data->published_date); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('comment')); ?>:</b>
-	<?php echo CHtml::encode($data->comment); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('headline')); ?>:</b>
+	<?php echo CHtml::encode($data->headline); ?>
 	<br />
 
-	<b><?php echo CHtml::encode($data->getAttributeLabel('view')); ?>:</b>
-	<?php echo CHtml::encode($data->view); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('likes')); ?>:</b>
-	<?php echo CHtml::encode($data->likes); ?>
-	<br />
-
-	<b><?php echo CHtml::encode($data->getAttributeLabel('download')); ?>:</b>
-	<?php echo CHtml::encode($data->download); ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('comment_code')); ?>:</b>
+	<?php echo CHtml::encode($data->comment_code); ?>
 	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('creation_date')); ?>:</b>
 	<?php echo CHtml::encode($data->creation_date); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('creation_id')); ?>:</b>
+	<?php echo CHtml::encode($data->creation_id); ?>
+	<br />
+
 	<b><?php echo CHtml::encode($data->getAttributeLabel('modified_date')); ?>:</b>
 	<?php echo CHtml::encode($data->modified_date); ?>
 	<br />
 
-	*/ ?>
+	<b><?php echo CHtml::encode($data->getAttributeLabel('modified_id')); ?>:</b>
+	<?php echo CHtml::encode($data->modified_id); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('headline_date')); ?>:</b>
+	<?php echo CHtml::encode($data->headline_date); ?>
+	<br />
+
+	<b><?php echo CHtml::encode($data->getAttributeLabel('slug')); ?>:</b>
+	<?php echo CHtml::encode($data->slug); ?>
+	<br />
 
 </div>

@@ -14,7 +14,7 @@
 
 	$this->breadcrumbs=array(
 		'Articles'=>array('manage'),
-		Phrase::trans($model->cat->name,2),
+		Phrase::trans($model->cat->name),
 		$model->title,
 	);
 ?>
@@ -25,30 +25,28 @@
 		'article_id',
 		'publish',
 		'cat_id',
-		'user_id',
-		'media_id',
-		'headline',
-		'comment_code',
 		'article_type',
 		'title',
 		'body',
 		'quote',
 		'media_file',
 		'published_date',
-		'comment',
-		'view',
-		'likes',
-		'download',
+		'headline',
+		'comment_code',
 		'creation_date',
+		'creation_id',
 		'modified_date',
+		'modified_id',
+		'headline_date',
+		'slug',
 	),
 )); ?>
 
 <?php if($random != null) {
-	foreach($random as $key => $row) { ?>
-		<a href="<?php echo Yii::app()->controller->createUrl('view', array('id'=>$row->article_id,'t'=>Utility::getUrlTitle($row->title)));?>" title="<?php echo $row->title;?>"><?php echo Utility::shortText(Utility::hardDecode($row->title),40);?></a>
-		<br/><?php echo Utility::dateFormat($row->published_date, true);?>
-		<br/><?php echo $row->view;?>
-		<p><?php echo Utility::shortText(Utility::hardDecode($row->body),100);?></p>
+	foreach($random as $key => $val) { ?>
+		<a href="<?php echo Yii::app()->controller->createUrl('view', array('id'=>$val->article_id,'slug'=>Utility::getUrlTitle($val->title)));?>" title="<?php echo $val->title;?>"><?php echo $val->title;?></a>
+		<br/><?php echo Utility::dateFormat($val->published_date);?>
+		<br/><?php echo $val->view->views;?>
+		<p><?php echo Utility::shortText(Utility::hardDecode($val->body),150);?></p>
 <?php }
 }?>

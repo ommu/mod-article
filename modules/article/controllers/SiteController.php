@@ -37,13 +37,14 @@ class SiteController extends Controller
 	 */
 	public function init() 
 	{
-		if(ArticleSetting::getInfo('permission') == 1) {
+		$permission = ArticleSetting::getInfo('permission');
+		$siteType = OmmuSettings::getInfo('site_type');
+		if($permission == 1 || ($permission == 0 && !Yii::app()->user->isGuest)) {
 			$arrThemes = Utility::getCurrentTemplate('public');
 			Yii::app()->theme = $arrThemes['folder'];
 			$this->layout = $arrThemes['layout'];
-		} else {
-			$this->redirect(Yii::app()->createUrl('site/index'));
-		}
+		} else
+			$this->redirect($siteType == 0 ? Yii::app()->createUrl('site/index') : Yii::app()->createUrl('site/login'));
 	}
 
 	/**
@@ -98,7 +99,7 @@ class SiteController extends Controller
 			'select' => 'meta_description, meta_keyword',
 		));
 		
-		if(isset($_GET['category']) && $_GET['category'] != '')
+		if(isset($_GET['category']) && $_GET['category'])
 			$title = ArticleCategory::model()->findByPk($_GET['category']);
 
 		$criteria=new CDbCriteria;
@@ -117,7 +118,7 @@ class SiteController extends Controller
 			),
 		));
 
-		$this->pageTitle = (isset($_GET['category']) && $_GET['category'] != '') ? Phrase::trans($title->name, 2) : 'Articles';
+		$this->pageTitle = (isset($_GET['category']) && $_GET['category']) ? Phrase::trans($title->name) : Yii::t('phrase', 'Articles');
 		$this->pageDescription = $setting->meta_description;
 		$this->pageMeta = $setting->meta_keyword;
 		$this->render('front_index',array(
@@ -136,15 +137,7 @@ class SiteController extends Controller
 		));
 
 		$model=$this->loadModel($id);
-		Articles::model()->updateByPk($id, array('view'=>$model->view + 1));
-
-		$photo = ArticleMedia::model()->findAll(array(
-			'condition' => 'article_id = :id',
-			'params' => array(
-				':id' => $model->article_id,
-			),
-			'order' => 'media_id DESC',
-		));
+		ArticleViews::insertView($model->article_id);
 		
 		//Random Article
 		$criteria=new CDbCriteria;
@@ -160,19 +153,18 @@ class SiteController extends Controller
 		
 		$this->pageTitleShow = true;
 		$this->pageTitle = $model->title;
-		$this->pageDescription = Utility::shortText(Utility::hardDecode($model->body),300);
-		$this->pageMeta = ArticleTag::getKeyword($setting->meta_keyword, $id);
-		if($model->media_id != 0 && $model->cover->media != '') {
-			if(in_array($model->article_type, array('1','3'))) {
-				$media = Yii::app()->request->baseUrl.'/public/article/'.$id.'/'.$model->cover->media;
-			} else if($model->article_type == 2) {
-				$media = 'http://www.youtube.com/watch?v='.$model->cover->media;
-			}
+		$this->pageDescription = Utility::shortText(Utility::hardDecode($model->body),250);
+		$this->pageMeta = ArticleTag::getKeyword($setting->meta_keyword, $model->tags);
+		if(!empty($medias)) {
+			$media = $model->view->media_cover ? $model->view->media_cover : $medias[0]->media;
+			if($model->article_type == 'standard')
+				$media = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$media;
+			else if($model->article_type == 'video')
+				$media = 'http://www.youtube.com/watch?v='.$media;
 			$this->pageImage = $media;
 		}
 		$this->render('front_view',array(
 			'model'=>$model,
-			'photo'=>$photo,
 			'random'=>$random,
 		));
 	}
@@ -184,8 +176,8 @@ class SiteController extends Controller
 	public function actionDownload($id) 
 	{
 		$model=$this->loadModel($id);
-		Articles::model()->updateByPk($id, array('download'=>$model->download + 1));
-		$this->redirect(Yii::app()->request->baseUrl.'/public/article/'.$id.'/'.$model->media_file);
+		ArticleDownloads::insertDownload($model->article_id);
+		$this->redirect(Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->media_file);
 	}
 
 	/**

@@ -354,12 +354,33 @@ class ArticleLikes extends CActiveRecord
 	}
 
 	/**
+	 * User get information
+	 */
+	public static function updateLike($article_id)
+	{
+		$criteria=new CDbCriteria;
+		$criteria->select = 'like_id, publish, article_id, user_id';
+		$criteria->compare('banner_id', $article_id);
+		$criteria->compare('user_id', Yii::app()->user->id);
+		$findLike = self::model()->find($criteria);
+		
+		if($findLike != null) {
+			$replace = $findLike->publish == 0 ? 1 : 0;
+			self::model()->updateByPk($findLike->like_id, array('publish'=>$replace, 'likes_ip'=>$_SERVER['REMOTE_ADDR']));
+		} else {
+			$like=new ArticleLikes;
+			$like->article_id = $article_id;
+			$like->save();
+		}
+	}
+
+	/**
 	 * before validate attributes
 	 */
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
 			if($this->isNewRecord)
-				$this->user_id = !Yii::app()->user->isGuest ? Yii::app()->user->id : 0;
+				$this->user_id = Yii::app()->user->id;
 				
 			$this->likes_ip = $_SERVER['REMOTE_ADDR'];
 		}

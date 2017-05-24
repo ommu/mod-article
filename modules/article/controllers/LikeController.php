@@ -37,13 +37,14 @@ class LikeController extends Controller
 	 */
 	public function init() 
 	{
-		if(ArticleSetting::getInfo('permission') == 1) {
+		$permission = ArticleSetting::getInfo('permission');
+		$siteType = OmmuSettings::getInfo('site_type');
+		if($permission == 1 || ($permission == 0 && !Yii::app()->user->isGuest)) {
 			$arrThemes = Utility::getCurrentTemplate('public');
 			Yii::app()->theme = $arrThemes['folder'];
 			$this->layout = $arrThemes['layout'];
-		} else {
-			$this->redirect(Yii::app()->createUrl('site/index'));
-		}
+		} else
+			$this->redirect($siteType == 0 ? Yii::app()->createUrl('site/index') : Yii::app()->createUrl('site/login'));
 	}
 
 	/**
@@ -70,7 +71,7 @@ class LikeController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('up','down'),
+				'actions'=>array('up'),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level)',
 				//'expression'=>'isset(Yii::app()->user->level) && (Yii::app()->user->level != 1)',
@@ -99,33 +100,16 @@ class LikeController extends Controller
 	 */
 	public function actionUp($id=null) 
 	{
-		if($id == null) {
+		$model = Articles::model()->findByPk($id);
+		if($id == null || ($id != null && $model == null))
 			$this->redirect(array('site/index'));
-		} else {
-			$model=new ArticleLikes;
-			$model->article_id = $id;
-			if($model->save()) {
-				$this->redirect(array('site/view','id'=>$model->article_id,'t'=>Utility::getUrlTitle($model->article->title)));
-			}	
+		
+		else {
+			if(ArticleLikes::updateLike($model->article_id))
+				$this->redirect(array('site/view','id'=>$model->article_id,'slug'=>Utility::getUrlTitle($model->title)));
 		}
 	}
 	
-	/**
-	 * Creates a new model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
-	 */
-	public function actionDown($id=null) 
-	{
-		if($id == null) {
-			$this->redirect(array('site/index'));
-		} else {
-			$model=$this->loadModel($id);
-			if($model->delete()) {
-				$this->redirect(array('site/view','id'=>$model->article_id,'t'=>Utility::getUrlTitle($model->article->title)));
-			}	
-		}
-	}
-
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
