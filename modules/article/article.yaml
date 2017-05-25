@@ -20,7 +20,7 @@ plugin_menu		:
 		urlPath: {url: -, attr: -, icon: -}
 		submenu :
 			- urlTitle: Categories
-				urlRules: {siteType: "0,1", userLevel: "1,2"}
+				urlRules: {siteType: "0,1", userLevel: 1}
 				urlPath: {url: o/category/manage, attr: -, icon: -}
 			- urlTitle: Views
 				urlRules: {siteType: "0,1", userLevel: "1,2"}
