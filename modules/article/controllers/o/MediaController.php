@@ -106,8 +106,14 @@ class MediaController extends Controller
 	/**
 	 * Manages all models.
 	 */
-	public function actionManage() 
+	public function actionManage($article=null) 
 	{
+		$pageTitle = Yii::t('phrase', 'Article Media');
+		if($article != null) {
+			$data = Articles::model()->findByPk($article);
+			$pageTitle = Yii::t('phrase', 'Article Media: {data}', array ('{data}'=>$data->title));
+		}
+		
 		$model=new ArticleMedia('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['ArticleMedia'])) {
@@ -123,15 +129,8 @@ class MediaController extends Controller
 			}
 		}
 		$columns = $model->getGridColumn($columnTemp);
-		
-		if(isset($_GET['article'])) {
-			$article = Articles::model()->findByPk($_GET['article']);
-			$title = ': '.$article->title.' '.Yii::t('phrase', 'by').' '.$article->user->displayname;
-		} else {
-			$title = '';
-		}
 
-		$this->pageTitle = Yii::t('phrase', 'Article Media Manage').$title;
+		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
@@ -168,12 +167,28 @@ class MediaController extends Controller
 			}
 		}
 
-		$this->pageTitle = Yii::t('phrase', 'Update Media').': '.$model->article->title;
+		$this->pageTitle = Yii::t('phrase', 'Update Media: {title}', array('{title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_edit',array(
 			'model'=>$model,
 			'media_file_type'=>$media_file_type,
+		));
+	}
+	
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionView($id) 
+	{
+		$model=$this->loadModel($id);
+
+		$this->pageTitle = Yii::t('phrase', 'View Media: {title}', array('{title}'=>$model->article->title));
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_view',array(
+			'model'=>$model,
 		));
 	}
 
@@ -253,7 +268,7 @@ class MediaController extends Controller
 			$this->dialogGroundUrl = $dialogGroundUrl;
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'Delete Media');
+			$this->pageTitle = Yii::t('phrase', 'Delete Media: {title}', array('{title}'=>$model->article->title));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');
@@ -276,6 +291,7 @@ class MediaController extends Controller
 			$title = Yii::t('phrase', 'Publish');
 			$replace = 1;
 		}
+		$pageTitle = Yii::t('phrase', '{title}: {article_title}', array('{title}'=>$title, '{article_title}'=>$model->article->title));
 
 		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
@@ -298,7 +314,7 @@ class MediaController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = $title;
+			$this->pageTitle = $pageTitle;
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_publish',array(
@@ -350,7 +366,7 @@ class MediaController extends Controller
 			$this->dialogGroundUrl = $dialogGroundUrl;
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'Cover Photo');
+			$this->pageTitle = Yii::t('phrase', 'Cover Photo: {title}', array('{title}'=>$model->article->title));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_cover');

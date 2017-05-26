@@ -15,7 +15,7 @@
  */
 
 	$this->breadcrumbs=array(
-		'Digital Covers'=>array('manage'),
+		'Article Medias'=>array('manage'),
 		'Publish',
 	);
 ?>

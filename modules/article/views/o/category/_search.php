@@ -20,33 +20,58 @@
 )); ?>
 	<ul>
 		<li>
-			<?php echo $model->getAttributeLabel('download_id'); ?><br/>
-			<?php echo $form->textField($model,'download_id'); ?>
+			<?php echo $model->getAttributeLabel('cat_id'); ?><br/>
+			<?php echo $form->textField($model,'cat_id'); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('article_id'); ?><br/>
-			<?php echo $form->textField($model,'article_id'); ?>
+			<?php echo $model->getAttributeLabel('publish'); ?><br/>
+			<?php echo $form->textField($model,'publish'); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('user_id'); ?><br/>
-			<?php echo $form->textField($model,'user_id'); ?>
+			<?php echo $model->getAttributeLabel('parent'); ?><br/>
+			<?php echo $form->textField($model,'parent'); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('downloads'); ?><br/>
-			<?php echo $form->textField($model,'downloads'); ?>
+			<?php echo $model->getAttributeLabel('name'); ?><br/>
+			<?php echo $form->textField($model,'name'); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('download_date'); ?><br/>
-			<?php echo $form->textField($model,'download_date'); ?>
+			<?php echo $model->getAttributeLabel('desc'); ?><br/>
+			<?php echo $form->textField($model,'desc'); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('download_ip'); ?><br/>
-			<?php echo $form->textField($model,'download_ip'); ?>
+			<?php echo $model->getAttributeLabel('single_photo'); ?><br/>
+			<?php echo $form->textField($model,'single_photo'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('creation_date'); ?><br/>
+			<?php echo $form->textField($model,'creation_date'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('creation_id'); ?><br/>
+			<?php echo $form->textField($model,'creation_id'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('modified_date'); ?><br/>
+			<?php echo $form->textField($model,'modified_date'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('modified_id'); ?><br/>
+			<?php echo $form->textField($model,'modified_id'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('slug'); ?><br/>
+			<?php echo $form->textField($model,'slug'); ?>
 		</li>
 
 		<li class="submit">

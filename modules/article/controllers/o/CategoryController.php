@@ -124,7 +124,7 @@ class CategoryController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'Article Categories');
+		$this->pageTitle = Yii::t('phrase', 'Categories');
 		$this->pageDescription = Yii::t('phrase', 'You may want to allow your users to categorize their articles by subject, location, etc. Categorized articles make it easier for users to find and attend articles that interest them. If you want to allow article categories, you can create them (along with subcategories) below.');
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
@@ -221,13 +221,33 @@ class CategoryController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 500;
 
-			$this->pageTitle = Yii::t('phrase', 'Update Category').': '.Phrase::trans($model->name);
+			$this->pageTitle = Yii::t('phrase', 'Update Category: {name}', array('{name}'=>Phrase::trans($model->name)));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_edit',array(
 				'model'=>$model,
 			));
 		}
+	}
+	
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionView($id) 
+	{
+		$model=$this->loadModel($id);
+		
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 500;
+
+		$this->pageTitle = Yii::t('phrase', 'View Category: {name}', array('{name}'=>Phrase::trans($model->name)));
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_view',array(
+			'model'=>$model,
+		));
 	}
 
 	/**
@@ -273,11 +293,11 @@ class CategoryController extends Controller
 	 */
 	public function actionDelete($id) 
 	{
+		$model=$this->loadModel($id);
+		
 		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
-			if(isset($id)) {
-				$this->loadModel($id)->delete();
-
+			if($model->delete()) {
 				echo CJSON::encode(array(
 					'type' => 5,
 					'get' => Yii::app()->controller->createUrl('o/setting/index'),
@@ -291,7 +311,7 @@ class CategoryController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'Delete Category');
+			$this->pageTitle = Yii::t('phrase', 'Delete Category: {name}', array('{name}'=>Phrase::trans($model->name)));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');
@@ -313,6 +333,7 @@ class CategoryController extends Controller
 			$title = Yii::t('phrase', 'Publish');
 			$replace = 1;
 		}
+		$pageTitle = Yii::t('phrase', '{title}: {category_name}', array('{title}'=>$title, '{category_name}'=>Phrase::trans($model->name)));
 
 		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
@@ -335,7 +356,7 @@ class CategoryController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = $title;
+			$this->pageTitle = $pageTitle;
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_publish',array(

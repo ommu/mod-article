@@ -16,6 +16,7 @@
 		'Article Tags'=>array('manage'),
 		'Manage',
 	);
+	
 	$this->menu=array(
 		array(
 			'label' => Yii::t('phrase', 'Filter'), 

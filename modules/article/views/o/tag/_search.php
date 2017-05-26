@@ -35,13 +35,13 @@
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('creation_id'); ?><br/>
-			<?php echo $form->textField($model,'creation_id'); ?>
+			<?php echo $model->getAttributeLabel('creation_date'); ?><br/>
+			<?php echo $form->textField($model,'creation_date'); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('modified_date'); ?><br/>
-			<?php echo $form->textField($model,'modified_date'); ?>
+			<?php echo $model->getAttributeLabel('creation_id'); ?><br/>
+			<?php echo $form->textField($model,'creation_id'); ?>
 		</li>
 
 		<li class="submit">
