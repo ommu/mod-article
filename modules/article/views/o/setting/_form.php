@@ -118,6 +118,26 @@ EOP;
 		</div>
 
 		<div class="clearfix">
+			<?php echo $form->labelEx($model,'gridview_column'); ?>
+			<div class="desc">
+				<?php 
+				$customField = array(
+					'creation_search' => $article->getAttributeLabel('creation_search'),
+					'creation_date' => $article->getAttributeLabel('creation_date'),
+					'published_date' => $article->getAttributeLabel('published_date'),
+					'media_search' => $article->getAttributeLabel('media_search'),
+					'view_search' => $article->getAttributeLabel('view_search'),
+					'like_search' => $article->getAttributeLabel('like_search'),
+					'downlaod_search' => $article->getAttributeLabel('downlaod_search'),
+				);
+				if(!$model->getErrors())
+					$model->gridview_column = unserialize($model->gridview_column);
+				echo $form->checkBoxList($model,'gridview_column', $customField); ?>
+				<?php echo $form->error($model,'gridview_column'); ?>
+			</div>
+		</div>
+
+		<div class="clearfix">
 			<?php echo $form->labelEx($model,'headline'); ?>
 			<div class="desc">
 				<?php 

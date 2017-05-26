@@ -132,6 +132,7 @@ class SettingController extends Controller
 		$model = ArticleSetting::model()->findByPk(1);
 		if($model == null)
 			$model=new ArticleSetting;
+		$article=new Articles;
 
 		// Uncomment the following line if AJAX validation is needed
 		$this->performAjaxValidation($model);
@@ -174,6 +175,7 @@ class SettingController extends Controller
 		$this->pageMeta = '';
 		$this->render('admin_edit',array(
 			'model'=>$model,
+			'article'=>$article,
 			'category' => $category,
 			'columns' => $columns,
 		));

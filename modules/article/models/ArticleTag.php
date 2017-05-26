@@ -37,6 +37,7 @@ class ArticleTag extends CActiveRecord
 	public $tag_input;
 	
 	// Variable Search
+	public $category_search;
 	public $article_search;
 	public $tag_search;
 	public $creation_search;
@@ -74,7 +75,7 @@ class ArticleTag extends CActiveRecord
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, article_id, tag_id, creation_date,
-				article_search, tag_search, creation_search', 'safe', 'on'=>'search'),
+				category_search, article_search, tag_search, creation_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -101,9 +102,11 @@ class ArticleTag extends CActiveRecord
 			'id' => Yii::t('attribute', 'Tags'),
 			'article_id' => Yii::t('attribute', 'Article'),
 			'tag_id' => Yii::t('attribute', 'Tags'),
+			'creation_date' => Yii::t('attribute', 'Creation Date'),
+			'creation_id' => Yii::t('attribute', 'Creation'),
+			'category_search' => Yii::t('attribute', 'Category'),
 			'article_search' => Yii::t('attribute', 'Article'),
 			'tag_search' => Yii::t('attribute', 'Tags'),
-			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 		);
 	}
@@ -123,7 +126,7 @@ class ArticleTag extends CActiveRecord
 		$criteria->with = array(
 			'article' => array(
 				'alias'=>'article',
-				'select'=>'title'
+				'select'=>'cat_id, title'
 			),
 			'tag' => array(
 				'alias'=>'tag',
@@ -145,8 +148,10 @@ class ArticleTag extends CActiveRecord
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		$criteria->compare('t.creation_id',$this->creation_id);
 		
+		$criteria->compare('article.cat_id',$this->category_search);
 		$criteria->compare('article.title',strtolower($this->article_search), true);
-		$criteria->compare('tag.body',Utility::getUrlTitle(strtolower(trim($this->tag_search))), true);
+		$tag_search = Utility::getUrlTitle(strtolower(trim($this->tag_search)));
+		$criteria->compare('tag.body',$tag_search, true);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
 
 		if(!isset($_GET['ArticleTag_sort']))
@@ -198,6 +203,12 @@ class ArticleTag extends CActiveRecord
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
 			if(!isset($_GET['article'])) {
+				$this->defaultColumns[] = array(
+					'name' => 'category_search',
+					'value' => 'Phrase::trans($data->article->cat->name)',
+					'filter'=> ArticleCategory::getCategory(),
+					'type' => 'raw',
+				);
 				$this->defaultColumns[] = array(
 					'name' => 'article_search',
 					'value' => '$data->article->title',

@@ -43,8 +43,9 @@ class ArticleMedia extends CActiveRecord
 	public $old_media_input;
 	
 	// Variable Search
-	public $type_search;
+	public $category_search;
 	public $article_search;
+	public $type_search;
 	public $creation_search;
 	public $modified_search;
 	
@@ -84,7 +85,7 @@ class ArticleMedia extends CActiveRecord
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('media_id, publish, cover, article_id, media, caption, creation_date, creation_id, modified_date, modified_id,
-				article_search, creation_search, modified_search, type_search', 'safe', 'on'=>'search'),
+				category_search, article_search, type_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -120,8 +121,9 @@ class ArticleMedia extends CActiveRecord
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'old_media_input' => Yii::t('attribute', 'Old Media'),
 			'video_input' => Yii::t('attribute', 'Video'),
-			'type_search' => Yii::t('attribute', 'Article Type'),
+			'category_search' => Yii::t('attribute', 'Category'),
 			'article_search' => Yii::t('attribute', 'Article'),
+			'type_search' => Yii::t('attribute', 'Article Type'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
 		);
@@ -142,7 +144,7 @@ class ArticleMedia extends CActiveRecord
 		$criteria->with = array(
 			'article' => array(
 				'alias'=>'article',
-				'select'=>'publish, article_type, title',
+				'select'=>'publish, cat_id, article_type, title',
 			),
 			'creation' => array(
 				'alias'=>'creation',
@@ -166,11 +168,10 @@ class ArticleMedia extends CActiveRecord
 			$criteria->compare('t.publish',$this->publish);
 		}
 		$criteria->compare('t.cover',$this->cover);
-		if(isset($_GET['article'])) {
+		if(isset($_GET['article']))
 			$criteria->compare('t.article_id',$_GET['article']);
-		} else {
+		else
 			$criteria->compare('t.article_id',$this->article_id);
-		}
 		$criteria->compare('t.media',strtolower($this->media),true);
 		$criteria->compare('t.caption',strtolower($this->caption),true);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
@@ -180,10 +181,11 @@ class ArticleMedia extends CActiveRecord
 			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
 		$criteria->compare('t.modified_id',$this->modified_id);
 		
-		$criteria->compare('article.article_type',strtolower($this->type_search), true);
+		$criteria->compare('article.cat_id',$this->category_search);
 		$criteria->compare('article.title',strtolower($this->article_search), true);
 		if(isset($_GET['article']) && isset($_GET['publish']))
 			$criteria->compare('article.publish',$_GET['publish']);
+		$criteria->compare('article.article_type',strtolower($this->type_search));
 		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
 		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
 
@@ -242,6 +244,12 @@ class ArticleMedia extends CActiveRecord
 			);
 			if(!isset($_GET['article'])) {
 				$this->defaultColumns[] = array(
+					'name' => 'category_search',
+					'value' => 'Phrase::trans($data->article->cat->name)',
+					'filter'=> ArticleCategory::getCategory(),
+					'type' => 'raw',
+				);
+				$this->defaultColumns[] = array(
 					'name' => 'article_search',
 					'value' => '$data->article->title',
 				);
@@ -263,6 +271,7 @@ class ArticleMedia extends CActiveRecord
 				'value' => '$data->article->article_type == \'video\' ? CHtml::link("http://www.youtube.com/watch?v=".$data->media, "http://www.youtube.com/watch?v=".$data->media, array(\'target\' => \'_blank\')) : CHtml::link($data->media, Yii::app()->request->baseUrl.\'/public/article/\'.$data->article_id.\'/\'.$data->media, array(\'target\' => \'_blank\'))',
 				'type' => 'raw',
 			);
+			/*
 			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
 				'value' => '$data->creation->displayname',
@@ -293,6 +302,7 @@ class ArticleMedia extends CActiveRecord
 					),
 				), true),
 			);
+			*/
 			$this->defaultColumns[] = array(
 				'name' => 'caption',
 				'value' => '$data->caption != \'\' ? Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Chtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',

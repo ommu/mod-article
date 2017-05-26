@@ -122,11 +122,11 @@ class ViewArticleCategory extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.cat_id',$this->cat_id);
-		$criteria->compare('t.articles',strtolower($this->articles),true);
-		$criteria->compare('t.article_pending',strtolower($this->article_pending),true);
-		$criteria->compare('t.article_unpublish',strtolower($this->article_unpublish),true);
-		$criteria->compare('t.article_all',strtolower($this->article_all),true);
-		$criteria->compare('t.article_id',strtolower($this->article_id),true);
+		$criteria->compare('t.articles',$this->articles);
+		$criteria->compare('t.article_pending',$this->article_pending);
+		$criteria->compare('t.article_unpublish',$this->article_unpublish);
+		$criteria->compare('t.article_all',$this->article_all);
+		$criteria->compare('t.article_id',$this->article_id);
 
 		if(!isset($_GET['ViewArticleCategory_sort']))
 			$criteria->order = 't.cat_id DESC';
