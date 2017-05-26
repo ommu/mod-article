@@ -36,7 +36,9 @@ class ArticleViewDetail extends CActiveRecord
 	public $defaultColumns = array();
 	
 	// Variable Search
+	public $category_search;
 	public $article_search;
+	public $user_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -72,7 +74,7 @@ class ArticleViewDetail extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, view_id, view_date, view_ip,
-				article_search', 'safe', 'on'=>'search'),
+				category_search, article_search, user_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -98,7 +100,9 @@ class ArticleViewDetail extends CActiveRecord
 			'view_id' => Yii::t('attribute', 'View'),
 			'view_date' => Yii::t('attribute', 'View Date'),
 			'view_ip' => Yii::t('attribute', 'View Ip'),
+			'category_search' => Yii::t('attribute', 'Category'),
 			'article_search' => Yii::t('attribute', 'Article'),
+			'user_search' => Yii::t('attribute', 'User'),
 		);
 		/*
 			'ID' => 'ID',
@@ -131,14 +135,19 @@ class ArticleViewDetail extends CActiveRecord
 		$criteria->with = array(
 			'view' => array(
 				'alias'=>'view',
+				'select'=>'article_id, user_id'
 			),
 			'view.article' => array(
-				'alias'=>'article',
-				'select'=>'title'
+				'alias'=>'view_article',
+				'select'=>'cat_id, title'
+			),
+			'view.user' => array(
+				'alias'=>'view_user',
+				'select'=>'displayname'
 			),
 		);
 
-		$criteria->compare('t.id',strtolower($this->id),true);
+		$criteria->compare('t.id',$this->id);
 		if(isset($_GET['view']))
 			$criteria->compare('t.view_id',$_GET['view']);
 		else
@@ -147,7 +156,9 @@ class ArticleViewDetail extends CActiveRecord
 			$criteria->compare('date(t.view_date)',date('Y-m-d', strtotime($this->view_date)));
 		$criteria->compare('t.view_ip',strtolower($this->view_ip),true);
 
-		$criteria->compare('article.title',strtolower($this->article_search), true);
+		$criteria->compare('view_article.cat_id',$this->category_search);
+		$criteria->compare('view_article.title',strtolower($this->article_search), true);
+		$criteria->compare('view_user.displayname',strtolower($this->user_search), true);
 
 		if(!isset($_GET['ArticleViewDetail_sort']))
 			$criteria->order = 't.id DESC';
@@ -206,9 +217,19 @@ class ArticleViewDetail extends CActiveRecord
 			);
 			if(!isset($_GET['view'])) {
 				$this->defaultColumns[] = array(
+					'name' => 'category_search',
+					'value' => 'Phrase::trans($data->view->article->cat->name)',
+					'filter'=> ArticleCategory::getCategory(),
+					'type' => 'raw',
+				);
+				$this->defaultColumns[] = array(
 					'name' => 'article_search',
 					'value' => '$data->view->article->title',
 				);
+				$this->defaultColumns[] = array(
+					'name' => 'user_search',
+					'value' => '$data->view->user->displayname ? $data->view->user->displayname : \'-\'',
+				);	
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'view_date',

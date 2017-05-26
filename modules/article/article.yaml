@@ -16,7 +16,7 @@ plugin_menu		:
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
 
 	- urlTitle: Datas
-		urlRules: {siteType: "0,1", userLevel: 1}
+		urlRules: {siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: -, attr: -, icon: -}
 		submenu :
 			- urlTitle: Categories
@@ -50,11 +50,44 @@ content_menu	:
 	- urlTitle: Back to Manage
 		urlRules: {article, o/admin, "add,edit", siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: manage, attr: -, icon: -}
+	- urlTitle: Download Manual Book
+		urlRules: {article, o/admin, manage, siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: o/setting/manual, attr: -, icon: -}
 		
 # controller o/category
 	- urlTitle: Add Category
 		urlRules: {article, o/category, manage, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: add, attr: -, icon: -}
+
+# controller o/views
+	- urlTitle: Back to Article Manage
+		urlRules: {article, o/views, manage, siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: o/admin/manage, attr: -, icon: -}
+
+# controller o/viewdetail
+	- urlTitle: Back to View Manage
+		urlRules: {article, o/viewdetail, manage, siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: o/views/manage, attr: -, icon: -}
+		
+# controller o/download
+	- urlTitle: Back to Article
+		urlRules: {article, o/download, manage, siteType: 1, userLevel: "1,2"}
+		urlPath: {url: o/admin/manage, attr: -, icon: -}
+
+# controller o/downloaddetail
+	- urlTitle: Back to Downlaod Manage
+		urlRules: {article, o/downloaddetail, manage, siteType: 1, userLevel: "1,2"}
+		urlPath: {url: o/download/manage, attr: -, icon: -}
+		
+# controller o/like
+	- urlTitle: Back to Article
+		urlRules: {article, o/like, manage, siteType: 1, userLevel: "1,2"}
+		urlPath: {url: o/admin/manage, attr: -, icon: -}
+
+# controller o/likedetail
+	- urlTitle: Back to Like Manage
+		urlRules: {article, o/likedetail, manage, siteType: 1, userLevel: "1,2"}
+		urlPath: {url: o/like/manage, attr: -, icon: -}
 		
 # controller o/media
 	- urlTitle: Back to Article
@@ -63,16 +96,6 @@ content_menu	:
 	- urlTitle: Back to manage
 		urlRules: {article, o/media, edit, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: manage, attr: -, icon: -}
-		
-# controller o/download
-	- urlTitle: Back to Article
-		urlRules: {article, o/download, manage, siteType: 1, userLevel: "1,2"}
-		urlPath: {url: o/admin/manage, attr: -, icon: -}
-		
-# controller o/like
-	- urlTitle: Back to Article
-		urlRules: {article, o/like, manage, siteType: 1, userLevel: "1,2"}
-		urlPath: {url: o/admin/manage, attr: -, icon: -}
 		
 # controller o/tag
 	- urlTitle: Back to Article

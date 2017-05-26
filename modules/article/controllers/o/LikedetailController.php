@@ -103,8 +103,14 @@ class LikedetailController extends Controller
 	/**
 	 * Manages all models.
 	 */
-	public function actionManage() 
+	public function actionManage($like=null) 
 	{
+		$pageTitle = Yii::t('phrase', 'Data Article Likes');
+		if($like != null) {
+			$data = ArticleLikes::model()->findByPk($like);
+			$pageTitle = Yii::t('phrase', 'Data Article Likes: {data}', array ('{data}'=>$data->article->title.' ('.Phrase::trans($data->article->cat->name).')'));
+		}
+		
 		$model=new ArticleLikeDetail('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['ArticleLikeDetail'])) {
@@ -121,7 +127,7 @@ class LikedetailController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'Article Like Details Manage');
+		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('/o/like_detail/admin_manage',array(

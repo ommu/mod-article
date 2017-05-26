@@ -103,8 +103,14 @@ class DownloaddetailController extends Controller
 	/**
 	 * Manages all models.
 	 */
-	public function actionManage() 
+	public function actionManage($download=null) 
 	{
+		$pageTitle = Yii::t('phrase', 'Data Article Downloads');
+		if($download != null) {
+			$data = ArticleDownloads::model()->findByPk($download);
+			$pageTitle = Yii::t('phrase', 'Data Article Downloads: {data}', array ('{data}'=>$data->article->title.' ('.Phrase::trans($data->article->cat->name).')'));
+		}
+		
 		$model=new ArticleDownloadDetail('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['ArticleDownloadDetail'])) {
@@ -121,7 +127,7 @@ class DownloaddetailController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'Article Download Details Manage');
+		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('/o/download_detail/admin_manage',array(

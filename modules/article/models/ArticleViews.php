@@ -37,6 +37,7 @@ class ArticleViews extends CActiveRecord
 	public $defaultColumns = array();
 	
 	// Variable Search
+	public $category_search;
 	public $article_search;
 	public $user_search;
 
@@ -75,7 +76,7 @@ class ArticleViews extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('view_id, publish, article_id, user_id, views, view_date, view_ip, deleted_date,
-				article_search, user_search', 'safe', 'on'=>'search'),
+				category_search, article_search, user_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -106,6 +107,7 @@ class ArticleViews extends CActiveRecord
 			'view_date' => Yii::t('attribute', 'View Date'),
 			'view_ip' => Yii::t('attribute', 'View Ip'),
 			'deleted_date' => Yii::t('attribute', 'Deleted Date'),
+			'category_search' => Yii::t('attribute', 'Category'),
 			'article_search' => Yii::t('attribute', 'Article'),
 			'user_search' => Yii::t('attribute', 'User'),
 		);
@@ -144,7 +146,7 @@ class ArticleViews extends CActiveRecord
 		$criteria->with = array(
 			'article' => array(
 				'alias'=>'article',
-				'select'=>'publish, title'
+				'select'=>'publish, cat_id, title'
 			),
 			'user' => array(
 				'alias'=>'user',
@@ -152,7 +154,7 @@ class ArticleViews extends CActiveRecord
 			),
 		);
 
-		$criteria->compare('t.view_id',strtolower($this->view_id),true);
+		$criteria->compare('t.view_id',$this->view_id);
 		if(isset($_GET['type']) && $_GET['type'] == 'publish')
 			$criteria->compare('t.publish',1);
 		elseif(isset($_GET['type']) && $_GET['type'] == 'unpublish')
@@ -178,6 +180,7 @@ class ArticleViews extends CActiveRecord
 		if($this->deleted_date != null && !in_array($this->deleted_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.deleted_date)',date('Y-m-d', strtotime($this->deleted_date)));
 		
+		$criteria->compare('article.cat_id',$this->category_search);
 		$criteria->compare('article.title',strtolower($this->article_search), true);
 		if(isset($_GET['article']) && isset($_GET['publish']))
 			$criteria->compare('article.publish',$_GET['publish']);
@@ -244,6 +247,12 @@ class ArticleViews extends CActiveRecord
 			);
 			if(!isset($_GET['article'])) {
 				$this->defaultColumns[] = array(
+					'name' => 'category_search',
+					'value' => 'Phrase::trans($data->article->cat->name)',
+					'filter'=> ArticleCategory::getCategory(),
+					'type' => 'raw',
+				);
+				$this->defaultColumns[] = array(
 					'name' => 'article_search',
 					'value' => '$data->article->title',
 				);
@@ -295,6 +304,7 @@ class ArticleViews extends CActiveRecord
 					'class' => 'center',
 				),
 			);
+			/*
 			$this->defaultColumns[] = array(
 				'name' => 'deleted_date',
 				'value' => 'Utility::dateFormat($data->deleted_date)',
@@ -321,6 +331,7 @@ class ArticleViews extends CActiveRecord
 					),
 				), true),
 			);
+			*/
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',

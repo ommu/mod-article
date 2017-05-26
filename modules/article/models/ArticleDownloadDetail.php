@@ -36,7 +36,9 @@ class ArticleDownloadDetail extends CActiveRecord
 	public $defaultColumns = array();
 	
 	// Variable Search
+	public $category_search;
 	public $article_search;
+	public $user_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -72,7 +74,7 @@ class ArticleDownloadDetail extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, download_id, download_date, download_ip,
-				article_search', 'safe', 'on'=>'search'),
+				category_search, article_search, user_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -98,7 +100,9 @@ class ArticleDownloadDetail extends CActiveRecord
 			'download_id' => Yii::t('attribute', 'Download'),
 			'download_date' => Yii::t('attribute', 'Download Date'),
 			'download_ip' => Yii::t('attribute', 'Download Ip'),
+			'category_search' => Yii::t('attribute', 'Category'),
 			'article_search' => Yii::t('attribute', 'Article'),
+			'user_search' => Yii::t('attribute', 'User'),
 		);
 		/*
 			'ID' => 'ID',
@@ -131,14 +135,19 @@ class ArticleDownloadDetail extends CActiveRecord
 		$criteria->with = array(
 			'download' => array(
 				'alias'=>'download',
+				'select'=>'article_id, user_id'
 			),
 			'download.article' => array(
-				'alias'=>'article',
-				'select'=>'title'
+				'alias'=>'download_article',
+				'select'=>'cat_id, title'
+			),
+			'download.user' => array(
+				'alias'=>'download_user',
+				'select'=>'displayname'
 			),
 		);
 
-		$criteria->compare('t.id',strtolower($this->id),true);
+		$criteria->compare('t.id',$this->id);
 		if(isset($_GET['download']))
 			$criteria->compare('t.download_id',$_GET['download']);
 		else
@@ -147,7 +156,9 @@ class ArticleDownloadDetail extends CActiveRecord
 			$criteria->compare('date(t.download_date)',date('Y-m-d', strtotime($this->download_date)));
 		$criteria->compare('t.download_ip',strtolower($this->download_ip),true);
 
-		$criteria->compare('article.title',strtolower($this->article_search), true);
+		$criteria->compare('download_article.cat_id',$this->category_search);
+		$criteria->compare('download_article.title',strtolower($this->article_search), true);
+		$criteria->compare('download_user.displayname',strtolower($this->user_search), true);
 
 		if(!isset($_GET['ArticleDownloadDetail_sort']))
 			$criteria->order = 't.id DESC';
@@ -198,9 +209,19 @@ class ArticleDownloadDetail extends CActiveRecord
 			);
 			if(!isset($_GET['download'])) {
 				$this->defaultColumns[] = array(
+					'name' => 'category_search',
+					'value' => 'Phrase::trans($data->download->article->cat->name)',
+					'filter'=> ArticleCategory::getCategory(),
+					'type' => 'raw',
+				);
+				$this->defaultColumns[] = array(
 					'name' => 'article_search',
 					'value' => '$data->download->article->title',
 				);
+				$this->defaultColumns[] = array(
+					'name' => 'user_search',
+					'value' => '$data->download->user->displayname ? $data->download->user->displayname : \'-\'',
+				);	
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'download_date',

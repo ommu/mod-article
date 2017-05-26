@@ -37,7 +37,9 @@ class ArticleLikeDetail extends CActiveRecord
 	public $defaultColumns = array();
 	
 	// Variable Search
+	public $category_search;
 	public $article_search;
+	public $user_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -74,7 +76,7 @@ class ArticleLikeDetail extends CActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, publish, like_id, likes_date, likes_ip,
-				article_search', 'safe', 'on'=>'search'),
+				category_search, article_search, user_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -101,7 +103,9 @@ class ArticleLikeDetail extends CActiveRecord
 			'like_id' => Yii::t('attribute', 'Like'),
 			'likes_date' => Yii::t('attribute', 'Likes Date'),
 			'likes_ip' => Yii::t('attribute', 'Likes Ip'),
+			'category_search' => Yii::t('attribute', 'Category'),
 			'article_search' => Yii::t('attribute', 'Article'),
+			'user_search' => Yii::t('attribute', 'User'),
 		);
 		/*
 			'ID' => 'ID',
@@ -135,14 +139,19 @@ class ArticleLikeDetail extends CActiveRecord
 		$criteria->with = array(
 			'like' => array(
 				'alias'=>'like',
+				'select'=>'article_id, user_id'
 			),
 			'like.article' => array(
-				'alias'=>'article',
-				'select'=>'title'
+				'alias'=>'like_article',
+				'select'=>'cat_id, title'
+			),
+			'like.user' => array(
+				'alias'=>'like_user',
+				'select'=>'displayname'
 			),
 		);
 
-		$criteria->compare('t.id',strtolower($this->id),true);
+		$criteria->compare('t.id',$this->id);
 		if(isset($_GET['type']) && $_GET['type'] == 'publish')
 			$criteria->compare('t.publish',1);
 		elseif(isset($_GET['type']) && $_GET['type'] == 'unpublish')
@@ -161,7 +170,9 @@ class ArticleLikeDetail extends CActiveRecord
 			$criteria->compare('date(t.likes_date)',date('Y-m-d', strtotime($this->likes_date)));
 		$criteria->compare('t.likes_ip',strtolower($this->likes_ip),true);
 
-		$criteria->compare('article.title',strtolower($this->article_search), true);
+		$criteria->compare('like_article.cat_id',$this->category_search);
+		$criteria->compare('like_article.title',strtolower($this->article_search), true);
+		$criteria->compare('like_user.displayname',strtolower($this->user_search), true);
 
 		if(!isset($_GET['ArticleLikeDetail_sort']))
 			$criteria->order = 't.id DESC';
@@ -213,9 +224,19 @@ class ArticleLikeDetail extends CActiveRecord
 			);
 			if(!isset($_GET['like'])) {
 				$this->defaultColumns[] = array(
+					'name' => 'category_search',
+					'value' => 'Phrase::trans($data->like->article->cat->name)',
+					'filter'=> ArticleCategory::getCategory(),
+					'type' => 'raw',
+				);
+				$this->defaultColumns[] = array(
 					'name' => 'article_search',
 					'value' => '$data->like->article->title',
-				);				
+				);
+				$this->defaultColumns[] = array(
+					'name' => 'user_search',
+					'value' => '$data->like->user->displayname ? $data->like->user->displayname : \'-\'',
+				);	
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'likes_date',

@@ -105,8 +105,14 @@ class LikeController extends Controller
 	/**
 	 * Manages all models.
 	 */
-	public function actionManage() 
+	public function actionManage($article=null) 
 	{
+		$pageTitle = Yii::t('phrase', 'Article Likes');
+		if($article != null) {
+			$data = Articles::model()->findByPk($article);
+			$pageTitle = Yii::t('phrase', 'Article Likes: {data}', array ('{data}'=>$data->title));
+		}
+		
 		$model=new ArticleLikes('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['ArticleLikes'])) {
@@ -122,15 +128,8 @@ class LikeController extends Controller
 			}
 		}
 		$columns = $model->getGridColumn($columnTemp);
-		
-		if(isset($_GET['article'])) {
-			$article = Articles::model()->findByPk($_GET['article']);
-			$title = ': '.$article->title.' '.Yii::t('phrase', 'by').' '.$article->user->displayname;
-		} else {
-			$title = '';
-		}
 
-		$this->pageTitle = Yii::t('phrase', 'Article Likes Manage').$title;
+		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage',array(
@@ -200,7 +199,7 @@ class LikeController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'Delete Likes');
+			$this->pageTitle = Yii::t('phrase', 'Delete Likes: {title}', array('{title}'=>$model->article->title));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');
@@ -223,6 +222,7 @@ class LikeController extends Controller
 			$title = Yii::t('phrase', 'Publish');
 			$replace = 1;
 		}
+		$pageTitle = Yii::t('phrase', '{title}: {article_title}', array('{title}'=>$title, '{article_title}'=>$model->article->title));
 
 		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
@@ -245,7 +245,7 @@ class LikeController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = $title;
+			$this->pageTitle = $pageTitle;
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_publish',array(

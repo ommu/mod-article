@@ -103,8 +103,14 @@ class ViewdetailController extends Controller
 	/**
 	 * Manages all models.
 	 */
-	public function actionManage() 
+	public function actionManage($view=null) 
 	{
+		$pageTitle = Yii::t('phrase', 'Data Article Views');
+		if($view != null) {
+			$data = ArticleViews::model()->findByPk($view);
+			$pageTitle = Yii::t('phrase', 'Data Article Views: {data}', array ('{data}'=>$data->article->title.' ('.Phrase::trans($data->article->cat->name).')'));
+		}
+		
 		$model=new ArticleViewDetail('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['ArticleViewDetail'])) {
@@ -121,7 +127,7 @@ class ViewdetailController extends Controller
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'Article View Details Manage');
+		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('/o/view_detail/admin_manage',array(
