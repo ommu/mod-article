@@ -111,7 +111,7 @@ class MediaController extends Controller
 		$pageTitle = Yii::t('phrase', 'Article Media');
 		if($article != null) {
 			$data = Articles::model()->findByPk($article);
-			$pageTitle = Yii::t('phrase', 'Article Media: {data}', array ('{data}'=>$data->title));
+			$pageTitle = Yii::t('phrase', 'Article Media: {article_title}', array ('{article_title}'=>$data->title));
 		}
 		
 		$model=new ArticleMedia('search');

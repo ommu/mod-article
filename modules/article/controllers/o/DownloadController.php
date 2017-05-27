@@ -109,7 +109,7 @@ class DownloadController extends Controller
 		$pageTitle = Yii::t('phrase', 'Article Downloads');
 		if($article != null) {
 			$data = Articles::model()->findByPk($article);
-			$pageTitle = Yii::t('phrase', 'Article Downloads: {data}', array ('{data}'=>$data->title));
+			$pageTitle = Yii::t('phrase', 'Article Downloads: {article_title}', array ('{article_title}'=>$data->title));
 		}
 		
 		$model=new ArticleDownloads('search');

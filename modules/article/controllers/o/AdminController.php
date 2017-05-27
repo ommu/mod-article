@@ -114,7 +114,7 @@ class AdminController extends Controller
 		$pageTitle = Yii::t('phrase', 'Articles');
 		if($category != null) {
 			$data = ArticleCategory::model()->findByPk($category);
-			$pageTitle = Yii::t('phrase', 'Articles: {data}', array ('{data}'=>Phrase::trans($data->name)));
+			$pageTitle = Yii::t('phrase', 'Articles: Category {category_name}', array ('{category_name}'=>Phrase::trans($data->name)));
 		}
 		
 		$model=new Articles('search');

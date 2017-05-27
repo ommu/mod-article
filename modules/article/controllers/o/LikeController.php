@@ -110,7 +110,7 @@ class LikeController extends Controller
 		$pageTitle = Yii::t('phrase', 'Article Likes');
 		if($article != null) {
 			$data = Articles::model()->findByPk($article);
-			$pageTitle = Yii::t('phrase', 'Article Likes: {data}', array ('{data}'=>$data->title));
+			$pageTitle = Yii::t('phrase', 'Article Likes: {article_title}', array ('{article_title}'=>$data->title));
 		}
 		
 		$model=new ArticleLikes('search');

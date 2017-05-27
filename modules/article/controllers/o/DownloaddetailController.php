@@ -108,7 +108,9 @@ class DownloaddetailController extends Controller
 		$pageTitle = Yii::t('phrase', 'Data Article Downloads');
 		if($download != null) {
 			$data = ArticleDownloads::model()->findByPk($download);
-			$pageTitle = Yii::t('phrase', 'Data Article Downloads: {data}', array ('{data}'=>$data->article->title.' ('.Phrase::trans($data->article->cat->name).')'));
+			$pageTitle = Yii::t('phrase', 'Article Downloads Data: {article_title} ({category_name}) - Guest', array ('{article_title}'=>$data->article->title, '{category_name}'=>Phrase::trans($data->article->cat->name)));	
+			if($data->user->displayname)
+				$pageTitle = Yii::t('phrase', 'Article Downloads Data: {article_title} ({category_name}) - {user_displayname}', array ('{article_title}'=>$data->article->title, '{category_name}'=>Phrase::trans($data->article->cat->name), '{user_displayname}'=>$data->user->displayname));
 		}
 		
 		$model=new ArticleDownloadDetail('search');

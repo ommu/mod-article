@@ -109,7 +109,7 @@ class TagController extends Controller
 		$pageTitle = Yii::t('phrase', 'Article Tags');
 		if($article != null) {
 			$data = Articles::model()->findByPk($article);
-			$pageTitle = Yii::t('phrase', 'Article Tag: {data}', array ('{data}'=>$data->title));
+			$pageTitle = Yii::t('phrase', 'Article Tag: {article_title}', array ('{article_title}'=>$data->title));
 		}
 		
 		$model=new ArticleTag('search');
