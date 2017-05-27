@@ -111,7 +111,7 @@ class ViewsController extends Controller
 		$pageTitle = Yii::t('phrase', 'Article Views');
 		if($article != null) {
 			$data = Articles::model()->findByPk($article);
-			$pageTitle = Yii::t('phrase', 'Article Views: {data}', array ('{data}'=>$data->title));
+			$pageTitle = Yii::t('phrase', 'Article Views: {article_title}', array ('{article_title}'=>$data->title));
 		}
 		
 		$model=new ArticleViews('search');

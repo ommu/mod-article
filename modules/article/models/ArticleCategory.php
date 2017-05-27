@@ -150,6 +150,8 @@ class ArticleCategory extends CActiveRecord
 	{
 		// Warning: Please modify the following code to remove attributes that
 		// should not be searched.
+		
+		$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
 
 		$criteria=new CDbCriteria;
 		
@@ -214,6 +216,9 @@ class ArticleCategory extends CActiveRecord
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+			'pagination'=>array(
+				'pageSize'=>$currentAction != 'o/setting/edit' ? 30 : 5,
+			),
 		));
 	}
 
