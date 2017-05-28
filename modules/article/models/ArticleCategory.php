@@ -276,10 +276,12 @@ class ArticleCategory extends CActiveRecord
 				'name' => 'title_i',
 				'value' => 'Phrase::trans($data->name)',
 			);
+			/*
 			$this->defaultColumns[] = array(
 				'name' => 'description_i',
 				'value' => 'Phrase::trans($data->desc)',
 			);
+			*/
 			$this->defaultColumns[] = array(
 				'name' => 'parent',
 				'value' => '$data->parent != 0 ? Phrase::trans(ArticleCategory::model()->findByPk($data->parent)->name) : "-"',

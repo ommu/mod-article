@@ -132,13 +132,6 @@ class AdminController extends Controller
 			}
 		}
 		$columns = $model->getGridColumn($columnTemp);
-		
-		if(isset($_GET['category'])) {
-			$category = ArticleCategory::model()->findByPk($_GET['category']);
-			$title = ': '.Phrase::trans($category->name);
-		} else {
-			$title = '';
-		}
 
 		$this->pageTitle = $pageTitle;
 		$this->pageDescription = Yii::t('phrase', 'Use this page to search for and manage article entries. To Approve or Feature an article, just click on the icon, it will automate turn on and off per that setting. To edit, delete, or manage an article, please login as that user, and perform your actions.');
@@ -329,7 +322,7 @@ class AdminController extends Controller
 					'get' => Yii::app()->controller->createUrl('manage'),
 					'id' => 'partial-articles',
 					'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article success deleted.').'</strong></div>',
-				));					
+				));
 			}
 
 		} else {
