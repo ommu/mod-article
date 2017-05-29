@@ -60,7 +60,8 @@ class Articles extends CActiveRecord
 	public $media_search;
 	public $view_search;
 	public $like_search;
-	public $downlaod_search;	
+	public $downlaod_search;
+	public $tag_search;
 
 	/**
 	 * Behaviors for this model
@@ -120,7 +121,7 @@ class Articles extends CActiveRecord
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('article_id, publish, cat_id, article_type, title, body, quote, media_file, published_date, headline, comment_code, creation_date, creation_id, modified_date, modified_id, headline_date,
-				creation_search, modified_search, media_search, view_search, like_search, downlaod_search', 'safe', 'on'=>'search'),
+				creation_search, modified_search, media_search, view_search, like_search, downlaod_search, tag_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -175,6 +176,7 @@ class Articles extends CActiveRecord
 			'view_search' => Yii::t('attribute', 'Views'),
 			'like_search' => Yii::t('attribute', 'Likes'),
 			'downlaod_search' => Yii::t('attribute', 'Downloads'),
+			'tag_search' => Yii::t('attribute', 'Tags'),
 		);
 	}
 	
@@ -264,6 +266,7 @@ class Articles extends CActiveRecord
 		$criteria->compare('view.views',$this->view_search);
 		$criteria->compare('view.likes',$this->like_search);
 		$criteria->compare('view.downloads',$this->downlaod_search);
+		$criteria->compare('view.tags',$this->tag_search);
 
 		if(!isset($_GET['Articles_sort']))
 			$criteria->order = 't.article_id DESC';
@@ -453,6 +456,16 @@ class Articles extends CActiveRecord
 				$this->defaultColumns[] = array(
 					'name' => 'downlaod_search',
 					'value' => 'CHtml::link($data->view->downloads ? $data->view->downloads : 0, Yii::app()->controller->createUrl("o/download/manage",array(\'article\'=>$data->article_id)))',
+					'htmlOptions' => array(
+						'class' => 'center',
+					),
+					'type' => 'raw',
+				);
+			}
+			if(in_array('tag_search', $gridview_column)) {
+				$this->defaultColumns[] = array(
+					'name' => 'tag_search',
+					'value' => 'CHtml::link($data->view->tags ? $data->view->tags : 0, Yii::app()->controller->createUrl("o/tag/manage",array(\'article\'=>$data->article_id)))',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),

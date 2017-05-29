@@ -129,6 +129,7 @@ EOP;
 					'view_search' => $article->getAttributeLabel('view_search'),
 					'like_search' => $article->getAttributeLabel('like_search'),
 					'downlaod_search' => $article->getAttributeLabel('downlaod_search'),
+					'tag_search' => $article->getAttributeLabel('tag_search'),
 				);
 				if(!$model->getErrors())
 					$model->gridview_column = unserialize($model->gridview_column);
