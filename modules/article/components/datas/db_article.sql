@@ -1,6 +1,6 @@
 /*
 SQLyog Ultimate v12.09 (64 bit)
-MySQL - 10.1.16-MariaDB : Database - ommu_db_articles
+MySQL - 10.1.16-MariaDB : Database - ommu_db_article
 *********************************************************************
 */
 
@@ -12,9 +12,9 @@ MySQL - 10.1.16-MariaDB : Database - ommu_db_articles
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`ommu_db_articles` /*!40100 DEFAULT CHARACTER SET utf8 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`ommu_db_article` /*!40100 DEFAULT CHARACTER SET utf8 */;
 
-USE `ommu_db_articles`;
+USE `ommu_db_article`;
 
 /*Table structure for table `ommu_article_category` */
 
@@ -128,6 +128,7 @@ CREATE TABLE `ommu_article_setting` (
   `meta_keyword` text NOT NULL,
   `meta_description` text NOT NULL,
   `type_active` text NOT NULL,
+  `gridview_column` text NOT NULL,
   `headline` tinyint(1) NOT NULL COMMENT '1=enable, 0=disable',
   `headline_limit` smallint(3) NOT NULL,
   `headline_category` text NOT NULL,
