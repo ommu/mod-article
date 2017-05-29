@@ -93,6 +93,14 @@
 			</div>
 		</div>
 
+		<div class="clearfix">
+			<?php echo $form->labelEx($model,'publish'); ?>
+			<div class="desc">
+				<?php echo $form->checkBox($model,'publish'); ?>
+				<?php echo $form->error($model,'publish'); ?>
+			</div>
+		</div>
+
 		<div class="submit clearfix">
 			<label>&nbsp;</label>
 			<div class="desc">
