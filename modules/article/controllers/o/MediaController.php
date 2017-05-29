@@ -11,6 +11,7 @@
  *	Index
  *	Manage
  *	Edit
+ *	View
  *	RunAction
  *	Delete
  *	Publish
@@ -81,7 +82,7 @@ class MediaController extends Controller
 				'expression'=>'isset(Yii::app()->user->level)',
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('manage','edit','runaction','delete','publish','setcover'),
+				'actions'=>array('manage','edit','view','runaction','delete','publish','setcover'),
 				'users'=>array('@'),
 				'expression'=>'isset(Yii::app()->user->level) && in_array(Yii::app()->user->level, array(1,2))',
 			),

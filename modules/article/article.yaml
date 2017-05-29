@@ -60,7 +60,7 @@ content_menu	:
 		urlPath: {url: add, attr: -, icon: -}
 
 # controller o/views
-	- urlTitle: Back to Article Manage
+	- urlTitle: Back to Article
 		urlRules: {article, o/views, manage, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
 	- urlTitle: View Article Views Data
@@ -68,7 +68,7 @@ content_menu	:
 		urlPath: {url: o/viewdetail/manage, attr: -, icon: -}
 
 # controller o/viewdetail
-	- urlTitle: Back to View Manage
+	- urlTitle: Back to Article Views
 		urlRules: {article, o/viewdetail, manage, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/views/manage, attr: -, icon: -}
 		
@@ -81,7 +81,7 @@ content_menu	:
 		urlPath: {url: o/downloaddetail/manage, attr: -, icon: -}
 
 # controller o/downloaddetail
-	- urlTitle: Back to Downlaod Manage
+	- urlTitle: Back to Article Downlaods
 		urlRules: {article, o/downloaddetail, manage, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/download/manage, attr: -, icon: -}
 		
@@ -94,7 +94,7 @@ content_menu	:
 		urlPath: {url: o/likedetail/manage, attr: -, icon: -}
 
 # controller o/likedetail
-	- urlTitle: Back to Like Manage
+	- urlTitle: Back to Article Likes
 		urlRules: {article, o/likedetail, manage, siteType: 1, userLevel: "1,2"}
 		urlPath: {url: o/like/manage, attr: -, icon: -}
 		
@@ -102,9 +102,18 @@ content_menu	:
 	- urlTitle: Back to Article
 		urlRules: {article, o/media, manage, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
-	- urlTitle: Back to manage
+	- urlTitle: Back to Manage
 		urlRules: {article, o/media, "edit,view", siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: manage, attr: -, icon: -}
+	- urlTitle: View Photo
+		urlRules: {article, o/media, edit, siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: view, attr: id=$_GET*id, icon: -}
+	- urlTitle: Update Photo
+		urlRules: {article, o/media, view, siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: edit, attr: id=$_GET*id, icon: -}
+	- urlTitle: Delete Photo
+		urlRules: {article, o/media, "edit,view", siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: delete, attr: id=$_GET*id, icon: -}
 		
 # controller o/tag
 	- urlTitle: Back to Article
