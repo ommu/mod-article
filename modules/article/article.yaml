@@ -63,6 +63,9 @@ content_menu	:
 	- urlTitle: Back to Article Manage
 		urlRules: {article, o/views, manage, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
+	- urlTitle: View Article Views Data
+		urlRules: {article, o/views, manage, siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: o/viewdetail/manage, attr: -, icon: -}
 
 # controller o/viewdetail
 	- urlTitle: Back to View Manage
@@ -71,18 +74,24 @@ content_menu	:
 		
 # controller o/download
 	- urlTitle: Back to Article
-		urlRules: {article, o/download, manage, siteType: 1, userLevel: "1,2"}
+		urlRules: {article, o/download, manage, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
+	- urlTitle: View Article Downloads Data
+		urlRules: {article, o/download, manage, siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: o/downloaddetail/manage, attr: -, icon: -}
 
 # controller o/downloaddetail
 	- urlTitle: Back to Downlaod Manage
-		urlRules: {article, o/downloaddetail, manage, siteType: 1, userLevel: "1,2"}
+		urlRules: {article, o/downloaddetail, manage, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/download/manage, attr: -, icon: -}
 		
 # controller o/like
 	- urlTitle: Back to Article
 		urlRules: {article, o/like, manage, siteType: 1, userLevel: "1,2"}
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
+	- urlTitle: View Article Likes Data
+		urlRules: {article, o/like, manage, siteType: 1, userLevel: "1,2"}
+		urlPath: {url: o/likedetail/manage, attr: -, icon: -}
 
 # controller o/likedetail
 	- urlTitle: Back to Like Manage
@@ -94,7 +103,7 @@ content_menu	:
 		urlRules: {article, o/media, manage, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
 	- urlTitle: Back to manage
-		urlRules: {article, o/media, edit, siteType: "0,1", userLevel: "1,2"}
+		urlRules: {article, o/media, "edit,view", siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: manage, attr: -, icon: -}
 		
 # controller o/tag

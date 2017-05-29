@@ -119,6 +119,7 @@ class ArticleMedia extends CActiveRecord
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
+			'media_filename' => Yii::t('attribute', 'Media (Filename)'),
 			'old_media_input' => Yii::t('attribute', 'Old Media'),
 			'video_input' => Yii::t('attribute', 'Video'),
 			'category_search' => Yii::t('attribute', 'Category'),

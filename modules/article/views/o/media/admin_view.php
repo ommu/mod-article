@@ -20,6 +20,7 @@
 	);
 ?>
 
+<div class="box">
 <?php $this->widget('application.components.system.FDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(
@@ -41,6 +42,11 @@
 		),
 		array(
 			'name'=>'media',
+			'value'=>$model->media ? Chtml::image(Utility::getTimThumb(Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->media, 600, 600, 3)) : '-',
+			'type' => 'raw',
+		),
+		array(
+			'name'=>'media_filename',
 			'value'=>$model->media ? $model->media : '-',
 		),
 		array(
@@ -65,3 +71,4 @@
 		),
 	),
 )); ?>
+</div>
