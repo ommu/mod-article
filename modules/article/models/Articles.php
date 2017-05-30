@@ -322,7 +322,6 @@ class Articles extends CActiveRecord
 	 */
 	protected function afterConstruct() 
 	{
-		$controller = strtolower(Yii::app()->controller->id);
 		$setting = ArticleSetting::model()->findByPk(1, array(
 			'select' => 'gridview_column, headline',
 		));

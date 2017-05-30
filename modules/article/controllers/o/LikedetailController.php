@@ -105,12 +105,12 @@ class LikedetailController extends Controller
 	 */
 	public function actionManage($like=null) 
 	{
-		$pageTitle = Yii::t('phrase', 'Data Article Likes');
+		$pageTitle = Yii::t('phrase', 'Article Likes Data');
 		if($like != null) {
 			$data = ArticleLikes::model()->findByPk($like);
-			$pageTitle = Yii::t('phrase', 'Article Likes Data: {article_title} ({category_name}) - Guest', array ('{article_title}'=>$data->article->title, '{category_name}'=>Phrase::trans($data->article->cat->name)));	
+			$pageTitle = Yii::t('phrase', 'Article Likes Data: {article_title} from category {category_name} - user Guest', array ('{article_title}'=>$data->article->title, '{category_name}'=>Phrase::trans($data->article->cat->name)));	
 			if($data->user->displayname)
-				$pageTitle = Yii::t('phrase', 'Article Likes Data: {article_title} ({category_name}) - {user_displayname}', array ('{article_title}'=>$data->article->title, '{category_name}'=>Phrase::trans($data->article->cat->name), '{user_displayname}'=>$data->user->displayname));
+				$pageTitle = Yii::t('phrase', 'Article Likes Data: {article_title} from category {category_name} - user {user_displayname}', array ('{article_title}'=>$data->article->title, '{category_name}'=>Phrase::trans($data->article->cat->name), '{user_displayname}'=>$data->user->displayname));
 		}
 		
 		$model=new ArticleLikeDetail('search');

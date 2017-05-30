@@ -221,7 +221,7 @@ class CategoryController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 500;
 
-			$this->pageTitle = Yii::t('phrase', 'Update Category: {name}', array('{name}'=>Phrase::trans($model->name)));
+			$this->pageTitle = Yii::t('phrase', 'Update Category: {category_name}', array('{category_name}'=>Phrase::trans($model->name)));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_edit',array(
@@ -242,7 +242,7 @@ class CategoryController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 500;
 
-		$this->pageTitle = Yii::t('phrase', 'View Category: {name}', array('{name}'=>Phrase::trans($model->name)));
+		$this->pageTitle = Yii::t('phrase', 'View Category: {category_name}', array('{category_name}'=>Phrase::trans($model->name)));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_view',array(
@@ -311,7 +311,7 @@ class CategoryController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'Delete Category: {name}', array('{name}'=>Phrase::trans($model->name)));
+			$this->pageTitle = Yii::t('phrase', 'Delete Category: {category_name}', array('{category_name}'=>Phrase::trans($model->name)));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');

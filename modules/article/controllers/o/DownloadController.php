@@ -109,7 +109,7 @@ class DownloadController extends Controller
 		$pageTitle = Yii::t('phrase', 'Article Downloads');
 		if($article != null) {
 			$data = Articles::model()->findByPk($article);
-			$pageTitle = Yii::t('phrase', 'Article Downloads: {article_title}', array ('{article_title}'=>$data->title));
+			$pageTitle = Yii::t('phrase', 'Article Downloads: {article_title} from category {category_name}', array ('{article_title}'=>$data->title, '{category_name}'=>Phrase::trans($data->cat->name)));
 		}
 		
 		$model=new ArticleDownloads('search');
@@ -164,7 +164,7 @@ class DownloadController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'Delete Downloads: {title}', array('{title}'=>$model->article->title));
+			$this->pageTitle = Yii::t('phrase', 'Delete Downloads: {article_title}', array('{article_title}'=>$model->article->title));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');

@@ -109,7 +109,7 @@ class TagController extends Controller
 		$pageTitle = Yii::t('phrase', 'Article Tags');
 		if($article != null) {
 			$data = Articles::model()->findByPk($article);
-			$pageTitle = Yii::t('phrase', 'Article Tag: {article_title}', array ('{article_title}'=>$data->title));
+			$pageTitle = Yii::t('phrase', 'Article Tag: {article_title} from category {category_name}', array ('{article_title}'=>$data->title, '{category_name}'=>Phrase::trans($data->cat->name)));
 		}
 		
 		$model=new ArticleTag('search');
@@ -208,7 +208,7 @@ class TagController extends Controller
 			$this->dialogGroundUrl = $url;
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'Delete Tag: {title}', array('{title}'=>$model->article->title));
+			$this->pageTitle = Yii::t('phrase', 'Delete Tag: {tag_body} from article {article_title}', array('{tag_body}'=>$model->tag->body, '{article_title}'=>$model->article->title));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');

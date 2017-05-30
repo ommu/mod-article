@@ -45,6 +45,7 @@ class ArticleCategory extends CActiveRecord
 	// Variable Search
 	public $creation_search;
 	public $modified_search;
+	public $article_search;
 
 	/**
 	 * Behaviors for this model
@@ -98,7 +99,7 @@ class ArticleCategory extends CActiveRecord
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('cat_id, publish, parent, name, desc, single_photo, creation_date, creation_id, modified_date, modified_id,
-				title_i, description_i, creation_search, modified_search', 'safe', 'on'=>'search'),
+				title_i, description_i, creation_search, modified_search, article_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -139,6 +140,7 @@ class ArticleCategory extends CActiveRecord
 			'description_i' => Yii::t('attribute', 'Description'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
+			'article_search' => Yii::t('attribute', 'Articles'),
 		);
 	}
 	
@@ -210,6 +212,7 @@ class ArticleCategory extends CActiveRecord
 		$criteria->compare('description.'.$language,strtolower($this->description_i), true);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
 		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
+		$criteria->compare('view.articles',strtolower($this->article_search), true);
 
 		if(!isset($_GET['ArticleCategory_sort']))
 			$criteria->order = 't.cat_id DESC';
@@ -287,14 +290,6 @@ class ArticleCategory extends CActiveRecord
 				'value' => '$data->parent != 0 ? Phrase::trans(ArticleCategory::model()->findByPk($data->parent)->name) : "-"',
 			);
 			$this->defaultColumns[] = array(
-				'header' => Yii::t('phrase', 'Articles'),
-				'value' => 'CHtml::link($data->view->articles ? $data->view->articles : 0, Yii::app()->controller->createUrl("o/admin/manage",array("category"=>$data->cat_id)))',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'type' => 'raw',
-			);
-			$this->defaultColumns[] = array(
 				'name' => 'creation_search',
 				'value' => '$data->creation->displayname',
 			);
@@ -323,6 +318,14 @@ class ArticleCategory extends CActiveRecord
 						'showButtonPanel' => true,
 					),
 				), true),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'article_search',
+				'value' => 'CHtml::link($data->view->articles ? $data->view->articles : 0, Yii::app()->controller->createUrl("o/admin/manage",array("category"=>$data->cat_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'single_photo',

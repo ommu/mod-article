@@ -258,7 +258,7 @@ class AdminController extends Controller
 			//}
 		}
 
-		$this->pageTitle = Yii::t('phrase', 'Update Article: {title}', array('{title}'=>$model->title));
+		$this->pageTitle = Yii::t('phrase', 'Update Article: {article_title}', array('{article_title}'=>$model->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_edit',array(
@@ -330,7 +330,7 @@ class AdminController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'Delete Article: {title}', array('{title}'=>$model->title));
+			$this->pageTitle = Yii::t('phrase', 'Delete Article: {article_title}', array('{article_title}'=>$model->title));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_delete');
@@ -416,7 +416,7 @@ class AdminController extends Controller
 			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 			$this->dialogWidth = 350;
 
-			$this->pageTitle = Yii::t('phrase', 'Headline: {title}', array('{title}'=>$model->title));
+			$this->pageTitle = Yii::t('phrase', 'Headline: {article_title}', array('{article_title}'=>$model->title));
 			$this->pageDescription = '';
 			$this->pageMeta = '';
 			$this->render('admin_headline');
