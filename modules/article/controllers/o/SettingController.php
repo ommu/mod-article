@@ -186,7 +186,7 @@ class SettingController extends Controller
 	 */
 	public function actionManual() 
 	{
-		$manual_path = $this->module->basePath.'\assets\manual';
+		$manual_path = $this->module->basePath.'/assets/manual';
 		
 		$this->dialogDetail = true;
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('o/admin/manage');
