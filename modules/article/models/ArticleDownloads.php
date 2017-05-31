@@ -228,7 +228,7 @@ class ArticleDownloads extends CActiveRecord
 			if(!isset($_GET['user'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'user_search',
-					'value' => '$data->user_id != 0 ? $data->user->displayname : "-"',
+					'value' => '$data->user->displayname ? $data->user->displayname : "-"',
 				);
 			}
 			$this->defaultColumns[] = array(

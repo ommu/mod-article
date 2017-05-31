@@ -22,6 +22,12 @@ plugin_menu		:
 			- urlTitle: Categories
 				urlRules: {siteType: "0,1", userLevel: 1}
 				urlPath: {url: o/category/manage, attr: -, icon: -}
+			- urlTitle: Photos
+				urlRules: {siteType: "0,1", userLevel: "1,2"}
+				urlPath: {url: o/media/manage, attr: -, icon: -}
+			- urlTitle: Tags
+				urlRules: {siteType: "0,1", userLevel: "1,2"}
+				urlPath: {url: o/tag/manage, attr: -, icon: -}
 			- urlTitle: Views
 				urlRules: {siteType: "0,1", userLevel: "1,2"}
 				urlPath: {url: o/views/manage, attr: -, icon: -}
@@ -31,12 +37,6 @@ plugin_menu		:
 			- urlTitle: Likes
 				urlRules: {siteType: 1, userLevel: "1,2"}
 				urlPath: {url: o/like/manage, attr: -, icon: -}
-			- urlTitle: Photos
-				urlRules: {siteType: "0,1", userLevel: "1,2"}
-				urlPath: {url: o/media/manage, attr: -, icon: -}
-			- urlTitle: Tags
-				urlRules: {siteType: "0,1", userLevel: "1,2"}
-				urlPath: {url: o/tag/manage, attr: -, icon: -}
 		
 	- urlTitle: Settings
 		urlRules: {siteType: "0,1", userLevel: 1}
@@ -58,6 +58,28 @@ content_menu	:
 	- urlTitle: Add Category
 		urlRules: {article, o/category, manage, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: add, attr: -, icon: -}
+		
+# controller o/media
+	- urlTitle: Back to Article
+		urlRules: {article, o/media, manage, siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: o/admin/manage, attr: -, icon: -}
+	- urlTitle: Back to Manage
+		urlRules: {article, o/media, "edit,view", siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: manage, attr: -, icon: -}
+	- urlTitle: View Photo
+		urlRules: {article, o/media, edit, siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: view, attr: id=$_GET*id, icon: -}
+	- urlTitle: Update Photo
+		urlRules: {article, o/media, view, siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: edit, attr: id=$_GET*id, icon: -}
+	- urlTitle: Delete Photo
+		urlRules: {article, o/media, "edit,view", siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: delete, attr: id=$_GET*id, icon: -}
+		
+# controller o/tag
+	- urlTitle: Back to Article
+		urlRules: {article, o/tag, manage, siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: o/admin/manage, attr: -, icon: -}
 
 # controller o/views
 	- urlTitle: Back to Article
@@ -97,28 +119,6 @@ content_menu	:
 	- urlTitle: Back to Article Likes
 		urlRules: {article, o/likedetail, manage, siteType: 1, userLevel: "1,2"}
 		urlPath: {url: o/like/manage, attr: -, icon: -}
-		
-# controller o/media
-	- urlTitle: Back to Article
-		urlRules: {article, o/media, manage, siteType: "0,1", userLevel: "1,2"}
-		urlPath: {url: o/admin/manage, attr: -, icon: -}
-	- urlTitle: Back to Manage
-		urlRules: {article, o/media, "edit,view", siteType: "0,1", userLevel: "1,2"}
-		urlPath: {url: manage, attr: -, icon: -}
-	- urlTitle: View Photo
-		urlRules: {article, o/media, edit, siteType: "0,1", userLevel: "1,2"}
-		urlPath: {url: view, attr: id=$_GET*id, icon: -}
-	- urlTitle: Update Photo
-		urlRules: {article, o/media, view, siteType: "0,1", userLevel: "1,2"}
-		urlPath: {url: edit, attr: id=$_GET*id, icon: -}
-	- urlTitle: Delete Photo
-		urlRules: {article, o/media, "edit,view", siteType: "0,1", userLevel: "1,2"}
-		urlPath: {url: delete, attr: id=$_GET*id, icon: -}
-		
-# controller o/tag
-	- urlTitle: Back to Article
-		urlRules: {article, o/tag, manage, siteType: "0,1", userLevel: "1,2"}
-		urlPath: {url: o/admin/manage, attr: -, icon: -}
 		
 # controller o/setting
 	- urlTitle: Add Category
