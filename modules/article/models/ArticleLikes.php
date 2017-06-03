@@ -169,10 +169,10 @@ class ArticleLikes extends CActiveRecord
 			$criteria->compare('date(t.updated_date)',date('Y-m-d', strtotime($this->updated_date)));
 
 		$criteria->compare('article.cat_id',$this->category_search);
-		$criteria->compare('article.title',strtolower($this->article_search), true);
+		$criteria->compare('article.title',strtolower($this->article_search),true);
 		if(isset($_GET['article']) && isset($_GET['publish']))
 			$criteria->compare('digital.publish',$_GET['publish']);
-		$criteria->compare('user.displayname',strtolower($this->user_search), true);
+		$criteria->compare('user.displayname',strtolower($this->user_search),true);
 		$criteria->compare('view.likes',$this->like_search);
 		$criteria->compare('view.unlikes',$this->unlike_search);
 

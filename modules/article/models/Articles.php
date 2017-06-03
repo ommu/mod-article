@@ -242,7 +242,7 @@ class Articles extends CActiveRecord
 				$criteria->compare('t.cat_id',$_GET['category']);
 		} else
 			$criteria->compare('t.cat_id',$this->cat_id);
-		$criteria->compare('t.article_type',$this->article_type);
+		$criteria->compare('t.article_type',strtolower($this->article_type),true);
 		$criteria->compare('t.title',strtolower($this->title),true);
 		$criteria->compare('t.body',strtolower($this->body),true);
 		$criteria->compare('t.quote',strtolower($this->quote),true);
@@ -253,15 +253,21 @@ class Articles extends CActiveRecord
 		$criteria->compare('t.comment_code',$this->comment_code);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
-		$criteria->compare('t.creation_id',$this->creation_id);
+		if(isset($_GET['creation']))
+			$criteria->compare('t.creation_id',$_GET['creation']);
+		else
+			$criteria->compare('t.creation_id',$this->creation_id);
 		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
-		$criteria->compare('t.modified_id',$this->modified_id);
+		if(isset($_GET['modified']))
+			$criteria->compare('t.modified_id',$_GET['modified']);
+		else
+			$criteria->compare('t.modified_id',$this->modified_id);
 		if($this->headline_date != null && !in_array($this->headline_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.headline_date)',date('Y-m-d', strtotime($this->headline_date)));
 		
-		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
-		$criteria->compare('modified.displayname',strtolower($this->modified_search), true);
+		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
+		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
 		$criteria->compare('view.medias',$this->media_search);
 		$criteria->compare('view.views',$this->view_search);
 		$criteria->compare('view.likes',$this->like_search);

@@ -171,8 +171,8 @@ class ArticleLikeDetail extends CActiveRecord
 		$criteria->compare('t.likes_ip',strtolower($this->likes_ip),true);
 
 		$criteria->compare('like_article.cat_id',$this->category_search);
-		$criteria->compare('like_article.title',strtolower($this->article_search), true);
-		$criteria->compare('like_user.displayname',strtolower($this->user_search), true);
+		$criteria->compare('like_article.title',strtolower($this->article_search),true);
+		$criteria->compare('like_user.displayname',strtolower($this->user_search),true);
 
 		if(!isset($_GET['ArticleLikeDetail_sort']))
 			$criteria->order = 't.id DESC';

@@ -157,8 +157,8 @@ class ArticleViewDetail extends CActiveRecord
 		$criteria->compare('t.view_ip',strtolower($this->view_ip),true);
 
 		$criteria->compare('view_article.cat_id',$this->category_search);
-		$criteria->compare('view_article.title',strtolower($this->article_search), true);
-		$criteria->compare('view_user.displayname',strtolower($this->user_search), true);
+		$criteria->compare('view_article.title',strtolower($this->article_search),true);
+		$criteria->compare('view_user.displayname',strtolower($this->user_search),true);
 
 		if(!isset($_GET['ArticleViewDetail_sort']))
 			$criteria->order = 't.id DESC';

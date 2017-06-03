@@ -138,7 +138,7 @@ class ArticleDownloads extends CActiveRecord
 		$criteria->with = array(
 			'article' => array(
 				'alias'=>'article',
-				'select'=>'cat_id, title'
+				'select'=>'publish, cat_id, title'
 			),
 			'user' => array(
 				'alias'=>'user',
@@ -161,8 +161,10 @@ class ArticleDownloads extends CActiveRecord
 		$criteria->compare('t.download_ip',strtolower($this->download_ip),true);
 		
 		$criteria->compare('article.cat_id',$this->category_search);
-		$criteria->compare('article.title',strtolower($this->article_search), true);
-		$criteria->compare('user.displayname',strtolower($this->user_search), true);
+		$criteria->compare('article.title',strtolower($this->article_search),true);
+		if(isset($_GET['article']) && isset($_GET['publish']))
+			$criteria->compare('article.publish',$_GET['publish']);
+		$criteria->compare('user.displayname',strtolower($this->user_search),true);
 
 		if(!isset($_GET['ArticleDownloads_sort']))
 			$criteria->order = 't.download_id DESC';

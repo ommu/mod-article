@@ -157,8 +157,8 @@ class ArticleDownloadDetail extends CActiveRecord
 		$criteria->compare('t.download_ip',strtolower($this->download_ip),true);
 
 		$criteria->compare('download_article.cat_id',$this->category_search);
-		$criteria->compare('download_article.title',strtolower($this->article_search), true);
-		$criteria->compare('download_user.displayname',strtolower($this->user_search), true);
+		$criteria->compare('download_article.title',strtolower($this->article_search),true);
+		$criteria->compare('download_user.displayname',strtolower($this->user_search),true);
 
 		if(!isset($_GET['ArticleDownloadDetail_sort']))
 			$criteria->order = 't.id DESC';

@@ -126,7 +126,7 @@ class ArticleTag extends CActiveRecord
 		$criteria->with = array(
 			'article' => array(
 				'alias'=>'article',
-				'select'=>'cat_id, title'
+				'select'=>'publish, cat_id, title'
 			),
 			'tag' => array(
 				'alias'=>'tag',
@@ -146,13 +146,18 @@ class ArticleTag extends CActiveRecord
 		$criteria->compare('t.tag_id',$this->tag_id);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
-		$criteria->compare('t.creation_id',$this->creation_id);
+		if(isset($_GET['creation']))
+			$criteria->compare('t.creation_id',$_GET['creation']);
+		else
+			$criteria->compare('t.creation_id',$this->creation_id);
 		
 		$criteria->compare('article.cat_id',$this->category_search);
-		$criteria->compare('article.title',strtolower($this->article_search), true);
+		$criteria->compare('article.title',strtolower($this->article_search),true);
+		if(isset($_GET['article']) && isset($_GET['publish']))
+			$criteria->compare('article.publish',$_GET['publish']);
 		$tag_search = Utility::getUrlTitle(strtolower(trim($this->tag_search)));
-		$criteria->compare('tag.body',$tag_search, true);
-		$criteria->compare('creation.displayname',strtolower($this->creation_search), true);
+		$criteria->compare('tag.body',$tag_search,true);
+		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
 
 		if(!isset($_GET['ArticleTag_sort']))
 			$criteria->order = 't.id DESC';

@@ -181,10 +181,10 @@ class ArticleViews extends CActiveRecord
 			$criteria->compare('date(t.deleted_date)',date('Y-m-d', strtotime($this->deleted_date)));
 		
 		$criteria->compare('article.cat_id',$this->category_search);
-		$criteria->compare('article.title',strtolower($this->article_search), true);
+		$criteria->compare('article.title',strtolower($this->article_search),true);
 		if(isset($_GET['article']) && isset($_GET['publish']))
 			$criteria->compare('article.publish',$_GET['publish']);
-		$criteria->compare('user.displayname',strtolower($this->user_search), true);
+		$criteria->compare('user.displayname',strtolower($this->user_search),true);
 
 		if(!isset($_GET['ArticleViews_sort']))
 			$criteria->order = 't.view_id DESC';
