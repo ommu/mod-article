@@ -41,6 +41,10 @@ plugin_menu		:
 	- urlTitle: Settings
 		urlRules: {siteType: "0,1", userLevel: 1}
 		urlPath: {url: o/setting/edit, attr: -, icon: -}
+                
+	- urlTitle: Download Manual Book
+		urlRules: {siteType: "0,1", userLevel: 2}
+		urlPath: {url: o/setting/manual, attr: -, icon: -}
 
 content_menu	:
 # controller o/admin
