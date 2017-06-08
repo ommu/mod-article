@@ -42,7 +42,7 @@ plugin_menu		:
 		urlRules: {siteType: "0,1", userLevel: 1}
 		urlPath: {url: o/setting/edit, attr: -, icon: -}
                 
-	- urlTitle: Download Manual Book
+	- urlTitle: Article Manual
 		urlRules: {siteType: "0,1", userLevel: 2}
 		urlPath: {url: o/setting/manual, attr: -, icon: -}
 
@@ -54,13 +54,10 @@ content_menu	:
 	- urlTitle: Back to Manage
 		urlRules: {article, o/admin, "add,edit", siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: manage, attr: -, icon: -}
-	- urlTitle: Download Manual Book
-		urlRules: {article, o/admin, manage, siteType: "0,1", userLevel: "1,2"}
-		urlPath: {url: o/setting/manual, attr: -, icon: -}
 		
 # controller o/category
 	- urlTitle: Add Category
-		urlRules: {article, o/category, manage, siteType: "0,1", userLevel: "1,2"}
+		urlRules: {article, o/category, manage, siteType: "0,1", userLevel: 1}
 		urlPath: {url: add, attr: -, icon: -}
 		
 # controller o/media
@@ -126,5 +123,8 @@ content_menu	:
 		
 # controller o/setting
 	- urlTitle: Add Category
-		urlRules: {article, o/setting, edit, siteType: "0,1", userLevel: "1,2"}
+		urlRules: {article, o/setting, edit, siteType: "0,1", userLevel: 1}
 		urlPath: {url: o/category/add, attr: -, icon: -}
+	- urlTitle: Article Manual
+		urlRules: {article, o/setting, edit, siteType: "0,1", userLevel: 1}
+		urlPath: {url: manual, attr: -, icon: -}
