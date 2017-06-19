@@ -75,8 +75,9 @@ class ViewArticles extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('article_id, media_id, media_cover, media_caption, medias, media_all, likes, like_all, views, view_all, downloads, tags', 'numerical', 'integerOnly'=>true),
+			array('article_id, media_id, medias, media_all, likes, like_all, views, view_all, downloads, tags', 'numerical', 'integerOnly'=>true),
 			array('article_id, media_id', 'length', 'max'=>11),
+			array('media_cover, media_caption', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('article_id, media_id, media_cover, media_caption, medias, media_all, likes, like_all, views, view_all, downloads, tags', 'safe', 'on'=>'search'),

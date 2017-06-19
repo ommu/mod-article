@@ -116,7 +116,7 @@ class Articles extends CActiveRecord
 			//array('media_input', 'file', 'types' => 'jpg, jpeg, png, gif', 'allowEmpty' => true),
 			//array('file', 'file', 'types' => 'mp3, mp4,
 			//	pdf, doc, docx, ppt, pptx, xls, xlsx, opt', 'maxSize'=>7097152, 'allowEmpty' => true),
-			array('article_type, title, body, quote, published_date, 
+			array('article_type, title, body, quote, published_date, creation_date, modified_date, 
 				media_input, old_media_input, video_input, keyword_input, old_media_file_input', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
@@ -704,7 +704,7 @@ class Articles extends CActiveRecord
 		));
 		$media_resize_size = unserialize($setting->media_resize_size);
 		
-		$article_path = "public/article/".$this->article_id;		
+		$article_path = "public/article/".$this->article_id;
 		if($this->article_type != 'quote') {
 			// Add directory
 			if(!file_exists($article_path)) {
@@ -730,7 +730,7 @@ class Articles extends CActiveRecord
 						$subject->save();
 					}
 				}
-			}	
+			}
 			
 			//upload media file (download)
 			$this->media_file = CUploadedFile::getInstance($this, 'media_file');
