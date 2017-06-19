@@ -104,13 +104,6 @@ class ArticleDownloadDetail extends CActiveRecord
 			'article_search' => Yii::t('attribute', 'Article'),
 			'user_search' => Yii::t('attribute', 'User'),
 		);
-		/*
-			'ID' => 'ID',
-			'Download' => 'Download',
-			'Download Date' => 'Download Date',
-			'Download Ip' => 'Download Ip',
-		
-		*/
 	}
 
 	/**

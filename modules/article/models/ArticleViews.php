@@ -111,17 +111,6 @@ class ArticleViews extends CActiveRecord
 			'article_search' => Yii::t('attribute', 'Article'),
 			'user_search' => Yii::t('attribute', 'User'),
 		);
-		/*
-			'View' => 'View',
-			'Publish' => 'Publish',
-			'Article' => 'Article',
-			'User' => 'User',
-			'Views' => 'Views',
-			'Views Date' => 'Views Date',
-			'Views Ip' => 'Views Ip',
-			'Deleted Date' => 'Deleted Date',
-		
-		*/
 	}
 
 	/**

@@ -222,13 +222,14 @@ EOP;
 			<div class="right">
 				<?php
 				if(!$model->isNewRecord) {
-					$model->old_media_file_input = $model->media_file;
+					if(!$model->getErrors())
+						$model->old_media_file_input = $model->media_file;
 					echo $form->hiddenField($model,'old_media_file_input');
 					if($model->media_file != '') {
-						$file = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->media_file;
+						$file = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_media_file_input;
 						echo '<div class="clearfix">';
 						echo $form->labelEx($model,'old_media_file_input');
-						echo '<div class="desc"><a href="'.$file.'" title="'.$model->media_file.'">'.$model->media_file.'</a></div>';
+						echo '<div class="desc"><a href="'.$file.'" title="'.$model->old_media_file_input.'">'.$model->old_media_file_input.'</a></div>';
 						echo '</div>';
 					}
 				}?>
