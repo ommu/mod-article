@@ -29,7 +29,7 @@
  * @property string $creation_id
  *
  * The followings are the available model relations:
- * @property OmmuArticles $article
+ * @property Articles $article
  */
 class ArticleTag extends CActiveRecord
 {

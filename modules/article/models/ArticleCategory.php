@@ -34,7 +34,7 @@
  * @property string $modified_id
  *
  * The followings are the available model relations:
- * @property OmmuArticles[] $ommuArticles
+ * @property Articles[] $Articles
  */
 class ArticleCategory extends CActiveRecord
 {

@@ -31,7 +31,7 @@
  * @property string $updated_date
  *
  * The followings are the available model relations:
- * @property OmmuArticles $article
+ * @property Articles $article
  */
 class ArticleLikes extends CActiveRecord
 {

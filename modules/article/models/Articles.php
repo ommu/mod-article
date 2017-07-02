@@ -40,9 +40,9 @@
  * @property string $headline_date
  *
  * The followings are the available model relations:
- * @property OmmuArticleComment[] $ommuArticleComments
- * @property OmmuArticleMedia[] $ommuArticleMedias
- * @property OmmuArticleCategory $cat
+ * @property ArticleComment[] $ArticleComments
+ * @property ArticleMedia[] $ArticleMedias
+ * @property ArticleCategory $cat
  */
 
 class Articles extends CActiveRecord
