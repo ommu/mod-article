@@ -23,10 +23,13 @@
  *
  * The followings are the available columns in table 'ommu_article_tag':
  * @property string $id
+ * @property integer $publish
  * @property string $article_id
  * @property string $tag_id
  * @property string $creation_date
  * @property string $creation_id
+ * @property string $modified_date
+ * @property string $modified_id
  *
  * The followings are the available model relations:
  * @property Articles $article
@@ -41,6 +44,7 @@ class ArticleTag extends CActiveRecord
 	public $article_search;
 	public $tag_search;
 	public $creation_search;
+	public $modified_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -69,13 +73,14 @@ class ArticleTag extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('article_id, tag_id', 'required'),
-			array('article_id, tag_id, creation_id', 'length', 'max'=>11),
+			array('publish, article_id, tag_id, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
+			array('article_id, tag_id, creation_id, modified_id', 'length', 'max'=>11),
 			array(' 
 				tag_input', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, article_id, tag_id, creation_date,
-				category_search, article_search, tag_search, creation_search', 'safe', 'on'=>'search'),
+			array('id, publish, article_id, tag_id, creation_date, creation_id, modified_date, modified_id,
+				category_search, article_search, tag_search, creation_search, modified_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -90,6 +95,7 @@ class ArticleTag extends CActiveRecord
 			'article' => array(self::BELONGS_TO, 'Articles', 'article_id'),
 			'tag' => array(self::BELONGS_TO, 'OmmuTags', 'tag_id'),
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
+			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 		);
 	}
 
@@ -100,14 +106,18 @@ class ArticleTag extends CActiveRecord
 	{
 		return array(
 			'id' => Yii::t('attribute', 'Tags'),
+			'publish' => Yii::t('attribute', 'Publish'),
 			'article_id' => Yii::t('attribute', 'Article'),
 			'tag_id' => Yii::t('attribute', 'Tags'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
+			'modified_date' => Yii::t('attribute', 'Modified Date'),
+			'modified_id' => Yii::t('attribute', 'Modified'),
 			'category_search' => Yii::t('attribute', 'Category'),
 			'article_search' => Yii::t('attribute', 'Article'),
 			'tag_search' => Yii::t('attribute', 'Tags'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
+			'modified_search' => Yii::t('attribute', 'Modified'),
 		);
 	}
 	
@@ -136,6 +146,10 @@ class ArticleTag extends CActiveRecord
 				'alias'=>'creation',
 				'select'=>'displayname'
 			),
+			'modified' => array(
+				'alias'=>'modified',
+				'select'=>'displayname'
+			),
 		);
 
 		$criteria->compare('t.id',$this->id);
@@ -158,6 +172,7 @@ class ArticleTag extends CActiveRecord
 		$tag_search = Utility::getUrlTitle(strtolower(trim($this->tag_search)));
 		$criteria->compare('tag.body',$tag_search,true);
 		$criteria->compare('creation.displayname',strtolower($this->creation_search),true);
+		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
 
 		if(!isset($_GET['ArticleTag_sort']))
 			$criteria->order = 't.id DESC';
@@ -189,10 +204,13 @@ class ArticleTag extends CActiveRecord
 			}
 		}else {
 			//$this->defaultColumns[] = 'id';
+			$this->defaultColumns[] = 'publish';
 			$this->defaultColumns[] = 'article_id';
 			$this->defaultColumns[] = 'tag_id';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
+			$this->defaultColumns[] = 'modified_date';
+			$this->defaultColumns[] = 'modified_id';
 		}
 
 		return $this->defaultColumns;
@@ -283,6 +301,8 @@ class ArticleTag extends CActiveRecord
 		if(parent::beforeValidate()) {
 			if($this->isNewRecord)
 				$this->creation_id = Yii::app()->user->id;
+			else
+				$this->modified_id = Yii::app()->user->id;
 		}
 		return true;
 	}
@@ -293,12 +313,13 @@ class ArticleTag extends CActiveRecord
 	protected function beforeSave() {
 		if(parent::beforeSave()) {
 			if($this->isNewRecord) {
+				$tag_input = Utility::getUrlTitle(strtolower(trim($this->tag_input)));
 				if($this->tag_id == 0) {
 					$tag = OmmuTags::model()->find(array(
 						'select' => 'tag_id, body',
 						'condition' => 'body = :body',
 						'params' => array(
-							':body' => Utility::getUrlTitle(strtolower(trim($this->tag_input))),
+							':body' => $tag_input,
 						),
 					));
 					if($tag != null)
