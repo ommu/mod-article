@@ -11,8 +11,12 @@
  *----------------------------------------------------------------------------------------------------------
  */
 
+namespace application\modules\article;
+
 class ArticleModule extends CWebModule
 {
+	public $controllerNamespace = '\application\modules\article\controllers';
+
 	public $defaultController = 'site';
 	
 	// getAssetsUrl()
