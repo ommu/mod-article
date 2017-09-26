@@ -54,7 +54,7 @@ class ArticleCategory extends CActiveRecord
 	{
 		return array(
 			'sluggable' => array(
-				'class'=>'application.vendors.mintao.yii-behavior-sluggable.SluggableBehavior',
+				'class'=>'application.vendor.mintao.yii-behavior-sluggable.SluggableBehavior',
 				'columns' => array('title.en_us'),
 				'unique' => true,
 				'update' => true,

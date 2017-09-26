@@ -11,7 +11,12 @@
  *----------------------------------------------------------------------------------------------------------
  */
 
-class ArticleModule extends CWebModule
+namespace ommu\article;
+
+use Yii;
+use Utility;
+
+class ArticleModule extends \CWebModule
 {
 	public $defaultController = 'site';
 	
