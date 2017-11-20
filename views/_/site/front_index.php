@@ -18,7 +18,7 @@
 	);
 ?>
 
-<?php $this->widget('application.components.system.FListView', array(
+<?php $this->widget('application.libraries.core.components.system.FListView', array(
 	'dataProvider'=>$dataProvider,
 	'itemView'=>'_view',
 	'pager' => array(
