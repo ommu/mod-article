@@ -72,7 +72,7 @@ class CategoryController extends Controller
 	{
 		return array(
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('index','manage','add','edit','runaction','delete','publish'),
+				'actions'=>array('index','manage','add','edit','view','runaction','delete','publish'),
 				'users'=>array('@'),
 				'expression'=>'$user->level == 1',
 			),

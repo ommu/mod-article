@@ -34,14 +34,17 @@
 				'value'=>$model->single_photo == 1 ? CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
 				'type' => 'raw',
 			),
-			'parent',
+			array(
+				'name'=>'parent',
+				'value'=>$model->parent ? $model->parent_r->title->message : '-',
+			),
 			array(
 				'name'=>'name',
-				'value'=>Phrase::trans($model->name),
+				'value'=>$model->name ? $model->title->message : '-',
 			),
 			array(
 				'name'=>'desc',
-				'value'=>Phrase::trans($model->desc),
+				'value'=>$model->desc ? $model->description->message : '-',
 			),
 			'slug',
 			array(

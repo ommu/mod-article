@@ -360,7 +360,7 @@ class Articles extends CActiveRecord
 					$parent = null;
 				$this->defaultColumns[] = array(
 					'name' => 'cat_id',
-					'value' => 'Phrase::trans($data->cat->name)',
+					'value' => '$data->cat->title->message',
 					'filter'=> ArticleCategory::getCategory(null, $parent),
 					'type' => 'raw',
 				);
