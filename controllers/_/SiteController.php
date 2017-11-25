@@ -118,7 +118,7 @@ class SiteController extends Controller
 			),
 		));
 
-		$this->pageTitle = (isset($_GET['category']) && $_GET['category']) ? Phrase::trans($title->name) : Yii::t('phrase', 'Articles');
+		$this->pageTitle = (isset($_GET['category']) && $_GET['category']) ? $title->title->message : Yii::t('phrase', 'Articles');
 		$this->pageDescription = $setting->meta_description;
 		$this->pageMeta = $setting->meta_keyword;
 		$this->render('front_index',array(

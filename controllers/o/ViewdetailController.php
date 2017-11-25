@@ -94,9 +94,9 @@ class ViewdetailController extends Controller
 		$pageTitle = Yii::t('phrase', 'Article Views Data');
 		if($view != null) {
 			$data = ArticleViews::model()->findByPk($view);
-			$pageTitle = Yii::t('phrase', 'Article Views Data: {article_title} from category {category_name} - user Guest', array ('{article_title}'=>$data->article->title, '{category_name}'=>Phrase::trans($data->article->cat->name)));	
+			$pageTitle = Yii::t('phrase', 'Article Views Data: {article_title} from category {category_name} - user Guest', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->cat->title->message));	
 			if($data->user->displayname)
-				$pageTitle = Yii::t('phrase', 'Article Views Data: {article_title} from category {category_name} - user {user_displayname}', array ('{article_title}'=>$data->article->title, '{category_name}'=>Phrase::trans($data->article->cat->name), '{user_displayname}'=>$data->user->displayname));
+				$pageTitle = Yii::t('phrase', 'Article Views Data: {article_title} from category {category_name} - user {user_displayname}', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->cat->title->message, '{user_displayname}'=>$data->user->displayname));
 		}
 		
 		$model=new ArticleViewDetail('search');

@@ -217,7 +217,7 @@ class ArticleLikeDetail extends CActiveRecord
 			if(!isset($_GET['like'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'category_search',
-					'value' => 'Phrase::trans($data->like->article->cat->name)',
+					'value' => '$data->like->article->cat->title->message',
 					'filter'=> ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);

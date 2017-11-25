@@ -203,7 +203,7 @@ class ArticleDownloadDetail extends CActiveRecord
 			if(!isset($_GET['download'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'category_search',
-					'value' => 'Phrase::trans($data->download->article->cat->name)',
+					'value' => '$data->download->article->cat->title->message',
 					'filter'=> ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);

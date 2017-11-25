@@ -14,7 +14,7 @@
 
 	$this->breadcrumbs=array(
 		'Articles'=>array('manage'),
-		Phrase::trans($model->cat->name),
+		$model->cat->title->message,
 		$model->title,
 	);
 ?>

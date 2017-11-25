@@ -14,7 +14,7 @@
 
 	$this->breadcrumbs=array(
 		'Article Categories'=>array('manage'),
-		$model->name=>array('view','id'=>$model->cat_id),
+		$model->title->message=>array('view','id'=>$model->cat_id),
 		'View',
 	);
 ?>

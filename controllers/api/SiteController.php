@@ -131,7 +131,7 @@ class SiteController extends ControllerApi
 							
 							$data[] = array(
 								'id' => $item->article_id,
-								'category' => Phrase::trans($item->cat->name),
+								'category' => $item->cat->title->message,
 								'title' => $item->title,
 								'intro' => $item->body != '' ? Utility::shortText(Utility::hardDecode($item->body),200) : '-',
 								'media_image' => $cover_url_path ? $cover_url_path : '-',
@@ -146,7 +146,7 @@ class SiteController extends ControllerApi
 					} else
 						$data = array();
 				
-					$categoryTitle = Phrase::trans($val->name);
+					$categoryTitle = $val->title->message;
 					$return[] = array(
 						'id' => $val->cat_id,
 						'category' => $categoryTitle,
@@ -256,7 +256,7 @@ class SiteController extends ControllerApi
 					
 					$data[] = array(
 						'id' => $item->article_id,
-						'category' => Phrase::trans($item->cat->name),
+						'category' => $item->cat->title->message,
 						'title' => $item->title,
 						'intro' => $item->body != '' ? Utility::shortText(Utility::hardDecode($item->body),200) : '-',
 						'media_image' => $cover_url_path ? $cover_url_path : '-',
@@ -316,7 +316,7 @@ class SiteController extends ControllerApi
 				$return = array(
 					'success' => '1',
 					'id' => $model->article_id,
-					'category' => Phrase::trans($model->cat->name),
+					'category' => $model->cat->title->message,
 					'title' => $model->title,
 					'body' => Utility::softDecode($model->body),
 					'media_image' => $cover_url_path ? $cover_url_path : '-',
