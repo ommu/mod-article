@@ -4,9 +4,8 @@
  * @var $this SiteController
  * @var $model Articles
  * @var $form CActiveForm
- * version: 1.3.0
- * Reference start
  *
+ * Reference start
  * TOC :
  *	Index
  *	Main
@@ -17,10 +16,10 @@
  *	performAjaxValidation
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
  * @created date 23 Juni 2016, 14:46 WIB
  * @link https://github.com/ommu/ommu-article
- * @contact (+62)856-299-4114
  *
  *----------------------------------------------------------------------------------------------------------
  */

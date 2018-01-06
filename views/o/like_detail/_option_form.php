@@ -4,13 +4,12 @@
  * @var $this LikedetailController
  * @var $model ArticleLikeDetail
  * @var $form CActiveForm
- * version: 1.3.0
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 Ommu Platform (opensource.ommu.co)
  * @created date 7 February 2017, 02:35 WIB
  * @link https://github.com/ommu/ommu-article
- * @contact (+62)856-299-4114
  *
  */
 ?>
