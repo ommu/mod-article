@@ -34,9 +34,9 @@
 	<fieldset>
 	
 		<?php if(!$model->isNewRecord) {?>		
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'old_media_input'); ?>
-			<div class="desc">
+		<div class="form-group row">
+			<?php echo $form->labelEx($model,'old_media_input', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				if(!$model->getErrors())
 					$model->old_media_input = $model->media;
@@ -52,10 +52,10 @@
 		<?php }?>
 
 		<?php if($model->article->article_type == 'standard') {?>
-			<div class="clearfix">
-				<?php echo $form->labelEx($model,'media'); ?>
-				<div class="desc">
-					<?php echo $form->fileField($model,'media',array('maxlength'=>64)); ?>
+			<div class="form-group row">
+				<?php echo $form->labelEx($model,'media', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+				<div class="col-lg-8 col-md-9 col-sm-12">
+					<?php echo $form->fileField($model,'media',array('maxlength'=>64, 'class'=>'form-control')); ?>
 					<?php echo $form->error($model,'media'); ?>
 					<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($media_file_type, false);?></span>
 				</div>
@@ -63,46 +63,48 @@
 			
 		<?php }
 			if($model->article->article_type == 'video') {?>
-			<div class="clearfix">
-				<?php echo $form->labelEx($model,'video_input'); ?>
-				<div class="desc">
+			<div class="form-group row">
+				<?php echo $form->labelEx($model,'video_input', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+				<div class="col-lg-8 col-md-9 col-sm-12">
 					<?php
 					if(!$model->getErrors())
 						$model->video_input = $model->media;
-					echo $form->textField($model,'video_input',array('maxlength'=>32)); ?>
+					echo $form->textField($model,'video_input',array('maxlength'=>32, 'class'=>'form-control')); ?>
 					<?php echo $form->error($model,'video_input'); ?>
 					<span class="small-px">http://www.youtube.com/watch?v=<strong>HOAqSoDZSho</strong></span>
 				</div>
 			</div>			
 		<?php }?>
 
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'caption'); ?>
-			<div class="desc">
-				<?php echo $form->textArea($model,'caption',array('rows'=>6, 'cols'=>50, 'class'=>'span-10 smaller')); ?>
+		<div class="form-group row">
+			<?php echo $form->labelEx($model,'caption', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
+				<?php echo $form->textArea($model,'caption',array('rows'=>6, 'cols'=>50, 'class'=>'form-control')); ?>
 				<?php echo $form->error($model,'caption'); ?>
 			</div>
 		</div>
 
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'cover'); ?>
-			<div class="desc">
-				<?php echo $form->checkBox($model,'cover'); ?>
+		<div class="form-group row publish">
+			<?php echo $form->labelEx($model,'cover', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
+				<?php echo $form->checkBox($model,'cover', array('class'=>'form-control')); ?>
+				<?php echo $form->labelEx($model,'cover'); ?>
 				<?php echo $form->error($model,'cover'); ?>
 			</div>
 		</div>
 
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'publish'); ?>
-			<div class="desc">
-				<?php echo $form->checkBox($model,'publish'); ?>
+		<div class="form-group row publish">
+			<?php echo $form->labelEx($model,'publish', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
+				<?php echo $form->checkBox($model,'publish', array('class'=>'form-control')); ?>
+				<?php echo $form->labelEx($model,'publish'); ?>
 				<?php echo $form->error($model,'publish'); ?>
 			</div>
 		</div>
 
-		<div class="submit clearfix">
-			<label>&nbsp;</label>
-			<div class="desc">
+		<div class="form-group row submit">
+			<label class="col-form-label col-lg-4 col-md-3 col-sm-12">&nbsp;</label>
+			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php echo CHtml::submitButton($model->isNewRecord ? Yii::t('phrase', 'Create') : Yii::t('phrase', 'Save'), array('onclick' => 'setEnableSave()')); ?>
 			</div>
 		</div>

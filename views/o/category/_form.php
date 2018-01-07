@@ -29,48 +29,48 @@
 		</div>
 		<?php //begin.Messages ?>
 		
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'parent'); ?>
-			<div class="desc">
+		<div class="form-group row">
+			<?php echo $form->labelEx($model,'parent', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				$category = ArticleCategory::getCategory();
 				if($category != null)
-					echo $form->dropDownList($model,'parent', $category, array('prompt'=>Yii::t('phrase', 'No Parent')));
+					echo $form->dropDownList($model,'parent', $category, array('prompt'=>Yii::t('phrase', 'No Parent'), array('class'=>'form-control')));
 				else
-					echo $form->dropDownList($model,'parent', array(0=>Yii::t('phrase', 'No Parent')));?>
+					echo $form->dropDownList($model,'parent', array(0=>Yii::t('phrase', 'No Parent'), array('class'=>'form-control')));?>
 				<?php echo $form->error($model,'parent'); ?>
 			</div>
 		</div>
 
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'name_i'); ?>
-			<div class="desc">
-				<?php echo $form->textField($model,'name_i',array('maxlength'=>32,'class'=>'span-8')); ?>
+		<div class="form-group row">
+			<?php echo $form->labelEx($model,'name_i', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
+				<?php echo $form->textField($model,'name_i',array('maxlength'=>32,'class'=>'form-control')); ?>
 				<?php echo $form->error($model,'name_i'); ?>
 			</div>
 		</div>
 
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'desc_i'); ?>
-			<div class="desc">
-				<?php echo $form->textArea($model,'desc_i',array('maxlength'=>128,'class'=>'span-11 smaller')); ?>
+		<div class="form-group row">
+			<?php echo $form->labelEx($model,'desc_i', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
+				<?php echo $form->textArea($model,'desc_i',array('maxlength'=>128,'class'=>'form-control')); ?>
 				<?php echo $form->error($model,'desc_i'); ?>
 			</div>
 		</div>
 
-		<div class="clearfix publish">
-			<?php echo $form->labelEx($model,'single_photo'); ?>
-			<div class="desc">
-				<?php echo $form->checkBox($model,'single_photo'); ?>
+		<div class="form-group row publish">
+			<?php echo $form->labelEx($model,'single_photo', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
+				<?php echo $form->checkBox($model,'single_photo', array('class'=>'form-control')); ?>
 				<?php echo $form->labelEx($model,'single_photo'); ?>
 				<?php echo $form->error($model,'single_photo'); ?>
 			</div>
 		</div>
 
-		<div class="clearfix publish">
-			<?php echo $form->labelEx($model,'publish'); ?>
-			<div class="desc">
-				<?php echo $form->checkBox($model,'publish'); ?>
+		<div class="form-group row publish">
+			<?php echo $form->labelEx($model,'publish', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
+				<?php echo $form->checkBox($model,'publish', array('class'=>'form-control')); ?>
 				<?php echo $form->labelEx($model,'publish'); ?>
 				<?php echo $form->error($model,'publish'); ?>
 			</div>

@@ -50,28 +50,28 @@ EOP;
 	<h3><?php echo Yii::t('phrase', 'Public Settings');?></h3>
 	<fieldset>
 
-		<div class="clearfix">
-			<label>
+		<div class="form-group row">
+			<label class="col-form-label col-lg-4 col-md-3 col-sm-12">
 				<?php echo $model->getAttributeLabel('license');?> <span class="required">*</span><br/>
 				<span><?php echo Yii::t('phrase', 'Enter the your license key that is provided to you when you purchased this plugin. If you do not know your license key, please contact support team.');?></span>
 			</label>
-			<div class="desc">
+			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				if($model->isNewRecord || (!$model->isNewRecord && $model->license == ''))
 					$model->license = ArticleSetting::getLicense();
 			
 				if($model->isNewRecord || (!$model->isNewRecord && $model->license == ''))
-					echo $form->textField($model,'license',array('maxlength'=>32,'class'=>'span-4'));
+					echo $form->textField($model,'license',array('maxlength'=>32,'class'=>'form-control'));
 				else
-					echo $form->textField($model,'license',array('maxlength'=>32,'class'=>'span-4','disabled'=>'disabled'));?>
+					echo $form->textField($model,'license',array('maxlength'=>32,'class'=>'form-control','disabled'=>'disabled'));?>
 				<?php echo $form->error($model,'license'); ?>
 				<span class="small-px"><?php echo Yii::t('phrase', 'Format: XXXX-XXXX-XXXX-XXXX');?></span>
 			</div>
 		</div>
 
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'permission'); ?>
-			<div class="desc">
+		<div class="form-group row">
+			<?php echo $form->labelEx($model,'permission', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
 				<span class="small-px"><?php echo Yii::t('phrase', 'Select whether or not you want to let the public (visitors that are not logged-in) to view the following sections of your social network. In some cases (such as Profiles, Blogs, and Albums), if you have given them the option, your users will be able to make their pages private even though you have made them publically viewable here. For more permissions settings, please visit the General Settings page.');?></span>
 				<?php 
 				if($model->isNewRecord && !$model->getErrors())
@@ -79,30 +79,30 @@ EOP;
 				echo $form->radioButtonList($model, 'permission', array(
 					1 => Yii::t('phrase', 'Yes, the public can view articles unless they are made private.'),
 					0 => Yii::t('phrase', 'No, the public cannot view articles.'),
-				)); ?>
+				), array('class'=>'form-control')); ?>
 				<?php echo $form->error($model,'permission'); ?>
 			</div>
 		</div>
 
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'meta_description'); ?>
-			<div class="desc">
-				<?php echo $form->textArea($model,'meta_description',array('rows'=>6, 'cols'=>50, 'class'=>'span-7 smaller')); ?>
+		<div class="form-group row">
+			<?php echo $form->labelEx($model,'meta_description', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
+				<?php echo $form->textArea($model,'meta_description',array('rows'=>6, 'cols'=>50, 'class'=>'form-control')); ?>
 				<?php echo $form->error($model,'meta_description'); ?>
 			</div>
 		</div>
 
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'meta_keyword'); ?>
-			<div class="desc">
-				<?php echo $form->textArea($model,'meta_keyword',array('rows'=>6, 'cols'=>50, 'class'=>'span-7 smaller')); ?>
+		<div class="form-group row">
+			<?php echo $form->labelEx($model,'meta_keyword', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
+				<?php echo $form->textArea($model,'meta_keyword',array('rows'=>6, 'cols'=>50, 'class'=>'form-control')); ?>
 				<?php echo $form->error($model,'meta_keyword'); ?>
 			</div>
 		</div>
 
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'type_active'); ?>
-			<div class="desc">
+		<div class="form-group row">
+			<?php echo $form->labelEx($model,'type_active', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				if(!$model->getErrors())
 					$model->type_active = unserialize($model->type_active);
@@ -111,14 +111,14 @@ EOP;
 					'video=Video' => Yii::t('phrase', 'Video'),
 					//'audio=Audio' => Yii::t('phrase', 'Audio'),
 					'quote=Quote' => Yii::t('phrase', 'Quote'),
-				)); ?>
+				), array('class'=>'form-control')); ?>
 				<?php echo $form->error($model,'type_active'); ?>
 			</div>
 		</div>
 
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'gridview_column'); ?>
-			<div class="desc">
+		<div class="form-group row">
+			<?php echo $form->labelEx($model,'gridview_column', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				$customField = array(
 					'creation_search' => $article->getAttributeLabel('creation_search'),
@@ -132,65 +132,65 @@ EOP;
 				);
 				if(!$model->getErrors())
 					$model->gridview_column = unserialize($model->gridview_column);
-				echo $form->checkBoxList($model,'gridview_column', $customField); ?>
+				echo $form->checkBoxList($model,'gridview_column', $customField, array('class'=>'form-control')); ?>
 				<?php echo $form->error($model,'gridview_column'); ?>
 			</div>
 		</div>
 
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'headline'); ?>
-			<div class="desc">
+		<div class="form-group row">
+			<?php echo $form->labelEx($model,'headline', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				if($model->isNewRecord && !$model->getErrors())
 					$model->headline = 1;
 				echo $form->dropDownLIst($model,'headline', array(
 					'1' => Yii::t('phrase', 'Enable'),
 					'0' => Yii::t('phrase', 'Disable'),
-				)); ?>
+				), array('class'=>'form-control')); ?>
 				<?php echo $form->error($model,'headline'); ?>
 			</div>
 		</div>
 		
 		<div id="headline" class="<?php echo $model->headline == 0 ? 'hide' : '';?>">
-			<div class="clearfix">
-				<?php echo $form->labelEx($model,'headline_limit'); ?>
-				<div class="desc">
+			<div class="form-group row">
+				<?php echo $form->labelEx($model,'headline_limit', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+				<div class="col-lg-8 col-md-9 col-sm-12">
 					<?php 
 					if($model->isNewRecord && !$model->getErrors())
 						$model->headline_limit = 0;
-					echo $form->textField($model,'headline_limit', array('maxlength'=>3, 'class'=>'span-2')); ?>
+					echo $form->textField($model,'headline_limit', array('maxlength'=>3, 'class'=>'form-control')); ?>
 					<?php echo $form->error($model,'headline_limit'); ?>
 				</div>
 			</div>
 
-			<div class="clearfix">
-				<?php echo $form->labelEx($model,'headline_category'); ?>
-				<div class="desc">
+			<div class="form-group row">
+				<?php echo $form->labelEx($model,'headline_category', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+				<div class="col-lg-8 col-md-9 col-sm-12">
 					<?php 
 					$parent = null;
 					$category = ArticleCategory::getCategory(1, $parent);
 					if(!$model->getErrors())
 						$model->headline_category = unserialize($model->headline_category);
 					if($category != null)
-						echo $form->checkBoxList($model,'headline_category', $category);
+						echo $form->checkBoxList($model,'headline_category', $category, array('class'=>'form-control'));
 					else
-						echo $form->checkBoxList($model,'headline_category', array('prompt'=>Yii::t('phrase', 'No Parent'))); ?>
+						echo $form->checkBoxList($model,'headline_category', array('prompt'=>Yii::t('phrase', 'No Parent'), 'class'=>'form-control')); ?>
 					<?php echo $form->error($model,'headline_category'); ?>
 				</div>
 			</div>
 		</div>
 
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'media_limit'); ?>
-			<div class="desc">
-				<?php echo $form->textField($model,'media_limit', array('class'=>'span-2')); ?>
+		<div class="form-group row">
+			<?php echo $form->labelEx($model,'media_limit', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
+				<?php echo $form->textField($model,'media_limit', array('class'=>'form-control')); ?>
 				<?php echo $form->error($model,'media_limit'); ?>
 			</div>
 		</div>
 
-		<div class="clearfix">
-			<label><?php echo Yii::t('phrase', 'Media Setting');?> <span class="required">*</span></label>
-			<div class="desc">
+		<div class="form-group row">
+			<label class="col-form-label col-lg-4 col-md-3 col-sm-12"><?php echo Yii::t('phrase', 'Media Setting');?> <span class="required">*</span></label>
+			<div class="col-lg-8 col-md-9 col-sm-12">
 				<p><?php echo $model->getAttributeLabel('media_resize');?></p>
 				<?php 
 				if($model->isNewRecord && !$model->getErrors())
@@ -198,7 +198,7 @@ EOP;
 				echo $form->radioButtonList($model, 'media_resize', array(
 					0 => Yii::t('phrase', 'No, not resize media after upload.'),
 					1 => Yii::t('phrase', 'Yes, resize media after upload.'),
-				)); ?>
+				), array('class'=>'form-control')); ?>
 				
 				<?php if(!$model->getErrors()) {
 					$model->media_resize_size = unserialize($model->media_resize_size);
@@ -206,31 +206,31 @@ EOP;
 				}?>
 				
 				<div id="resize_size" class="mt-15 <?php echo $model->media_resize == 0 ? 'hide' : '';?>">
-					<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_resize_size[width]',array('maxlength'=>4,'class'=>'span-2')); ?>&nbsp;&nbsp;&nbsp;
-					<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_resize_size[height]',array('maxlength'=>4,'class'=>'span-2')); ?>
+					<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_resize_size[width]',array('maxlength'=>4,'class'=>'form-control')); ?>&nbsp;&nbsp;&nbsp;
+					<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_resize_size[height]',array('maxlength'=>4,'class'=>'form-control')); ?>
 					<?php echo $form->error($model,'media_resize_size'); ?>
 				</div>
 				
 				<p><?php echo Yii::t('phrase', 'Large Size');?></p>				
-				<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_view_size[large][width]',array('maxlength'=>4,'class'=>'span-2')); ?>&nbsp;&nbsp;&nbsp;
-				<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_view_size[large][height]',array('maxlength'=>4,'class'=>'span-2')); ?>
+				<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_view_size[large][width]',array('maxlength'=>4,'class'=>'form-control')); ?>&nbsp;&nbsp;&nbsp;
+				<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_view_size[large][height]',array('maxlength'=>4,'class'=>'form-control')); ?>
 				<?php echo $form->error($model,'media_view_size[large]'); ?>
 				
 				<p><?php echo Yii::t('phrase', 'Medium Size');?></p>
-				<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_view_size[medium][width]',array('maxlength'=>3,'class'=>'span-2')); ?>&nbsp;&nbsp;&nbsp;
-				<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_view_size[medium][height]',array('maxlength'=>3,'class'=>'span-2')); ?>
+				<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_view_size[medium][width]',array('maxlength'=>3,'class'=>'form-control')); ?>&nbsp;&nbsp;&nbsp;
+				<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_view_size[medium][height]',array('maxlength'=>3,'class'=>'form-control')); ?>
 				<?php echo $form->error($model,'media_view_size[medium]'); ?>
 				
 				<p><?php echo Yii::t('phrase', 'Small Size');?></p>
-				<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_view_size[small][width]',array('maxlength'=>3,'class'=>'span-2')); ?>&nbsp;&nbsp;&nbsp;
-				<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_view_size[small][height]',array('maxlength'=>3,'class'=>'span-2')); ?>
+				<?php echo Yii::t('phrase', 'Width').': ';?><?php echo $form->textField($model,'media_view_size[small][width]',array('maxlength'=>3,'class'=>'form-control')); ?>&nbsp;&nbsp;&nbsp;
+				<?php echo Yii::t('phrase', 'Height').': ';?><?php echo $form->textField($model,'media_view_size[small][height]',array('maxlength'=>3,'class'=>'form-control')); ?>
 				<?php echo $form->error($model,'media_view_size[small]'); ?>
 			</div>
 		</div>
 
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'media_file_type'); ?>
-			<div class="desc">
+		<div class="form-group row">
+			<?php echo $form->labelEx($model,'media_file_type', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				if(!$model->getErrors()) {
 					$media_file_type = unserialize($model->media_file_type);
@@ -239,15 +239,15 @@ EOP;
 					else
 						$model->media_file_type = 'jpg, png, bmp';
 				}
-				echo $form->textField($model,'media_file_type', array('class'=>'span-6')); ?>
+				echo $form->textField($model,'media_file_type', array('class'=>'form-control')); ?>
 				<?php echo $form->error($model,'media_file_type'); ?>
 				<span class="small-px">pisahkan jenis file dengan koma (,). example: "jpg, png, bmp"</span>
 			</div>
 		</div>
 
-		<div class="clearfix">
-			<?php echo $form->labelEx($model,'upload_file_type'); ?>
-			<div class="desc">
+		<div class="form-group row">
+			<?php echo $form->labelEx($model,'upload_file_type', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php				
 				if(!$model->getErrors()) {
 					$upload_file_type = unserialize($model->upload_file_type);
@@ -256,15 +256,15 @@ EOP;
 					else
 						$model->upload_file_type = 'mp3, mp4, pdf, doc, docx';
 				}
-				echo $form->textField($model,'upload_file_type', array('class'=>'span-6')); ?>
+				echo $form->textField($model,'upload_file_type', array('class'=>'form-control')); ?>
 				<?php echo $form->error($model,'upload_file_type'); ?>
 				<span class="small-px">pisahkan type file dengan koma (,). example: "mp3, mp4, pdf, doc, docx"</span>
 			</div>
 		</div>
 
-		<div class="submit clearfix">
-			<label>&nbsp;</label>
-			<div class="desc">
+		<div class="form-group row submit">
+			<label class="col-form-label col-lg-4 col-md-3 col-sm-12">&nbsp;</label>
+			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php echo CHtml::submitButton($model->isNewRecord ? Yii::t('phrase', 'Create') : Yii::t('phrase', 'Save'), array('onclick' => 'setEnableSave()')); ?>
 			</div>
 		</div>
