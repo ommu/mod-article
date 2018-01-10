@@ -819,7 +819,7 @@ class Articles extends CActiveRecord
 		parent::afterDelete();
 		//delete article image
 		$article_path = "public/article/".$this->article_id;
-		Utility::deleteFolder($article_path);		
+		Utility::deleteFolder($article_path);
 	}
 
 }

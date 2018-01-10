@@ -161,8 +161,10 @@ class TagController extends Controller
 		
 		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
-			if(isset($id)) {
-				$model->delete();
+			$model->publish = 2;
+			$model->modified_id = !Yii::app()->user->isGuest ? Yii::app()->user->id : 0;
+			
+			if($model->update()) {
 				if((isset($_GET['type']) && $_GET['type'] == 'article') || isset($_GET['c'])) {
 					echo CJSON::encode(array(
 						'type' => 4,
@@ -176,28 +178,28 @@ class TagController extends Controller
 					));
 				}
 			}
-
-		} else {
-			if(isset($_GET['type']) && $_GET['type'] == 'article')
-				$url = Yii::app()->controller->createUrl('o/admin/edit', array('id'=>$model->article_id));
-			else {
-				if(isset($_GET['c']) && count($_GET) > 2)
-					$url = Yii::app()->controller->createUrl($_GET['c'].'/'.$_GET['d'].'/edit', array('id'=>$model->article_id));
-				else if(isset($_GET['c']))
-					$url = Yii::app()->controller->createUrl($_GET['c'].'/edit', array('id'=>$model->article_id));
-				else
-					$url = Yii::app()->controller->createUrl('manage');
-			}
-			
-			$this->dialogDetail = true;
-			$this->dialogGroundUrl = $url;
-			$this->dialogWidth = 350;
-
-			$this->pageTitle = Yii::t('phrase', 'Delete Tag: {tag_body} from article {article_title}', array('{tag_body}'=>$model->tag->body, '{article_title}'=>$model->article->title));
-			$this->pageDescription = '';
-			$this->pageMeta = '';
-			$this->render('admin_delete');
+			Yii::app()->end();
 		}
+		
+		if(isset($_GET['type']) && $_GET['type'] == 'article')
+			$url = Yii::app()->controller->createUrl('o/admin/edit', array('id'=>$model->article_id));
+		else {
+			if(isset($_GET['c']) && count($_GET) > 2)
+				$url = Yii::app()->controller->createUrl($_GET['c'].'/'.$_GET['d'].'/edit', array('id'=>$model->article_id));
+			else if(isset($_GET['c']))
+				$url = Yii::app()->controller->createUrl($_GET['c'].'/edit', array('id'=>$model->article_id));
+			else
+				$url = Yii::app()->controller->createUrl('manage');
+		}
+		
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = $url;
+		$this->dialogWidth = 350;
+
+		$this->pageTitle = Yii::t('phrase', 'Delete Tag: {tag_body} from article {article_title}', array('{tag_body}'=>$model->tag->body, '{article_title}'=>$model->article->title));
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_delete');
 	}
 
 	/**
