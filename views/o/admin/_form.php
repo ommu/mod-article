@@ -60,7 +60,7 @@ EOP;
 
 	<fieldset>
 		<div class="row">
-			<div class="col-lg-9 col-md-12">
+			<div class="col-lg-8 col-md-12">
 				<div class="form-group row" id="type">
 					<?php echo $model->isNewRecord ? $form->labelEx($model,'article_type', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')) : '<label class="col-form-label col-lg-4 col-md-3 col-sm-12">'.$model->getAttributeLabel('article_type').'</label>'; ?>
 					<div class="col-lg-8 col-md-9 col-sm-12">
@@ -75,7 +75,7 @@ EOP;
 								}
 							}
 							echo $form->dropDownList($model,'article_type', $arrAttrParams, array('class'=>'form-control'));
-							//echo $form->dropDownList($model,'article_type', $arrAttrParams, array('prompt'=>Yii::t('phrase', 'Choose one')));
+							//echo $form->dropDownList($model,'article_type', $arrAttrParams, array('prompt'=>Yii::t('phrase', 'Choose one'), 'class'=>'form-control'));
 						} else {
 							if($model->article_type == 'standard')
 								echo '<strong>'.Yii::t('phrase', 'Standard').'</strong>';
@@ -98,7 +98,7 @@ EOP;
 						if($category != null)
 							echo $form->dropDownList($model,'cat_id', $category, array('class'=>'form-control'));
 						else
-							echo $form->dropDownList($model,'cat_id', array('prompt'=>Yii::t('phrase', 'No Parent'), 'class'=>'form-control'));?>
+							echo $form->dropDownList($model,'cat_id', array('prompt'=>Yii::t('phrase', 'No Parent')), array('class'=>'form-control'));?>
 						<?php echo $form->error($model,'cat_id'); ?>
 					</div>
 				</div>
@@ -217,7 +217,7 @@ EOP;
 				</div>
 
 			</div>
-			<div class="col-lg-3 col-md-12">
+			<div class="col-lg-4 col-md-12">
 				<?php
 				if(!$model->isNewRecord) {
 					if(!$model->getErrors())
@@ -308,7 +308,7 @@ EOP;
 	<fieldset>
 		<?php if($model->isNewRecord || (!$model->isNewRecord && $model->article_type != 'quote')) {?>
 		<div class="form-group row <?php echo $model->article_type == 'quote' ? 'hide' : '';?>" id="quote">
-			<?php echo $form->labelEx($model,'quote', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'quote', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				//echo $form->textArea($model,'body',array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));
@@ -340,7 +340,7 @@ EOP;
 		<?php }?>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'body', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'body', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				//echo $form->textArea($model,'body',array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));

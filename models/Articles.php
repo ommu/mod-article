@@ -659,7 +659,7 @@ class Articles extends CActiveRecord
 	protected function beforeSave() 
 	{
 		if(parent::beforeSave()) {
-			if(!$this->isNewRecord && $this->article_type != 'quote') {
+			if($this->article_type != 'quote') {
 				$article_path = "public/article/".$this->article_id;
 				// Add directory
 				if(!file_exists($article_path)) {
@@ -670,7 +670,9 @@ class Articles extends CActiveRecord
 					$FileHandle = fopen($newFile, 'w');
 				} else
 					@chmod($article_path, 0755, true);
-				
+			}
+
+			if(!$this->isNewRecord && $this->article_type != 'quote') {
 				$this->media_file = CUploadedFile::getInstance($this, 'media_file');
 				if($this->media_file != null) {
 					if($this->media_file instanceOf CUploadedFile) {
