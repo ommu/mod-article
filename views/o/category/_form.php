@@ -34,7 +34,7 @@
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				$category = ArticleCategory::getCategory();
-				if($category == null)
+				if($category != null)
 					echo $form->dropDownList($model,'parent', $category, array('prompt'=>Yii::t('phrase', 'No Parent'), 'class'=>'form-control'));
 				else
 					echo $form->dropDownList($model,'parent', array(0=>Yii::t('phrase', 'No Parent')), array('class'=>'form-control'));?>
