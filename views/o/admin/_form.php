@@ -62,7 +62,7 @@ EOP;
 		<div class="row">
 			<div class="col-lg-9 col-md-12">
 				<div class="form-group row" id="type">
-					<?php echo $model->isNewRecord ? $form->labelEx($model,'article_type', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')) : '<label class="col-form-label col-lg-4 col-md-3 col-sm-12">'.$model->getAttributeLabel('article_type').'</label>'; ?>
+					<?php echo $model->isNewRecord ? $form->labelEx($model,'article_type', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')) : '<label class="col-form-label col-lg-4 col-md-3 col-sm-12">'.$model->getAttributeLabel('article_type').'</label>'; ?>
 					<div class="col-lg-8 col-md-9 col-sm-12">
 						<?php
 						if($model->isNewRecord) {
@@ -89,7 +89,7 @@ EOP;
 				</div>
 
 				<div class="form-group row">
-					<?php echo $form->labelEx($model,'cat_id', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+					<?php echo $form->labelEx($model,'cat_id', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 					<div class="col-lg-8 col-md-9 col-sm-12">
 						<?php
 						$parent = null;
@@ -121,7 +121,7 @@ EOP;
 						$image = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_media_input;
 						$media = '<img src="'.Utility::getTimThumb($image, 320, 150, 1).'" alt="">';
 						echo '<div class="form-group row">';
-						echo $form->labelEx($model,'old_media_input', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12'));
+						echo $form->labelEx($model,'old_media_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12'));
 						echo '<div class="col-lg-8 col-md-9 col-sm-12">'.$media.'</div>';
 						echo '</div>';
 					}
@@ -129,7 +129,7 @@ EOP;
 
 				<?php if($model->isNewRecord || (!$model->isNewRecord && $condition == 0)) {?>
 				<div id="media" class="<?php echo (($model->isNewRecord && !$model->getErrors()) || ($model->article_type == 'standard' && (($model->isNewRecord && $model->getErrors()) || (!$model->isNewRecord && ($setting->media_limit == 1 || ($setting->media_limit != 1 && $model->cat->single_photo == 1)))))) ? '' : 'hide';?> form-group row filter">
-					<?php echo $form->labelEx($model,'media_input', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+					<?php echo $form->labelEx($model,'media_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 					<div class="col-lg-8 col-md-9 col-sm-12">
 						<?php echo $form->fileField($model,'media_input', array('class'=>'form-control')); ?>
 						<?php echo $form->error($model,'media_input'); ?>
@@ -156,7 +156,7 @@ EOP;
 				<?php }?>
 				
 				<div class="form-group row">
-					<?php echo $form->labelEx($model,'keyword_input', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+					<?php echo $form->labelEx($model,'keyword_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 					<div class="col-lg-8 col-md-9 col-sm-12">
 						<?php 
 						if($model->isNewRecord) {
@@ -227,7 +227,7 @@ EOP;
 						$file = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_media_file_input;
 						echo '<div class="form-group row">';
 						echo $form->labelEx($model,'old_media_file_input', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12'));
-						echo '<div class="col-lg-8 col-md-9 col-sm-12"><a href="'.$file.'" title="'.$model->old_media_file_input.'">'.$model->old_media_file_input.'</a></div>';
+						echo '<div class="col-lg-12 col-md-9 col-sm-12"><a href="'.$file.'" title="'.$model->old_media_file_input.'">'.$model->old_media_file_input.'</a></div>';
 						echo '</div>';
 					}
 				}?>
@@ -235,7 +235,7 @@ EOP;
 				<?php if($model->isNewRecord || (!$model->isNewRecord && in_array($model->article_type, array('standard','video')))) {?>
 				<div id="file" class="<?php echo (($model->isNewRecord && !$model->getErrors()) || (in_array($model->article_type, array('standard','video')) && ($model->isNewRecord && $model->getErrors()) || !$model->isNewRecord)) ? '' : 'hide';?> form-group row">
 					<?php echo $form->labelEx($model,'media_file', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
-					<div class="col-lg-8 col-md-9 col-sm-12">
+					<div class="col-lg-12 col-md-9 col-sm-12">
 						<?php echo $form->fileField($model,'media_file', array('class'=>'form-control')); ?>
 						<?php echo $form->error($model,'media_file'); ?>
 						<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($upload_file_type, false);?></span>
@@ -245,7 +245,7 @@ EOP;
 	
 				<div class="form-group row">
 					<?php echo $form->labelEx($model,'published_date', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
-					<div class="col-lg-8 col-md-9 col-sm-12">
+					<div class="col-lg-12 col-md-9 col-sm-12">
 						<?php 
 						$model->published_date = $model->isNewRecord && $model->published_date == '' ? date('d-m-Y') : date('d-m-Y', strtotime($model->published_date));
 						//echo $form->textField($model,'published_date', array('class'=>'span-7'));
@@ -267,7 +267,7 @@ EOP;
 				<?php if(OmmuSettings::getInfo('site_type') == 1) {?>
 				<div class="form-group row publish">
 					<?php echo $form->labelEx($model,'comment_code', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
-					<div class="col-lg-8 col-md-9 col-sm-12">
+					<div class="col-lg-12 col-md-9 col-sm-12">
 						<?php echo $form->checkBox($model,'comment_code', array('class'=>'form-control')); ?>
 						<?php echo $form->labelEx($model,'comment_code'); ?>
 						<?php echo $form->error($model,'comment_code'); ?>
@@ -281,7 +281,7 @@ EOP;
 				<?php if($setting->headline == 1) {?>
 				<div class="form-group row publish">
 					<?php echo $form->labelEx($model,'headline', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
-					<div class="col-lg-8 col-md-9 col-sm-12">
+					<div class="col-lg-12 col-md-9 col-sm-12">
 						<?php echo $form->checkBox($model,'headline', array('class'=>'form-control')); ?>
 						<?php echo $form->labelEx($model,'headline'); ?>
 						<?php echo $form->error($model,'headline'); ?>
@@ -294,7 +294,7 @@ EOP;
 	
 				<div class="form-group row publish">
 					<?php echo $form->labelEx($model,'publish', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
-					<div class="col-lg-8 col-md-9 col-sm-12">
+					<div class="col-lg-12 col-md-9 col-sm-12">
 						<?php echo $form->checkBox($model,'publish', array('class'=>'form-control')); ?>
 						<?php echo $form->labelEx($model,'publish'); ?>
 						<?php echo $form->error($model,'publish'); ?>

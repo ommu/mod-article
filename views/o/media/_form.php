@@ -35,7 +35,7 @@
 	
 		<?php if(!$model->isNewRecord) {?>		
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'old_media_input', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'old_media_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				if(!$model->getErrors())
@@ -53,7 +53,7 @@
 
 		<?php if($model->article->article_type == 'standard') {?>
 			<div class="form-group row">
-				<?php echo $form->labelEx($model,'media', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+				<?php echo $form->labelEx($model,'media', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 				<div class="col-lg-8 col-md-9 col-sm-12">
 					<?php echo $form->fileField($model,'media',array('maxlength'=>64, 'class'=>'form-control')); ?>
 					<?php echo $form->error($model,'media'); ?>
@@ -64,7 +64,7 @@
 		<?php }
 			if($model->article->article_type == 'video') {?>
 			<div class="form-group row">
-				<?php echo $form->labelEx($model,'video_input', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+				<?php echo $form->labelEx($model,'video_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 				<div class="col-lg-8 col-md-9 col-sm-12">
 					<?php
 					if(!$model->getErrors())
@@ -77,7 +77,7 @@
 		<?php }?>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'caption', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'caption', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php echo $form->textArea($model,'caption',array('rows'=>6, 'cols'=>50, 'class'=>'form-control')); ?>
 				<?php echo $form->error($model,'caption'); ?>
@@ -85,7 +85,7 @@
 		</div>
 
 		<div class="form-group row publish">
-			<?php echo $form->labelEx($model,'cover', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'cover', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php echo $form->checkBox($model,'cover', array('class'=>'form-control')); ?>
 				<?php echo $form->labelEx($model,'cover'); ?>
@@ -94,7 +94,7 @@
 		</div>
 
 		<div class="form-group row publish">
-			<?php echo $form->labelEx($model,'publish', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'publish', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php echo $form->checkBox($model,'publish', array('class'=>'form-control')); ?>
 				<?php echo $form->labelEx($model,'publish'); ?>

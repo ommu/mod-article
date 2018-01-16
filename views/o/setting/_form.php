@@ -70,7 +70,7 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'permission', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'permission', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<span class="small-px"><?php echo Yii::t('phrase', 'Select whether or not you want to let the public (visitors that are not logged-in) to view the following sections of your social network. In some cases (such as Profiles, Blogs, and Albums), if you have given them the option, your users will be able to make their pages private even though you have made them publically viewable here. For more permissions settings, please visit the General Settings page.');?></span>
 				<?php 
@@ -85,7 +85,7 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'meta_description', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'meta_description', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php echo $form->textArea($model,'meta_description',array('rows'=>6, 'cols'=>50, 'class'=>'form-control')); ?>
 				<?php echo $form->error($model,'meta_description'); ?>
@@ -93,7 +93,7 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'meta_keyword', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'meta_keyword', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php echo $form->textArea($model,'meta_keyword',array('rows'=>6, 'cols'=>50, 'class'=>'form-control')); ?>
 				<?php echo $form->error($model,'meta_keyword'); ?>
@@ -101,7 +101,7 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'type_active', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'type_active', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				if(!$model->getErrors())
@@ -117,7 +117,7 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'gridview_column', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'gridview_column', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				$customField = array(
@@ -138,7 +138,7 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'headline', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'headline', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				if($model->isNewRecord && !$model->getErrors())
@@ -153,7 +153,7 @@ EOP;
 		
 		<div id="headline" class="<?php echo $model->headline == 0 ? 'hide' : '';?>">
 			<div class="form-group row">
-				<?php echo $form->labelEx($model,'headline_limit', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+				<?php echo $form->labelEx($model,'headline_limit', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 				<div class="col-lg-8 col-md-9 col-sm-12">
 					<?php 
 					if($model->isNewRecord && !$model->getErrors())
@@ -164,7 +164,7 @@ EOP;
 			</div>
 
 			<div class="form-group row">
-				<?php echo $form->labelEx($model,'headline_category', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+				<?php echo $form->labelEx($model,'headline_category', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 				<div class="col-lg-8 col-md-9 col-sm-12">
 					<?php 
 					$parent = null;
@@ -181,7 +181,7 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'media_limit', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'media_limit', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php echo $form->textField($model,'media_limit', array('class'=>'form-control')); ?>
 				<?php echo $form->error($model,'media_limit'); ?>
@@ -229,7 +229,7 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'media_file_type', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'media_file_type', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				if(!$model->getErrors()) {
@@ -246,7 +246,7 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'upload_file_type', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'upload_file_type', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php				
 				if(!$model->getErrors()) {
