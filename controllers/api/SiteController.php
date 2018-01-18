@@ -107,7 +107,7 @@ class SiteController extends ControllerApi
 						if($subCategoryFind != null) {
 							foreach($subCategoryFind as $row)
 								$subCategoryData[] = $row->cat_id;
-						}					
+						}
 						$criteriaArticle->addInCondition('t.cat_id', $subCategoryData);
 					}
 					$criteriaArticle->limit = $pagesize ? $pagesize : 4;
@@ -249,7 +249,7 @@ class SiteController extends ControllerApi
 						$media = $item->view->media_cover ? $item->view->media_cover : $medias[0]->media;
 						if($media && file_exists($article_path.'/'.$media))
 							$cover_url_path = $article_url.'/'.$article_path.'/'.$media;
-					}					
+					}
 					if($item->media_file && file_exists($article_path.'/'.$item->media_file))
 						$file_url_path = $article_url.'/'.$article_path.'/'.$item->media_file;
 					
@@ -308,7 +308,7 @@ class SiteController extends ControllerApi
 					$media = $model->view->media_cover ? $model->view->media_cover : $medias[0]->media;
 					if($media && file_exists($article_path.'/'.$media))
 						$cover_url_path = $article_url.'/'.$article_path.'/'.$media;
-				}				
+				}
 				if($model->media_file && file_exists($article_path.'/'.$model->media_file))
 					$file_url_path = $article_url.'/'.$article_path.'/'.$model->media_file;
 				

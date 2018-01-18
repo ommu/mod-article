@@ -142,7 +142,7 @@ class CategoryController extends Controller
 					if($model->save()) {
 						echo CJSON::encode(array(
 							'type' => 5,
-							'get' => Yii::app()->controller->createUrl('o/setting/index'),
+							'get' => Yii::app()->controller->createUrl('o/setting/edit'),
 							'id' => 'partial-article-category',
 							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article category success created.').'</strong></div>',
 						));
@@ -152,19 +152,18 @@ class CategoryController extends Controller
 				}
 			}
 			Yii::app()->end();
-
-		} else {
-			$this->dialogDetail = true;
-			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
-			$this->dialogWidth = 500;
-
-			$this->pageTitle = Yii::t('phrase', 'Create Category');
-			$this->pageDescription = '';
-			$this->pageMeta = '';
-			$this->render('admin_add',array(
-				'model'=>$model,
-			));
 		}
+		
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 500;
+
+		$this->pageTitle = Yii::t('phrase', 'Create Category');
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_add',array(
+			'model'=>$model,
+		));
 	}
 
 	/**
@@ -191,7 +190,7 @@ class CategoryController extends Controller
 					if($model->save()) {
 						echo CJSON::encode(array(
 							'type' => 5,
-							'get' => Yii::app()->controller->createUrl('o/setting/index'),
+							'get' => Yii::app()->controller->createUrl('o/setting/edit'),
 							'id' => 'partial-article-category',
 							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article category success updated.').'</strong></div>',
 						));
@@ -201,19 +200,18 @@ class CategoryController extends Controller
 				}
 			}
 			Yii::app()->end();
-
-		} else {
-			$this->dialogDetail = true;
-			$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
-			$this->dialogWidth = 500;
-
-			$this->pageTitle = Yii::t('phrase', 'Update Category: {category_name}', array('{category_name}'=>$model->title->message));
-			$this->pageDescription = '';
-			$this->pageMeta = '';
-			$this->render('admin_edit',array(
-				'model'=>$model,
-			));
 		}
+		
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 500;
+
+		$this->pageTitle = Yii::t('phrase', 'Update Category: {category_name}', array('{category_name}'=>$model->title->message));
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_edit',array(
+			'model'=>$model,
+		));
 	}
 	
 	/**
@@ -289,7 +287,7 @@ class CategoryController extends Controller
 			if($model->update()) {
 				echo CJSON::encode(array(
 					'type' => 5,
-					'get' => Yii::app()->controller->createUrl('o/setting/index'),
+					'get' => Yii::app()->controller->createUrl('o/setting/edit'),
 					'id' => 'partial-article-category',
 					'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article category success deleted.').'</strong></div>',
 				));
@@ -328,7 +326,7 @@ class CategoryController extends Controller
 			if($model->update()) {
 				echo CJSON::encode(array(
 					'type' => 5,
-					'get' => Yii::app()->controller->createUrl('o/setting/index'),
+					'get' => Yii::app()->controller->createUrl('o/setting/edit'),
 					'id' => 'partial-article-category',
 					'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article category success updated.').'</strong></div>',
 				));

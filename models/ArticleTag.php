@@ -328,7 +328,7 @@ class ArticleTag extends CActiveRecord
 						$data->body = $this->tag_input;
 						if($data->save())
 							$this->tag_id = $data->tag_id;
-					}					
+					}
 				}
 			}
 		}

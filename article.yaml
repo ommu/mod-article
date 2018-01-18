@@ -50,7 +50,7 @@ content_menu	:
 # controller o/admin
 	- urlTitle: Add Article
 		urlRules: {article, o/admin, manage, siteType: "0,1", userLevel: "1,2"}
-		urlPath: {url: add, attr: -, icon: -}		
+		urlPath: {url: add, attr: -, icon: -}
 	- urlTitle: Back to Manage
 		urlRules: {article, o/admin, "add,edit", siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: manage, attr: -, icon: -}
