@@ -1,8 +1,8 @@
 <?php
 /**
- * Article View Details (article-view-detail)
- * @var $this ViewdetailController
- * @var $model ArticleViewDetail
+ * Article View Histories (article-view-history)
+ * @var $this ViewhistoryController
+ * @var $model ArticleViewHistory
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
@@ -13,7 +13,7 @@
  */
 
 	$this->breadcrumbs=array(
-		'Article View Details'=>array('manage'),
+		'Article View Histories'=>array('manage'),
 		'Manage',
 	);
 	$this->menu=array(
@@ -35,7 +35,7 @@
 
 <?php //begin.Search ?>
 <div class="search-form">
-<?php $this->renderPartial('/o/view_detail/_search',array(
+<?php $this->renderPartial('/o/view_history/_search',array(
 	'model'=>$model,
 )); ?>
 </div>
@@ -43,13 +43,13 @@
 
 <?php //begin.Grid Option ?>
 <div class="grid-form">
-<?php $this->renderPartial('/o/view_detail/_option_form',array(
+<?php $this->renderPartial('/o/view_history/_option_form',array(
 	'model'=>$model,
 )); ?>
 </div>
 <?php //end.Grid Option ?>
 
-<div id="partial-article-view-detail">
+<div id="partial-article-view-history">
 	<?php //begin.Messages ?>
 	<div id="ajax-message">
 	<?php
@@ -97,7 +97,7 @@
 			*/
 
 			$this->widget('application.libraries.core.components.system.OGridView', array(
-				'id'=>'article-view-detail-grid',
+				'id'=>'article-view-history-grid',
 				'dataProvider'=>$model->search(),
 				'filter'=>$model,
 				'afterAjaxUpdate' => 'reinstallDatePicker',

@@ -1,6 +1,6 @@
 <?php
 /**
- * ArticleViewDetail
+ * ArticleViewHistory
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
@@ -19,18 +19,18 @@
  *
  * --------------------------------------------------------------------------------------
  *
- * This is the model class for table "ommu_article_view_detail".
+ * This is the model class for table "ommu_article_view_history".
  *
- * The followings are the available columns in table 'ommu_article_view_detail':
+ * The followings are the available columns in table 'ommu_article_view_history':
  * @property string $id
  * @property string $view_id
  * @property string $view_date
  * @property string $view_ip
  *
  * The followings are the available model relations:
- * @property ArticleViewDetail $view
+ * @property ArticleViewHistory $view
  */
-class ArticleViewDetail extends CActiveRecord
+class ArticleViewHistory extends CActiveRecord
 {
 	public $defaultColumns = array();
 	
@@ -43,7 +43,7 @@ class ArticleViewDetail extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return ArticleViewDetail the static model class
+	 * @return ArticleViewHistory the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -55,7 +55,7 @@ class ArticleViewDetail extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'ommu_article_view_detail';
+		return 'ommu_article_view_history';
 	}
 
 	/**
@@ -152,7 +152,7 @@ class ArticleViewDetail extends CActiveRecord
 		$criteria->compare('view_article.title',strtolower($this->article_search),true);
 		$criteria->compare('view_user.displayname',strtolower($this->user_search),true);
 
-		if(!isset($_GET['ArticleViewDetail_sort']))
+		if(!isset($_GET['ArticleViewHistory_sort']))
 			$criteria->order = 't.id DESC';
 
 		return new CActiveDataProvider($this, array(

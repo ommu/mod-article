@@ -1,8 +1,8 @@
 <?php
 /**
- * Article View Details (article-view-detail)
- * @var $this ViewdetailController
- * @var $model ArticleViewDetail
+ * Article View Histories (article-view-history)
+ * @var $this ViewhistoryController
+ * @var $model ArticleViewHistory
  * @var $form CActiveForm
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>

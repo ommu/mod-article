@@ -88,11 +88,11 @@ content_menu	:
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
 	- urlTitle: View Article Views Data
 		urlRules: {article, o/views, manage, siteType: "0,1", userLevel: "1,2"}
-		urlPath: {url: o/viewdetail/manage, attr: -, icon: -}
+		urlPath: {url: o/viewhistory/manage, attr: -, icon: -}
 
-# controller o/viewdetail
+# controller o/viewhistory
 	- urlTitle: Back to Article Views
-		urlRules: {article, o/viewdetail, manage, siteType: "0,1", userLevel: "1,2"}
+		urlRules: {article, o/viewhistory, manage, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/views/manage, attr: -, icon: -}
 		
 # controller o/download
