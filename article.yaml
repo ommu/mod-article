@@ -114,11 +114,11 @@ content_menu	:
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
 	- urlTitle: View Article Likes Data
 		urlRules: {article, o/like, manage, siteType: 1, userLevel: "1,2"}
-		urlPath: {url: o/likedetail/manage, attr: -, icon: -}
+		urlPath: {url: o/likehistory/manage, attr: -, icon: -}
 
-# controller o/likedetail
+# controller o/likehistory
 	- urlTitle: Back to Article Likes
-		urlRules: {article, o/likedetail, manage, siteType: 1, userLevel: "1,2"}
+		urlRules: {article, o/likehistory, manage, siteType: 1, userLevel: "1,2"}
 		urlPath: {url: o/like/manage, attr: -, icon: -}
 		
 # controller o/setting

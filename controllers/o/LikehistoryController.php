@@ -1,8 +1,8 @@
 <?php
 /**
- * LikedetailController
- * @var $this LikedetailController
- * @var $model ArticleLikeDetail
+ * LikehistoryController
+ * @var $this LikehistoryController
+ * @var $model ArticleLikeHistory
  * @var $form CActiveForm
  *
  * Reference start
@@ -22,7 +22,7 @@
  *----------------------------------------------------------------------------------------------------------
  */
 
-class LikedetailController extends Controller
+class LikehistoryController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -97,10 +97,10 @@ class LikedetailController extends Controller
 				$pageTitle = Yii::t('phrase', 'Article Likes Data: {article_title} from category {category_name} - user {user_displayname}', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->cat->title->message, '{user_displayname}'=>$data->user->displayname));
 		}
 		
-		$model=new ArticleLikeDetail('search');
+		$model=new ArticleLikeHistory('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['ArticleLikeDetail'])) {
-			$model->attributes=$_GET['ArticleLikeDetail'];
+		if(isset($_GET['ArticleLikeHistory'])) {
+			$model->attributes=$_GET['ArticleLikeHistory'];
 		}
 
 		$columnTemp = array();
@@ -116,7 +116,7 @@ class LikedetailController extends Controller
 		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('/o/like_detail/admin_manage',array(
+		$this->render('/o/like_history/admin_manage',array(
 			'model'=>$model,
 			'columns' => $columns,
 		));
@@ -129,7 +129,7 @@ class LikedetailController extends Controller
 	 */
 	public function loadModel($id) 
 	{
-		$model = ArticleLikeDetail::model()->findByPk($id);
+		$model = ArticleLikeHistory::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;
@@ -141,7 +141,7 @@ class LikedetailController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='article-like-detail-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='article-like-history-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

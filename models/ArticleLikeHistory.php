@@ -1,6 +1,6 @@
 <?php
 /**
- * ArticleLikeDetail
+ * ArticleLikeHistory
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
@@ -19,9 +19,9 @@
  *
  * --------------------------------------------------------------------------------------
  *
- * This is the model class for table "ommu_article_like_detail".
+ * This is the model class for table "ommu_article_like_history".
  *
- * The followings are the available columns in table 'ommu_article_like_detail':
+ * The followings are the available columns in table 'ommu_article_like_history':
  * @property string $id
  * @property integer $publish
  * @property string $like_id
@@ -31,7 +31,7 @@
  * The followings are the available model relations:
  * @property ArticleLikes $like
  */
-class ArticleLikeDetail extends CActiveRecord
+class ArticleLikeHistory extends CActiveRecord
 {
 	public $defaultColumns = array();
 	
@@ -44,7 +44,7 @@ class ArticleLikeDetail extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return ArticleLikeDetail the static model class
+	 * @return ArticleLikeHistory the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -56,7 +56,7 @@ class ArticleLikeDetail extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'ommu_article_like_detail';
+		return 'ommu_article_like_history';
 	}
 
 	/**
@@ -165,7 +165,7 @@ class ArticleLikeDetail extends CActiveRecord
 		$criteria->compare('like_article.title',strtolower($this->article_search),true);
 		$criteria->compare('like_user.displayname',strtolower($this->user_search),true);
 
-		if(!isset($_GET['ArticleLikeDetail_sort']))
+		if(!isset($_GET['ArticleLikeHistory_sort']))
 			$criteria->order = 't.id DESC';
 
 		return new CActiveDataProvider($this, array(

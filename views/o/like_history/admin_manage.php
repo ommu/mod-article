@@ -1,8 +1,8 @@
 <?php
 /**
- * Article Like Details (article-like-detail)
- * @var $this LikedetailController
- * @var $model ArticleLikeDetail
+ * Article Like Histories (article-like-history)
+ * @var $this LikehistoryController
+ * @var $model ArticleLikeHistory
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
@@ -13,7 +13,7 @@
  */
 
 	$this->breadcrumbs=array(
-		'Article Like Details'=>array('manage'),
+		'Article Like Histories'=>array('manage'),
 		'Manage',
 	);
 	$this->menu=array(
@@ -35,7 +35,7 @@
 
 <?php //begin.Search ?>
 <div class="search-form">
-<?php $this->renderPartial('/o/like_detail/_search',array(
+<?php $this->renderPartial('/o/like_history/_search',array(
 	'model'=>$model,
 )); ?>
 </div>
@@ -43,13 +43,13 @@
 
 <?php //begin.Grid Option ?>
 <div class="grid-form">
-<?php $this->renderPartial('/o/like_detail/_option_form',array(
+<?php $this->renderPartial('/o/like_history/_option_form',array(
 	'model'=>$model,
 )); ?>
 </div>
 <?php //end.Grid Option ?>
 
-<div id="partial-article-like-detail">
+<div id="partial-article-like-history">
 	<?php //begin.Messages ?>
 	<div id="ajax-message">
 	<?php
@@ -95,7 +95,7 @@
 			));
 
 			$this->widget('application.libraries.core.components.system.OGridView', array(
-				'id'=>'article-like-detail-grid',
+				'id'=>'article-like-history-grid',
 				'dataProvider'=>$model->search(),
 				'filter'=>$model,
 				'afterAjaxUpdate' => 'reinstallDatePicker',

@@ -1,8 +1,8 @@
 <?php
 /**
- * Article Like Details (article-like-detail)
- * @var $this LikedetailController
- * @var $model ArticleLikeDetail
+ * Article Like Histories (article-like-history)
+ * @var $this LikehistoryController
+ * @var $model ArticleLikeHistory
  * @var $form CActiveForm
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
