@@ -1,6 +1,6 @@
 <?php
 /**
- * ArticleDownloadDetail
+ * ArticleDownloadHistory
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
@@ -19,9 +19,9 @@
  *
  * --------------------------------------------------------------------------------------
  *
- * This is the model class for table "ommu_article_download_detail".
+ * This is the model class for table "ommu_article_download_history".
  *
- * The followings are the available columns in table 'ommu_article_download_detail':
+ * The followings are the available columns in table 'ommu_article_download_history':
  * @property string $id
  * @property string $download_id
  * @property string $download_date
@@ -30,7 +30,7 @@
  * The followings are the available model relations:
  * @property ArticleDownloads $download
  */
-class ArticleDownloadDetail extends CActiveRecord
+class ArticleDownloadHistory extends CActiveRecord
 {
 	public $defaultColumns = array();
 	
@@ -43,7 +43,7 @@ class ArticleDownloadDetail extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return ArticleDownloadDetail the static model class
+	 * @return ArticleDownloadHistory the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -55,7 +55,7 @@ class ArticleDownloadDetail extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'ommu_article_download_detail';
+		return 'ommu_article_download_history';
 	}
 
 	/**
@@ -152,7 +152,7 @@ class ArticleDownloadDetail extends CActiveRecord
 		$criteria->compare('download_article.title',strtolower($this->article_search),true);
 		$criteria->compare('download_user.displayname',strtolower($this->user_search),true);
 
-		if(!isset($_GET['ArticleDownloadDetail_sort']))
+		if(!isset($_GET['ArticleDownloadHistory_sort']))
 			$criteria->order = 't.id DESC';
 
 		return new CActiveDataProvider($this, array(

@@ -1,8 +1,8 @@
 <?php
 /**
- * Article Download Details (article-download-detail)
- * @var $this DownloaddetailController
- * @var $model ArticleDownloadDetail
+ * Article Download Details (article-download-history)
+ * @var $this DownloadhistoryController
+ * @var $model ArticleDownloadHistory
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
@@ -35,7 +35,7 @@
 
 <?php //begin.Search ?>
 <div class="search-form">
-<?php $this->renderPartial('/o/download_detail/_search',array(
+<?php $this->renderPartial('/o/download_history/_search',array(
 	'model'=>$model,
 )); ?>
 </div>
@@ -43,13 +43,13 @@
 
 <?php //begin.Grid Option ?>
 <div class="grid-form">
-<?php $this->renderPartial('/o/download_detail/_option_form',array(
+<?php $this->renderPartial('/o/download_history/_option_form',array(
 	'model'=>$model,
 )); ?>
 </div>
 <?php //end.Grid Option ?>
 
-<div id="partial-article-download-detail">
+<div id="partial-article-download-history">
 	<?php //begin.Messages ?>
 	<div id="ajax-message">
 	<?php
@@ -97,7 +97,7 @@
 			*/
 
 			$this->widget('application.libraries.core.components.system.OGridView', array(
-				'id'=>'article-download-detail-grid',
+				'id'=>'article-download-history-grid',
 				'dataProvider'=>$model->search(),
 				'filter'=>$model,
 				'afterAjaxUpdate' => 'reinstallDatePicker',

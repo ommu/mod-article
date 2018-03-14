@@ -101,11 +101,11 @@ content_menu	:
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
 	- urlTitle: View Article Downloads Data
 		urlRules: {article, o/download, manage, siteType: "0,1", userLevel: "1,2"}
-		urlPath: {url: o/downloaddetail/manage, attr: -, icon: -}
+		urlPath: {url: o/downloadhistory/manage, attr: -, icon: -}
 
-# controller o/downloaddetail
+# controller o/downloadhistory
 	- urlTitle: Back to Article Downlaods
-		urlRules: {article, o/downloaddetail, manage, siteType: "0,1", userLevel: "1,2"}
+		urlRules: {article, o/downloadhistory, manage, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/download/manage, attr: -, icon: -}
 		
 # controller o/like

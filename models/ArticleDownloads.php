@@ -84,7 +84,7 @@ class ArticleDownloads extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'downloads' => array(self::HAS_MANY, 'ArticleDownloadDetail', 'download_id'),
+			'downloads' => array(self::HAS_MANY, 'ArticleDownloadHistory', 'download_id'),
 			'article' => array(self::BELONGS_TO, 'Articles', 'article_id'),
 			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
 		);
@@ -227,7 +227,7 @@ class ArticleDownloads extends CActiveRecord
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'downloads',
-				'value' => 'CHtml::link($data->downloads, Yii::app()->controller->createUrl("o/downloaddetail/manage",array(\'download\'=>$data->download_id)))',
+				'value' => 'CHtml::link($data->downloads, Yii::app()->controller->createUrl("o/downloadhistory/manage",array(\'download\'=>$data->download_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),

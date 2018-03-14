@@ -1,8 +1,8 @@
 <?php
 /**
- * DownloaddetailController
- * @var $this DownloaddetailController
- * @var $model ArticleDownloadDetail
+ * DownloadhistoryController
+ * @var $this DownloadhistoryController
+ * @var $model ArticleDownloadHistory
  * @var $form CActiveForm
  *
  * Reference start
@@ -22,7 +22,7 @@
  *----------------------------------------------------------------------------------------------------------
  */
 
-class DownloaddetailController extends Controller
+class DownloadhistoryController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -97,10 +97,10 @@ class DownloaddetailController extends Controller
 				$pageTitle = Yii::t('phrase', 'Article Downloads Data: {article_title} from category {category_name} - user {user_displayname}', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->cat->title->message, '{user_displayname}'=>$data->user->displayname));
 		}
 		
-		$model=new ArticleDownloadDetail('search');
+		$model=new ArticleDownloadHistory('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['ArticleDownloadDetail'])) {
-			$model->attributes=$_GET['ArticleDownloadDetail'];
+		if(isset($_GET['ArticleDownloadHistory'])) {
+			$model->attributes=$_GET['ArticleDownloadHistory'];
 		}
 
 		$columnTemp = array();
@@ -116,7 +116,7 @@ class DownloaddetailController extends Controller
 		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('/o/download_detail/admin_manage',array(
+		$this->render('/o/download_history/admin_manage',array(
 			'model'=>$model,
 			'columns' => $columns,
 		));
@@ -129,7 +129,7 @@ class DownloaddetailController extends Controller
 	 */
 	public function loadModel($id) 
 	{
-		$model = ArticleDownloadDetail::model()->findByPk($id);
+		$model = ArticleDownloadHistory::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;
@@ -141,7 +141,7 @@ class DownloaddetailController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='article-download-detail-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='article-download-history-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
