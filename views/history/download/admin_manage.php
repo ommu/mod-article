@@ -1,7 +1,7 @@
 <?php
 /**
  * Article Download Details (article-download-history)
- * @var $this DownloadhistoryController
+ * @var $this DownloadController
  * @var $model ArticleDownloadHistory
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
@@ -35,7 +35,7 @@
 
 <?php //begin.Search ?>
 <div class="search-form">
-<?php $this->renderPartial('/o/download_history/_search',array(
+<?php $this->renderPartial('_search',array(
 	'model'=>$model,
 )); ?>
 </div>
@@ -43,7 +43,7 @@
 
 <?php //begin.Grid Option ?>
 <div class="grid-form">
-<?php $this->renderPartial('/o/download_history/_option_form',array(
+<?php $this->renderPartial('_option_form',array(
 	'model'=>$model,
 )); ?>
 </div>

@@ -1,8 +1,8 @@
 <?php
 /**
- * Article Download Details (article-download-history)
- * @var $this DownloadhistoryController
- * @var $model ArticleDownloadHistory
+ * Article View Histories (article-view-history)
+ * @var $this ViewController
+ * @var $model ArticleViewHistory
  * @var $form CActiveForm
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
@@ -25,18 +25,18 @@
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('download_id'); ?><br/>
-			<?php echo $form->textField($model,'download_id'); ?>
+			<?php echo $model->getAttributeLabel('view_id'); ?><br/>
+			<?php echo $form->textField($model,'view_id'); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('download_date'); ?><br/>
-			<?php echo $form->textField($model,'download_date'); ?>
+			<?php echo $model->getAttributeLabel('view_date'); ?><br/>
+			<?php echo $form->textField($model,'view_date'); ?>
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('download_ip'); ?><br/>
-			<?php echo $form->textField($model,'download_ip'); ?>
+			<?php echo $model->getAttributeLabel('view_ip'); ?><br/>
+			<?php echo $form->textField($model,'view_ip'); ?>
 		</li>
 
 		<li class="submit">

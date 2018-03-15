@@ -1,8 +1,8 @@
 <?php
 /**
- * Article View Histories (article-view-history)
- * @var $this ViewhistoryController
- * @var $model ArticleViewHistory
+ * Article Download Details (article-download-history)
+ * @var $this DownloadController
+ * @var $model ArticleDownloadHistory
  * @var $form CActiveForm
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>

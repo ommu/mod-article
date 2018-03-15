@@ -1,8 +1,8 @@
 <?php
 /**
- * DownloadhistoryController
- * @var $this DownloadhistoryController
- * @var $model ArticleDownloadHistory
+ * ViewController
+ * @var $this ViewController
+ * @var $model ArticleViewHistory
  * @var $form CActiveForm
  *
  * Reference start
@@ -22,7 +22,7 @@
  *----------------------------------------------------------------------------------------------------------
  */
 
-class DownloadhistoryController extends Controller
+class ViewController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -87,20 +87,20 @@ class DownloadhistoryController extends Controller
 	/**
 	 * Manages all models.
 	 */
-	public function actionManage($download=null) 
+	public function actionManage($view=null) 
 	{
-		$pageTitle = Yii::t('phrase', 'Data Article Downloads');
-		if($download != null) {
-			$data = ArticleDownloads::model()->findByPk($download);
-			$pageTitle = Yii::t('phrase', 'Article Downloads Data: {article_title} from category {category_name} - user Guest', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->cat->title->message));	
+		$pageTitle = Yii::t('phrase', 'Article Views Data');
+		if($view != null) {
+			$data = ArticleViews::model()->findByPk($view);
+			$pageTitle = Yii::t('phrase', 'Article Views Data: {article_title} from category {category_name} - user Guest', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->cat->title->message));	
 			if($data->user->displayname)
-				$pageTitle = Yii::t('phrase', 'Article Downloads Data: {article_title} from category {category_name} - user {user_displayname}', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->cat->title->message, '{user_displayname}'=>$data->user->displayname));
+				$pageTitle = Yii::t('phrase', 'Article Views Data: {article_title} from category {category_name} - user {user_displayname}', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->cat->title->message, '{user_displayname}'=>$data->user->displayname));
 		}
 		
-		$model=new ArticleDownloadHistory('search');
+		$model=new ArticleViewHistory('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['ArticleDownloadHistory'])) {
-			$model->attributes=$_GET['ArticleDownloadHistory'];
+		if(isset($_GET['ArticleViewHistory'])) {
+			$model->attributes=$_GET['ArticleViewHistory'];
 		}
 
 		$columnTemp = array();
@@ -116,7 +116,7 @@ class DownloadhistoryController extends Controller
 		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('/o/download_history/admin_manage',array(
+		$this->render('admin_manage',array(
 			'model'=>$model,
 			'columns' => $columns,
 		));
@@ -129,7 +129,7 @@ class DownloadhistoryController extends Controller
 	 */
 	public function loadModel($id) 
 	{
-		$model = ArticleDownloadHistory::model()->findByPk($id);
+		$model = ArticleViewHistory::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;
@@ -141,7 +141,7 @@ class DownloadhistoryController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='article-download-history-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='article-view-history-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

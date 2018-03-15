@@ -227,7 +227,7 @@ class ArticleDownloads extends CActiveRecord
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'downloads',
-				'value' => 'CHtml::link($data->downloads, Yii::app()->controller->createUrl("o/downloadhistory/manage",array(\'download\'=>$data->download_id)))',
+				'value' => 'CHtml::link($data->downloads, Yii::app()->controller->createUrl("history/download/manage",array(\'download\'=>$data->download_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),

@@ -1,19 +1,19 @@
 <?php
 /**
- * Article View Histories (article-view-history)
- * @var $this ViewhistoryController
- * @var $model ArticleViewHistory
+ * Article Like Histories (article-like-history)
+ * @var $this LikeController
+ * @var $model ArticleLikeHistory
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 Ommu Platform (opensource.ommu.co)
- * @created date 8 January 2017, 21:21 WIB
+ * @created date 7 February 2017, 02:35 WIB
  * @link https://github.com/ommu/ommu-article
  *
  */
 
 	$this->breadcrumbs=array(
-		'Article View Histories'=>array('manage'),
+		'Article Like Histories'=>array('manage'),
 		'Manage',
 	);
 	$this->menu=array(
@@ -35,7 +35,7 @@
 
 <?php //begin.Search ?>
 <div class="search-form">
-<?php $this->renderPartial('/o/view_history/_search',array(
+<?php $this->renderPartial('_search',array(
 	'model'=>$model,
 )); ?>
 </div>
@@ -43,13 +43,13 @@
 
 <?php //begin.Grid Option ?>
 <div class="grid-form">
-<?php $this->renderPartial('/o/view_history/_option_form',array(
+<?php $this->renderPartial('_option_form',array(
 	'model'=>$model,
 )); ?>
 </div>
 <?php //end.Grid Option ?>
 
-<div id="partial-article-view-history">
+<div id="partial-article-like-history">
 	<?php //begin.Messages ?>
 	<div id="ajax-message">
 	<?php
@@ -65,7 +65,6 @@
 		<?php //begin.Grid Item ?>
 		<?php 
 			$columnData   = $columns;
-			/*
 			array_push($columnData, array(
 				'header' => Yii::t('phrase', 'Options'),
 				'class'=>'CButtonColumn',
@@ -92,12 +91,11 @@
 						),
 						'url' => 'Yii::app()->controller->createUrl("delete",array("id"=>$data->primaryKey))')
 				),
-				'template' => '{view}|{update}|{delete}',
+				'template' => '{delete}',
 			));
-			*/
 
 			$this->widget('application.libraries.core.components.system.OGridView', array(
-				'id'=>'article-view-history-grid',
+				'id'=>'article-like-history-grid',
 				'dataProvider'=>$model->search(),
 				'filter'=>$model,
 				'afterAjaxUpdate' => 'reinstallDatePicker',

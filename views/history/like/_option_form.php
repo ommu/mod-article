@@ -1,7 +1,7 @@
 <?php
 /**
  * Article Like Histories (article-like-history)
- * @var $this LikehistoryController
+ * @var $this LikeController
  * @var $model ArticleLikeHistory
  * @var $form CActiveForm
  *

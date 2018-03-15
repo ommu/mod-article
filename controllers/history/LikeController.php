@@ -1,8 +1,8 @@
 <?php
 /**
- * ViewhistoryController
- * @var $this ViewhistoryController
- * @var $model ArticleViewHistory
+ * LikeController
+ * @var $this LikeController
+ * @var $model ArticleLikeHistory
  * @var $form CActiveForm
  *
  * Reference start
@@ -16,13 +16,13 @@
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 Ommu Platform (opensource.ommu.co)
- * @created date 8 January 2017, 21:21 WIB
+ * @created date 7 February 2017, 02:35 WIB
  * @link https://github.com/ommu/ommu-article
  *
  *----------------------------------------------------------------------------------------------------------
  */
 
-class ViewhistoryController extends Controller
+class LikeController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -87,20 +87,20 @@ class ViewhistoryController extends Controller
 	/**
 	 * Manages all models.
 	 */
-	public function actionManage($view=null) 
+	public function actionManage($like=null) 
 	{
-		$pageTitle = Yii::t('phrase', 'Article Views Data');
-		if($view != null) {
-			$data = ArticleViews::model()->findByPk($view);
-			$pageTitle = Yii::t('phrase', 'Article Views Data: {article_title} from category {category_name} - user Guest', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->cat->title->message));	
+		$pageTitle = Yii::t('phrase', 'Article Likes Data');
+		if($like != null) {
+			$data = ArticleLikes::model()->findByPk($like);
+			$pageTitle = Yii::t('phrase', 'Article Likes Data: {article_title} from category {category_name} - user Guest', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->cat->title->message));	
 			if($data->user->displayname)
-				$pageTitle = Yii::t('phrase', 'Article Views Data: {article_title} from category {category_name} - user {user_displayname}', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->cat->title->message, '{user_displayname}'=>$data->user->displayname));
+				$pageTitle = Yii::t('phrase', 'Article Likes Data: {article_title} from category {category_name} - user {user_displayname}', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->cat->title->message, '{user_displayname}'=>$data->user->displayname));
 		}
 		
-		$model=new ArticleViewHistory('search');
+		$model=new ArticleLikeHistory('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['ArticleViewHistory'])) {
-			$model->attributes=$_GET['ArticleViewHistory'];
+		if(isset($_GET['ArticleLikeHistory'])) {
+			$model->attributes=$_GET['ArticleLikeHistory'];
 		}
 
 		$columnTemp = array();
@@ -116,7 +116,7 @@ class ViewhistoryController extends Controller
 		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('/o/view_history/admin_manage',array(
+		$this->render('admin_manage',array(
 			'model'=>$model,
 			'columns' => $columns,
 		));
@@ -129,7 +129,7 @@ class ViewhistoryController extends Controller
 	 */
 	public function loadModel($id) 
 	{
-		$model = ArticleViewHistory::model()->findByPk($id);
+		$model = ArticleLikeHistory::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 		return $model;
@@ -141,7 +141,7 @@ class ViewhistoryController extends Controller
 	 */
 	protected function performAjaxValidation($model) 
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='article-view-history-form') {
+		if(isset($_POST['ajax']) && $_POST['ajax']==='article-like-history-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
