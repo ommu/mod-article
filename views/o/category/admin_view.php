@@ -34,6 +34,11 @@
 				'type' => 'raw',
 			),
 			array(
+				'name'=>'single_file',
+				'value'=>$model->single_file == 1 ? CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
+				'type' => 'raw',
+			),
+			array(
 				'name'=>'parent',
 				'value'=>$model->parent ? $model->parent_r->title->message : '-',
 			),
@@ -61,6 +66,14 @@
 			array(
 				'name'=>'modified_id',
 				'value'=>$model->modified->displayname ? $model->modified->displayname : '-',
+			),
+			array(
+				'name'=>'updated_date',
+				'value'=>!in_array($model->updated_date, array('0000-00-00 00:00:00','1970-01-01 00:00:00')) ? Utility::dateFormat($model->updated_date, true) : '-',
+			),
+			array(
+				'name'=>'slug',
+				'value'=>$model->slug ? $model->slug : '-',
 			),
 		),
 	)); ?>

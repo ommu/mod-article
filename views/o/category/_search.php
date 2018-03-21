@@ -49,6 +49,11 @@
 		</li>
 
 		<li>
+			<?php echo $model->getAttributeLabel('single_file'); ?><br/>
+			<?php echo $form->textField($model,'single_file'); ?>
+		</li>
+
+		<li>
 			<?php echo $model->getAttributeLabel('creation_date'); ?><br/>
 			<?php echo $form->textField($model,'creation_date'); ?>
 		</li>
@@ -66,6 +71,11 @@
 		<li>
 			<?php echo $model->getAttributeLabel('modified_id'); ?><br/>
 			<?php echo $form->textField($model,'modified_id'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('updated_date'); ?><br/>
+			<?php echo $form->textField($model,'updated_date'); ?>
 		</li>
 
 		<li>

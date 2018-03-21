@@ -27,10 +27,13 @@
  * @property string $name
  * @property string $desc
  * @property string $single_photo
+ * @property string $single_file
  * @property string $creation_date
  * @property string $creation_id
  * @property string $modified_date
  * @property string $modified_id
+ * @property string $updated_date
+ * @property string $slug
  *
  * The followings are the available model relations:
  * @property Articles[] $Articles
@@ -89,15 +92,15 @@ class ArticleCategory extends CActiveRecord
 		return array(
 			array('
 				name_i, desc_i', 'required'),
-			array('publish, parent, single_photo, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
+			array('publish, parent, single_photo, single_file, creation_id, modified_id', 'numerical', 'integerOnly'=>true),
 			array('name, desc, creation_id, modified_id', 'length', 'max'=>11),
-			array('
+			array('slug,
 				name_i', 'length', 'max'=>32),
 			array('
 				desc_i', 'length', 'max'=>128),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('cat_id, publish, parent, name, desc, single_photo, creation_date, creation_id, modified_date, modified_id,
+			array('cat_id, publish, parent, name, desc, single_photo, single_file, creation_date, creation_id, modified_date, modified_id, updated_date, slug,
 				name_i, desc_i, creation_search, modified_search, article_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -132,10 +135,13 @@ class ArticleCategory extends CActiveRecord
 			'name' => Yii::t('attribute', 'Category'),
 			'desc' => Yii::t('attribute', 'Description'),
 			'single_photo' => Yii::t('attribute', 'Single Photo'),
+			'single_file' => Yii::t('attribute', 'Single File'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
 			'creation_id' => Yii::t('attribute', 'Creation'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
+			'updated_date' => Yii::t('attribute', 'Updated Date'),
+			'slug' => Yii::t('attribute', 'Slug'),
 			'name_i' => Yii::t('attribute', 'Category'),
 			'desc_i' => Yii::t('attribute', 'Description'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
@@ -195,12 +201,16 @@ class ArticleCategory extends CActiveRecord
 		$criteria->compare('t.name',$this->name);
 		$criteria->compare('t.desc',$this->desc);
 		$criteria->compare('t.single_photo',$this->single_photo);
+		$criteria->compare('t.single_file',$this->single_file);
 		if($this->creation_date != null && !in_array($this->creation_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.creation_date)',date('Y-m-d', strtotime($this->creation_date)));
 		$criteria->compare('t.creation_id', isset($_GET['creation']) ? $_GET['creation'] : $this->creation_id);
 		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
 		$criteria->compare('t.modified_id', isset($_GET['modified']) ? $_GET['modified'] : $this->modified_id);
+		if($this->updated_date != null && !in_array($this->updated_date, array('0000-00-00 00:00:00', '0000-00-00')))
+			$criteria->compare('date(t.updated_date)',date('Y-m-d', strtotime($this->updated_date)));
+		$criteria->compare('t.slug',$this->slug);
 
 		$criteria->compare('title.message', strtolower($this->name_i), true);
 		$criteria->compare('description.message', strtolower($this->desc_i), true);
@@ -243,10 +253,13 @@ class ArticleCategory extends CActiveRecord
 			$this->defaultColumns[] = 'name';
 			$this->defaultColumns[] = 'desc';
 			$this->defaultColumns[] = 'single_photo';
+			$this->defaultColumns[] = 'single_file';
 			$this->defaultColumns[] = 'creation_date';
 			$this->defaultColumns[] = 'creation_id';
 			$this->defaultColumns[] = 'modified_date';
 			$this->defaultColumns[] = 'modified_id';
+			$this->defaultColumns[] = 'updated_date';
+			$this->defaultColumns[] = 'slug';
 		}
 
 		return $this->defaultColumns;
@@ -324,6 +337,18 @@ class ArticleCategory extends CActiveRecord
 			$this->defaultColumns[] = array(
 				'name' => 'single_photo',
 				'value' => '$data->single_photo == 1 ? CHtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : CHtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Yes'),
+					0=>Yii::t('phrase', 'No'),
+				),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'single_file',
+				'value' => '$data->single_file == 1 ? CHtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : CHtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),

@@ -68,6 +68,15 @@
 		</div>
 
 		<div class="form-group row publish">
+			<?php echo $form->labelEx($model,'single_file', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
+				<?php echo $form->checkBox($model,'single_file', array('class'=>'form-control')); ?>
+				<?php echo $form->labelEx($model,'single_file'); ?>
+				<?php echo $form->error($model,'single_file'); ?>
+			</div>
+		</div>
+
+		<div class="form-group row publish">
 			<?php echo $form->labelEx($model,'publish', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php echo $form->checkBox($model,'publish', array('class'=>'form-control')); ?>
