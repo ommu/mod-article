@@ -612,14 +612,14 @@ class Articles extends CActiveRecord
 	protected function beforeValidate() 
 	{
 		$setting = ArticleSetting::model()->findByPk(1, array(
-			'select' => 'media_file_type, upload_file_type',
+			'select' => 'media_image_type, media_file_type',
 		));
+		$media_image_type = unserialize($setting->media_image_type);
+		if(empty($media_image_type))
+			$media_image_type = array();
 		$media_file_type = unserialize($setting->media_file_type);
 		if(empty($media_file_type))
 			$media_file_type = array();
-		$upload_file_type = unserialize($setting->upload_file_type);
-		if(empty($upload_file_type))
-			$upload_file_type = array();
 		
 		if(parent::beforeValidate()) {
 			if($this->isNewRecord)
@@ -633,20 +633,20 @@ class Articles extends CActiveRecord
 			$media_input = CUploadedFile::getInstance($this, 'media_input');
 			if($media_input != null && $this->article_type == 'standard') {
 				$extension = pathinfo($media_input->name, PATHINFO_EXTENSION);
-				if(!in_array(strtolower($extension), $media_file_type))
+				if(!in_array(strtolower($extension), $media_image_type))
 					$this->addError('media_input', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}.', array(
 						'{name}'=>$media_input->name,
-						'{extensions}'=>Utility::formatFileType($media_file_type, false),
+						'{extensions}'=>Utility::formatFileType($media_image_type, false),
 					)));
 			}
 			
 			$media_file = CUploadedFile::getInstance($this, 'media_file');
 			if($media_file != null) {
 				$extension = pathinfo($media_file->name, PATHINFO_EXTENSION);
-				if(!in_array(strtolower($extension), $upload_file_type))
+				if(!in_array(strtolower($extension), $media_file_type))
 					$this->addError('media_file', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}.', array(
 						'{name}'=>$media_file->name,
-						'{extensions}'=>Utility::formatFileType($upload_file_type, false),
+						'{extensions}'=>Utility::formatFileType($media_file_type, false),
 					)));
 			}
 		}

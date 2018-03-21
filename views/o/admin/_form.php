@@ -133,7 +133,7 @@ EOP;
 					<div class="col-lg-8 col-md-9 col-sm-12">
 						<?php echo $form->fileField($model,'media_input', array('class'=>'form-control')); ?>
 						<?php echo $form->error($model,'media_input'); ?>
-						<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($media_file_type, false);?></span>
+						<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($media_image_type, false);?></span>
 					</div>
 				</div>
 				<?php }?>
@@ -238,7 +238,7 @@ EOP;
 					<div class="col-lg-12 col-md-9 col-sm-12">
 						<?php echo $form->fileField($model,'media_file', array('class'=>'form-control')); ?>
 						<?php echo $form->error($model,'media_file'); ?>
-						<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($upload_file_type, false);?></span>
+						<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($media_file_type, false);?></span>
 					</div>
 				</div>
 				<?php }?>

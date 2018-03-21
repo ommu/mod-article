@@ -29,7 +29,6 @@ class ArticleModule extends CWebModule
 		// import the module-level models and components
 		$this->setImport(array(
 			'article.models.*',
-			'article.models.view.*',
 			'article.components.*',
 		));
 

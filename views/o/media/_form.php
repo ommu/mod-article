@@ -57,7 +57,7 @@
 				<div class="col-lg-8 col-md-9 col-sm-12">
 					<?php echo $form->fileField($model,'media',array('maxlength'=>64, 'class'=>'form-control')); ?>
 					<?php echo $form->error($model,'media'); ?>
-					<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($media_file_type, false);?></span>
+					<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($media_image_type, false);?></span>
 				</div>
 			</div>
 			

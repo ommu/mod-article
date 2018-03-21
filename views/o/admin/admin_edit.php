@@ -30,8 +30,8 @@
 		'model'=>$model,
 		'setting'=>$setting,
 		'condition'=>$condition,
+		'media_image_type'=>$media_image_type,
 		'media_file_type'=>$media_file_type,
-		'upload_file_type'=>$upload_file_type,
 	)); ?>
 </div>
 

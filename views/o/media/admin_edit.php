@@ -22,6 +22,6 @@
 <div class="form">
 	<?php echo $this->renderPartial('_form', array(
 		'model'=>$model,
-		'media_file_type'=>$media_file_type,
+		'media_image_type'=>$media_image_type,
 	)); ?>
 </div>

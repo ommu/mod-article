@@ -35,8 +35,8 @@
  * @property integer $media_resize
  * @property string $media_resize_size
  * @property string $media_view_size
+ * @property string $media_image_type
  * @property string $media_file_type
- * @property string $upload_file_type
  * @property string $modified_date
  * @property string $modified_id
  */
@@ -73,14 +73,14 @@ class ArticleSetting extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('license, permission, meta_keyword, meta_description, type_active, gridview_column, headline, headline_limit, media_limit, media_resize, media_file_type, upload_file_type', 'required'),
+			array('license, permission, meta_keyword, meta_description, type_active, gridview_column, headline, headline_limit, media_limit, media_resize, media_image_type, media_file_type', 'required'),
 			array('permission, headline, headline_limit, media_limit, media_resize, modified_id', 'numerical', 'integerOnly'=>true),
 			array('license', 'length', 'max'=>32),
 			array('headline_limit', 'length', 'max'=>3),
-			array('headline_category, media_resize_size, media_view_size, media_file_type, upload_file_type', 'safe'),
+			array('headline_category, media_resize_size, media_view_size, media_image_type, media_file_type', 'safe'),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id, license, permission, meta_keyword, meta_description, type_active, gridview_column, headline, headline_limit, headline_category, media_limit, media_resize, media_resize_size, media_view_size, media_file_type, upload_file_type, modified_date, modified_id,
+			array('id, license, permission, meta_keyword, meta_description, type_active, gridview_column, headline, headline_limit, headline_category, media_limit, media_resize, media_resize_size, media_view_size, media_image_type, media_file_type, modified_date, modified_id,
 				modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -117,8 +117,8 @@ class ArticleSetting extends CActiveRecord
 			'media_resize' => Yii::t('attribute', 'Media Resize'),
 			'media_resize_size' => Yii::t('attribute', 'Media Resize Size'),
 			'media_view_size' => Yii::t('attribute', 'Media View Size'),
-			'media_file_type' => Yii::t('attribute', 'Media File Type'),
-			'upload_file_type' => Yii::t('attribute', 'Upload File Type'),
+			'media_image_type' => Yii::t('attribute', 'Media File Type'),
+			'media_file_type' => Yii::t('attribute', 'Upload File Type'),
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
@@ -158,8 +158,8 @@ class ArticleSetting extends CActiveRecord
 		$criteria->compare('t.media_resize',$this->media_resize);
 		$criteria->compare('t.media_resize_size',$this->media_resize_size,true);
 		$criteria->compare('t.media_view_size',$this->media_view_size,true);
+		$criteria->compare('t.media_image_type',$this->media_image_type,true);
 		$criteria->compare('t.media_file_type',$this->media_file_type,true);
-		$criteria->compare('t.upload_file_type',$this->upload_file_type,true);
 		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
 			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
 		if(isset($_GET['modified']))
@@ -209,8 +209,8 @@ class ArticleSetting extends CActiveRecord
 			$this->defaultColumns[] = 'media_resize';
 			$this->defaultColumns[] = 'media_resize_size';
 			$this->defaultColumns[] = 'media_view_size';
+			$this->defaultColumns[] = 'media_image_type';
 			$this->defaultColumns[] = 'media_file_type';
-			$this->defaultColumns[] = 'upload_file_type';
 			$this->defaultColumns[] = 'modified_date';
 			$this->defaultColumns[] = 'modified_id';
 		}
@@ -236,8 +236,8 @@ class ArticleSetting extends CActiveRecord
 			$this->defaultColumns[] = 'media_resize';
 			$this->defaultColumns[] = 'media_resize_size';
 			$this->defaultColumns[] = 'media_view_size';
+			$this->defaultColumns[] = 'media_image_type';
 			$this->defaultColumns[] = 'media_file_type';
-			$this->defaultColumns[] = 'upload_file_type';
 			$this->defaultColumns[] = 'modified_date';
 			$this->defaultColumns[] = array(
 				'name' => 'modified_search',
@@ -351,8 +351,8 @@ class ArticleSetting extends CActiveRecord
 			$this->headline_category = serialize($this->headline_category);
 			$this->media_resize_size = serialize($this->media_resize_size);
 			$this->media_view_size = serialize($this->media_view_size);
+			$this->media_image_type = serialize(Utility::formatFileType($this->media_image_type));
 			$this->media_file_type = serialize(Utility::formatFileType($this->media_file_type));
-			$this->upload_file_type = serialize(Utility::formatFileType($this->upload_file_type));
 		}
 		return true;
 	}

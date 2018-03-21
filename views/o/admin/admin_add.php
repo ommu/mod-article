@@ -22,7 +22,7 @@
 	<?php echo $this->renderPartial('_form', array(
 		'model'=>$model,		
 		'setting'=>$setting,
+		'media_image_type'=>$media_image_type,
 		'media_file_type'=>$media_file_type,
-		'upload_file_type'=>$upload_file_type,
 	)); ?>
 </div>

@@ -134,14 +134,14 @@ class AdminController extends Controller
 	public function actionAdd() 
 	{
 		$setting = ArticleSetting::model()->findByPk(1,array(
-			'select' => 'meta_keyword, type_active, headline, media_file_type, upload_file_type',
+			'select' => 'meta_keyword, type_active, headline, media_image_type, media_file_type',
 		));	
+		$media_image_type = unserialize($setting->media_image_type);
+		if(empty($media_image_type))
+			$media_image_type = array();
 		$media_file_type = unserialize($setting->media_file_type);
 		if(empty($media_file_type))
 			$media_file_type = array();
-		$upload_file_type = unserialize($setting->upload_file_type);
-		if(empty($upload_file_type))
-			$upload_file_type = array();
 		
 		$model=new Articles;
 
@@ -168,8 +168,8 @@ class AdminController extends Controller
 		$this->render('admin_add',array(
 			'model'=>$model,
 			'setting'=>$setting,
+			'media_image_type'=>$media_image_type,
 			'media_file_type'=>$media_file_type,
-			'upload_file_type'=>$upload_file_type,
 		));
 	}
 
@@ -181,14 +181,14 @@ class AdminController extends Controller
 	public function actionEdit($id) 
 	{
 		$setting = ArticleSetting::model()->findByPk(1,array(
-			'select' => 'meta_keyword, type_active, headline, media_limit, media_file_type, upload_file_type',
+			'select' => 'meta_keyword, type_active, headline, media_limit, media_image_type, media_file_type',
 		));
+		$media_image_type = unserialize($setting->media_image_type);
+		if(empty($media_image_type))
+			$media_image_type = array();
 		$media_file_type = unserialize($setting->media_file_type);
 		if(empty($media_file_type))
 			$media_file_type = array();
-		$upload_file_type = unserialize($setting->upload_file_type);
-		if(empty($upload_file_type))
-			$upload_file_type = array();
 		
 		$model=$this->loadModel($id);
 
@@ -249,8 +249,8 @@ class AdminController extends Controller
 		$this->render('admin_edit',array(
 			'model'=>$model,
 			'setting'=>$setting,
+			'media_image_type'=>$media_image_type,
 			'media_file_type'=>$media_file_type,
-			'upload_file_type'=>$upload_file_type,
 		));
 	}
 
@@ -441,10 +441,10 @@ class AdminController extends Controller
 	public function actionInsertcover($id) 
 	{
 		$setting = ArticleSetting::model()->findByPk(1,array(
-			'select' => 'media_limit, media_file_type',
+			'select' => 'media_limit, media_image_type',
 		));
 		$media_limit = $setting->media_limit;
-		$media_file_type = unserialize($setting->media_file_type);
+		$media_image_type = unserialize($setting->media_image_type);
 		
 		$article_path = "public/article/".$id;
 		// Add directory

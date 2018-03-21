@@ -243,35 +243,35 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'media_file_type', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'media_image_type', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				if(!$model->getErrors()) {
-					$media_file_type = unserialize($model->media_file_type);
-					if(!empty($media_file_type))
-						$model->media_file_type = Utility::formatFileType($media_file_type, false);
+					$media_image_type = unserialize($model->media_image_type);
+					if(!empty($media_image_type))
+						$model->media_image_type = Utility::formatFileType($media_image_type, false);
 					else
-						$model->media_file_type = 'jpg, png, bmp';
+						$model->media_image_type = 'jpg, png, bmp';
 				}
-				echo $form->textField($model,'media_file_type', array('class'=>'form-control')); ?>
-				<?php echo $form->error($model,'media_file_type'); ?>
+				echo $form->textField($model,'media_image_type', array('class'=>'form-control')); ?>
+				<?php echo $form->error($model,'media_image_type'); ?>
 				<span class="small-px">pisahkan jenis file dengan koma (,). example: "jpg, png, bmp"</span>
 			</div>
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'upload_file_type', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'media_file_type', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php				
 				if(!$model->getErrors()) {
-					$upload_file_type = unserialize($model->upload_file_type);
-					if(!empty($upload_file_type))
-						$model->upload_file_type = Utility::formatFileType($upload_file_type, false);
+					$media_file_type = unserialize($model->media_file_type);
+					if(!empty($media_file_type))
+						$model->media_file_type = Utility::formatFileType($media_file_type, false);
 					else
-						$model->upload_file_type = 'mp3, mp4, pdf, doc, docx';
+						$model->media_file_type = 'mp3, mp4, pdf, doc, docx';
 				}
-				echo $form->textField($model,'upload_file_type', array('class'=>'form-control')); ?>
-				<?php echo $form->error($model,'upload_file_type'); ?>
+				echo $form->textField($model,'media_file_type', array('class'=>'form-control')); ?>
+				<?php echo $form->error($model,'media_file_type'); ?>
 				<span class="small-px">pisahkan type file dengan koma (,). example: "mp3, mp4, pdf, doc, docx"</span>
 			</div>
 		</div>

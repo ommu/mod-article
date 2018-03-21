@@ -392,11 +392,11 @@ class ArticleMedia extends CActiveRecord
 		$controller = strtolower(Yii::app()->controller->id);
 		$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
 		$setting = ArticleSetting::model()->findByPk(1, array(
-			'select' => 'media_file_type',
+			'select' => 'media_image_type',
 		));
-		$media_file_type = unserialize($setting->media_file_type);
-		if(empty($media_file_type))
-			$media_file_type = array();
+		$media_image_type = unserialize($setting->media_image_type);
+		if(empty($media_image_type))
+			$media_image_type = array();
 		
 		if(parent::beforeValidate()) 
 		{
@@ -412,10 +412,10 @@ class ArticleMedia extends CActiveRecord
 				$media = CUploadedFile::getInstance($this, 'media');
 				if($media != null && $this->article->article_type == 'standard') {
 					$extension = pathinfo($media->name, PATHINFO_EXTENSION);
-					if(!in_array(strtolower($extension), $media_file_type))
+					if(!in_array(strtolower($extension), $media_image_type))
 						$this->addError('media', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}.', array(
 							'{name}'=>$media->name,
-							'{extensions}'=>Utility::formatFileType($media_file_type, false),
+							'{extensions}'=>Utility::formatFileType($media_image_type, false),
 						)));
 					
 				} else {
