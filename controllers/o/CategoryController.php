@@ -11,6 +11,7 @@
  *	Manage
  *	Add
  *	Edit
+ *	View
  *	RunAction
  *	Delete
  *	Publish
@@ -21,6 +22,7 @@
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @modified date 22 March 2018, 16:26 WIB
  * @link https://github.com/ommu/ommu-article
  *
  *----------------------------------------------------------------------------------------------------------
@@ -99,17 +101,17 @@ class CategoryController extends Controller
 			$model->attributes=$_GET['ArticleCategory'];
 		}
 
+		$gridColumn = $_GET['GridColumn'];
 		$columnTemp = array();
-		if(isset($_GET['GridColumn'])) {
-			foreach($_GET['GridColumn'] as $key => $val) {
-				if($_GET['GridColumn'][$key] == 1) {
+		if(isset($gridColumn)) {
+			foreach($gridColumn as $key => $val) {
+				if($gridColumn[$key] == 1)
 					$columnTemp[] = $key;
-				}
 			}
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
-		$this->pageTitle = Yii::t('phrase', 'Categories');
+		$this->pageTitle = Yii::t('phrase', 'Article Categories');
 		$this->pageDescription = Yii::t('phrase', 'You may want to allow your users to categorize their articles by subject, location, etc. Categorized articles make it easier for users to find and attend articles that interest them. If you want to allow article categories, you can create them (along with subcategories) below.');
 		$this->pageMeta = '';
 		$this->render('admin_manage', array(
@@ -145,9 +147,8 @@ class CategoryController extends Controller
 							'id' => 'partial-article-category',
 							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article category success created.').'</strong></div>',
 						));
-					} else {
+					} else
 						print_r($model->getErrors());
-					}
 				}
 			}
 			Yii::app()->end();
@@ -155,7 +156,7 @@ class CategoryController extends Controller
 		
 		$this->dialogDetail = true;
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
-		$this->dialogWidth = 500;
+		$this->dialogWidth = 600;
 
 		$this->pageTitle = Yii::t('phrase', 'Create Category');
 		$this->pageDescription = '';
@@ -193,9 +194,8 @@ class CategoryController extends Controller
 							'id' => 'partial-article-category',
 							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article category success updated.').'</strong></div>',
 						));
-					} else {
+					} else
 						print_r($model->getErrors());
-					}
 				}
 			}
 			Yii::app()->end();
@@ -203,7 +203,7 @@ class CategoryController extends Controller
 		
 		$this->dialogDetail = true;
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
-		$this->dialogWidth = 500;
+		$this->dialogWidth = 600;
 
 		$this->pageTitle = Yii::t('phrase', 'Update Category: {category_name}', array('{category_name}'=>$model->title->message));
 		$this->pageDescription = '';
@@ -223,9 +223,9 @@ class CategoryController extends Controller
 		
 		$this->dialogDetail = true;
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
-		$this->dialogWidth = 500;
+		$this->dialogWidth = 600;
 
-		$this->pageTitle = Yii::t('phrase', 'View Category: {category_name}', array('{category_name}'=>$model->title->message));
+		$this->pageTitle = Yii::t('phrase', 'Detail Category: {category_name}', array('{category_name}'=>$model->title->message));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_view', array(
@@ -244,19 +244,19 @@ class CategoryController extends Controller
 
 		if(count($id) > 0) {
 			$criteria = new CDbCriteria;
-			$criteria->addInCondition('id', $id);
+			$criteria->addInCondition('cat_id', $id);
 
 			if($actions == 'publish') {
 				ArticleCategory::model()->updateAll(array(
-					'published' => 1,
+					'publish' => 1,
 				),$criteria);
 			} elseif($actions == 'unpublish') {
 				ArticleCategory::model()->updateAll(array(
-					'published' => 0,
+					'publish' => 0,
 				),$criteria);
 			} elseif($actions == 'trash') {
 				ArticleCategory::model()->updateAll(array(
-					'published' => 2,
+					'publish' => 2,
 				),$criteria);
 			} elseif($actions == 'delete') {
 				ArticleCategory::model()->deleteAll($criteria);
@@ -293,7 +293,7 @@ class CategoryController extends Controller
 			}
 			Yii::app()->end();
 		}
-		
+
 		$this->dialogDetail = true;
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 350;
@@ -332,12 +332,12 @@ class CategoryController extends Controller
 			}
 			Yii::app()->end();
 		}
-		
+
 		$this->dialogDetail = true;
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 350;
 
-		$this->pageTitle = Yii::t('phrase', '{title}: {category_name}', array('{title}'=>$title, '{category_name}'=>$model->title->message));
+		$this->pageTitle = Yii::t('phrase', '{title} Category: {category_name}', array('{title}'=>$title, '{category_name}'=>$model->title->message));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_publish', array(

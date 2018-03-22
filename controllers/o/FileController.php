@@ -143,7 +143,7 @@ class FileController extends Controller
 
 			if($model->save()) {
 				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Article file success updated.'));
-				$this->redirect(array('edit','id'=>$model->file_id));
+				$this->redirect(array('manage','id'=>$model->file_id));
 			}
 		}
 
@@ -163,10 +163,6 @@ class FileController extends Controller
 	public function actionView($id) 
 	{
 		$model=$this->loadModel($id);
-		
-		$this->dialogDetail = true;
-		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
-		$this->dialogWidth = 600;
 
 		$this->pageTitle = Yii::t('phrase', 'Detail File: {file_filename} article {article_title}', array('{file_filename}'=>$model->file_filename, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';

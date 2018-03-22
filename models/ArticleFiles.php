@@ -66,10 +66,10 @@ class ArticleFiles extends OActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('article_id, file_filename', 'required'),
+			array('article_id', 'required'),
 			array('publish', 'numerical', 'integerOnly'=>true),
 			array('article_id, creation_id, modified_id', 'length', 'max'=>11),
-			array('
+			array('file_filename,
 				old_file_filename_i', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
@@ -210,7 +210,7 @@ class ArticleFiles extends OActiveRecord
 			if(!Yii::app()->getRequest()->getParam('article')) {
 				$this->templateColumns['category_search'] = array(
 					'name' => 'category_search',
-					'value' => '$data->article->cat->title->message',
+					'value' => '$data->article->category->title->message',
 					'filter'=> ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);
@@ -222,6 +222,7 @@ class ArticleFiles extends OActiveRecord
 			$this->templateColumns['file_filename'] = array(
 				'name' => 'file_filename',
 				'value' => '$data->file_filename ? CHtml::link($data->file_filename, Yii::app()->request->baseUrl.\'/public/article/\'.$data->article_id.\'/\'.$data->file_filename, array(\'target\' => \'_blank\')) : \'-\'',
+				'type' => 'raw',
 			);
 			$this->templateColumns['creation_date'] = array(
 				'name' => 'creation_date',
@@ -394,9 +395,6 @@ class ArticleFiles extends OActiveRecord
 							'{extensions}'=>Utility::formatFileType($media_file_type, false),
 						)));
 					
-				} else {
-					if($this->isNewRecord && $controller == 'o/file')
-						$this->addError('file_filename', 'File cannot be blank.');
 				}
 			//}
 		}

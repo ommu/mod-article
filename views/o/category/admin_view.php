@@ -1,20 +1,20 @@
 <?php
 /**
- * Article Category (article-category)
+ * Article Categories (article-category)
  * @var $this CategoryController
  * @var $model ArticleCategory
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @modified date 22 March 2018, 16:26 WIB
  * @link https://github.com/ommu/ommu-article
  *
  */
 
 	$this->breadcrumbs=array(
 		'Article Categories'=>array('manage'),
-		$model->title->message=>array('view','id'=>$model->cat_id),
-		'View',
+		$model->name,
 	);
 ?>
 
@@ -22,25 +22,28 @@
 	<?php $this->widget('application.libraries.core.components.system.FDetailView', array(
 		'data'=>$model,
 		'attributes'=>array(
-			'cat_id',
+			array(
+				'name'=>'cat_id',
+				'value'=>$model->cat_id,
+			),
 			array(
 				'name'=>'publish',
-				'value'=>$model->publish == 1 ? CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
-				'type' => 'raw',
+				'value'=>$model->publish == '1' ? CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
+				'type'=>'raw',
 			),
 			array(
 				'name'=>'single_photo',
-				'value'=>$model->single_photo == 1 ? CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
-				'type' => 'raw',
+				'value'=>$model->single_photo == '1' ? CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
+				'type'=>'raw',
 			),
 			array(
 				'name'=>'single_file',
-				'value'=>$model->single_file == 1 ? CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
-				'type' => 'raw',
+				'value'=>$model->single_file == '1' ? CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/publish.png') : CHtml::image(Yii::app()->theme->baseUrl.'/images/icons/unpublish.png'),
+				'type'=>'raw',
 			),
 			array(
-				'name'=>'parent',
-				'value'=>$model->parent ? $model->parent_r->title->message : '-',
+				'name'=>'parent_id',
+				'value'=>$model->parent_id ? $model->parent->title->message : '-',
 			),
 			array(
 				'name'=>'name',
@@ -50,14 +53,13 @@
 				'name'=>'desc',
 				'value'=>$model->desc ? $model->description->message : '-',
 			),
-			'slug',
 			array(
 				'name'=>'creation_date',
 				'value'=>!in_array($model->creation_date, array('0000-00-00 00:00:00','1970-01-01 00:00:00')) ? Utility::dateFormat($model->creation_date, true) : '-',
 			),
 			array(
 				'name'=>'creation_id',
-				'value'=>$model->creation->displayname ? $model->creation->displayname : '-',
+				'value'=>$model->creation_id ? $model->creation->displayname : '-',
 			),
 			array(
 				'name'=>'modified_date',
@@ -65,7 +67,7 @@
 			),
 			array(
 				'name'=>'modified_id',
-				'value'=>$model->modified->displayname ? $model->modified->displayname : '-',
+				'value'=>$model->modified_id ? $model->modified->displayname : '-',
 			),
 			array(
 				'name'=>'updated_date',

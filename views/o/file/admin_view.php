@@ -32,6 +32,10 @@
 			'type'=>'raw',
 		),
 		array(
+			'name'=>'category_search',
+			'value'=>$model->article->cat_id ? $model->article->category->title->message : '-',
+		),
+		array(
 			'name'=>'article_id',
 			'value'=>$model->article_id ? $model->article->title : '-',
 		),
