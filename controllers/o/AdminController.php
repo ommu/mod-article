@@ -466,7 +466,7 @@ class AdminController extends Controller
 				$photo = new ArticleMedia;
 				$photo->cover = $model->medias == null ? '1' : '0';
 				$photo->article_id = $model->article_id;
-				$photo->media = $fileName;
+				$photo->cover_filename = $fileName;
 				if($photo->save()) {
 					$url = Yii::app()->controller->createUrl('getcover', array('id'=>$model->article_id,'replace'=>'true'));
 					echo CJSON::encode(array(

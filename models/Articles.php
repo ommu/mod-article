@@ -327,13 +327,6 @@ class Articles extends CActiveRecord
 	 */
 	protected function afterConstruct() 
 	{
-		$setting = ArticleSetting::model()->findByPk(1, array(
-			'select' => 'gridview_column, headline',
-		));
-		$gridview_column = unserialize($setting->gridview_column);		
-		if(empty($gridview_column))
-			$gridview_column = array();
-		
 		if(count($this->defaultColumns) == 0) {
 			/*
 			$this->defaultColumns[] = array(
@@ -364,118 +357,102 @@ class Articles extends CActiveRecord
 					'type' => 'raw',
 				);
 			}
-			if(in_array('creation_search', $gridview_column)) {
-				$this->defaultColumns[] = array(
-					'name' => 'creation_search',
-					'value' => '$data->creation->displayname',
-				);
-			}
-			if(in_array('creation_date', $gridview_column)) {
-				$this->defaultColumns[] = array(
-					'name' => 'creation_date',
-					'value' => 'Utility::dateFormat($data->creation_date)',
+			$this->defaultColumns[] = array(
+				'name' => 'creation_search',
+				'value' => '$data->creation->displayname',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'creation_date',
+				'value' => 'Utility::dateFormat($data->creation_date)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter' => Yii::app()->controller->widget('application.libraries.core.components.system.CJuiDatePicker', array(
+					'model'=>$this, 
+					'attribute'=>'creation_date', 
+					'language' => 'en',
+					'i18nScriptFile' => 'jquery-ui-i18n.min.js',
+					//'mode'=>'datetime',
 					'htmlOptions' => array(
-						'class' => 'center',
+						'id' => 'creation_date_filter',
 					),
-					'filter' => Yii::app()->controller->widget('application.libraries.core.components.system.CJuiDatePicker', array(
-						'model'=>$this, 
-						'attribute'=>'creation_date', 
-						'language' => 'en',
-						'i18nScriptFile' => 'jquery-ui-i18n.min.js',
-						//'mode'=>'datetime',
-						'htmlOptions' => array(
-							'id' => 'creation_date_filter',
-						),
-						'options'=>array(
-							'showOn' => 'focus',
-							'dateFormat' => 'dd-mm-yy',
-							'showOtherMonths' => true,
-							'selectOtherMonths' => true,
-							'changeMonth' => true,
-							'changeYear' => true,
-							'showButtonPanel' => true,
-						),
-					), true),
-				);
-			}
-			if(in_array('published_date', $gridview_column)) {
-				$this->defaultColumns[] = array(
-					'name' => 'published_date',
-					'value' => 'Utility::dateFormat($data->published_date)',
+					'options'=>array(
+						'showOn' => 'focus',
+						'dateFormat' => 'dd-mm-yy',
+						'showOtherMonths' => true,
+						'selectOtherMonths' => true,
+						'changeMonth' => true,
+						'changeYear' => true,
+						'showButtonPanel' => true,
+					),
+				), true),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'published_date',
+				'value' => 'Utility::dateFormat($data->published_date)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter' => Yii::app()->controller->widget('application.libraries.core.components.system.CJuiDatePicker', array(
+					'model'=>$this, 
+					'attribute'=>'published_date', 
+					'language' => 'en',
+					'i18nScriptFile' => 'jquery-ui-i18n.min.js',
+					//'mode'=>'datetime',
 					'htmlOptions' => array(
-						'class' => 'center',
+						'id' => 'published_date_filter',
 					),
-					'filter' => Yii::app()->controller->widget('application.libraries.core.components.system.CJuiDatePicker', array(
-						'model'=>$this, 
-						'attribute'=>'published_date', 
-						'language' => 'en',
-						'i18nScriptFile' => 'jquery-ui-i18n.min.js',
-						//'mode'=>'datetime',
-						'htmlOptions' => array(
-							'id' => 'published_date_filter',
-						),
-						'options'=>array(
-							'showOn' => 'focus',
-							'dateFormat' => 'dd-mm-yy',
-							'showOtherMonths' => true,
-							'selectOtherMonths' => true,
-							'changeMonth' => true,
-							'changeYear' => true,
-							'showButtonPanel' => true,
-						),
-					), true),
-				);
-			}
-			if(in_array('media_search', $gridview_column)) {
-				$this->defaultColumns[] = array(
-					'name' => 'media_search',
-					'value' => 'CHtml::link($data->view->medias ? $data->view->medias : 0, Yii::app()->controller->createUrl("o/media/manage", array(\'article\'=>$data->article_id)))',
-					'htmlOptions' => array(
-						'class' => 'center',
+					'options'=>array(
+						'showOn' => 'focus',
+						'dateFormat' => 'dd-mm-yy',
+						'showOtherMonths' => true,
+						'selectOtherMonths' => true,
+						'changeMonth' => true,
+						'changeYear' => true,
+						'showButtonPanel' => true,
 					),
-					'type' => 'raw',
-				);
-			}
-			if(in_array('view_search', $gridview_column)) {
-				$this->defaultColumns[] = array(
-					'name' => 'view_search',
-					'value' => 'CHtml::link($data->view->views ? $data->view->views : 0, Yii::app()->controller->createUrl("o/views/manage", array(\'article\'=>$data->article_id)))',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'type' => 'raw',
-				);
-			}
-			if(in_array('like_search', $gridview_column)) {
-				$this->defaultColumns[] = array(
-					'name' => 'like_search',
-					'value' => 'CHtml::link($data->view->likes ? $data->view->likes : 0, Yii::app()->controller->createUrl("o/like/manage", array(\'article\'=>$data->article_id)))',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'type' => 'raw',
-				);
-			}
-			if(in_array('downlaod_search', $gridview_column)) {
-				$this->defaultColumns[] = array(
-					'name' => 'downlaod_search',
-					'value' => 'CHtml::link($data->view->downloads ? $data->view->downloads : 0, Yii::app()->controller->createUrl("o/download/manage", array(\'article\'=>$data->article_id)))',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'type' => 'raw',
-				);
-			}
-			if(in_array('tag_search', $gridview_column)) {
-				$this->defaultColumns[] = array(
-					'name' => 'tag_search',
-					'value' => 'CHtml::link($data->view->tags ? $data->view->tags : 0, Yii::app()->controller->createUrl("o/tag/manage", array(\'article\'=>$data->article_id)))',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'type' => 'raw',
-				);
-			}
+				), true),
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'media_search',
+				'value' => 'CHtml::link($data->view->medias ? $data->view->medias : 0, Yii::app()->controller->createUrl("o/media/manage", array(\'article\'=>$data->article_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'view_search',
+				'value' => 'CHtml::link($data->view->views ? $data->view->views : 0, Yii::app()->controller->createUrl("o/views/manage", array(\'article\'=>$data->article_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'like_search',
+				'value' => 'CHtml::link($data->view->likes ? $data->view->likes : 0, Yii::app()->controller->createUrl("o/like/manage", array(\'article\'=>$data->article_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'downlaod_search',
+				'value' => 'CHtml::link($data->view->downloads ? $data->view->downloads : 0, Yii::app()->controller->createUrl("o/download/manage", array(\'article\'=>$data->article_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
+			);
+			$this->defaultColumns[] = array(
+				'name' => 'tag_search',
+				'value' => 'CHtml::link($data->view->tags ? $data->view->tags : 0, Yii::app()->controller->createUrl("o/tag/manage", array(\'article\'=>$data->article_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
+			);
 			if($setting->headline == 1) {
 				$this->defaultColumns[] = array(
 					'name' => 'headline',
@@ -574,16 +551,16 @@ class Articles extends CActiveRecord
 		foreach($model as $key => $item) {
 			$medias = $item->medias;
 			if(!empty($medias)) {
-				$media = $item->view->media_cover ? $item->view->media_cover : $medias[0]->media;
-				$image = Yii::app()->request->baseUrl.'/public/article/'.$item->article_id.'/'.$media;
+				$media_cover = $item->view->media_cover ? $item->view->media_cover : $medias[0]->cover_filename;
+				$media_cover = Yii::app()->request->baseUrl.'/public/article/'.$item->article_id.'/'.$media_cover;
 			} else 
-				$image = '';
+				$media_cover = '';
 			$url = Yii::app()->createUrl('article/site/view', array('id'=>$item->article_id,'slug'=>Utility::getUrlTitle($item->title)));
 				
 			$doc = new Zend_Search_Lucene_Document();
 			$doc->addField(Zend_Search_Lucene_Field::UnIndexed('id', CHtml::encode($item->article_id), 'utf-8')); 
 			$doc->addField(Zend_Search_Lucene_Field::Keyword('category', CHtml::encode($item->cat->title->message), 'utf-8'));
-			$doc->addField(Zend_Search_Lucene_Field::Text('media', CHtml::encode($image), 'utf-8'));
+			$doc->addField(Zend_Search_Lucene_Field::Text('media', CHtml::encode($media_cover), 'utf-8'));
 			$doc->addField(Zend_Search_Lucene_Field::Text('title', CHtml::encode($item->title), 'utf-8'));
 			$doc->addField(Zend_Search_Lucene_Field::Text('body', CHtml::encode(Utility::hardDecode(Utility::softDecode($item->body))), 'utf-8'));
 			$doc->addField(Zend_Search_Lucene_Field::Text('url', CHtml::encode(Utility::getProtocol().'://'.Yii::app()->request->serverName.$url), 'utf-8'));
@@ -754,14 +731,14 @@ class Articles extends CActiveRecord
 							$images = new ArticleMedia;
 							$images->cover = 1;
 							$images->article_id = $this->article_id;
-							$images->media = $fileName;
+							$images->cover_filename = $fileName;
 							$images->save();
 						} else {
 							if($this->old_media_input != '' && file_exists($article_path.'/'.$this->old_media_input))
 								rename($article_path.'/'.$this->old_media_input, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_media_input);
 							$medias = $this->medias;
 							$media_id = $this->view->media_id ? $this->view->media_id : $medias[0]->media_id;
-							if(ArticleMedia::model()->updateByPk($media_id, array('media'=>$fileName))) {
+							if(ArticleMedia::model()->updateByPk($media_id, array('cover_filename'=>$fileName))) {
 								if($setting->media_image_resize == 1)
 									ArticleMedia::resizePhoto($article_path.'/'.$fileName, $media_image_resize_size);
 							}
@@ -776,10 +753,10 @@ class Articles extends CActiveRecord
 				$video = new ArticleMedia;
 				$video->cover = 1;
 				$video->article_id = $this->article_id;
-				$video->media = $this->video_input;
+				$video->media_filename = $this->video_input;
 				$video->save();
 			} else
-				ArticleMedia::model()->updateByPk($medias[0]->media_id, array('media'=>$this->video_input));
+				ArticleMedia::model()->updateByPk($medias[0]->media_id, array('media_filename'=>$this->video_input));
 		}
 		
 		// Reset headline
@@ -803,8 +780,8 @@ class Articles extends CActiveRecord
 			$medias = $this->medias;
 			if(!empty($medias)) {
 				foreach($medias as $val) {
-					if($val->media != '' && file_exists($article_path.'/'.$val->media))
-						rename($article_path.'/'.$val->media, 'public/article/verwijderen/'.$val->article_id.'_'.$val->media);					
+					if($val->cover_filename != '' && file_exists($article_path.'/'.$val->cover_filename))
+						rename($article_path.'/'.$val->cover_filename, 'public/article/verwijderen/'.$val->article_id.'_'.$val->cover_filename);					
 				}
 			}
 			//delete media file

@@ -114,15 +114,15 @@ EOP;
 				<?php if(!$model->isNewRecord && $condition == 0) {
 					$medias = $model->medias;
 					if(!empty($medias)) {
-						$media = $model->view->media_cover ? $model->view->media_cover : $medias[0]->media;
+						$media_cover = $model->view->media_cover ? $model->view->media_cover : $medias[0]->cover_filename;
 						if(!$model->getErrors())
-							$model->old_media_input = $media;
+							$model->old_media_input = $media_cover;
 						echo $form->hiddenField($model, 'old_media_input');
-						$image = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_media_input;
-						$media = '<img src="'.Utility::getTimThumb($image, 320, 150, 1).'" alt="">';
+						$media_cover = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_media_input;
+						$media_cover = '<img src="'.Utility::getTimThumb($media_cover, 320, 150, 1).'" alt="">';
 						echo '<div class="form-group row">';
 						echo $form->labelEx($model, 'old_media_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12'));
-						echo '<div class="col-lg-8 col-md-9 col-sm-12">'.$media.'</div>';
+						echo '<div class="col-lg-8 col-md-9 col-sm-12">'.$media_cover.'</div>';
 						echo '</div>';
 					}
 				}?>
@@ -145,9 +145,9 @@ EOP;
 							<?php
 							$medias = $model->medias;
 							if(!empty($medias))
-								$media = $model->view->media_cover ? $model->view->media_cover : $medias[0]->media;
+								$media_cover = $model->view->media_cover ? $model->view->media_cover : $medias[0]->cover_filename;
 							if(!$model->getErrors())
-								$model->video_input = $media;
+								$model->video_input = $media_cover;
 							echo $form->textField($model, 'video_input', array('maxlength'=>32, 'class'=>'form-control'));?>
 							<?php echo $form->error($model, 'video_input'); ?>
 							<span class="small-px">http://www.youtube.com/watch?v=<strong>HOAqSoDZSho</strong></span>

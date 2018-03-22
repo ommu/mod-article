@@ -39,8 +39,13 @@
 		</li>
 
 		<li>
-			<?php echo $model->getAttributeLabel('media'); ?><br/>
-			<?php echo $form->textField($model, 'media'); ?>
+			<?php echo $model->getAttributeLabel('media_filename'); ?><br/>
+			<?php echo $form->textField($model, 'media_filename'); ?>
+		</li>
+
+		<li>
+			<?php echo $model->getAttributeLabel('cover_filename'); ?><br/>
+			<?php echo $form->textField($model, 'cover_filename'); ?>
 		</li>
 
 		<li>

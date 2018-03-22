@@ -40,13 +40,13 @@
 			'value'=>$model->article->title,
 		),
 		array(
-			'name'=>'media',
-			'value'=>$model->media ? CHtml::image(Utility::getTimThumb(Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->media, 600, 600, 3)) : '-',
-			'type' => 'raw',
+			'name'=>'media_filename',
+			'value'=>$model->cover_filename ? $model->cover_filename : '-',
 		),
 		array(
-			'name'=>'media_filename',
-			'value'=>$model->media ? $model->media : '-',
+			'name'=>'cover_filename',
+			'value'=>$model->cover_filename ? CHtml::image(Utility::getTimThumb(Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->cover_filename, 600, 600, 3)) : '-',
+			'type' => 'raw',
 		),
 		array(
 			'name'=>'caption',

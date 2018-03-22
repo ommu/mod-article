@@ -19,17 +19,17 @@ if($model != null) {?>
 			<?php
 			if($val->article_type == 'standard') {
 				if($val->view->media_cover != '')
-					$media = Yii::app()->request->baseUrl.'/public/article/'.$val->article_id.'/'.$val->view->media_cover;
+					$media_cover = Yii::app()->request->baseUrl.'/public/article/'.$val->article_id.'/'.$val->view->media_cover;
 				else
-					$media = Yii::app()->request->baseUrl.'/public/article/article_default.png';
+					$media_cover = Yii::app()->request->baseUrl.'/public/article/article_default.png';
 				
 			} else if($val->article_type == 'video')
-				$media = Yii::app()->request->baseUrl.'/public/article/article_default_video.png';
+				$media_cover = Yii::app()->request->baseUrl.'/public/article/article_default_video.png';
 			
 			else if($val->article_type == 'quote')
-				$media = Yii::app()->request->baseUrl.'/public/article/article_default_quote.png';?>
+				$media_cover = Yii::app()->request->baseUrl.'/public/article/article_default_quote.png';?>
 
-			<a class="img" href="<?php echo Yii::app()->createUrl('article/'.$controller.'/view', array('id'=>$val->article_id, 'slug'=>Utility::getUrlTitle($val->title)));?>" title="<?php echo $val->title;?>"><img src="<?php echo Utility::getTimThumb($media, 400, 270, 1);?>"></a> 
+			<a class="img" href="<?php echo Yii::app()->createUrl('article/'.$controller.'/view', array('id'=>$val->article_id, 'slug'=>Utility::getUrlTitle($val->title)));?>" title="<?php echo $val->title;?>"><img src="<?php echo Utility::getTimThumb($media_cover, 400, 270, 1);?>"></a> 
 			<div class="date">
 				<?php echo Utility::dateFormat($val->creation_date, true);?>
 				<?php //begin.Tools ?>

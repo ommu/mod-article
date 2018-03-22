@@ -123,9 +123,9 @@ class SiteController extends ControllerApi
 							
 							$medias = $item->medias;
 							if(!empty($medias)) {
-								$media = $item->view->media_cover ? $item->view->media_cover : $medias[0]->media;
-								if($media && file_exists($article_path.'/'.$media))
-									$cover_url_path = $article_url.'/'.$article_path.'/'.$media;
+								$media_cover = $item->view->media_cover ? $item->view->media_cover : $medias[0]->cover_filename;
+								if($media_cover && file_exists($article_path.'/'.$media_cover))
+									$cover_url_path = $article_url.'/'.$article_path.'/'.$media_cover;
 							}
 							
 							$data[] = array(
@@ -246,9 +246,9 @@ class SiteController extends ControllerApi
 							
 					$medias = $item->medias;
 					if(!empty($medias)) {
-						$media = $item->view->media_cover ? $item->view->media_cover : $medias[0]->media;
-						if($media && file_exists($article_path.'/'.$media))
-							$cover_url_path = $article_url.'/'.$article_path.'/'.$media;
+						$media_cover = $item->view->media_cover ? $item->view->media_cover : $medias[0]->cover_filename;
+						if($media_cover && file_exists($article_path.'/'.$media_cover))
+							$cover_url_path = $article_url.'/'.$article_path.'/'.$media_cover;
 					}
 					if($item->media_file && file_exists($article_path.'/'.$item->media_file))
 						$file_url_path = $article_url.'/'.$article_path.'/'.$item->media_file;
@@ -305,9 +305,9 @@ class SiteController extends ControllerApi
 							
 				$medias = $model->medias;
 				if(!empty($medias)) {
-					$media = $model->view->media_cover ? $model->view->media_cover : $medias[0]->media;
-					if($media && file_exists($article_path.'/'.$media))
-						$cover_url_path = $article_url.'/'.$article_path.'/'.$media;
+					$media_cover = $model->view->media_cover ? $model->view->media_cover : $medias[0]->cover_filename;
+					if($media_cover && file_exists($article_path.'/'.$media_cover))
+						$cover_url_path = $article_url.'/'.$article_path.'/'.$media_cover;
 				}
 				if($model->media_file && file_exists($article_path.'/'.$model->media_file))
 					$file_url_path = $article_url.'/'.$article_path.'/'.$model->media_file;

@@ -153,7 +153,7 @@ class MediaController extends Controller
 			}
 		}
 
-		$this->pageTitle = Yii::t('phrase', 'Update Media: {photo_media} from article {article_title}', array('{photo_media}'=>$model->media, '{article_title}'=>$model->article->title));
+		$this->pageTitle = Yii::t('phrase', 'Update Media: {photo_media} from article {article_title}', array('{photo_media}'=>$model->cover_filename, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_edit', array(
@@ -170,7 +170,7 @@ class MediaController extends Controller
 	{
 		$model=$this->loadModel($id);
 
-		$this->pageTitle = Yii::t('phrase', 'View Media: {photo_media} from article {article_title}', array('{photo_media}'=>$model->media, '{article_title}'=>$model->article->title));
+		$this->pageTitle = Yii::t('phrase', 'View Media: {photo_media} from article {article_title}', array('{photo_media}'=>$model->cover_filename, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_view', array(
@@ -256,7 +256,7 @@ class MediaController extends Controller
 		$this->dialogGroundUrl = $dialogGroundUrl;
 		$this->dialogWidth = 350;
 
-		$this->pageTitle = Yii::t('phrase', 'Delete Media: {photo_media} from article {article_title}', array('{photo_media}'=>$model->media, '{article_title}'=>$model->article->title));
+		$this->pageTitle = Yii::t('phrase', 'Delete Media: {photo_media} from article {article_title}', array('{photo_media}'=>$model->cover_filename, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_delete');
@@ -295,7 +295,7 @@ class MediaController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 350;
 
-		$this->pageTitle = Yii::t('phrase', '{title}: {photo_media} from article {article_title}', array('{title}'=>$title, '{photo_media}'=>$model->media, '{article_title}'=>$model->article->title));
+		$this->pageTitle = Yii::t('phrase', '{title}: {photo_media} from article {article_title}', array('{title}'=>$title, '{photo_media}'=>$model->cover_filename, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_publish', array(
@@ -347,7 +347,7 @@ class MediaController extends Controller
 		$this->dialogGroundUrl = $dialogGroundUrl;
 		$this->dialogWidth = 350;
 
-		$this->pageTitle = Yii::t('phrase', 'Cover Photo: {photo_media} from article {article_title}', array('{photo_media}'=>$model->media, '{article_title}'=>$model->article->title));
+		$this->pageTitle = Yii::t('phrase', 'Cover Photo: {photo_media} from article {article_title}', array('{photo_media}'=>$model->cover_filename, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_cover');
