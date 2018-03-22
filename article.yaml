@@ -25,6 +25,9 @@ plugin_menu		:
 			- urlTitle: Photos
 				urlRules: {siteType: "0,1", userLevel: "1,2"}
 				urlPath: {url: o/media/manage, attr: -, icon: -}
+			- urlTitle: Files
+				urlRules: {siteType: "0,1", userLevel: "1,2"}
+				urlPath: {url: o/file/manage, attr: -, icon: -}
 			- urlTitle: Tags
 				urlRules: {siteType: "0,1", userLevel: "1,2"}
 				urlPath: {url: o/tag/manage, attr: -, icon: -}
@@ -67,14 +70,31 @@ content_menu	:
 	- urlTitle: Back to Manage
 		urlRules: {article, o/media, "edit,view", siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: manage, attr: -, icon: -}
-	- urlTitle: View Photo
+	- urlTitle: View File
 		urlRules: {article, o/media, edit, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: view, attr: id=$_GET*id, icon: -}
-	- urlTitle: Update Photo
+	- urlTitle: Update File
 		urlRules: {article, o/media, view, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: edit, attr: id=$_GET*id, icon: -}
-	- urlTitle: Delete Photo
+	- urlTitle: Delete File
 		urlRules: {article, o/media, "edit,view", siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: delete, attr: id=$_GET*id, icon: -}
+		
+# controller o/file
+	- urlTitle: Back to Article
+		urlRules: {article, o/file, manage, siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: o/admin/manage, attr: -, icon: -}
+	- urlTitle: Back to Manage
+		urlRules: {article, o/file, "edit,view", siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: manage, attr: -, icon: -}
+	- urlTitle: View Photo
+		urlRules: {article, o/file, edit, siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: view, attr: id=$_GET*id, icon: -}
+	- urlTitle: Update Photo
+		urlRules: {article, o/file, view, siteType: "0,1", userLevel: "1,2"}
+		urlPath: {url: edit, attr: id=$_GET*id, icon: -}
+	- urlTitle: Delete Photo
+		urlRules: {article, o/file, "edit,view", siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: delete, attr: id=$_GET*id, icon: -}
 		
 # controller o/tag
