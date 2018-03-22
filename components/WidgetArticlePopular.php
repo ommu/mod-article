@@ -47,7 +47,7 @@ class WidgetArticlePopular extends CWidget
 			'limit' => 5,
 		));
 
-		$this->render('article_popular',array(
+		$this->render('article_popular', array(
 			'model' => $model,
 			'module'=>$module,
 			'controller'=>$controller,

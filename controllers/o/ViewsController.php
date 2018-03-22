@@ -117,7 +117,7 @@ class ViewsController extends Controller
 		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_manage',array(
+		$this->render('admin_manage', array(
 			'model'=>$model,
 			'columns' => $columns,
 		));
@@ -228,7 +228,7 @@ class ViewsController extends Controller
 		$this->pageTitle = Yii::t('phrase', '{title}: {article_title}', array('{title}'=>$title, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_publish',array(
+		$this->render('admin_publish', array(
 			'title'=>$title,
 			'model'=>$model,
 		));

@@ -213,7 +213,7 @@ class Articles extends CActiveRecord
 		elseif(isset($_GET['type']) && $_GET['type'] == 'trash')
 			$criteria->compare('t.publish',2);
 		else {
-			$criteria->addInCondition('t.publish',array(0,1));
+			$criteria->addInCondition('t.publish', array(0,1));
 			$criteria->compare('t.publish',$this->publish);
 		}
 
@@ -429,7 +429,7 @@ class Articles extends CActiveRecord
 			if(in_array('media_search', $gridview_column)) {
 				$this->defaultColumns[] = array(
 					'name' => 'media_search',
-					'value' => 'CHtml::link($data->view->medias ? $data->view->medias : 0, Yii::app()->controller->createUrl("o/media/manage",array(\'article\'=>$data->article_id)))',
+					'value' => 'CHtml::link($data->view->medias ? $data->view->medias : 0, Yii::app()->controller->createUrl("o/media/manage", array(\'article\'=>$data->article_id)))',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -439,7 +439,7 @@ class Articles extends CActiveRecord
 			if(in_array('view_search', $gridview_column)) {
 				$this->defaultColumns[] = array(
 					'name' => 'view_search',
-					'value' => 'CHtml::link($data->view->views ? $data->view->views : 0, Yii::app()->controller->createUrl("o/views/manage",array(\'article\'=>$data->article_id)))',
+					'value' => 'CHtml::link($data->view->views ? $data->view->views : 0, Yii::app()->controller->createUrl("o/views/manage", array(\'article\'=>$data->article_id)))',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -449,7 +449,7 @@ class Articles extends CActiveRecord
 			if(in_array('like_search', $gridview_column)) {
 				$this->defaultColumns[] = array(
 					'name' => 'like_search',
-					'value' => 'CHtml::link($data->view->likes ? $data->view->likes : 0, Yii::app()->controller->createUrl("o/like/manage",array(\'article\'=>$data->article_id)))',
+					'value' => 'CHtml::link($data->view->likes ? $data->view->likes : 0, Yii::app()->controller->createUrl("o/like/manage", array(\'article\'=>$data->article_id)))',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -459,7 +459,7 @@ class Articles extends CActiveRecord
 			if(in_array('downlaod_search', $gridview_column)) {
 				$this->defaultColumns[] = array(
 					'name' => 'downlaod_search',
-					'value' => 'CHtml::link($data->view->downloads ? $data->view->downloads : 0, Yii::app()->controller->createUrl("o/download/manage",array(\'article\'=>$data->article_id)))',
+					'value' => 'CHtml::link($data->view->downloads ? $data->view->downloads : 0, Yii::app()->controller->createUrl("o/download/manage", array(\'article\'=>$data->article_id)))',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -469,7 +469,7 @@ class Articles extends CActiveRecord
 			if(in_array('tag_search', $gridview_column)) {
 				$this->defaultColumns[] = array(
 					'name' => 'tag_search',
-					'value' => 'CHtml::link($data->view->tags ? $data->view->tags : 0, Yii::app()->controller->createUrl("o/tag/manage",array(\'article\'=>$data->article_id)))',
+					'value' => 'CHtml::link($data->view->tags ? $data->view->tags : 0, Yii::app()->controller->createUrl("o/tag/manage", array(\'article\'=>$data->article_id)))',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -479,7 +479,7 @@ class Articles extends CActiveRecord
 			if($setting->headline == 1) {
 				$this->defaultColumns[] = array(
 					'name' => 'headline',
-					'value' => 'in_array($data->cat_id, ArticleSetting::getHeadlineCategory()) ? ($data->headline == 1 ? CHtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Utility::getPublish(Yii::app()->controller->createUrl("headline",array("id"=>$data->article_id)), $data->headline, 9)) : \'-\'',
+					'value' => 'in_array($data->cat_id, ArticleSetting::getHeadlineCategory()) ? ($data->headline == 1 ? CHtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Utility::getPublish(Yii::app()->controller->createUrl("headline", array("id"=>$data->article_id)), $data->headline, 9)) : \'-\'',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -493,7 +493,7 @@ class Articles extends CActiveRecord
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->article_id)), $data->publish, 1)',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish", array("id"=>$data->article_id)), $data->publish, 1)',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -514,7 +514,7 @@ class Articles extends CActiveRecord
 	public static function getInfo($id, $column=null)
 	{
 		if($column != null) {
-			$model = self::model()->findByPk($id,array(
+			$model = self::model()->findByPk($id, array(
 				'select' => $column
 			));
 			return $model->$column;

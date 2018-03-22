@@ -150,7 +150,7 @@ class ArticleLikeHistory extends CActiveRecord
 		elseif(isset($_GET['type']) && $_GET['type'] == 'trash')
 			$criteria->compare('t.publish',2);
 		else {
-			$criteria->addInCondition('t.publish',array(0,1));
+			$criteria->addInCondition('t.publish', array(0,1));
 			$criteria->compare('t.publish',$this->publish);
 		}
 		if(isset($_GET['like']))
@@ -280,7 +280,7 @@ class ArticleLikeHistory extends CActiveRecord
 	public static function getInfo($id, $column=null)
 	{
 		if($column != null) {
-			$model = self::model()->findByPk($id,array(
+			$model = self::model()->findByPk($id, array(
 				'select' => $column
 			));
 			return $model->$column;

@@ -150,7 +150,7 @@ class ArticleViews extends CActiveRecord
 		elseif(isset($_GET['type']) && $_GET['type'] == 'trash')
 			$criteria->compare('t.publish',2);
 		else {
-			$criteria->addInCondition('t.publish',array(0,1));
+			$criteria->addInCondition('t.publish', array(0,1));
 			$criteria->compare('t.publish',$this->publish);
 		}
 		if(isset($_GET['article']))
@@ -253,7 +253,7 @@ class ArticleViews extends CActiveRecord
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'views',
-				'value' => 'CHtml::link($data->views ? $data->views : 0, Yii::app()->controller->createUrl("history/view/manage",array(\'view\'=>$data->view_id)))',
+				'value' => 'CHtml::link($data->views ? $data->views : 0, Yii::app()->controller->createUrl("history/view/manage", array(\'view\'=>$data->view_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -323,7 +323,7 @@ class ArticleViews extends CActiveRecord
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->view_id)), $data->publish, 1)',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish", array("id"=>$data->view_id)), $data->publish, 1)',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -344,7 +344,7 @@ class ArticleViews extends CActiveRecord
 	public static function getInfo($id, $column=null)
 	{
 		if($column != null) {
-			$model = self::model()->findByPk($id,array(
+			$model = self::model()->findByPk($id, array(
 				'select' => $column
 			));
 			return $model->$column;

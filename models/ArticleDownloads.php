@@ -227,7 +227,7 @@ class ArticleDownloads extends CActiveRecord
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'downloads',
-				'value' => 'CHtml::link($data->downloads, Yii::app()->controller->createUrl("history/download/manage",array(\'download\'=>$data->download_id)))',
+				'value' => 'CHtml::link($data->downloads, Yii::app()->controller->createUrl("history/download/manage", array(\'download\'=>$data->download_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -276,7 +276,7 @@ class ArticleDownloads extends CActiveRecord
 	public static function getInfo($id, $column=null)
 	{
 		if($column != null) {
-			$model = self::model()->findByPk($id,array(
+			$model = self::model()->findByPk($id, array(
 				'select' => $column
 			));
 			return $model->$column;

@@ -46,21 +46,21 @@
 						'options' => array(
 							'class' => 'view',
 						),
-						'url' => 'Yii::app()->controller->createUrl("o/category/view",array("id"=>$data->primaryKey))'),
+						'url' => 'Yii::app()->controller->createUrl("o/category/view", array("id"=>$data->primaryKey))'),
 					'update' => array(
 						'label' => 'update',
 						'imageUrl' => false,
 						'options' => array(
 							'class' => 'update'
 						),
-						'url' => 'Yii::app()->controller->createUrl("o/category/edit",array("id"=>$data->primaryKey))'),
+						'url' => 'Yii::app()->controller->createUrl("o/category/edit", array("id"=>$data->primaryKey))'),
 					'delete' => array(
 						'label' => 'delete',
 						'imageUrl' => false,
 						'options' => array(
 							'class' => 'delete'
 						),
-						'url' => 'Yii::app()->controller->createUrl("o/category/delete",array("id"=>$data->primaryKey))')
+						'url' => 'Yii::app()->controller->createUrl("o/category/delete", array("id"=>$data->primaryKey))')
 				),
 				'template' => '{update}|{delete}',
 			));

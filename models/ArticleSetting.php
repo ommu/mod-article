@@ -258,7 +258,7 @@ class ArticleSetting extends CActiveRecord
 	public static function getInfo($column=null)
 	{
 		if($column != null) {
-			$model = self::model()->findByPk(1,array(
+			$model = self::model()->findByPk(1, array(
 				'select' => $column
 			));
 			return $model->$column;

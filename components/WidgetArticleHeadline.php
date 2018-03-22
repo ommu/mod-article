@@ -46,7 +46,7 @@ class WidgetArticleHeadline extends CWidget
 			'limit' => 1,
 		));
 
-		$this->render('article_headline',array(
+		$this->render('article_headline', array(
 			'model' => $model,
 			'module'=>$module,
 			'controller'=>$controller,

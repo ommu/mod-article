@@ -157,7 +157,7 @@ class SettingController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Article Settings');
 		$this->pageDescription = Yii::t('phrase', 'This page contains general article settings that affect your entire social network. ');
 		$this->pageMeta = '';
-		$this->render('admin_edit',array(
+		$this->render('admin_edit', array(
 			'model'=>$model,
 			'article'=>$article,
 			'category' => $category,

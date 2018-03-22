@@ -21,32 +21,32 @@
 	<ul>
 		<li>
 			<?php echo $model->getAttributeLabel('download_id'); ?><br/>
-			<?php echo $form->textField($model,'download_id'); ?>
+			<?php echo $form->textField($model, 'download_id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('article_id'); ?><br/>
-			<?php echo $form->textField($model,'article_id'); ?>
+			<?php echo $form->textField($model, 'article_id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('user_id'); ?><br/>
-			<?php echo $form->textField($model,'user_id'); ?>
+			<?php echo $form->textField($model, 'user_id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('downloads'); ?><br/>
-			<?php echo $form->textField($model,'downloads'); ?>
+			<?php echo $form->textField($model, 'downloads'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('download_date'); ?><br/>
-			<?php echo $form->textField($model,'download_date'); ?>
+			<?php echo $form->textField($model, 'download_date'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('download_ip'); ?><br/>
-			<?php echo $form->textField($model,'download_ip'); ?>
+			<?php echo $form->textField($model, 'download_ip'); ?>
 		</li>
 
 		<li class="submit">

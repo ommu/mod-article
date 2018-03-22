@@ -21,22 +21,22 @@
 	<ul>
 		<li>
 			<?php echo $model->getAttributeLabel('id'); ?><br/>
-			<?php echo $form->textField($model,'id'); ?>
+			<?php echo $form->textField($model, 'id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('download_id'); ?><br/>
-			<?php echo $form->textField($model,'download_id'); ?>
+			<?php echo $form->textField($model, 'download_id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('download_date'); ?><br/>
-			<?php echo $form->textField($model,'download_date'); ?>
+			<?php echo $form->textField($model, 'download_date'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('download_ip'); ?><br/>
-			<?php echo $form->textField($model,'download_ip'); ?>
+			<?php echo $form->textField($model, 'download_ip'); ?>
 		</li>
 
 		<li class="submit">

@@ -35,12 +35,12 @@
 	
 		<?php if(!$model->isNewRecord) {?>		
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'old_media_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model, 'old_media_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<?php 
 				if(!$model->getErrors())
 					$model->old_media_input = $model->media;
-				echo $form->hiddenField($model,'old_media_input');
+				echo $form->hiddenField($model, 'old_media_input');
 				if($model->article->article_type == 'standard') {
 					$media = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_media_input;?>
 					<img src="<?php echo Utility::getTimThumb($media, 400, 400, 3);?>" alt="">
@@ -53,10 +53,10 @@
 
 		<?php if($model->article->article_type == 'standard') {?>
 			<div class="form-group row">
-				<?php echo $form->labelEx($model,'media', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+				<?php echo $form->labelEx($model, 'media', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 				<div class="col-lg-8 col-md-9 col-sm-12">
-					<?php echo $form->fileField($model,'media',array('maxlength'=>64, 'class'=>'form-control')); ?>
-					<?php echo $form->error($model,'media'); ?>
+					<?php echo $form->fileField($model, 'media', array('maxlength'=>64, 'class'=>'form-control')); ?>
+					<?php echo $form->error($model, 'media'); ?>
 					<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($media_image_type, false);?></span>
 				</div>
 			</div>
@@ -64,41 +64,41 @@
 		<?php }
 			if($model->article->article_type == 'video') {?>
 			<div class="form-group row">
-				<?php echo $form->labelEx($model,'video_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+				<?php echo $form->labelEx($model, 'video_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 				<div class="col-lg-8 col-md-9 col-sm-12">
 					<?php
 					if(!$model->getErrors())
 						$model->video_input = $model->media;
-					echo $form->textField($model,'video_input',array('maxlength'=>32, 'class'=>'form-control')); ?>
-					<?php echo $form->error($model,'video_input'); ?>
+					echo $form->textField($model, 'video_input', array('maxlength'=>32, 'class'=>'form-control')); ?>
+					<?php echo $form->error($model, 'video_input'); ?>
 					<span class="small-px">http://www.youtube.com/watch?v=<strong>HOAqSoDZSho</strong></span>
 				</div>
 			</div>			
 		<?php }?>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'caption', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model, 'caption', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
-				<?php echo $form->textArea($model,'caption',array('rows'=>6, 'cols'=>50, 'class'=>'form-control')); ?>
-				<?php echo $form->error($model,'caption'); ?>
+				<?php echo $form->textArea($model, 'caption', array('rows'=>6, 'cols'=>50, 'class'=>'form-control')); ?>
+				<?php echo $form->error($model, 'caption'); ?>
 			</div>
 		</div>
 
 		<div class="form-group row publish">
-			<?php echo $form->labelEx($model,'cover', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model, 'cover', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
-				<?php echo $form->checkBox($model,'cover', array('class'=>'form-control')); ?>
-				<?php echo $form->labelEx($model,'cover'); ?>
-				<?php echo $form->error($model,'cover'); ?>
+				<?php echo $form->checkBox($model, 'cover', array('class'=>'form-control')); ?>
+				<?php echo $form->labelEx($model, 'cover'); ?>
+				<?php echo $form->error($model, 'cover'); ?>
 			</div>
 		</div>
 
 		<div class="form-group row publish">
-			<?php echo $form->labelEx($model,'publish', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model, 'publish', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
-				<?php echo $form->checkBox($model,'publish', array('class'=>'form-control')); ?>
-				<?php echo $form->labelEx($model,'publish'); ?>
-				<?php echo $form->error($model,'publish'); ?>
+				<?php echo $form->checkBox($model, 'publish', array('class'=>'form-control')); ?>
+				<?php echo $form->labelEx($model, 'publish'); ?>
+				<?php echo $form->error($model, 'publish'); ?>
 			</div>
 		</div>
 

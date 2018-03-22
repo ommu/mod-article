@@ -164,7 +164,7 @@ class ArticleMedia extends CActiveRecord
 		elseif(isset($_GET['type']) && $_GET['type'] == 'trash')
 			$criteria->compare('t.publish',2);
 		else {
-			$criteria->addInCondition('t.publish',array(0,1));
+			$criteria->addInCondition('t.publish', array(0,1));
 			$criteria->compare('t.publish',$this->publish);
 		}
 		$criteria->compare('t.cover',$this->cover);
@@ -336,7 +336,7 @@ class ArticleMedia extends CActiveRecord
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->media_id)), $data->publish, 1)',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish", array("id"=>$data->media_id)), $data->publish, 1)',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -357,7 +357,7 @@ class ArticleMedia extends CActiveRecord
 	public static function getInfo($id, $column=null)
 	{
 		if($column != null) {
-			$model = self::model()->findByPk($id,array(
+			$model = self::model()->findByPk($id, array(
 				'select'=>$column
 			));
 			return $model->$column;

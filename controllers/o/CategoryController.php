@@ -112,7 +112,7 @@ class CategoryController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Categories');
 		$this->pageDescription = Yii::t('phrase', 'You may want to allow your users to categorize their articles by subject, location, etc. Categorized articles make it easier for users to find and attend articles that interest them. If you want to allow article categories, you can create them (along with subcategories) below.');
 		$this->pageMeta = '';
-		$this->render('admin_manage',array(
+		$this->render('admin_manage', array(
 			'model'=>$model,
 			'columns' => $columns,
 		));
@@ -160,7 +160,7 @@ class CategoryController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Create Category');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_add',array(
+		$this->render('admin_add', array(
 			'model'=>$model,
 		));
 	}
@@ -208,7 +208,7 @@ class CategoryController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Update Category: {category_name}', array('{category_name}'=>$model->title->message));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_edit',array(
+		$this->render('admin_edit', array(
 			'model'=>$model,
 		));
 	}
@@ -228,7 +228,7 @@ class CategoryController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'View Category: {category_name}', array('{category_name}'=>$model->title->message));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_view',array(
+		$this->render('admin_view', array(
 			'model'=>$model,
 		));
 	}
@@ -340,7 +340,7 @@ class CategoryController extends Controller
 		$this->pageTitle = Yii::t('phrase', '{title}: {category_name}', array('{title}'=>$title, '{category_name}'=>$model->title->message));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_publish',array(
+		$this->render('admin_publish', array(
 			'title'=>$title,
 			'model'=>$model,
 		));

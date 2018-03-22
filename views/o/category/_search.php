@@ -20,67 +20,67 @@
 	<ul>
 		<li>
 			<?php echo $model->getAttributeLabel('cat_id'); ?><br/>
-			<?php echo $form->textField($model,'cat_id'); ?>
+			<?php echo $form->textField($model, 'cat_id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('publish'); ?><br/>
-			<?php echo $form->textField($model,'publish'); ?>
+			<?php echo $form->textField($model, 'publish'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('parent'); ?><br/>
-			<?php echo $form->textField($model,'parent'); ?>
+			<?php echo $form->textField($model, 'parent'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('name'); ?><br/>
-			<?php echo $form->textField($model,'name'); ?>
+			<?php echo $form->textField($model, 'name'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('desc'); ?><br/>
-			<?php echo $form->textField($model,'desc'); ?>
+			<?php echo $form->textField($model, 'desc'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('single_photo'); ?><br/>
-			<?php echo $form->textField($model,'single_photo'); ?>
+			<?php echo $form->textField($model, 'single_photo'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('single_file'); ?><br/>
-			<?php echo $form->textField($model,'single_file'); ?>
+			<?php echo $form->textField($model, 'single_file'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('creation_date'); ?><br/>
-			<?php echo $form->textField($model,'creation_date'); ?>
+			<?php echo $form->textField($model, 'creation_date'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('creation_id'); ?><br/>
-			<?php echo $form->textField($model,'creation_id'); ?>
+			<?php echo $form->textField($model, 'creation_id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('modified_date'); ?><br/>
-			<?php echo $form->textField($model,'modified_date'); ?>
+			<?php echo $form->textField($model, 'modified_date'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('modified_id'); ?><br/>
-			<?php echo $form->textField($model,'modified_id'); ?>
+			<?php echo $form->textField($model, 'modified_id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('updated_date'); ?><br/>
-			<?php echo $form->textField($model,'updated_date'); ?>
+			<?php echo $form->textField($model, 'updated_date'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('slug'); ?><br/>
-			<?php echo $form->textField($model,'slug'); ?>
+			<?php echo $form->textField($model, 'slug'); ?>
 		</li>
 
 		<li class="submit">

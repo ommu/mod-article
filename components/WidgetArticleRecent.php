@@ -39,14 +39,14 @@ class WidgetArticleRecent extends CWidget
 			':publish'=>1,
 		);
 		$criteria->order = 'published_date DESC';
-		//$criteria->addInCondition('cat_id',array(18));
+		//$criteria->addInCondition('cat_id', array(18));
 		//$criteria->compare('cat_id',18);
 		//$criteria->limit = 3;
 		$criteria->limit = ($module == null && $currentAction == 'site/index') ? 4 : 5;
 			
 		$model = Articles::model()->findAll($criteria);
 
-		$this->render('article_recent',array(
+		$this->render('article_recent', array(
 			'model' => $model,
 			'module'=>$module,
 			'controller'=>$controller,

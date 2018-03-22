@@ -94,12 +94,6 @@ class MediaController extends Controller
 	 */
 	public function actionManage($article=null) 
 	{
-		$pageTitle = Yii::t('phrase', 'Article Media');
-		if($article != null) {
-			$data = Articles::model()->findByPk($article);
-			$pageTitle = Yii::t('phrase', 'Article Media: {article_title} from category {category_name}', array ('{article_title}'=>$data->title, '{category_name}'=>$data->cat->title->message));
-		}
-		
 		$model=new ArticleMedia('search');
 		$model->unsetAttributes();  // clear any default values
 		if(isset($_GET['ArticleMedia'])) {
@@ -115,11 +109,17 @@ class MediaController extends Controller
 			}
 		}
 		$columns = $model->getGridColumn($columnTemp);
+		
+		$pageTitle = Yii::t('phrase', 'Article Medias');
+		if($article != null) {
+			$data = Articles::model()->findByPk($article);
+			$pageTitle = Yii::t('phrase', 'Article Media: {article_title} from category {category_name}', array ('{article_title}'=>$data->title, '{category_name}'=>$data->cat->title->message));
+		}
 
 		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_manage',array(
+		$this->render('admin_manage', array(
 			'model'=>$model,
 			'columns' => $columns,
 		));
@@ -132,7 +132,7 @@ class MediaController extends Controller
 	 */
 	public function actionEdit($id) 
 	{
-		$setting = ArticleSetting::model()->findByPk(1,array(
+		$setting = ArticleSetting::model()->findByPk(1, array(
 			'select' => 'media_image_type',
 		));
 		$media_image_type = unserialize($setting->media_image_type);
@@ -153,10 +153,10 @@ class MediaController extends Controller
 			}
 		}
 
-		$this->pageTitle = Yii::t('phrase', 'Update Media: {photo_media} from article {article_title}', array('{article_title}'=>$model->article->title));
+		$this->pageTitle = Yii::t('phrase', 'Update Media: {photo_media} from article {article_title}', array('{photo_media}'=>$model->media, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_edit',array(
+		$this->render('admin_edit', array(
 			'model'=>$model,
 			'media_image_type'=>$media_image_type,
 		));
@@ -173,7 +173,7 @@ class MediaController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'View Media: {photo_media} from article {article_title}', array('{photo_media}'=>$model->media, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_view',array(
+		$this->render('admin_view', array(
 			'model'=>$model,
 		));
 	}
@@ -298,7 +298,7 @@ class MediaController extends Controller
 		$this->pageTitle = Yii::t('phrase', '{title}: {photo_media} from article {article_title}', array('{title}'=>$title, '{photo_media}'=>$model->media, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_publish',array(
+		$this->render('admin_publish', array(
 			'title'=>$title,
 			'model'=>$model,
 		));

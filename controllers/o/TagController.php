@@ -115,7 +115,7 @@ class TagController extends Controller
 		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_manage',array(
+		$this->render('admin_manage', array(
 			'model'=>$model,
 			'columns' => $columns,
 		));
@@ -139,9 +139,9 @@ class TagController extends Controller
 
 			if($model->save()) {
 				if(isset($_GET['type']) && $_GET['type'] == 'article')
-					$url = Yii::app()->controller->createUrl('delete',array('id'=>$model->id,'type'=>'article'));
+					$url = Yii::app()->controller->createUrl('delete', array('id'=>$model->id,'type'=>'article'));
 				else 
-					$url = Yii::app()->controller->createUrl('delete',array('id'=>$model->id));
+					$url = Yii::app()->controller->createUrl('delete', array('id'=>$model->id));
 				echo CJSON::encode(array(
 					'data' => '<div>'.$model->tag->body.'<a href="'.$url.'" title="'.Yii::t('phrase', 'Delete').'">'.Yii::t('phrase', 'Delete').'</a></div>',
 				));

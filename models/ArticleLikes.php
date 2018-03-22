@@ -150,7 +150,7 @@ class ArticleLikes extends CActiveRecord
 		elseif(isset($_GET['type']) && $_GET['type'] == 'trash')
 			$criteria->compare('t.publish',2);
 		else {
-			$criteria->addInCondition('t.publish',array(0,1));
+			$criteria->addInCondition('t.publish', array(0,1));
 			$criteria->compare('t.publish',$this->publish);
 		}
 		if(isset($_GET['article']))
@@ -253,7 +253,7 @@ class ArticleLikes extends CActiveRecord
 			}
 			$this->defaultColumns[] = array(
 				'name' => 'like_search',
-				'value' => 'CHtml::link($data->view->likes ? $data->view->likes : 0, Yii::app()->controller->createUrl("history/like/manage",array(\'like\'=>$data->like_id,\'type\'=>\'publish\')))',
+				'value' => 'CHtml::link($data->view->likes ? $data->view->likes : 0, Yii::app()->controller->createUrl("history/like/manage", array(\'like\'=>$data->like_id,\'type\'=>\'publish\')))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -261,7 +261,7 @@ class ArticleLikes extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'unlike_search',
-				'value' => 'CHtml::link($data->view->unlikes ? $data->view->unlikes : 0, Yii::app()->controller->createUrl("history/like/manage",array(\'like\'=>$data->like_id,\'type\'=>\'unpublish\')))',
+				'value' => 'CHtml::link($data->view->unlikes ? $data->view->unlikes : 0, Yii::app()->controller->createUrl("history/like/manage", array(\'like\'=>$data->like_id,\'type\'=>\'unpublish\')))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -331,7 +331,7 @@ class ArticleLikes extends CActiveRecord
 			if(!isset($_GET['type'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish",array("id"=>$data->like_id)), $data->publish, 1)',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish", array("id"=>$data->like_id)), $data->publish, 1)',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -352,7 +352,7 @@ class ArticleLikes extends CActiveRecord
 	public static function getInfo($id, $column=null)
 	{
 		if($column != null) {
-			$model = self::model()->findByPk($id,array(
+			$model = self::model()->findByPk($id, array(
 				'select' => $column
 			));
 			return $model->$column;

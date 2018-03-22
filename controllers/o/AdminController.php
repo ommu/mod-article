@@ -121,7 +121,7 @@ class AdminController extends Controller
 		$this->pageTitle = $pageTitle;
 		$this->pageDescription = Yii::t('phrase', 'Use this page to search for and manage article entries. To Approve or Feature an article, just click on the icon, it will automate turn on and off per that setting. To edit, delete, or manage an article, please login as that user, and perform your actions.');
 		$this->pageMeta = '';
-		$this->render('admin_manage',array(
+		$this->render('admin_manage', array(
 			'model'=>$model,
 			'columns' => $columns,
 		));
@@ -133,7 +133,7 @@ class AdminController extends Controller
 	 */
 	public function actionAdd() 
 	{
-		$setting = ArticleSetting::model()->findByPk(1,array(
+		$setting = ArticleSetting::model()->findByPk(1, array(
 			'select' => 'meta_keyword, type_active, headline, media_image_type, media_file_type',
 		));	
 		$media_image_type = unserialize($setting->media_image_type);
@@ -165,7 +165,7 @@ class AdminController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Create Article');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_add',array(
+		$this->render('admin_add', array(
 			'model'=>$model,
 			'setting'=>$setting,
 			'media_image_type'=>$media_image_type,
@@ -180,7 +180,7 @@ class AdminController extends Controller
 	 */
 	public function actionEdit($id) 
 	{
-		$setting = ArticleSetting::model()->findByPk(1,array(
+		$setting = ArticleSetting::model()->findByPk(1, array(
 			'select' => 'meta_keyword, type_active, headline, media_image_limit, media_image_type, media_file_type',
 		));
 		$media_image_type = unserialize($setting->media_image_type);
@@ -246,7 +246,7 @@ class AdminController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Update Article: {article_title}', array('{article_title}'=>$model->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_edit',array(
+		$this->render('admin_edit', array(
 			'model'=>$model,
 			'setting'=>$setting,
 			'media_image_type'=>$media_image_type,
@@ -361,7 +361,7 @@ class AdminController extends Controller
 		$this->pageTitle = Yii::t('phrase', '{title}: {article_title}', array('{title}'=>$title, '{article_title}'=>$model->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_publish',array(
+		$this->render('admin_publish', array(
 			'title'=>$title,
 			'model'=>$model,
 		));
@@ -412,7 +412,7 @@ class AdminController extends Controller
 	 */
 	public function actionGetcover($id) 
 	{
-		$setting = ArticleSetting::model()->findByPk(1,array(
+		$setting = ArticleSetting::model()->findByPk(1, array(
 			'select' => 'media_image_limit',
 		));		
 		$media_image_limit = $setting->media_image_limit;
@@ -440,7 +440,7 @@ class AdminController extends Controller
 	 */
 	public function actionInsertcover($id) 
 	{
-		$setting = ArticleSetting::model()->findByPk(1,array(
+		$setting = ArticleSetting::model()->findByPk(1, array(
 			'select' => 'media_image_limit, media_image_type',
 		));
 		$media_image_limit = $setting->media_image_limit;

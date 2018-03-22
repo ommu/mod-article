@@ -113,7 +113,7 @@ class FileController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Article Files');
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_manage',array(
+		$this->render('admin_manage', array(
 			'model'=>$model,
 			'columns' => $columns,
 		));
@@ -126,7 +126,7 @@ class FileController extends Controller
 	 */
 	public function actionEdit($id) 
 	{
-		$setting = ArticleSetting::model()->findByPk(1,array(
+		$setting = ArticleSetting::model()->findByPk(1, array(
 			'select' => 'media_file_type',
 		));
 		$media_file_type = unserialize($setting->media_file_type);
@@ -150,7 +150,7 @@ class FileController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Update File: {file_filename} article {article_title}', array('{file_filename}'=>$model->file_filename, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_edit',array(
+		$this->render('admin_edit', array(
 			'model'=>$model,
 			'media_file_type'=>$media_file_type,
 		));
@@ -171,7 +171,7 @@ class FileController extends Controller
 		$this->pageTitle = Yii::t('phrase', 'Detail File: {file_filename} article {article_title}', array('{file_filename}'=>$model->file_filename, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_view',array(
+		$this->render('admin_view', array(
 			'model'=>$model,
 		));
 	}
@@ -283,7 +283,7 @@ class FileController extends Controller
 		$this->pageTitle = Yii::t('phrase', '{title} File: {file_filename} article {article_title}', array('{title}'=>$title, '{file_filename}'=>$model->file_filename, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
-		$this->render('admin_publish',array(
+		$this->render('admin_publish', array(
 			'title'=>$title,
 			'model'=>$model,
 		));

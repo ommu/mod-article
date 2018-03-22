@@ -21,27 +21,27 @@
 	<ul>
 		<li>
 			<?php echo $model->getAttributeLabel('id'); ?><br/>
-			<?php echo $form->textField($model,'id'); ?>
+			<?php echo $form->textField($model, 'id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('publish'); ?><br/>
-			<?php echo $form->textField($model,'publish'); ?>
+			<?php echo $form->textField($model, 'publish'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('like_id'); ?><br/>
-			<?php echo $form->textField($model,'like_id'); ?>
+			<?php echo $form->textField($model, 'like_id'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('likes_date'); ?><br/>
-			<?php echo $form->textField($model,'likes_date'); ?>
+			<?php echo $form->textField($model, 'likes_date'); ?>
 		</li>
 
 		<li>
 			<?php echo $model->getAttributeLabel('likes_ip'); ?><br/>
-			<?php echo $form->textField($model,'likes_ip'); ?>
+			<?php echo $form->textField($model, 'likes_ip'); ?>
 		</li>
 
 		<li class="submit">

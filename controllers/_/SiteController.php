@@ -94,7 +94,7 @@ class SiteController extends Controller
 	 */
 	public function actionIndex() 
 	{
-		$setting = ArticleSetting::model()->findByPk(1,array(
+		$setting = ArticleSetting::model()->findByPk(1, array(
 			'select' => 'meta_description, meta_keyword',
 		));
 		
@@ -120,7 +120,7 @@ class SiteController extends Controller
 		$this->pageTitle = (isset($_GET['category']) && $_GET['category']) ? $title->title->message : Yii::t('phrase', 'Articles');
 		$this->pageDescription = $setting->meta_description;
 		$this->pageMeta = $setting->meta_keyword;
-		$this->render('front_index',array(
+		$this->render('front_index', array(
 			'dataProvider'=>$dataProvider,
 		));
 	}
@@ -131,7 +131,7 @@ class SiteController extends Controller
 	 */
 	public function actionView($id) 
 	{
-		$setting = ArticleSetting::model()->findByPk(1,array(
+		$setting = ArticleSetting::model()->findByPk(1, array(
 			'select' => 'meta_keyword',
 		));
 
@@ -162,7 +162,7 @@ class SiteController extends Controller
 				$media = 'http://www.youtube.com/watch?v='.$media;
 			$this->pageImage = $media;
 		}
-		$this->render('front_view',array(
+		$this->render('front_view', array(
 			'model'=>$model,
 			'random'=>$random,
 		));

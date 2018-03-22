@@ -40,7 +40,7 @@
 
 <?php //begin.Search ?>
 <div class="search-form">
-<?php $this->renderPartial('_search',array(
+<?php $this->renderPartial('_search', array(
 	'model'=>$model,
 )); ?>
 </div>
@@ -48,7 +48,7 @@
 
 <?php //begin.Grid Option ?>
 <div class="grid-form">
-<?php $this->renderPartial('_option_form',array(
+<?php $this->renderPartial('_option_form', array(
 	'model'=>$model,
 )); ?>
 </div>
@@ -81,21 +81,21 @@
 							'class' => 'view',
 							'target' => '_blank',
 						),
-						'url' => 'Yii::app()->controller->createUrl("site/view",array("id"=>$data->primaryKey,"slug"=>Utility::getUrlTitle($data->title)))'),
+						'url' => 'Yii::app()->controller->createUrl("site/view", array("id"=>$data->primaryKey,"slug"=>Utility::getUrlTitle($data->title)))'),
 					'update' => array(
 						'label' => 'update',
 						'imageUrl' => false,
 						'options' => array(
 							'class' => 'update'
 						),
-						'url' => 'Yii::app()->controller->createUrl("edit",array("id"=>$data->primaryKey))'),
+						'url' => 'Yii::app()->controller->createUrl("edit", array("id"=>$data->primaryKey))'),
 					'delete' => array(
 						'label' => 'delete',
 						'imageUrl' => false,
 						'options' => array(
 							'class' => 'delete'
 						),
-						'url' => 'Yii::app()->controller->createUrl("delete",array("id"=>$data->primaryKey))')
+						'url' => 'Yii::app()->controller->createUrl("delete", array("id"=>$data->primaryKey))')
 				),
 				'template' => '{view}|{update}|{delete}',
 			));

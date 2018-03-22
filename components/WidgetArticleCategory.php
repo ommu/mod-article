@@ -41,7 +41,7 @@ class WidgetArticleCategory extends CWidget
 		}
 		$model = ArticleCategory::model()->findAll($criteria);
 
-		$this->render('article_category',array(
+		$this->render('article_category', array(
 			'model' => $model,
 			'module'=>$module,
 			'controller'=>$controller,
