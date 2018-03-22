@@ -6,18 +6,8 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 Ommu Platform (opensource.ommu.co)
  * @created date 7 February 2017, 02:26 WIB
+ * @modified date 22 March 2018, 16:54 WIB
  * @link https://github.com/ommu/ommu-article
- *
- * This is the template for generating the model class of a specified table.
- * - $this: the ModelCode object
- * - $tableName: the table name for this class (prefix is already removed if necessary)
- * - $modelClass: the model class name
- * - $columns: list of table columns (name=>CDbColumnSchema)
- * - $labels: list of attribute labels (name=>label)
- * - $rules: list of validation rules
- * - $relations: list of relations (name=>relation declaration)
- *
- * --------------------------------------------------------------------------------------
  *
  * This is the model class for table "ommu_article_like_history".
  *
@@ -31,10 +21,11 @@
  * The followings are the available model relations:
  * @property ArticleLikes $like
  */
-class ArticleLikeHistory extends CActiveRecord
+
+class ArticleLikeHistory extends OActiveRecord
 {
-	public $defaultColumns = array();
-	
+	public $gridForbiddenColumn = array();
+
 	// Variable Search
 	public $category_search;
 	public $article_search;
@@ -56,7 +47,8 @@ class ArticleLikeHistory extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'ommu_article_like_history';
+		preg_match("/dbname=([^;]+)/i", $this->dbConnection->connectionString, $matches);
+		return $matches[1].'.ommu_article_like_history';
 	}
 
 	/**
@@ -125,7 +117,7 @@ class ArticleLikeHistory extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
-		
+
 		// Custom Search
 		$criteria->with = array(
 			'like' => array(
@@ -142,99 +134,79 @@ class ArticleLikeHistory extends CActiveRecord
 			),
 		);
 
-		$criteria->compare('t.id',$this->id);
-		if(isset($_GET['type']) && $_GET['type'] == 'publish')
-			$criteria->compare('t.publish',1);
-		elseif(isset($_GET['type']) && $_GET['type'] == 'unpublish')
-			$criteria->compare('t.publish',0);
-		elseif(isset($_GET['type']) && $_GET['type'] == 'trash')
-			$criteria->compare('t.publish',2);
+		$criteria->compare('t.id', $this->id);
+		if(Yii::app()->getRequest()->getParam('type') == 'publish')
+			$criteria->compare('t.publish', 1);
+		elseif(Yii::app()->getRequest()->getParam('type') == 'unpublish')
+			$criteria->compare('t.publish', 0);
+		elseif(Yii::app()->getRequest()->getParam('type') == 'trash')
+			$criteria->compare('t.publish', 2);
 		else {
 			$criteria->addInCondition('t.publish', array(0,1));
-			$criteria->compare('t.publish',$this->publish);
+			$criteria->compare('t.publish', $this->publish);
 		}
-		if(isset($_GET['like']))
-			$criteria->compare('t.like_id',$_GET['like']);
-		else
-			$criteria->compare('t.like_id',$this->like_id);
-		if($this->likes_date != null && !in_array($this->likes_date, array('0000-00-00 00:00:00', '0000-00-00')))
-			$criteria->compare('date(t.likes_date)',date('Y-m-d', strtotime($this->likes_date)));
-		$criteria->compare('t.likes_ip',strtolower($this->likes_ip),true);
+		$criteria->compare('t.like_id', Yii::app()->getRequest()->getParam('like') ? Yii::app()->getRequest()->getParam('like') : $this->like_id);
+		if($this->likes_date != null && !in_array($this->likes_date, array('0000-00-00 00:00:00', '1970-01-01 00:00:00')))
+			$criteria->compare('date(t.likes_date)', date('Y-m-d', strtotime($this->likes_date)));
+		$criteria->compare('t.likes_ip', strtolower($this->likes_ip), true);
 
-		$criteria->compare('like_article.cat_id',$this->category_search);
-		$criteria->compare('like_article.title',strtolower($this->article_search),true);
-		$criteria->compare('like_user.displayname',strtolower($this->user_search),true);
+		$criteria->compare('like_article.cat_id', $this->category_search);
+		$criteria->compare('like_article.title', strtolower($this->article_search), true);
+		$criteria->compare('like_user.displayname', strtolower($this->user_search), true);
 
-		if(!isset($_GET['ArticleLikeHistory_sort']))
+		if(!Yii::app()->getRequest()->getParam('ArticleLikeHistory_sort'))
 			$criteria->order = 't.id DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 			'pagination'=>array(
-				'pageSize'=>30,
+				'pageSize'=>Yii::app()->params['grid-view'] ? Yii::app()->params['grid-view']['pageSize'] : 20,
 			),
 		));
-	}
-
-
-	/**
-	 * Get column for CGrid View
-	 */
-	public function getGridColumn($columns=null) {
-		if($columns !== null) {
-			foreach($columns as $val) {
-				/*
-				if(trim($val) == 'enabled') {
-					$this->defaultColumns[] = array(
-						'name'  => 'enabled',
-						'value' => '$data->enabled == 1? "Ya": "Tidak"',
-					);
-				}
-				*/
-				$this->defaultColumns[] = $val;
-			}
-		} else {
-			//$this->defaultColumns[] = 'id';
-			$this->defaultColumns[] = 'publish';
-			$this->defaultColumns[] = 'like_id';
-			$this->defaultColumns[] = 'likes_date';
-			$this->defaultColumns[] = 'likes_ip';
-		}
-
-		return $this->defaultColumns;
 	}
 
 	/**
 	 * Set default columns to display
 	 */
 	protected function afterConstruct() {
-		if(count($this->defaultColumns) == 0) {
-			$this->defaultColumns[] = array(
-				'header' => 'No',
-				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
+		if(count($this->templateColumns) == 0) {
+			$this->templateColumns['_option'] = array(
+				'class' => 'CCheckBoxColumn',
+				'name' => 'id',
+				'selectableRows' => 2,
+				'checkBoxHtmlOptions' => array('name' => 'trash_id[]')
 			);
-			if(!isset($_GET['like'])) {
-				$this->defaultColumns[] = array(
+			$this->templateColumns['_no'] = array(
+				'header' => Yii::t('app', 'No'),
+				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			if(!Yii::app()->getRequest()->getParam('like')) {
+				$this->templateColumns['category_search'] = array(
 					'name' => 'category_search',
 					'value' => '$data->like->article->category->title->message',
 					'filter'=> ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);
-				$this->defaultColumns[] = array(
+				$this->templateColumns['article_search'] = array(
 					'name' => 'article_search',
 					'value' => '$data->like->article->title',
 				);
-				$this->defaultColumns[] = array(
+				$this->templateColumns['user_search'] = array(
 					'name' => 'user_search',
 					'value' => '$data->like->user->displayname ? $data->like->user->displayname : \'-\'',
 				);	
 			}
-			$this->defaultColumns[] = array(
+			$this->templateColumns['likes_date'] = array(
 				'name' => 'likes_date',
-				'value' => 'Utility::dateFormat($data->likes_date)',
+				'value' => '!in_array($data->likes_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->likes_date) : \'-\'',
 				'htmlOptions' => array(
-					//'class' => 'center',
+					'class' => 'center',
 				),
+				'filter' => 'native-datepicker',
+				/*
 				'filter' => Yii::app()->controller->widget('application.libraries.core.components.system.CJuiDatePicker', array(
 					'model'=>$this,
 					'attribute'=>'likes_date',
@@ -243,6 +215,8 @@ class ArticleLikeHistory extends CActiveRecord
 					//'mode'=>'datetime',
 					'htmlOptions' => array(
 						'id' => 'likes_date_filter',
+						'on_datepicker' => 'on',
+						'placeholder' => Yii::t('phrase', 'filter'),
 					),
 					'options'=>array(
 						'showOn' => 'focus',
@@ -254,22 +228,29 @@ class ArticleLikeHistory extends CActiveRecord
 						'showButtonPanel' => true,
 					),
 				), true),
+				*/
 			);
-			$this->defaultColumns[] = array(
+			$this->templateColumns['likes_ip'] = array(
 				'name' => 'likes_ip',
 				'value' => '$data->likes_ip',
 				'htmlOptions' => array(
 					//'class' => 'center',
 				),
 			);
-			$this->defaultColumns[] = array(
-				'name' => 'publish',
-				'value' => '$data->publish == 1 ? CHtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : CHtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
-				'htmlOptions' => array(
-					//'class' => 'center',
-				),
-				'type' => 'raw',
-			);
+			if(!Yii::app()->getRequest()->getParam('type')) {
+				$this->templateColumns['publish'] = array(
+					'name' => 'publish',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'publish\',array(\'id\'=>$data->id)), $data->publish)',
+					'htmlOptions' => array(
+						'class' => 'center',
+					),
+					'filter'=>array(
+						1=>Yii::t('phrase', 'Yes'),
+						0=>Yii::t('phrase', 'No'),
+					),
+					'type' => 'raw',
+				);
+			}
 		}
 		parent::afterConstruct();
 	}
@@ -287,7 +268,7 @@ class ArticleLikeHistory extends CActiveRecord
 			
 		} else {
 			$model = self::model()->findByPk($id);
-			return $model;			
+			return $model;
 		}
 	}
 

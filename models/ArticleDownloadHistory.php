@@ -6,18 +6,8 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 Ommu Platform (opensource.ommu.co)
  * @created date 8 January 2017, 23:04 WIB
+ * @modified date 22 March 2018, 16:54 WIB
  * @link https://github.com/ommu/ommu-article
- *
- * This is the template for generating the model class of a specified table.
- * - $this: the ModelCode object
- * - $tableName: the table name for this class (prefix is already removed if necessary)
- * - $modelClass: the model class name
- * - $columns: list of table columns (name=>CDbColumnSchema)
- * - $labels: list of attribute labels (name=>label)
- * - $rules: list of validation rules
- * - $relations: list of relations (name=>relation declaration)
- *
- * --------------------------------------------------------------------------------------
  *
  * This is the model class for table "ommu_article_download_history".
  *
@@ -30,10 +20,11 @@
  * The followings are the available model relations:
  * @property ArticleDownloads $download
  */
-class ArticleDownloadHistory extends CActiveRecord
+
+class ArticleDownloadHistory extends OActiveRecord
 {
-	public $defaultColumns = array();
-	
+	public $gridForbiddenColumn = array();
+
 	// Variable Search
 	public $category_search;
 	public $article_search;
@@ -55,7 +46,8 @@ class ArticleDownloadHistory extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'ommu_article_download_history';
+		preg_match("/dbname=([^;]+)/i", $this->dbConnection->connectionString, $matches);
+		return $matches[1].'.ommu_article_download_history';
 	}
 
 	/**
@@ -122,7 +114,7 @@ class ArticleDownloadHistory extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
-		
+
 		// Custom Search
 		$criteria->with = array(
 			'download' => array(
@@ -139,88 +131,69 @@ class ArticleDownloadHistory extends CActiveRecord
 			),
 		);
 
-		$criteria->compare('t.id',$this->id);
-		if(isset($_GET['download']))
-			$criteria->compare('t.download_id',$_GET['download']);
-		else
-			$criteria->compare('t.download_id',$this->download_id);
-		if($this->download_date != null && !in_array($this->download_date, array('0000-00-00 00:00:00', '0000-00-00')))
-			$criteria->compare('date(t.download_date)',date('Y-m-d', strtotime($this->download_date)));
-		$criteria->compare('t.download_ip',strtolower($this->download_ip),true);
+		$criteria->compare('t.id', $this->id);
+		$criteria->compare('t.download_id', Yii::app()->getRequest()->getParam('download') ? Yii::app()->getRequest()->getParam('download') : $this->download_id);
+		if($this->download_date != null && !in_array($this->download_date, array('0000-00-00 00:00:00', '1970-01-01 00:00:00')))
+			$criteria->compare('date(t.download_date)', date('Y-m-d', strtotime($this->download_date)));
+		$criteria->compare('t.download_ip', strtolower($this->download_ip), true);
 
-		$criteria->compare('download_article.cat_id',$this->category_search);
-		$criteria->compare('download_article.title',strtolower($this->article_search),true);
-		$criteria->compare('download_user.displayname',strtolower($this->user_search),true);
+		$criteria->compare('download_article.cat_id', $this->category_search);
+		$criteria->compare('download_article.title', strtolower($this->article_search), true);
+		$criteria->compare('download_user.displayname', strtolower($this->user_search), true);
 
-		if(!isset($_GET['ArticleDownloadHistory_sort']))
+		if(!Yii::app()->getRequest()->getParam('ArticleDownloadHistory_sort'))
 			$criteria->order = 't.id DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 			'pagination'=>array(
-				'pageSize'=>30,
+				'pageSize'=>Yii::app()->params['grid-view'] ? Yii::app()->params['grid-view']['pageSize'] : 20,
 			),
 		));
-	}
-
-
-	/**
-	 * Get column for CGrid View
-	 */
-	public function getGridColumn($columns=null) {
-		if($columns !== null) {
-			foreach($columns as $val) {
-				/*
-				if(trim($val) == 'enabled') {
-					$this->defaultColumns[] = array(
-						'name'  => 'enabled',
-						'value' => '$data->enabled == 1? "Ya": "Tidak"',
-					);
-				}
-				*/
-				$this->defaultColumns[] = $val;
-			}
-		} else {
-			//$this->defaultColumns[] = 'id';
-			$this->defaultColumns[] = 'download_id';
-			$this->defaultColumns[] = 'download_date';
-			$this->defaultColumns[] = 'download_ip';
-		}
-
-		return $this->defaultColumns;
 	}
 
 	/**
 	 * Set default columns to display
 	 */
 	protected function afterConstruct() {
-		if(count($this->defaultColumns) == 0) {
-			$this->defaultColumns[] = array(
-				'header' => 'No',
-				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
+		if(count($this->templateColumns) == 0) {
+			$this->templateColumns['_option'] = array(
+				'class' => 'CCheckBoxColumn',
+				'name' => 'id',
+				'selectableRows' => 2,
+				'checkBoxHtmlOptions' => array('name' => 'trash_id[]')
 			);
-			if(!isset($_GET['download'])) {
-				$this->defaultColumns[] = array(
+			$this->templateColumns['_no'] = array(
+				'header' => Yii::t('app', 'No'),
+				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			if(!Yii::app()->getRequest()->getParam('download')) {
+				$this->templateColumns['category_search'] = array(
 					'name' => 'category_search',
 					'value' => '$data->download->article->category->title->message',
 					'filter'=> ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);
-				$this->defaultColumns[] = array(
+				$this->templateColumns['article_search'] = array(
 					'name' => 'article_search',
 					'value' => '$data->download->article->title',
 				);
-				$this->defaultColumns[] = array(
+				$this->templateColumns['user_search'] = array(
 					'name' => 'user_search',
 					'value' => '$data->download->user->displayname ? $data->download->user->displayname : \'-\'',
 				);	
 			}
-			$this->defaultColumns[] = array(
+			$this->templateColumns['download_date'] = array(
 				'name' => 'download_date',
-				'value' => 'Utility::dateFormat($data->download_date)',
+				'value' => '!in_array($data->download_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->download_date) : \'-\'',
 				'htmlOptions' => array(
-					//'class' => 'center',
+					'class' => 'center',
 				),
+				'filter' => 'native-datepicker',
+				/*
 				'filter' => Yii::app()->controller->widget('application.libraries.core.components.system.CJuiDatePicker', array(
 					'model'=>$this,
 					'attribute'=>'download_date',
@@ -229,6 +202,8 @@ class ArticleDownloadHistory extends CActiveRecord
 					//'mode'=>'datetime',
 					'htmlOptions' => array(
 						'id' => 'download_date_filter',
+						'on_datepicker' => 'on',
+						'placeholder' => Yii::t('phrase', 'filter'),
 					),
 					'options'=>array(
 						'showOn' => 'focus',
@@ -240,8 +215,9 @@ class ArticleDownloadHistory extends CActiveRecord
 						'showButtonPanel' => true,
 					),
 				), true),
+				*/
 			);
-			$this->defaultColumns[] = array(
+			$this->templateColumns['download_ip'] = array(
 				'name' => 'download_ip',
 				'value' => '$data->download_ip',
 				'htmlOptions' => array(
@@ -265,7 +241,7 @@ class ArticleDownloadHistory extends CActiveRecord
 			
 		} else {
 			$model = self::model()->findByPk($id);
-			return $model;			
+			return $model;
 		}
 	}
 

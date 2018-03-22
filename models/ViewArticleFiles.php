@@ -1,34 +1,30 @@
 <?php
 /**
- * ViewArticleLikes
+ * ViewArticleFiles
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2017 Ommu Platform (opensource.ommu.co)
- * @modified date 22 March 2018, 16:56 WIB
+ * @copyright Copyright (c) 2018 Ommu Platform (opensource.ommu.co)
+ * @created date 22 March 2018, 16:56 WIB
  * @link https://github.com/ommu/ommu-article
  *
- * This is the model class for table "_article_likes".
+ * This is the model class for table "_article_files".
  *
- * The followings are the available columns in table '_article_likes':
- * @property string $like_id
+ * The followings are the available columns in table '_article_files':
+ * @property string $file_id
  * @property string $article_id
- * @property string $likes
- * @property string $unlikes
- * @property string $like_all
+ * @property string $downloads
  */
 
-class ViewArticleLikes extends OActiveRecord
+class ViewArticleFiles extends OActiveRecord
 {
 	public $gridForbiddenColumn = array();
-
-	// Variable Search
 
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return ViewArticleLikes the static model class
+	 * @return ViewArticleFiles the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -41,7 +37,7 @@ class ViewArticleLikes extends OActiveRecord
 	public function tableName()
 	{
 		preg_match("/dbname=([^;]+)/i", $this->dbConnection->connectionString, $matches);
-		return $matches[1].'._article_likes';
+		return $matches[1].'._article_files';
 	}
 
 	/**
@@ -49,7 +45,7 @@ class ViewArticleLikes extends OActiveRecord
 	 */
 	public function primaryKey()
 	{
-		return 'like_id';
+		return 'file_id';
 	}
 
 	/**
@@ -60,13 +56,11 @@ class ViewArticleLikes extends OActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('article_id', 'required'),
-			array('like_id, article_id', 'length', 'max'=>11),
-			array('likes, unlikes', 'length', 'max'=>23),
-			array('like_all', 'length', 'max'=>21),
+			array('file_id, article_id', 'length', 'max'=>11),
+			array('downloads', 'length', 'max'=>32),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('like_id, article_id, likes, unlikes, like_all', 'safe', 'on'=>'search'),
+			array('file_id, article_id, downloads', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -87,11 +81,9 @@ class ViewArticleLikes extends OActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'like_id' => Yii::t('attribute', 'Like'),
+			'file_id' => Yii::t('attribute', 'File'),
 			'article_id' => Yii::t('attribute', 'Article'),
-			'likes' => Yii::t('attribute', 'Likes'),
-			'unlikes' => Yii::t('attribute', 'Unlikes'),
-			'like_all' => Yii::t('attribute', 'Like All'),
+			'downloads' => Yii::t('attribute', 'Downloads'),
 		);
 	}
 
@@ -113,14 +105,12 @@ class ViewArticleLikes extends OActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('t.like_id', $this->like_id);
-		$criteria->compare('t.article_id', $this->article_id);
-		$criteria->compare('t.likes', $this->likes);
-		$criteria->compare('t.unlikes', $this->unlikes);
-		$criteria->compare('t.like_all', $this->like_all);
+		$criteria->compare('t.file_id', strtolower($this->file_id), true);
+		$criteria->compare('t.article_id', strtolower($this->article_id), true);
+		$criteria->compare('t.downloads', strtolower($this->downloads), true);
 
-		if(!Yii::app()->getRequest()->getParam('ViewArticleLikes_sort'))
-			$criteria->order = 't.like_id DESC';
+		if(!Yii::app()->getRequest()->getParam('ViewArticleFiles_sort'))
+			$criteria->order = 't.file_id DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -148,25 +138,13 @@ class ViewArticleLikes extends OActiveRecord
 					'class' => 'center',
 				),
 			);
-			$this->templateColumns['like_id'] = array(
-				'name' => 'like_id',
-				'value' => '$data->like_id',
-			);
 			$this->templateColumns['article_id'] = array(
 				'name' => 'article_id',
 				'value' => '$data->article_id',
 			);
-			$this->templateColumns['likes'] = array(
-				'name' => 'likes',
-				'value' => '$data->likes',
-			);
-			$this->templateColumns['unlikes'] = array(
-				'name' => 'unlikes',
-				'value' => '$data->unlikes',
-			);
-			$this->templateColumns['like_all'] = array(
-				'name' => 'like_all',
-				'value' => '$data->like_all',
+			$this->templateColumns['downloads'] = array(
+				'name' => 'downloads',
+				'value' => '$data->downloads',
 			);
 		}
 		parent::afterConstruct();
@@ -178,7 +156,7 @@ class ViewArticleLikes extends OActiveRecord
 	public static function getInfo($id, $column=null)
 	{
 		if($column != null) {
-			$model = self::model()->findByPk($id, array(
+			$model = self::model()->findByPk($id,array(
 				'select' => $column
 			));
 			return $model->$column;

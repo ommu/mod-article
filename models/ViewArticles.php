@@ -6,28 +6,20 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
  * @created date 9 November 2016, 18:13 WIB
+ * @modified date 22 March 2018, 16:57 WIB
  * @link https://github.com/ommu/ommu-article
- *
- * This is the template for generating the model class of a specified table.
- * - $this: the ModelCode object
- * - $tableName: the table name for this class (prefix is already removed if necessary)
- * - $modelClass: the model class name
- * - $columns: list of table columns (name=>CDbColumnSchema)
- * - $labels: list of attribute labels (name=>label)
- * - $rules: list of validation rules
- * - $relations: list of relations (name=>relation declaration)
- *
- * --------------------------------------------------------------------------------------
  *
  * This is the model class for table "_articles".
  *
  * The followings are the available columns in table '_articles':
  * @property string $article_id
- * @property string $media_id
  * @property string $article_cover
+ * @property string $media_id
  * @property string $media_caption
  * @property string $medias
  * @property string $media_all
+ * @property string $files
+ * @property string $file_all
  * @property string $likes
  * @property string $like_all
  * @property string $views
@@ -35,9 +27,10 @@
  * @property string $downloads
  * @property string $tags
  */
-class ViewArticles extends CActiveRecord
+
+class ViewArticles extends OActiveRecord
 {
-	public $defaultColumns = array();
+	public $gridForbiddenColumn = array();
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -55,7 +48,8 @@ class ViewArticles extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return '_articles';
+		preg_match("/dbname=([^;]+)/i", $this->dbConnection->connectionString, $matches);
+		return $matches[1].'._articles';
 	}
 
 	/**
@@ -74,12 +68,15 @@ class ViewArticles extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('article_id, media_id, medias, media_all, likes, like_all, views, view_all, downloads, tags', 'numerical', 'integerOnly'=>true),
 			array('article_id, media_id', 'length', 'max'=>11),
-			array('article_cover, media_caption', 'safe'),
+			array('media_caption', 'length', 'max'=>150),
+			array('medias, files, likes', 'length', 'max'=>23),
+			array('media_all, file_all, like_all, tags', 'length', 'max'=>21),
+			array('views, view_all, downloads', 'length', 'max'=>32),
+			array('article_cover', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('article_id, media_id, article_cover, media_caption, medias, media_all, likes, like_all, views, view_all, downloads, tags', 'safe', 'on'=>'search'),
+			array('article_id, article_cover, media_id, media_caption, medias, media_all, files, file_all, likes, like_all, views, view_all, downloads, tags', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -101,15 +98,17 @@ class ViewArticles extends CActiveRecord
 	{
 		return array(
 			'article_id' => Yii::t('attribute', 'Article'),
+			'article_cover' => Yii::t('attribute', 'Article Cover'),
 			'media_id' => Yii::t('attribute', 'Media'),
-			'article_cover' => Yii::t('attribute', 'Cover'),
-			'media_caption' => Yii::t('attribute', 'Caption'),
+			'media_caption' => Yii::t('attribute', 'Media Caption'),
 			'medias' => Yii::t('attribute', 'Medias'),
 			'media_all' => Yii::t('attribute', 'Media All'),
+			'files' => Yii::t('attribute', 'Files'),
+			'file_all' => Yii::t('attribute', 'File All'),
 			'likes' => Yii::t('attribute', 'Likes'),
 			'like_all' => Yii::t('attribute', 'Like All'),
-			'views' => Yii::t('attribute', 'View'),
-			'view_all' => Yii::t('attribute', 'All View'),
+			'views' => Yii::t('attribute', 'Views'),
+			'view_all' => Yii::t('attribute', 'View All'),
 			'downloads' => Yii::t('attribute', 'Downloads'),
 			'tags' => Yii::t('attribute', 'Tags'),
 		);
@@ -133,86 +132,106 @@ class ViewArticles extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('t.article_id',$this->article_id);
-		$criteria->compare('t.media_id',$this->media_id);
+		$criteria->compare('t.article_id', $this->article_id);
 		$criteria->compare('t.article_cover',strtolower($this->article_cover),true);
+		$criteria->compare('t.media_id', $this->media_id);
 		$criteria->compare('t.media_caption',strtolower($this->media_caption),true);
-		$criteria->compare('t.medias',$this->medias);
-		$criteria->compare('t.media_all',$this->media_all);
-		$criteria->compare('t.likes',$this->likes);
-		$criteria->compare('t.like_all',$this->like_all);
-		$criteria->compare('t.views',$this->views);
-		$criteria->compare('t.view_all',$this->view_all);
-		$criteria->compare('t.downloads',$this->downloads);
-		$criteria->compare('t.tags',$this->tags);
+		$criteria->compare('t.medias', $this->medias);
+		$criteria->compare('t.media_all', $this->media_all);
+		$criteria->compare('t.files', $this->files);
+		$criteria->compare('t.file_all', $this->file_all);
+		$criteria->compare('t.likes', $this->likes);
+		$criteria->compare('t.like_all', $this->like_all);
+		$criteria->compare('t.views', $this->views);
+		$criteria->compare('t.view_all', $this->view_all);
+		$criteria->compare('t.downloads', $this->downloads);
+		$criteria->compare('t.tags', $this->tags);
 
-		if(!isset($_GET['ViewArticles_sort']))
+		if(!Yii::app()->getRequest()->getParam('ViewArticles_sort'))
 			$criteria->order = 't.article_id DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 			'pagination'=>array(
-				'pageSize'=>30,
+				'pageSize'=>Yii::app()->params['grid-view'] ? Yii::app()->params['grid-view']['pageSize'] : 20,
 			),
 		));
-	}
-
-
-	/**
-	 * Get column for CGrid View
-	 */
-	public function getGridColumn($columns=null) {
-		if($columns !== null) {
-			foreach($columns as $val) {
-				/*
-				if(trim($val) == 'enabled') {
-					$this->defaultColumns[] = array(
-						'name'  => 'enabled',
-						'value' => '$data->enabled == 1? "Ya": "Tidak"',
-					);
-				}
-				*/
-				$this->defaultColumns[] = $val;
-			}
-		} else {
-			$this->defaultColumns[] = 'article_id';
-			$this->defaultColumns[] = 'media_id';
-			$this->defaultColumns[] = 'article_cover';
-			$this->defaultColumns[] = 'media_caption';
-			$this->defaultColumns[] = 'medias';
-			$this->defaultColumns[] = 'media_all';
-			$this->defaultColumns[] = 'likes';
-			$this->defaultColumns[] = 'like_all';
-			$this->defaultColumns[] = 'views';
-			$this->defaultColumns[] = 'view_all';
-			$this->defaultColumns[] = 'downloads';
-			$this->defaultColumns[] = 'tags';
-		}
-
-		return $this->defaultColumns;
 	}
 
 	/**
 	 * Set default columns to display
 	 */
 	protected function afterConstruct() {
-		if(count($this->defaultColumns) == 0) {
-			$this->defaultColumns[] = array(
-				'header' => 'No',
-				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
+		if(count($this->templateColumns) == 0) {
+			$this->templateColumns['_option'] = array(
+				'class' => 'CCheckBoxColumn',
+				'name' => 'id',
+				'selectableRows' => 2,
+				'checkBoxHtmlOptions' => array('name' => 'trash_id[]')
 			);
-			$this->defaultColumns[] = 'article_id';
-			$this->defaultColumns[] = 'media_id';
-			$this->defaultColumns[] = 'article_cover';
-			$this->defaultColumns[] = 'media_caption';
-			$this->defaultColumns[] = 'medias';
-			$this->defaultColumns[] = 'media_all';
-			$this->defaultColumns[] = 'likes';
-			$this->defaultColumns[] = 'like_all';
-			$this->defaultColumns[] = 'views';
-			$this->defaultColumns[] = 'view_all';
-			$this->defaultColumns[] = 'downloads';
-			$this->defaultColumns[] = 'tags';
+			$this->templateColumns['_no'] = array(
+				'header' => Yii::t('app', 'No'),
+				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->templateColumns['article_id'] = array(
+				'name' => 'article_id',
+				'value' => '$data->article_id',
+			);
+			$this->templateColumns['article_cover'] = array(
+				'name' => 'article_cover',
+				'value' => '$data->article_cover',
+			);
+			$this->templateColumns['media_id'] = array(
+				'name' => 'media_id',
+				'value' => '$data->media_id',
+			);
+			$this->templateColumns['media_caption'] = array(
+				'name' => 'media_caption',
+				'value' => '$data->media_caption',
+			);
+			$this->templateColumns['medias'] = array(
+				'name' => 'medias',
+				'value' => '$data->medias',
+			);
+			$this->templateColumns['media_all'] = array(
+				'name' => 'media_all',
+				'value' => '$data->media_all',
+			);
+			$this->templateColumns['files'] = array(
+				'name' => 'files',
+				'value' => '$data->files',
+			);
+			$this->templateColumns['file_all'] = array(
+				'name' => 'file_all',
+				'value' => '$data->file_all',
+			);
+			$this->templateColumns['likes'] = array(
+				'name' => 'likes',
+				'value' => '$data->likes',
+			);
+			$this->templateColumns['like_all'] = array(
+				'name' => 'like_all',
+				'value' => '$data->like_all',
+			);
+			$this->templateColumns['views'] = array(
+				'name' => 'views',
+				'value' => '$data->views',
+			);
+			$this->templateColumns['view_all'] = array(
+				'name' => 'view_all',
+				'value' => '$data->view_all',
+			);
+			$this->templateColumns['downloads'] = array(
+				'name' => 'downloads',
+				'value' => '$data->downloads',
+			);
+			$this->templateColumns['tags'] = array(
+				'name' => 'tags',
+				'value' => '$data->tags',
+			);
 		}
 		parent::afterConstruct();
 	}
@@ -230,7 +249,7 @@ class ViewArticles extends CActiveRecord
 			
 		} else {
 			$model = self::model()->findByPk($id);
-			return $model;			
+			return $model;
 		}
 	}
 

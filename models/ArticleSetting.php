@@ -5,18 +5,8 @@
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @modified date 22 March 2018, 19:23 WIB
  * @link https://github.com/ommu/ommu-article
- *
- * This is the template for generating the model class of a specified table.
- * - $this: the ModelCode object
- * - $tableName: the table name for this class (prefix is already removed if necessary)
- * - $modelClass: the model class name
- * - $columns: list of table columns (name=>CDbColumnSchema)
- * - $labels: list of attribute labels (name=>label)
- * - $rules: list of validation rules
- * - $relations: list of relations (name=>relation declaration)
- *
- * --------------------------------------------------------------------------------------
  *
  * This is the model class for table "ommu_article_setting".
  *
@@ -40,15 +30,17 @@
  * @property string $modified_date
  * @property string $modified_id
  */
-class ArticleSetting extends CActiveRecord
+
+class ArticleSetting extends OActiveRecord
 {
-	public $defaultColumns = array();
-	
+	public $gridForbiddenColumn = array();
+
 	// Variable Search
 	public $modified_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
+	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
 	 * @return ArticleSetting the static model class
 	 */
@@ -62,7 +54,8 @@ class ArticleSetting extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'ommu_article_setting';
+		preg_match("/dbname=([^;]+)/i", $this->dbConnection->connectionString, $matches);
+		return $matches[1].'.ommu_article_setting';
 	}
 
 	/**
@@ -74,13 +67,14 @@ class ArticleSetting extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('license, permission, meta_keyword, meta_description, type_active, headline, headline_limit, media_image_limit, media_image_resize, media_image_type, media_file_limit, media_file_type', 'required'),
-			array('permission, headline, headline_limit, media_image_limit, media_image_resize, media_file_limit, modified_id', 'numerical', 'integerOnly'=>true),
+			array('permission, headline, headline_limit, media_image_limit, media_image_resize, media_file_limit', 'numerical', 'integerOnly'=>true),
 			array('license', 'length', 'max'=>32),
+			array('modified_id', 'length', 'max'=>11),
 			array('headline_limit', 'length', 'max'=>3),
 			array('headline_category, media_image_resize_size, media_image_view_size, media_image_type, media_file_type', 'safe'),
 			// The following rule is used by search().
-			// Please remove those attributes that should not be searched.
-			array('id, license, permission, meta_keyword, meta_description, type_active, headline, headline_limit, headline_category, media_image_limit, media_image_resize, media_image_resize_size, media_image_view_size, media_image_type, media_file_limit, media_file_type, modified_date, modified_id,
+			// @todo Please remove those attributes that should not be searched.
+			array('id, license, permission, meta_keyword, meta_description, type_active, headline, headline_limit, headline_category, media_image_limit, media_image_resize, media_image_resize_size, media_image_view_size, media_image_type, media_file_limit, media_file_type, modified_date, modified_id, 
 				modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -124,124 +118,204 @@ class ArticleSetting extends CActiveRecord
 			'modified_search' => Yii::t('attribute', 'Modified'),
 		);
 	}
-	
+
 	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+	 *
+	 * Typical usecase:
+	 * - Initialize the model fields with values from filter form.
+	 * - Execute this method to get CActiveDataProvider instance which will filter
+	 * models according to data in model fields.
+	 * - Pass data provider to CGridView, CListView or any similar widget.
+	 *
+	 * @return CActiveDataProvider the data provider that can return the models
+	 * based on the search/filter conditions.
 	 */
 	public function search()
 	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
+		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
-		
+
 		// Custom Search
 		$criteria->with = array(
 			'modified' => array(
 				'alias'=>'modified',
-				'select'=>'displayname'
+				'select'=>'displayname',
 			),
 		);
 
-		$criteria->compare('t.id',$this->id);
-		$criteria->compare('t.license',$this->license,true);
-		$criteria->compare('t.permission',$this->permission);
-		$criteria->compare('t.meta_keyword',$this->meta_keyword,true);
-		$criteria->compare('t.meta_description',$this->meta_description,true);
-		$criteria->compare('t.type_active',$this->type_active,true);
-		$criteria->compare('t.headline',$this->headline);
-		$criteria->compare('t.headline_limit',$this->headline_limit);
-		$criteria->compare('t.headline_category',$this->headline_category,true);
-		$criteria->compare('t.media_image_limit',$this->media_image_limit);
-		$criteria->compare('t.media_image_resize',$this->media_image_resize);
-		$criteria->compare('t.media_image_resize_size',$this->media_image_resize_size,true);
-		$criteria->compare('t.media_image_view_size',$this->media_image_view_size,true);
-		$criteria->compare('t.media_image_type',$this->media_image_type,true);
-		$criteria->compare('t.media_file_limit',$this->media_file_limit);
-		$criteria->compare('t.media_file_type',$this->media_file_type,true);
-		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '0000-00-00')))
-			$criteria->compare('date(t.modified_date)',date('Y-m-d', strtotime($this->modified_date)));
-		if(isset($_GET['modified']))
-			$criteria->compare('t.modified_id',$_GET['modified']);
-		else
-			$criteria->compare('t.modified_id',$this->modified_id);
-		
-		$criteria->compare('modified.displayname',strtolower($this->modified_search),true);
+		$criteria->compare('t.id', $this->id);
+		$criteria->compare('t.license', $this->license, true);
+		$criteria->compare('t.permission', $this->permission);
+		$criteria->compare('t.meta_keyword', strtolower($this->meta_keyword), true);
+		$criteria->compare('t.meta_description', strtolower($this->meta_description), true);
+		$criteria->compare('t.type_active', $this->type_active, true);
+		$criteria->compare('t.headline', $this->headline);
+		$criteria->compare('t.headline_limit', $this->headline_limit);
+		$criteria->compare('t.headline_category', $this->headline_category, true);
+		$criteria->compare('t.media_image_limit', $this->media_image_limit);
+		$criteria->compare('t.media_image_resize', $this->media_image_resize);
+		$criteria->compare('t.media_image_resize_size', $this->media_image_resize_size, true);
+		$criteria->compare('t.media_image_view_size', $this->media_image_view_size, true);
+		$criteria->compare('t.media_image_type', $this->media_image_type, true);
+		$criteria->compare('t.media_file_limit', $this->media_file_limit);
+		$criteria->compare('t.media_file_type', $this->media_file_type, true);
+		if($this->modified_date != null && !in_array($this->modified_date, array('0000-00-00 00:00:00', '1970-01-01 00:00:00')))
+			$criteria->compare('date(t.modified_date)', date('Y-m-d', strtotime($this->modified_date)));
+		$criteria->compare('t.modified_id', Yii::app()->getRequest()->getParam('modified') ? Yii::app()->getRequest()->getParam('modified') : $this->modified_id);
 
-		if(!isset($_GET['ArticleSetting_sort']))
+		$criteria->compare('modified.displayname', strtolower($this->modified_search), true);
+
+		if(!Yii::app()->getRequest()->getParam('ArticleSetting_sort'))
 			$criteria->order = 't.id DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
+			'pagination'=>array(
+				'pageSize'=>Yii::app()->params['grid-view'] ? Yii::app()->params['grid-view']['pageSize'] : 20,
+			),
 		));
-	}
-
-
-	/**
-	 * Get column for CGrid View
-	 */
-	public function getGridColumn($columns=null) {
-		if($columns !== null) {
-			foreach($columns as $val) {
-				/*
-				if(trim($val) == 'enabled') {
-					$this->defaultColumns[] = array(
-						'name'  => 'enabled',
-						'value' => '$data->enabled == 1? "Ya": "Tidak"',
-					);
-				}
-				*/
-				$this->defaultColumns[] = $val;
-			}
-		}else {
-			//$this->defaultColumns[] = 'id';
-			$this->defaultColumns[] = 'license';
-			$this->defaultColumns[] = 'permission';
-			$this->defaultColumns[] = 'meta_keyword';
-			$this->defaultColumns[] = 'meta_description';
-			$this->defaultColumns[] = 'type_active';
-			$this->defaultColumns[] = 'headline';
-			$this->defaultColumns[] = 'headline_limit';
-			$this->defaultColumns[] = 'headline_category';
-			$this->defaultColumns[] = 'media_image_limit';
-			$this->defaultColumns[] = 'media_image_resize';
-			$this->defaultColumns[] = 'media_image_resize_size';
-			$this->defaultColumns[] = 'media_image_view_size';
-			$this->defaultColumns[] = 'media_image_type';
-			$this->defaultColumns[] = 'media_file_limit';
-			$this->defaultColumns[] = 'media_file_type';
-			$this->defaultColumns[] = 'modified_date';
-			$this->defaultColumns[] = 'modified_id';
-		}
-
-		return $this->defaultColumns;
 	}
 
 	/**
 	 * Set default columns to display
 	 */
 	protected function afterConstruct() {
-		if(count($this->defaultColumns) == 0) {
-			$this->defaultColumns[] = 'license';
-			$this->defaultColumns[] = 'permission';
-			$this->defaultColumns[] = 'meta_keyword';
-			$this->defaultColumns[] = 'meta_description';
-			$this->defaultColumns[] = 'type_active';
-			$this->defaultColumns[] = 'headline';
-			$this->defaultColumns[] = 'headline_limit';
-			$this->defaultColumns[] = 'headline_category';
-			$this->defaultColumns[] = 'media_image_limit';
-			$this->defaultColumns[] = 'media_image_resize';
-			$this->defaultColumns[] = 'media_image_resize_size';
-			$this->defaultColumns[] = 'media_image_view_size';
-			$this->defaultColumns[] = 'media_image_type';
-			$this->defaultColumns[] = 'media_file_limit';
-			$this->defaultColumns[] = 'media_file_type';
-			$this->defaultColumns[] = 'modified_date';
-			$this->defaultColumns[] = array(
-				'name' => 'modified_search',
-				'value' => '$data->modified->displayname',
+		if(count($this->templateColumns) == 0) {
+			$this->templateColumns['_option'] = array(
+				'class' => 'CCheckBoxColumn',
+				'name' => 'id',
+				'selectableRows' => 2,
+				'checkBoxHtmlOptions' => array('name' => 'trash_id[]')
+			);
+			$this->templateColumns['_no'] = array(
+				'header' => Yii::t('app', 'No'),
+				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->templateColumns['license'] = array(
+				'name' => 'license',
+				'value' => '$data->license',
+			);
+			$this->templateColumns['meta_keyword'] = array(
+				'name' => 'meta_keyword',
+				'value' => '$data->meta_keyword',
+			);
+			$this->templateColumns['meta_description'] = array(
+				'name' => 'meta_description',
+				'value' => '$data->meta_description',
+			);
+			$this->templateColumns['type_active'] = array(
+				'name' => 'type_active',
+				'value' => '$data->type_active',
+			);
+			$this->templateColumns['headline_limit'] = array(
+				'name' => 'headline_limit',
+				'value' => '$data->headline_limit',
+			);
+			$this->templateColumns['headline_category'] = array(
+				'name' => 'headline_category',
+				'value' => '$data->headline_category',
+			);
+			$this->templateColumns['media_image_limit'] = array(
+				'name' => 'media_image_limit',
+				'value' => '$data->media_image_limit',
+			);
+			$this->templateColumns['media_image_resize_size'] = array(
+				'name' => 'media_image_resize_size',
+				'value' => '$data->media_image_resize_size',
+			);
+			$this->templateColumns['media_image_view_size'] = array(
+				'name' => 'media_image_view_size',
+				'value' => '$data->media_image_view_size',
+			);
+			$this->templateColumns['media_image_type'] = array(
+				'name' => 'media_image_type',
+				'value' => '$data->media_image_type',
+			);
+			$this->templateColumns['media_file_limit'] = array(
+				'name' => 'media_file_limit',
+				'value' => '$data->media_file_limit',
+			);
+			$this->templateColumns['media_file_type'] = array(
+				'name' => 'media_file_type',
+				'value' => '$data->media_file_type',
+			);
+			$this->templateColumns['modified_date'] = array(
+				'name' => 'modified_date',
+				'value' => '!in_array($data->modified_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->modified_date) : \'-\'',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter' => 'native-datepicker',
+				/*
+				'filter' => Yii::app()->controller->widget('application.libraries.core.components.system.CJuiDatePicker', array(
+					'model'=>$this,
+					'attribute'=>'modified_date',
+					'language' => 'en',
+					'i18nScriptFile' => 'jquery-ui-i18n.min.js',
+					//'mode'=>'datetime',
+					'htmlOptions' => array(
+						'id' => 'modified_date_filter',
+						'on_datepicker' => 'on',
+						'placeholder' => Yii::t('phrase', 'filter'),
+					),
+					'options'=>array(
+						'showOn' => 'focus',
+						'dateFormat' => 'dd-mm-yy',
+						'showOtherMonths' => true,
+						'selectOtherMonths' => true,
+						'changeMonth' => true,
+						'changeYear' => true,
+						'showButtonPanel' => true,
+					),
+				), true),
+				*/
+			);
+			if(!Yii::app()->getRequest()->getParam('modified')) {
+				$this->templateColumns['modified_search'] = array(
+					'name' => 'modified_search',
+					'value' => '$data->modified->displayname ? $data->modified->displayname : \'-\'',
+				);
+			}
+			$this->templateColumns['permission'] = array(
+				'name' => 'permission',
+				'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'permission\', array(\'id\'=>$data->id)), $data->permission)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Yes'),
+					0=>Yii::t('phrase', 'No'),
+				),
+				'type' => 'raw',
+			);
+			$this->templateColumns['headline'] = array(
+				'name' => 'headline',
+				'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'headline\', array(\'id\'=>$data->id)), $data->headline)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Yes'),
+					0=>Yii::t('phrase', 'No'),
+				),
+				'type' => 'raw',
+			);
+			$this->templateColumns['media_image_resize'] = array(
+				'name' => 'media_image_resize',
+				'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'media_image_resize\', array(\'id\'=>$data->id)), $data->media_image_resize)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Yes'),
+					0=>Yii::t('phrase', 'No'),
+				),
+				'type' => 'raw',
 			);
 		}
 		parent::afterConstruct();
@@ -310,7 +384,8 @@ class ArticleSetting extends CActiveRecord
 	/**
 	 * before validate attributes
 	 */
-	protected function beforeValidate() {
+	protected function beforeValidate() 
+	{
 		if(parent::beforeValidate()) {
 			if($this->headline == 1) {
 				if($this->headline_limit != '' && $this->headline_limit <= 0)
@@ -339,7 +414,7 @@ class ArticleSetting extends CActiveRecord
 			
 			// Article type is active
 			
-			$this->modified_id = Yii::app()->user->id;
+			$this->modified_id = !Yii::app()->user->isGuest ? Yii::app()->user->id : null;
 		}
 		return true;
 	}
@@ -347,7 +422,8 @@ class ArticleSetting extends CActiveRecord
 	/**
 	 * before save attributes
 	 */
-	protected function beforeSave() {
+	protected function beforeSave() 
+	{
 		if(parent::beforeSave()) {
 			$this->type_active = serialize($this->type_active);
 			$this->headline_category = serialize($this->headline_category);

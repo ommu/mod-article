@@ -6,18 +6,8 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
  * @created date 8 December 2016, 10:18 WIB
+ * @modified date 22 March 2018, 16:55 WIB
  * @link https://github.com/ommu/ommu-article
- *
- * This is the template for generating the model class of a specified table.
- * - $this: the ModelCode object
- * - $tableName: the table name for this class (prefix is already removed if necessary)
- * - $modelClass: the model class name
- * - $columns: list of table columns (name=>CDbColumnSchema)
- * - $labels: list of attribute labels (name=>label)
- * - $rules: list of validation rules
- * - $relations: list of relations (name=>relation declaration)
- *
- * --------------------------------------------------------------------------------------
  *
  * This is the model class for table "ommu_article_views".
  *
@@ -30,11 +20,17 @@
  * @property string $view_date
  * @property string $view_ip
  * @property string $deleted_date
+ *
+ * The followings are the available model relations:
+ * @property ArticleViewHistory[] $histories
+ * @property Articles $article
+ * @property Users $user
  */
-class ArticleViews extends CActiveRecord
+
+class ArticleViews extends OActiveRecord
 {
-	public $defaultColumns = array();
-	
+	public $gridForbiddenColumn = array('view_ip','deleted_date');
+
 	// Variable Search
 	public $category_search;
 	public $article_search;
@@ -56,7 +52,8 @@ class ArticleViews extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'ommu_article_views';
+		preg_match("/dbname=([^;]+)/i", $this->dbConnection->connectionString, $matches);
+		return $matches[1].'.ommu_article_views';
 	}
 
 	/**
@@ -69,7 +66,7 @@ class ArticleViews extends CActiveRecord
 		return array(
 			array('publish, article_id, user_id', 'required'),
 			array('publish, views', 'numerical', 'integerOnly'=>true),
-			array('article_id, user_id, views', 'length', 'max'=>11),
+			array('article_id, user_id', 'length', 'max'=>11),
 			array('view_ip', 'length', 'max'=>20),
 			array('', 'safe'),
 			// The following rule is used by search().
@@ -87,6 +84,7 @@ class ArticleViews extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'histories' => array(self::HAS_MANY, 'ArticleViewHistory', 'view_id'),
 			'article' => array(self::BELONGS_TO, 'Articles', 'article_id'),
 			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
 		);
@@ -129,7 +127,7 @@ class ArticleViews extends CActiveRecord
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
 		$criteria=new CDbCriteria;
-		
+
 		// Custom Search
 		$criteria->with = array(
 			'article' => array(
@@ -142,116 +140,80 @@ class ArticleViews extends CActiveRecord
 			),
 		);
 
-		$criteria->compare('t.view_id',$this->view_id);
-		if(isset($_GET['type']) && $_GET['type'] == 'publish')
-			$criteria->compare('t.publish',1);
-		elseif(isset($_GET['type']) && $_GET['type'] == 'unpublish')
-			$criteria->compare('t.publish',0);
-		elseif(isset($_GET['type']) && $_GET['type'] == 'trash')
-			$criteria->compare('t.publish',2);
+		$criteria->compare('t.view_id', $this->view_id);
+		if(Yii::app()->getRequest()->getParam('type') == 'publish')
+			$criteria->compare('t.publish', 1);
+		elseif(Yii::app()->getRequest()->getParam('type') == 'unpublish')
+			$criteria->compare('t.publish', 0);
+		elseif(Yii::app()->getRequest()->getParam('type') == 'trash')
+			$criteria->compare('t.publish', 2);
 		else {
 			$criteria->addInCondition('t.publish', array(0,1));
-			$criteria->compare('t.publish',$this->publish);
+			$criteria->compare('t.publish', $this->publish);
 		}
-		if(isset($_GET['article']))
-			$criteria->compare('t.article_id',$_GET['article']);
-		else
-			$criteria->compare('t.article_id',$this->article_id);
-		if(isset($_GET['user']))
-			$criteria->compare('t.user_id',$_GET['user']);
-		else
-			$criteria->compare('t.user_id',$this->user_id);
-		$criteria->compare('t.views',$this->views);
-		if($this->view_date != null && !in_array($this->view_date, array('0000-00-00 00:00:00', '0000-00-00')))
-			$criteria->compare('date(t.view_date)',date('Y-m-d', strtotime($this->view_date)));
-		$criteria->compare('t.view_ip',strtolower($this->view_ip),true);
-		if($this->deleted_date != null && !in_array($this->deleted_date, array('0000-00-00 00:00:00', '0000-00-00')))
-			$criteria->compare('date(t.deleted_date)',date('Y-m-d', strtotime($this->deleted_date)));
-		
-		$criteria->compare('article.cat_id',$this->category_search);
-		$criteria->compare('article.title',strtolower($this->article_search),true);
-		if(isset($_GET['article']) && isset($_GET['publish']))
-			$criteria->compare('article.publish',$_GET['publish']);
-		$criteria->compare('user.displayname',strtolower($this->user_search),true);
+		$criteria->compare('t.article_id', Yii::app()->getRequest()->getParam('article') ? Yii::app()->getRequest()->getParam('article') : $this->article_id);
+		$criteria->compare('t.user_id', Yii::app()->getRequest()->getParam('user') ? Yii::app()->getRequest()->getParam('user') : $this->user_id);
+		$criteria->compare('t.views', $this->views);
+		if($this->view_date != null && !in_array($this->view_date, array('0000-00-00 00:00:00', '1970-01-01 00:00:00')))
+			$criteria->compare('date(t.view_date)', date('Y-m-d', strtotime($this->view_date)));
+		$criteria->compare('t.view_ip', strtolower($this->view_ip), true);
+		if($this->deleted_date != null && !in_array($this->deleted_date, array('0000-00-00 00:00:00', '1970-01-01 00:00:00')))
+			$criteria->compare('date(t.deleted_date)', date('Y-m-d', strtotime($this->deleted_date)));
 
-		if(!isset($_GET['ArticleViews_sort']))
+		$criteria->compare('article.cat_id', $this->category_search);
+		$criteria->compare('article.title', strtolower($this->article_search), true);
+		if(Yii::app()->getRequest()->getParam('article') && Yii::app()->getRequest()->getParam('publish'))
+			$criteria->compare('article.publish', Yii::app()->getRequest()->getParam('publish'));
+		$criteria->compare('user.displayname', strtolower($this->user_search), true);
+
+		if(!Yii::app()->getRequest()->getParam('ArticleViews_sort'))
 			$criteria->order = 't.view_id DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 			'pagination'=>array(
-				'pageSize'=>30,
+				'pageSize'=>Yii::app()->params['grid-view'] ? Yii::app()->params['grid-view']['pageSize'] : 20,
 			),
 		));
-	}
-
-
-	/**
-	 * Get column for CGrid View
-	 */
-	public function getGridColumn($columns=null) {
-		if($columns !== null) {
-			foreach($columns as $val) {
-				/*
-				if(trim($val) == 'enabled') {
-					$this->defaultColumns[] = array(
-						'name'  => 'enabled',
-						'value' => '$data->enabled == 1? "Ya": "Tidak"',
-					);
-				}
-				*/
-				$this->defaultColumns[] = $val;
-			}
-		} else {
-			//$this->defaultColumns[] = 'view_id';
-			$this->defaultColumns[] = 'publish';
-			$this->defaultColumns[] = 'article_id';
-			$this->defaultColumns[] = 'user_id';
-			$this->defaultColumns[] = 'views';
-			$this->defaultColumns[] = 'view_date';
-			$this->defaultColumns[] = 'view_ip';
-			$this->defaultColumns[] = 'deleted_date';
-		}
-
-		return $this->defaultColumns;
 	}
 
 	/**
 	 * Set default columns to display
 	 */
 	protected function afterConstruct() {
-		if(count($this->defaultColumns) == 0) {
-			/*
-			$this->defaultColumns[] = array(
+		if(count($this->templateColumns) == 0) {
+			$this->templateColumns['_option'] = array(
 				'class' => 'CCheckBoxColumn',
 				'name' => 'id',
 				'selectableRows' => 2,
 				'checkBoxHtmlOptions' => array('name' => 'trash_id[]')
 			);
-			*/
-			$this->defaultColumns[] = array(
-				'header' => 'No',
-				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
+			$this->templateColumns['_no'] = array(
+				'header' => Yii::t('app', 'No'),
+				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
 			);
-			if(!isset($_GET['article'])) {
-				$this->defaultColumns[] = array(
+			if(!Yii::app()->getRequest()->getParam('article')) {
+				$this->templateColumns['category_search'] = array(
 					'name' => 'category_search',
 					'value' => '$data->article->category->title->message',
 					'filter'=> ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);
-				$this->defaultColumns[] = array(
+				$this->templateColumns['article_search'] = array(
 					'name' => 'article_search',
 					'value' => '$data->article->title',
 				);
 			}
-			if(!isset($_GET['user'])) {
-				$this->defaultColumns[] = array(
+			if(!Yii::app()->getRequest()->getParam('user')) {
+				$this->templateColumns['user_search'] = array(
 					'name' => 'user_search',
-					'value' => '$data->user->displayname ? $data->user->displayname : "-"',
+					'value' => '$data->user->displayname ? $data->user->displayname : \'-\'',
 				);
 			}
-			$this->defaultColumns[] = array(
+			$this->templateColumns['views'] = array(
 				'name' => 'views',
 				'value' => 'CHtml::link($data->views ? $data->views : 0, Yii::app()->controller->createUrl("history/view/manage", array(\'view\'=>$data->view_id)))',
 				'htmlOptions' => array(
@@ -259,12 +221,14 @@ class ArticleViews extends CActiveRecord
 				),
 				'type' => 'raw',
 			);
-			$this->defaultColumns[] = array(
+			$this->templateColumns['view_date'] = array(
 				'name' => 'view_date',
-				'value' => 'Utility::dateFormat($data->view_date)',
+				'value' => '!in_array($data->view_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->view_date) : \'-\'',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
+				'filter' => 'native-datepicker',
+				/*
 				'filter' => Yii::app()->controller->widget('application.libraries.core.components.system.CJuiDatePicker', array(
 					'model'=>$this,
 					'attribute'=>'view_date',
@@ -273,6 +237,8 @@ class ArticleViews extends CActiveRecord
 					//'mode'=>'datetime',
 					'htmlOptions' => array(
 						'id' => 'view_date_filter',
+						'on_datepicker' => 'on',
+						'placeholder' => Yii::t('phrase', 'filter'),
 					),
 					'options'=>array(
 						'showOn' => 'focus',
@@ -284,21 +250,23 @@ class ArticleViews extends CActiveRecord
 						'showButtonPanel' => true,
 					),
 				), true),
+				*/
 			);
-			$this->defaultColumns[] = array(
+			$this->templateColumns['view_ip'] = array(
 				'name' => 'view_ip',
 				'value' => '$data->view_ip',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
 			);
-			/*
-			$this->defaultColumns[] = array(
+			$this->templateColumns['deleted_date'] = array(
 				'name' => 'deleted_date',
-				'value' => 'Utility::dateFormat($data->deleted_date)',
+				'value' => '!in_array($data->deleted_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->deleted_date) : \'-\'',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
+				'filter' => 'native-datepicker',
+				/*
 				'filter' => Yii::app()->controller->widget('application.libraries.core.components.system.CJuiDatePicker', array(
 					'model'=>$this,
 					'attribute'=>'deleted_date',
@@ -307,6 +275,8 @@ class ArticleViews extends CActiveRecord
 					//'mode'=>'datetime',
 					'htmlOptions' => array(
 						'id' => 'deleted_date_filter',
+						'on_datepicker' => 'on',
+						'placeholder' => Yii::t('phrase', 'filter'),
 					),
 					'options'=>array(
 						'showOn' => 'focus',
@@ -318,12 +288,12 @@ class ArticleViews extends CActiveRecord
 						'showButtonPanel' => true,
 					),
 				), true),
+				*/
 			);
-			*/
-			if(!isset($_GET['type'])) {
-				$this->defaultColumns[] = array(
+			if(!Yii::app()->getRequest()->getParam('type')) {
+				$this->templateColumns['publish'] = array(
 					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl("publish", array("id"=>$data->view_id)), $data->publish, 1)',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'publish\',array(\'id\'=>$data->view_id)), $data->publish)',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -351,7 +321,7 @@ class ArticleViews extends CActiveRecord
 			
 		} else {
 			$model = self::model()->findByPk($id);
-			return $model;			
+			return $model;
 		}
 	}
 
@@ -380,7 +350,8 @@ class ArticleViews extends CActiveRecord
 	/**
 	 * before validate attributes
 	 */
-	protected function beforeValidate() {
+	protected function beforeValidate() 
+	{
 		if(parent::beforeValidate()) {
 			if($this->isNewRecord)
 				$this->user_id = !Yii::app()->user->isGuest ? Yii::app()->user->id : null;

@@ -5,18 +5,8 @@
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2015 Ommu Platform (opensource.ommu.co)
+ * @modified date 22 March 2018, 16:55 WIB
  * @link https://github.com/ommu/ommu-article
- *
- * This is the template for generating the model class of a specified table.
- * - $this: the ModelCode object
- * - $tableName: the table name for this class (prefix is already removed if necessary)
- * - $modelClass: the model class name
- * - $columns: list of table columns (name=>CDbColumnSchema)
- * - $labels: list of attribute labels (name=>label)
- * - $rules: list of validation rules
- * - $relations: list of relations (name=>relation declaration)
- *
- * --------------------------------------------------------------------------------------
  *
  * This is the model class for table "_article_category".
  *
@@ -28,9 +18,10 @@
  * @property string $article_all
  * @property string $article_id
  */
-class ViewArticleCategory extends CActiveRecord
+
+class ViewArticleCategory extends OActiveRecord
 {
-	public $defaultColumns = array();
+	public $gridForbiddenColumn = array();
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -48,7 +39,8 @@ class ViewArticleCategory extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return '_article_category';
+		preg_match("/dbname=([^;]+)/i", $this->dbConnection->connectionString, $matches);
+		return $matches[1].'._article_category';
 	}
 
 	/**
@@ -68,7 +60,9 @@ class ViewArticleCategory extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('cat_id', 'numerical', 'integerOnly'=>true),
-			array('articles, article_pending, article_unpublish, article_all, article_id', 'length', 'max'=>21),
+			array('articles, article_pending, article_unpublish', 'length', 'max'=>23),
+			array('article_all', 'length', 'max'=>21),
+			array('article_id', 'length', 'max'=>11),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('cat_id, articles, article_pending, article_unpublish, article_all, article_id', 'safe', 'on'=>'search'),
@@ -120,68 +114,66 @@ class ViewArticleCategory extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('t.cat_id',$this->cat_id);
-		$criteria->compare('t.articles',$this->articles);
-		$criteria->compare('t.article_pending',$this->article_pending);
-		$criteria->compare('t.article_unpublish',$this->article_unpublish);
-		$criteria->compare('t.article_all',$this->article_all);
-		$criteria->compare('t.article_id',$this->article_id);
+		$criteria->compare('t.cat_id', $this->cat_id);
+		$criteria->compare('t.articles', $this->articles);
+		$criteria->compare('t.article_pending', $this->article_pending);
+		$criteria->compare('t.article_unpublish', $this->article_unpublish);
+		$criteria->compare('t.article_all', $this->article_all);
+		$criteria->compare('t.article_id', $this->article_id);
 
-		if(!isset($_GET['ViewArticleCategory_sort']))
+		if(!Yii::app()->getRequest()->getParam('ViewArticleCategory_sort'))
 			$criteria->order = 't.cat_id DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 			'pagination'=>array(
-				'pageSize'=>30,
+				'pageSize'=>Yii::app()->params['grid-view'] ? Yii::app()->params['grid-view']['pageSize'] : 20,
 			),
 		));
-	}
-
-
-	/**
-	 * Get column for CGrid View
-	 */
-	public function getGridColumn($columns=null) {
-		if($columns !== null) {
-			foreach($columns as $val) {
-				/*
-				if(trim($val) == 'enabled') {
-					$this->defaultColumns[] = array(
-						'name'  => 'enabled',
-						'value' => '$data->enabled == 1? "Ya": "Tidak"',
-					);
-				}
-				*/
-				$this->defaultColumns[] = $val;
-			}
-		} else {
-			$this->defaultColumns[] = 'cat_id';
-			$this->defaultColumns[] = 'articles';
-			$this->defaultColumns[] = 'article_pending';
-			$this->defaultColumns[] = 'article_unpublish';
-			$this->defaultColumns[] = 'article_all';
-			$this->defaultColumns[] = 'article_id';
-		}
-
-		return $this->defaultColumns;
 	}
 
 	/**
 	 * Set default columns to display
 	 */
 	protected function afterConstruct() {
-		if(count($this->defaultColumns) == 0) {
-			$this->defaultColumns[] = array(
-				'header' => 'No',
-				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
+		if(count($this->templateColumns) == 0) {
+			$this->templateColumns['_option'] = array(
+				'class' => 'CCheckBoxColumn',
+				'name' => 'id',
+				'selectableRows' => 2,
+				'checkBoxHtmlOptions' => array('name' => 'trash_id[]')
 			);
-			$this->defaultColumns[] = 'cat_id';
-			$this->defaultColumns[] = 'articles';
-			$this->defaultColumns[] = 'article_pending';
-			$this->defaultColumns[] = 'article_unpublish';
-			$this->defaultColumns[] = 'article_all';
-			$this->defaultColumns[] = 'article_id';
+			$this->templateColumns['_no'] = array(
+				'header' => Yii::t('app', 'No'),
+				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+			);
+			$this->templateColumns['cat_id'] = array(
+				'name' => 'cat_id',
+				'value' => '$data->cat_id',
+			);
+			$this->templateColumns['articles'] = array(
+				'name' => 'articles',
+				'value' => '$data->articles',
+			);
+			$this->templateColumns['article_pending'] = array(
+				'name' => 'article_pending',
+				'value' => '$data->article_pending',
+			);
+			$this->templateColumns['article_unpublish'] = array(
+				'name' => 'article_unpublish',
+				'value' => '$data->article_unpublish',
+			);
+			$this->templateColumns['article_all'] = array(
+				'name' => 'article_all',
+				'value' => '$data->article_all',
+			);
+			$this->templateColumns['article_id'] = array(
+				'name' => 'article_id',
+				'value' => '$data->article_id',
+			);
 		}
 		parent::afterConstruct();
 	}
@@ -199,7 +191,7 @@ class ViewArticleCategory extends CActiveRecord
 			
 		} else {
 			$model = self::model()->findByPk($id);
-			return $model;			
+			return $model;
 		}
 	}
 
