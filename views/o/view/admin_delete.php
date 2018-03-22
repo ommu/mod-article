@@ -1,7 +1,7 @@
 <?php
 /**
  * Article Views (article-views)
- * @var $this ViewsController
+ * @var $this ViewController
  * @var $model ArticleViews
  * @var $form CActiveForm
  *
@@ -15,7 +15,7 @@
 
 	$this->breadcrumbs=array(
 		'Article Views'=>array('manage'),
-		'Publish',
+		'Delete',
 	);
 ?>
 
@@ -26,13 +26,9 @@
 )); ?>
 
 	<div class="dialog-content">
-		<?php echo $model->publish == 1 ? Yii::t('phrase', 'Are you sure you want to unpublish this item?') : Yii::t('phrase', 'Are you sure you want to publish this item?')?>
-		<?php //echo $model->actived == 1 ? Yii::t('phrase', 'Are you sure you want to deactived this item?') : Yii::t('phrase', 'Are you sure you want to actived this item?')?>
-		<?php //echo $model->enabled == 1 ? Yii::t('phrase', 'Are you sure you want to disabled this item?') : Yii::t('phrase', 'Are you sure you want to enabled this item?')?>
-		<?php //echo $model->status == 1 ? Yii::t('phrase', 'Are you sure you want to unresolved this item?') : Yii::t('phrase', 'Are you sure you want to resolved this item?')?>
-	</div>
+		<?php echo Yii::t('phrase', 'Are you sure you want to delete this item?');?>	</div>
 	<div class="dialog-submit">
-		<?php echo CHtml::submitButton($title, array('onclick' => 'setEnableSave()')); ?>
+		<?php echo CHtml::submitButton(Yii::t('phrase', 'Delete'), array('onclick' => 'setEnableSave()')); ?>
 		<?php echo CHtml::button(Yii::t('phrase', 'Cancel'), array('id'=>'closed')); ?>
 	</div>
 	

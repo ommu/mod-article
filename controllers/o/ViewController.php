@@ -1,7 +1,7 @@
 <?php
 /**
- * ViewsController
- * @var $this ViewsController
+ * ViewController
+ * @var $this ViewController
  * @var $model ArticleViews
  * @var $form CActiveForm
  *
@@ -25,7 +25,7 @@
  *----------------------------------------------------------------------------------------------------------
  */
 
-class ViewsController extends Controller
+class ViewController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning

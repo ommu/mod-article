@@ -1,7 +1,7 @@
 <?php
 /**
  * Article Views (article-views)
- * @var $this ViewsController
+ * @var $this ViewController
  * @var $model ArticleViews
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
