@@ -514,7 +514,7 @@ class ArticleMedia extends CActiveRecord
 				));
 				if($medias != null) {
 					foreach($medias as $key => $val)
-						self::model()->updateByPk($val->media_id, array('publish'=>2)););
+						self::model()->updateByPk($val->media_id, array('publish'=>2));
 				}
 			}
 		}
