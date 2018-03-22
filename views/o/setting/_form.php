@@ -189,7 +189,7 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<label class="col-form-label col-lg-4 col-md-3 col-sm-12"><?php echo Yii::t('phrase', 'Media Setting');?> <span class="required">*</span></label>
+			<label class="col-form-label col-lg-4 col-md-3 col-sm-12"><?php echo Yii::t('phrase', 'Image Setting');?> <span class="required">*</span></label>
 			<div class="col-lg-8 col-md-9 col-sm-12">
 				<p><?php echo $model->getAttributeLabel('media_image_resize');?></p>
 				<?php 
@@ -256,6 +256,14 @@ EOP;
 				echo $form->textField($model,'media_image_type', array('class'=>'form-control')); ?>
 				<?php echo $form->error($model,'media_image_type'); ?>
 				<span class="small-px">pisahkan jenis file dengan koma (,). example: "jpg, png, bmp"</span>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<?php echo $form->labelEx($model,'media_file_limit', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
+				<?php echo $form->textField($model,'media_file_limit', array('class'=>'form-control')); ?>
+				<?php echo $form->error($model,'media_file_limit'); ?>
 			</div>
 		</div>
 
