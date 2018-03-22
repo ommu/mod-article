@@ -21,7 +21,7 @@
 	$medias = $model->medias;
 	$media_image_limit = $setting->media_image_limit;
 	$condition = 0;
-	if($model->article_type == 'standard' && $media_image_limit != 1 && $model->cat->single_photo == 0)
+	if($model->article_type == 'standard' && $media_image_limit != 1 && $model->category->single_photo == 0)
 		$condition = 1;
 ?>
 

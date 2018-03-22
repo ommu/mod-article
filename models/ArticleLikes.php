@@ -236,7 +236,7 @@ class ArticleLikes extends CActiveRecord
 			if(!isset($_GET['article'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'category_search',
-					'value' => '$data->article->cat->title->message',
+					'value' => '$data->article->category->title->message',
 					'filter'=> ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);

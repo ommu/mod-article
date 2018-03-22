@@ -123,14 +123,14 @@ class SiteController extends ControllerApi
 							
 							$medias = $item->medias;
 							if(!empty($medias)) {
-								$media_cover = $item->view->media_cover ? $item->view->media_cover : $medias[0]->cover_filename;
-								if($media_cover && file_exists($article_path.'/'.$media_cover))
-									$cover_url_path = $article_url.'/'.$article_path.'/'.$media_cover;
+								$article_cover = $item->view->article_cover ? $item->view->article_cover : $medias[0]->cover_filename;
+								if($article_cover && file_exists($article_path.'/'.$article_cover))
+									$cover_url_path = $article_url.'/'.$article_path.'/'.$article_cover;
 							}
 							
 							$data[] = array(
 								'id' => $item->article_id,
-								'category' => $item->cat->title->message,
+								'category' => $item->category->title->message,
 								'title' => $item->title,
 								'intro' => $item->body != '' ? Utility::shortText(Utility::hardDecode($item->body),200) : '-',
 								'media_image' => $cover_url_path ? $cover_url_path : '-',
@@ -246,16 +246,16 @@ class SiteController extends ControllerApi
 							
 					$medias = $item->medias;
 					if(!empty($medias)) {
-						$media_cover = $item->view->media_cover ? $item->view->media_cover : $medias[0]->cover_filename;
-						if($media_cover && file_exists($article_path.'/'.$media_cover))
-							$cover_url_path = $article_url.'/'.$article_path.'/'.$media_cover;
+						$article_cover = $item->view->article_cover ? $item->view->article_cover : $medias[0]->cover_filename;
+						if($article_cover && file_exists($article_path.'/'.$article_cover))
+							$cover_url_path = $article_url.'/'.$article_path.'/'.$article_cover;
 					}
 					if($item->media_file && file_exists($article_path.'/'.$item->media_file))
 						$file_url_path = $article_url.'/'.$article_path.'/'.$item->media_file;
 					
 					$data[] = array(
 						'id' => $item->article_id,
-						'category' => $item->cat->title->message,
+						'category' => $item->category->title->message,
 						'title' => $item->title,
 						'intro' => $item->body != '' ? Utility::shortText(Utility::hardDecode($item->body),200) : '-',
 						'media_image' => $cover_url_path ? $cover_url_path : '-',
@@ -305,9 +305,9 @@ class SiteController extends ControllerApi
 							
 				$medias = $model->medias;
 				if(!empty($medias)) {
-					$media_cover = $model->view->media_cover ? $model->view->media_cover : $medias[0]->cover_filename;
-					if($media_cover && file_exists($article_path.'/'.$media_cover))
-						$cover_url_path = $article_url.'/'.$article_path.'/'.$media_cover;
+					$article_cover = $model->view->article_cover ? $model->view->article_cover : $medias[0]->cover_filename;
+					if($article_cover && file_exists($article_path.'/'.$article_cover))
+						$cover_url_path = $article_url.'/'.$article_path.'/'.$article_cover;
 				}
 				if($model->media_file && file_exists($article_path.'/'.$model->media_file))
 					$file_url_path = $article_url.'/'.$article_path.'/'.$model->media_file;
@@ -315,7 +315,7 @@ class SiteController extends ControllerApi
 				$return = array(
 					'success' => '1',
 					'id' => $model->article_id,
-					'category' => $model->cat->title->message,
+					'category' => $model->category->title->message,
 					'title' => $model->title,
 					'body' => Utility::softDecode($model->body),
 					'media_image' => $cover_url_path ? $cover_url_path : '-',

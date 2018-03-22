@@ -13,7 +13,7 @@
 
 	$this->breadcrumbs=array(
 		'Articles'=>array('manage'),
-		$model->cat->title->message,
+		$model->category->title->message,
 		$model->title,
 	);
 ?>

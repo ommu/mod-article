@@ -114,21 +114,21 @@ EOP;
 				<?php if(!$model->isNewRecord && $condition == 0) {
 					$medias = $model->medias;
 					if(!empty($medias)) {
-						$media_cover = $model->view->media_cover ? $model->view->media_cover : $medias[0]->cover_filename;
+						$article_cover = $model->view->article_cover ? $model->view->article_cover : $medias[0]->cover_filename;
 						if(!$model->getErrors())
-							$model->old_media_input = $media_cover;
+							$model->old_media_input = $article_cover;
 						echo $form->hiddenField($model, 'old_media_input');
-						$media_cover = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_media_input;
-						$media_cover = '<img src="'.Utility::getTimThumb($media_cover, 320, 150, 1).'" alt="">';
+						$article_cover = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_media_input;
+						$article_cover = '<img src="'.Utility::getTimThumb($article_cover, 320, 150, 1).'" alt="">';
 						echo '<div class="form-group row">';
 						echo $form->labelEx($model, 'old_media_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12'));
-						echo '<div class="col-lg-8 col-md-9 col-sm-12">'.$media_cover.'</div>';
+						echo '<div class="col-lg-8 col-md-9 col-sm-12">'.$article_cover.'</div>';
 						echo '</div>';
 					}
 				}?>
 
 				<?php if($model->isNewRecord || (!$model->isNewRecord && $condition == 0)) {?>
-				<div id="media" class="<?php echo (($model->isNewRecord && !$model->getErrors()) || ($model->article_type == 'standard' && (($model->isNewRecord && $model->getErrors()) || (!$model->isNewRecord && ($setting->media_image_limit == 1 || ($setting->media_image_limit != 1 && $model->cat->single_photo == 1)))))) ? '' : 'hide';?> form-group row filter">
+				<div id="media" class="<?php echo (($model->isNewRecord && !$model->getErrors()) || ($model->article_type == 'standard' && (($model->isNewRecord && $model->getErrors()) || (!$model->isNewRecord && ($setting->media_image_limit == 1 || ($setting->media_image_limit != 1 && $model->category->single_photo == 1)))))) ? '' : 'hide';?> form-group row filter">
 					<?php echo $form->labelEx($model, 'media_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 					<div class="col-lg-8 col-md-9 col-sm-12">
 						<?php echo $form->fileField($model, 'media_input', array('class'=>'form-control')); ?>
@@ -145,9 +145,9 @@ EOP;
 							<?php
 							$medias = $model->medias;
 							if(!empty($medias))
-								$media_cover = $model->view->media_cover ? $model->view->media_cover : $medias[0]->cover_filename;
+								$article_cover = $model->view->article_cover ? $model->view->article_cover : $medias[0]->cover_filename;
 							if(!$model->getErrors())
-								$model->video_input = $media_cover;
+								$model->video_input = $article_cover;
 							echo $form->textField($model, 'video_input', array('maxlength'=>32, 'class'=>'form-control'));?>
 							<?php echo $form->error($model, 'video_input'); ?>
 							<span class="small-px">http://www.youtube.com/watch?v=<strong>HOAqSoDZSho</strong></span>

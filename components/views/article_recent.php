@@ -21,8 +21,8 @@ if($model != null) {?>
 			$image = Yii::app()->request->baseUrl.'/public/article/article_default.png';
 			$medias = $val->medias;
 			if(!empty($medias)) {
-				$media_cover = $val->view->media_cover ? $val->view->media_cover : $medias[0]->cover_filename;
-				$media_cover = Yii::app()->request->baseUrl.'/public/article/'.$val->article_id.'/'.$media_cover;
+				$article_cover = $val->view->article_cover ? $val->view->article_cover : $medias[0]->cover_filename;
+				$article_cover = Yii::app()->request->baseUrl.'/public/article/'.$val->article_id.'/'.$article_cover;
 			}
 			if($i == 1) {?>
 				<li <?php echo !empty($medias) ? 'class="solid"' : '';?>>

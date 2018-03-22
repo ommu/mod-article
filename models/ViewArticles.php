@@ -19,12 +19,12 @@
  *
  * --------------------------------------------------------------------------------------
  *
- * This is the model class for table "_view_articles".
+ * This is the model class for table "_articles".
  *
- * The followings are the available columns in table '_view_articles':
+ * The followings are the available columns in table '_articles':
  * @property string $article_id
  * @property string $media_id
- * @property string $media_cover
+ * @property string $article_cover
  * @property string $media_caption
  * @property string $medias
  * @property string $media_all
@@ -55,7 +55,7 @@ class ViewArticles extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return '_view_articles';
+		return '_articles';
 	}
 
 	/**
@@ -76,10 +76,10 @@ class ViewArticles extends CActiveRecord
 		return array(
 			array('article_id, media_id, medias, media_all, likes, like_all, views, view_all, downloads, tags', 'numerical', 'integerOnly'=>true),
 			array('article_id, media_id', 'length', 'max'=>11),
-			array('media_cover, media_caption', 'safe'),
+			array('article_cover, media_caption', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('article_id, media_id, media_cover, media_caption, medias, media_all, likes, like_all, views, view_all, downloads, tags', 'safe', 'on'=>'search'),
+			array('article_id, media_id, article_cover, media_caption, medias, media_all, likes, like_all, views, view_all, downloads, tags', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -102,7 +102,7 @@ class ViewArticles extends CActiveRecord
 		return array(
 			'article_id' => Yii::t('attribute', 'Article'),
 			'media_id' => Yii::t('attribute', 'Media'),
-			'media_cover' => Yii::t('attribute', 'Cover'),
+			'article_cover' => Yii::t('attribute', 'Cover'),
 			'media_caption' => Yii::t('attribute', 'Caption'),
 			'medias' => Yii::t('attribute', 'Medias'),
 			'media_all' => Yii::t('attribute', 'Media All'),
@@ -135,7 +135,7 @@ class ViewArticles extends CActiveRecord
 
 		$criteria->compare('t.article_id',$this->article_id);
 		$criteria->compare('t.media_id',$this->media_id);
-		$criteria->compare('t.media_cover',strtolower($this->media_cover),true);
+		$criteria->compare('t.article_cover',strtolower($this->article_cover),true);
 		$criteria->compare('t.media_caption',strtolower($this->media_caption),true);
 		$criteria->compare('t.medias',$this->medias);
 		$criteria->compare('t.media_all',$this->media_all);
@@ -177,7 +177,7 @@ class ViewArticles extends CActiveRecord
 		} else {
 			$this->defaultColumns[] = 'article_id';
 			$this->defaultColumns[] = 'media_id';
-			$this->defaultColumns[] = 'media_cover';
+			$this->defaultColumns[] = 'article_cover';
 			$this->defaultColumns[] = 'media_caption';
 			$this->defaultColumns[] = 'medias';
 			$this->defaultColumns[] = 'media_all';
@@ -203,7 +203,7 @@ class ViewArticles extends CActiveRecord
 			);
 			$this->defaultColumns[] = 'article_id';
 			$this->defaultColumns[] = 'media_id';
-			$this->defaultColumns[] = 'media_cover';
+			$this->defaultColumns[] = 'article_cover';
 			$this->defaultColumns[] = 'media_caption';
 			$this->defaultColumns[] = 'medias';
 			$this->defaultColumns[] = 'media_all';

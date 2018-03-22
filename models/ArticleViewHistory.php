@@ -210,7 +210,7 @@ class ArticleViewHistory extends CActiveRecord
 			if(!isset($_GET['view'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'category_search',
-					'value' => '$data->view->article->cat->title->message',
+					'value' => '$data->view->article->category->title->message',
 					'filter'=> ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);

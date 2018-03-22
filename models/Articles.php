@@ -41,7 +41,7 @@
  * The followings are the available model relations:
  * @property ArticleComment[] $ArticleComments
  * @property ArticleMedia[] $ArticleMedias
- * @property ArticleCategory $cat
+ * @property ArticleCategory $category
  */
 
 class Articles extends CActiveRecord
@@ -133,7 +133,7 @@ class Articles extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'view' => array(self::BELONGS_TO, 'ViewArticles', 'article_id'),
-			'cat' => array(self::BELONGS_TO, 'ArticleCategory', 'cat_id'),
+			'category' => array(self::BELONGS_TO, 'ArticleCategory', 'cat_id'),
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
 			'tag' => array(self::HAS_ONE, 'ArticleTag', 'article_id'),
@@ -352,7 +352,7 @@ class Articles extends CActiveRecord
 					$parent = null;
 				$this->defaultColumns[] = array(
 					'name' => 'cat_id',
-					'value' => '$data->cat->title->message',
+					'value' => '$data->category->title->message',
 					'filter'=> ArticleCategory::getCategory(null, $parent),
 					'type' => 'raw',
 				);
@@ -551,16 +551,16 @@ class Articles extends CActiveRecord
 		foreach($model as $key => $item) {
 			$medias = $item->medias;
 			if(!empty($medias)) {
-				$media_cover = $item->view->media_cover ? $item->view->media_cover : $medias[0]->cover_filename;
-				$media_cover = Yii::app()->request->baseUrl.'/public/article/'.$item->article_id.'/'.$media_cover;
+				$article_cover = $item->view->article_cover ? $item->view->article_cover : $medias[0]->cover_filename;
+				$article_cover = Yii::app()->request->baseUrl.'/public/article/'.$item->article_id.'/'.$article_cover;
 			} else 
-				$media_cover = '';
+				$article_cover = '';
 			$url = Yii::app()->createUrl('article/site/view', array('id'=>$item->article_id,'slug'=>Utility::getUrlTitle($item->title)));
 				
 			$doc = new Zend_Search_Lucene_Document();
 			$doc->addField(Zend_Search_Lucene_Field::UnIndexed('id', CHtml::encode($item->article_id), 'utf-8')); 
-			$doc->addField(Zend_Search_Lucene_Field::Keyword('category', CHtml::encode($item->cat->title->message), 'utf-8'));
-			$doc->addField(Zend_Search_Lucene_Field::Text('media', CHtml::encode($media_cover), 'utf-8'));
+			$doc->addField(Zend_Search_Lucene_Field::Keyword('category', CHtml::encode($item->category->title->message), 'utf-8'));
+			$doc->addField(Zend_Search_Lucene_Field::Text('media', CHtml::encode($article_cover), 'utf-8'));
 			$doc->addField(Zend_Search_Lucene_Field::Text('title', CHtml::encode($item->title), 'utf-8'));
 			$doc->addField(Zend_Search_Lucene_Field::Text('body', CHtml::encode(Utility::hardDecode(Utility::softDecode($item->body))), 'utf-8'));
 			$doc->addField(Zend_Search_Lucene_Field::Text('url', CHtml::encode(Utility::getProtocol().'://'.Yii::app()->request->serverName.$url), 'utf-8'));
@@ -723,7 +723,7 @@ class Articles extends CActiveRecord
 
 		if($this->article_type == 'standard') {
 			$this->media_input = CUploadedFile::getInstance($this, 'media_input');
-			if($this->media_input != null && ($this->isNewRecord || (!$this->isNewRecord && ($setting->media_image_limit == 1 || ($setting->media_image_limit != 1 && $this->cat->single_photo == 1))))) {
+			if($this->media_input != null && ($this->isNewRecord || (!$this->isNewRecord && ($setting->media_image_limit == 1 || ($setting->media_image_limit != 1 && $this->category->single_photo == 1))))) {
 				if($this->media_input instanceOf CUploadedFile) {
 					$fileName = time().'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_input->extensionName);
 					if($this->media_input->saveAs($article_path.'/'.$fileName)) {

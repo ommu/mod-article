@@ -18,9 +18,9 @@
  *
  * --------------------------------------------------------------------------------------
  *
- * This is the model class for table "_view_article_category".
+ * This is the model class for table "_article_category".
  *
- * The followings are the available columns in table '_view_article_category':
+ * The followings are the available columns in table '_article_category':
  * @property integer $cat_id
  * @property string $articles
  * @property string $article_pending
@@ -48,7 +48,7 @@ class ViewArticleCategory extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return '_view_article_category';
+		return '_article_category';
 	}
 
 	/**

@@ -216,7 +216,7 @@ class ArticleLikeHistory extends CActiveRecord
 			if(!isset($_GET['like'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'category_search',
-					'value' => '$data->like->article->cat->title->message',
+					'value' => '$data->like->article->category->title->message',
 					'filter'=> ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);
