@@ -358,7 +358,7 @@ class ArticleMedia extends CActiveRecord
 	{
 		if($column != null) {
 			$model = self::model()->findByPk($id,array(
-				'select' => $column
+				'select'=>$column
 			));
 			return $model->$column;
 			
@@ -373,7 +373,7 @@ class ArticleMedia extends CActiveRecord
 	 */
 	public static function resizePhoto($photo, $size) {
 		Yii::import('ext.phpthumb.PhpThumbFactory');
-		$resizePhoto = PhpThumbFactory::create($photo, array('jpegQuality' => 90, 'correctPermissions' => true));
+		$resizePhoto = PhpThumbFactory::create($photo, array('jpegQuality'=>90, 'correctPermissions'=>true));
 		if($size['height'] == 0)
 			$resizePhoto->resize($size['width']);
 		else			
@@ -392,8 +392,9 @@ class ArticleMedia extends CActiveRecord
 		$controller = strtolower(Yii::app()->controller->id);
 		$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
 		$setting = ArticleSetting::model()->findByPk(1, array(
-			'select' => 'media_image_type',
+			'select'=>'media_image_type',
 		));
+
 		$media_image_type = unserialize($setting->media_image_type);
 		if(empty($media_image_type))
 			$media_image_type = array();
@@ -420,7 +421,7 @@ class ArticleMedia extends CActiveRecord
 					
 				} else {
 					if($this->isNewRecord && $controller == 'o/media')
-						$this->addError('media', 'Media (Photo) cannot be blank.');				
+						$this->addError('media', 'Media (Photo) cannot be blank.');
 				}
 			}
 		}
@@ -438,7 +439,7 @@ class ArticleMedia extends CActiveRecord
 		if(parent::beforeSave()) {
 			$article_path = "public/article/".$this->article_id;
 
-			if($this->article->article_type == 'standard') {			
+			if($this->article->article_type == 'standard') {
 				// Add directory
 				if(!file_exists($article_path)) {
 					@mkdir($article_path, 0755, true);
@@ -465,7 +466,7 @@ class ArticleMedia extends CActiveRecord
 						}
 					} else {
 						if(!$this->isNewRecord && $this->media == '')
-							$this->media = $this->old_media_input;						
+							$this->media = $this->old_media_input;
 					}
 				}
 				
@@ -482,9 +483,9 @@ class ArticleMedia extends CActiveRecord
 		parent::afterSave();
 		
 		$setting = ArticleSetting::model()->findByPk(1, array(
-			'select' => 'media_limit, media_resize, media_resize_size',
+			'select'=>'media_image_limit, media_image_resize, media_image_resize_size',
 		));
-		$media_resize_size = unserialize($setting->media_resize_size);
+		$media_image_resize_size = unserialize($setting->media_image_resize_size);
 		$article_path = "public/article/".$this->article_id;
 		
 		if($this->article->article_type == 'standard') {
@@ -498,28 +499,34 @@ class ArticleMedia extends CActiveRecord
 				@chmod($article_path, 0755, true);
 		
 			//resize cover after upload
-			if($setting->media_resize == 1 && $this->media != '')
-				self::resizePhoto($article_path.'/'.$this->media, $media_resize_size);
+			if($setting->media_image_resize == 1 && $this->media != '')
+				self::resizePhoto($article_path.'/'.$this->media, $media_image_resize_size);
 			
-			//delete other media (if media_limit = 1)
-			if($setting->media_limit == 1) {
+			//delete other media (if media_image_limit = 1)
+			if($setting->media_image_limit == 1) {
 				$medias = self::model()->findAll(array(
-					'condition'=> 'media_id <> :media AND article_id = :article',
+					'condition'=>'media_id <> :media AND publish <> :publish AND article_id = :article',
 					'params'=>array(
 						':media'=>$this->media_id,
+						':publish'=>2,
 						':article'=>$this->article_id,
 					),
 				));
 				if($medias != null) {
 					foreach($medias as $key => $val)
-						self::model()->findByPk($val->media_id)->delete();
+						self::model()->updateByPk($val->media_id, array('publish'=>2)););
 				}
 			}
 		}
 		
 		//update if new cover (cover = 1)
-		if($this->cover == 1)
-			self::model()->updateAll(array('cover'=>0), 'media_id <> :media AND article_id = :article', array(':media'=>$this->media_id,':article'=>$this->article_id));
+		if($this->cover == 1) {
+			self::model()->updateAll(array('cover'=>0), 'media_id <> :media AND publish <> :publish AND article_id = :article', array(
+				':media'=>$this->media_id, 
+				':publish'=>2, 
+				':article'=>$this->article_id,
+			));
+		}
 	}
 
 	/**

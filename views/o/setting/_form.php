@@ -14,7 +14,7 @@
 
 	$cs = Yii::app()->getClientScript();
 $js=<<<EOP
-	$('input[name="ArticleSetting[media_resize]"]').on('change', function() {
+	$('input[name="ArticleSetting[media_image_resize]"]').on('change', function() {
 		var id = $(this).val();
 		if(id == '1') {
 			$('div#resize_size').slideDown();
@@ -181,64 +181,64 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model,'media_limit', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model,'media_image_limit', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
-				<?php echo $form->textField($model,'media_limit', array('class'=>'form-control')); ?>
-				<?php echo $form->error($model,'media_limit'); ?>
+				<?php echo $form->textField($model,'media_image_limit', array('class'=>'form-control')); ?>
+				<?php echo $form->error($model,'media_image_limit'); ?>
 			</div>
 		</div>
 
 		<div class="form-group row">
 			<label class="col-form-label col-lg-4 col-md-3 col-sm-12"><?php echo Yii::t('phrase', 'Media Setting');?> <span class="required">*</span></label>
 			<div class="col-lg-8 col-md-9 col-sm-12">
-				<p><?php echo $model->getAttributeLabel('media_resize');?></p>
+				<p><?php echo $model->getAttributeLabel('media_image_resize');?></p>
 				<?php 
 				if($model->isNewRecord && !$model->getErrors())
-					$model->media_resize = 0;
-				echo $form->radioButtonList($model, 'media_resize', array(
+					$model->media_image_resize = 0;
+				echo $form->radioButtonList($model, 'media_image_resize', array(
 					0 => Yii::t('phrase', 'No, not resize media after upload.'),
 					1 => Yii::t('phrase', 'Yes, resize media after upload.'),
 				), array('class'=>'form-control')); ?>
 				
 				<?php if(!$model->getErrors()) {
-					$model->media_resize_size = unserialize($model->media_resize_size);
-					$model->media_view_size = unserialize($model->media_view_size);
+					$model->media_image_resize_size = unserialize($model->media_image_resize_size);
+					$model->media_image_view_size = unserialize($model->media_image_view_size);
 				}?>
 				
-				<div id="resize_size" class="row mt-15 <?php echo $model->media_resize == 0 ? 'hide' : '';?>">
+				<div id="resize_size" class="row mt-15 <?php echo $model->media_image_resize == 0 ? 'hide' : '';?>">
 					<div class="col-lg-2 col-md-2 col-sm-2 col-6"><?php echo Yii::t('phrase', 'Width:');?></div>
-					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_resize_size[width]',array('maxlength'=>4,'class'=>'form-control')); ?></div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_image_resize_size[width]',array('maxlength'=>4,'class'=>'form-control')); ?></div>
 					<div class="col-lg-2 col-md-2 col-sm-2 col-6"><?php echo Yii::t('phrase', 'Height:');?></div>
-					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_resize_size[height]',array('maxlength'=>4,'class'=>'form-control')); ?></div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_image_resize_size[height]',array('maxlength'=>4,'class'=>'form-control')); ?></div>
 				</div>
-				<?php echo $form->error($model,'media_resize_size'); ?>
+				<?php echo $form->error($model,'media_image_resize_size'); ?>
 
 				<p class="bold"><?php echo Yii::t('phrase', 'Large Size');?></p>
 				<div class="row">
 					<div class="col-lg-2 col-md-2 col-sm-2 col-6"><?php echo Yii::t('phrase', 'Width:');?></div>
-					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_view_size[large][width]',array('maxlength'=>4,'class'=>'form-control')); ?></div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_image_view_size[large][width]',array('maxlength'=>4,'class'=>'form-control')); ?></div>
 					<div class="col-lg-2 col-md-2 col-sm-2 col-6"><?php echo Yii::t('phrase', 'Height:');?></div>
-					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_view_size[large][height]',array('maxlength'=>4,'class'=>'form-control')); ?></div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_image_view_size[large][height]',array('maxlength'=>4,'class'=>'form-control')); ?></div>
 				</div>
-				<?php echo $form->error($model,'media_view_size[large]'); ?>
+				<?php echo $form->error($model,'media_image_view_size[large]'); ?>
 
 				<p class="bold"><?php echo Yii::t('phrase', 'Medium Size');?></p>
 				<div class="row">
 					<div class="col-lg-2 col-md-2 col-sm-2 col-6"><?php echo Yii::t('phrase', 'Width:');?></div>
-					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_view_size[medium][width]',array('maxlength'=>3,'class'=>'form-control')); ?></div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_image_view_size[medium][width]',array('maxlength'=>3,'class'=>'form-control')); ?></div>
 					<div class="col-lg-2 col-md-2 col-sm-2 col-6"><?php echo Yii::t('phrase', 'Height:');?></div>
-					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_view_size[medium][height]',array('maxlength'=>3,'class'=>'form-control')); ?></div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_image_view_size[medium][height]',array('maxlength'=>3,'class'=>'form-control')); ?></div>
 				</div>
-				<?php echo $form->error($model,'media_view_size[medium]'); ?>
+				<?php echo $form->error($model,'media_image_view_size[medium]'); ?>
 
 				<p class="bold"><?php echo Yii::t('phrase', 'Small Size');?></p>
 				<div class="row">
 					<div class="col-lg-2 col-md-2 col-sm-2 col-6"><?php echo Yii::t('phrase', 'Width:');?></div>
-					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_view_size[small][width]',array('maxlength'=>3,'class'=>'form-control')); ?></div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_image_view_size[small][width]',array('maxlength'=>3,'class'=>'form-control')); ?></div>
 					<div class="col-lg-2 col-md-2 col-sm-2 col-6"><?php echo Yii::t('phrase', 'Height:');?></div>
-					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_view_size[small][height]',array('maxlength'=>3,'class'=>'form-control')); ?></div>
+					<div class="col-lg-4 col-md-4 col-sm-4 col-6"><?php echo $form->textField($model,'media_image_view_size[small][height]',array('maxlength'=>3,'class'=>'form-control')); ?></div>
 				</div>
-				<?php echo $form->error($model,'media_view_size[small]'); ?>
+				<?php echo $form->error($model,'media_image_view_size[small]'); ?>
 			</div>
 		</div>
 

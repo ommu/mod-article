@@ -19,13 +19,13 @@
 	);
 
 	$medias = $model->medias;
-	$media_limit = $setting->media_limit;
+	$media_image_limit = $setting->media_image_limit;
 	$condition = 0;
-	if($model->article_type == 'standard' && $media_limit != 1 && $model->cat->single_photo == 0)
+	if($model->article_type == 'standard' && $media_image_limit != 1 && $model->cat->single_photo == 0)
 		$condition = 1;
 ?>
 
-<div class="form" <?php //echo ($model->article_type == 'standard' && $media_limit != 1) ? 'name="post-on"' : ''; ?>>
+<div class="form" <?php //echo ($model->article_type == 'standard' && $media_image_limit != 1) ? 'name="post-on"' : ''; ?>>
 	<?php echo $this->renderPartial('_form', array(
 		'model'=>$model,
 		'setting'=>$setting,
@@ -41,7 +41,7 @@
 	<div class="clearfix horizontal-data" name="four">
 		<ul id="media-render">
 			<?php 
-			$this->renderPartial('_form_cover', array('model'=>$model, 'medias'=>$medias, 'media_limit'=>$media_limit));
+			$this->renderPartial('_form_cover', array('model'=>$model, 'medias'=>$medias, 'media_image_limit'=>$media_image_limit));
 			if(!empty($medias)) {
 				foreach($medias as $key => $data)
 					$this->renderPartial('_form_view_covers', array('data'=>$data));

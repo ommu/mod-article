@@ -701,9 +701,9 @@ class Articles extends CActiveRecord
 	{
 		parent::afterSave();
 		$setting = ArticleSetting::model()->findByPk(1, array(
-			'select' => 'headline, media_limit, media_resize, media_resize_size',
+			'select' => 'headline, media_image_limit, media_image_resize, media_image_resize_size',
 		));
-		$media_resize_size = unserialize($setting->media_resize_size);
+		$media_image_resize_size = unserialize($setting->media_image_resize_size);
 		
 		$article_path = "public/article/".$this->article_id;
 		if($this->article_type != 'quote') {
@@ -746,7 +746,7 @@ class Articles extends CActiveRecord
 
 		if($this->article_type == 'standard') {
 			$this->media_input = CUploadedFile::getInstance($this, 'media_input');
-			if($this->media_input != null && ($this->isNewRecord || (!$this->isNewRecord && ($setting->media_limit == 1 || ($setting->media_limit != 1 && $this->cat->single_photo == 1))))) {
+			if($this->media_input != null && ($this->isNewRecord || (!$this->isNewRecord && ($setting->media_image_limit == 1 || ($setting->media_image_limit != 1 && $this->cat->single_photo == 1))))) {
 				if($this->media_input instanceOf CUploadedFile) {
 					$fileName = time().'_'.Utility::getUrlTitle($this->title).'.'.strtolower($this->media_input->extensionName);
 					if($this->media_input->saveAs($article_path.'/'.$fileName)) {
@@ -762,8 +762,8 @@ class Articles extends CActiveRecord
 							$medias = $this->medias;
 							$media_id = $this->view->media_id ? $this->view->media_id : $medias[0]->media_id;
 							if(ArticleMedia::model()->updateByPk($media_id, array('media'=>$fileName))) {
-								if($setting->media_resize == 1)
-									ArticleMedia::resizePhoto($article_path.'/'.$fileName, $media_resize_size);
+								if($setting->media_image_resize == 1)
+									ArticleMedia::resizePhoto($article_path.'/'.$fileName, $media_image_resize_size);
 							}
 						}
 					}

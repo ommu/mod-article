@@ -181,7 +181,7 @@ class AdminController extends Controller
 	public function actionEdit($id) 
 	{
 		$setting = ArticleSetting::model()->findByPk(1,array(
-			'select' => 'meta_keyword, type_active, headline, media_limit, media_image_type, media_file_type',
+			'select' => 'meta_keyword, type_active, headline, media_image_limit, media_image_type, media_file_type',
 		));
 		$media_image_type = unserialize($setting->media_image_type);
 		if(empty($media_image_type))
@@ -204,7 +204,7 @@ class AdminController extends Controller
 				$model->scenario = 'formVideo';
 
 			/*
-			if($model->article_type == 'standard' && $setting->media_limit != 1) {
+			if($model->article_type == 'standard' && $setting->media_image_limit != 1) {
 				$jsonError = CActiveForm::validate($model);
 				if(strlen($jsonError) > 2) {
 					$errors = $model->getErrors();
@@ -413,16 +413,16 @@ class AdminController extends Controller
 	public function actionGetcover($id) 
 	{
 		$setting = ArticleSetting::model()->findByPk(1,array(
-			'select' => 'media_limit',
+			'select' => 'media_image_limit',
 		));		
-		$media_limit = $setting->media_limit;
+		$media_image_limit = $setting->media_image_limit;
 		
 		$model=$this->loadModel($id);
 		$medias = $model->medias;
 
 		$data = '';
 		if(isset($_GET['replace']))
-			$data .= $this->renderPartial('_form_cover', array('model'=>$model, 'medias'=>$medias, 'media_limit'=>$media_limit), true, false);
+			$data .= $this->renderPartial('_form_cover', array('model'=>$model, 'medias'=>$medias, 'media_image_limit'=>$media_image_limit), true, false);
 		
 		if(!empty($medias)) {	
 			foreach($medias as $key => $val)
@@ -441,9 +441,9 @@ class AdminController extends Controller
 	public function actionInsertcover($id) 
 	{
 		$setting = ArticleSetting::model()->findByPk(1,array(
-			'select' => 'media_limit, media_image_type',
+			'select' => 'media_image_limit, media_image_type',
 		));
-		$media_limit = $setting->media_limit;
+		$media_image_limit = $setting->media_image_limit;
 		$media_image_type = unserialize($setting->media_image_type);
 		
 		$article_path = "public/article/".$id;
