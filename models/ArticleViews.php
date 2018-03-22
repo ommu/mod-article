@@ -364,7 +364,7 @@ class ArticleViews extends CActiveRecord
 		$criteria->select = 'view_id, publish, article_id, user_id, views';
 		$criteria->compare('publish', 1);
 		$criteria->compare('article_id', $article_id);
-		$criteria->compare('user_id', !Yii::app()->user->isGuest ? Yii::app()->user->id : '0');
+		$criteria->compare('user_id', !Yii::app()->user->isGuest ? Yii::app()->user->id : null);
 		$findView = self::model()->find($criteria);
 		
 		if($findView != null)
@@ -383,7 +383,7 @@ class ArticleViews extends CActiveRecord
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
 			if($this->isNewRecord)
-				$this->user_id = !Yii::app()->user->isGuest ? Yii::app()->user->id : 0;
+				$this->user_id = !Yii::app()->user->isGuest ? Yii::app()->user->id : null;
 			
 			$this->view_ip = $_SERVER['REMOTE_ADDR'];
 		}

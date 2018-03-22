@@ -23,7 +23,7 @@
  *
  * The followings are the available columns in table 'ommu_article_downloads':
  * @property string $download_id
- * @property string $article_id
+ * @property string $file_id
  * @property string $user_id
  * @property integer $downloads
  * @property string $download_date
@@ -36,6 +36,7 @@ class ArticleDownloads extends CActiveRecord
 	// Variable Search
 	public $category_search;
 	public $article_search;
+	public $file_search;
 	public $user_search;
 
 	/**
@@ -65,14 +66,14 @@ class ArticleDownloads extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('article_id, user_id', 'required'),
+			array('file_id, user_id', 'required'),
 			array('downloads', 'numerical', 'integerOnly'=>true),
-			array('article_id, user_id', 'length', 'max'=>11),
+			array('file_id, user_id', 'length', 'max'=>11),
 			array('download_ip', 'length', 'max'=>20),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('download_id, article_id, user_id, downloads, download_date, download_ip,
-				category_search, article_search, user_search', 'safe', 'on'=>'search'),
+			array('download_id, file_id, user_id, downloads, download_date, download_ip,
+				category_search, article_search, file_search, user_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -85,7 +86,7 @@ class ArticleDownloads extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'downloads' => array(self::HAS_MANY, 'ArticleDownloadHistory', 'download_id'),
-			'article' => array(self::BELONGS_TO, 'Articles', 'article_id'),
+			'file' => array(self::BELONGS_TO, 'ArticleFiles', 'file_id'),
 			'user' => array(self::BELONGS_TO, 'Users', 'user_id'),
 		);
 	}
@@ -97,13 +98,14 @@ class ArticleDownloads extends CActiveRecord
 	{
 		return array(
 			'download_id' => Yii::t('attribute', 'Download'),
-			'article_id' => Yii::t('attribute', 'Article'),
+			'file_id' => Yii::t('attribute', 'File'),
 			'user_id' => Yii::t('attribute', 'User'),
 			'downloads' => Yii::t('attribute', 'Downloads'),
 			'download_date' => Yii::t('attribute', 'Download Date'),
 			'download_ip' => Yii::t('attribute', 'Download Ip'),
 			'category_search' => Yii::t('attribute', 'Category'),
 			'article_search' => Yii::t('attribute', 'Article'),
+			'file_search' => Yii::t('attribute', 'File'),
 			'user_search' => Yii::t('attribute', 'User'),
 		);
 	}
@@ -128,7 +130,11 @@ class ArticleDownloads extends CActiveRecord
 		
 		// Custom Search
 		$criteria->with = array(
-			'article' => array(
+			'file' => array(
+				'alias'=>'file',
+				'select'=>'publish, article_id, file_filename'
+			),
+			'file.article' => array(
 				'alias'=>'article',
 				'select'=>'publish, cat_id, title'
 			),
@@ -139,10 +145,10 @@ class ArticleDownloads extends CActiveRecord
 		);
 
 		$criteria->compare('t.download_id',$this->download_id);
-		if(isset($_GET['article']))
-			$criteria->compare('t.article_id',$_GET['article']);
+		if(isset($_GET['file']))
+			$criteria->compare('t.file_id',$_GET['file']);
 		else
-			$criteria->compare('t.article_id',$this->article_id);
+			$criteria->compare('t.file_id',$this->file_id);
 		if(isset($_GET['user']))
 			$criteria->compare('t.user_id',$_GET['user']);
 		else
@@ -156,6 +162,9 @@ class ArticleDownloads extends CActiveRecord
 		$criteria->compare('article.title',strtolower($this->article_search),true);
 		if(isset($_GET['article']) && isset($_GET['publish']))
 			$criteria->compare('article.publish',$_GET['publish']);
+		$criteria->compare('file.file_filename',strtolower($this->file_search),true);
+		if(isset($_GET['file']) && isset($_GET['publish']))
+			$criteria->compare('file.publish',$_GET['publish']);
 		$criteria->compare('user.displayname',strtolower($this->user_search),true);
 
 		if(!isset($_GET['ArticleDownloads_sort']))
@@ -188,7 +197,7 @@ class ArticleDownloads extends CActiveRecord
 			}
 		} else {
 			//$this->defaultColumns[] = 'download_id';
-			$this->defaultColumns[] = 'article_id';
+			$this->defaultColumns[] = 'file_id';
 			$this->defaultColumns[] = 'user_id';
 			$this->defaultColumns[] = 'downloads';
 			$this->defaultColumns[] = 'download_date';
@@ -207,16 +216,20 @@ class ArticleDownloads extends CActiveRecord
 				'header' => 'No',
 				'value' => '$this->grid->dataProvider->pagination->currentPage*$this->grid->dataProvider->pagination->pageSize + $row+1'
 			);
-			if(!isset($_GET['article'])) {
+			if(!isset($_GET['file'])) {
 				$this->defaultColumns[] = array(
 					'name' => 'category_search',
-					'value' => '$data->article->cat->title->message',
+					'value' => '$data->file->article->cat->title->message',
 					'filter'=> ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);
 				$this->defaultColumns[] = array(
 					'name' => 'article_search',
-					'value' => '$data->article->title',
+					'value' => '$data->file->article->title',
+				);
+				$this->defaultColumns[] = array(
+					'name' => 'file_search',
+					'value' => '$data->file_filename',
 				);
 			}
 			if(!isset($_GET['user'])) {
@@ -290,12 +303,12 @@ class ArticleDownloads extends CActiveRecord
 	/**
 	 * User get information
 	 */
-	public static function insertDownload($article_id)
+	public static function insertDownload($file_id)
 	{
 		$criteria=new CDbCriteria;
-		$criteria->select = 'download_id, article_id, user_id, downloads';
-		$criteria->compare('article_id', $article_id);
-		$criteria->compare('user_id', !Yii::app()->user->isGuest ? Yii::app()->user->id : '0');
+		$criteria->select = 'download_id, file_id, user_id, downloads';
+		$criteria->compare('file_id', $file_id);
+		$criteria->compare('user_id', !Yii::app()->user->isGuest ? Yii::app()->user->id : null);
 		$findDownload = self::model()->find($criteria);
 		
 		if($findDownload != null)
@@ -303,7 +316,7 @@ class ArticleDownloads extends CActiveRecord
 		
 		else {
 			$download=new ArticleDownloads;
-			$download->article_id = $article_id;
+			$download->file_id = $file_id;
 			$download->save();
 		}
 	}
@@ -314,7 +327,7 @@ class ArticleDownloads extends CActiveRecord
 	protected function beforeValidate() {
 		if(parent::beforeValidate()) {
 			if($this->isNewRecord)
-				$this->user_id = !Yii::app()->user->isGuest ? Yii::app()->user->id : 0;
+				$this->user_id = !Yii::app()->user->isGuest ? Yii::app()->user->id : null;
 			
 			$this->download_ip = $_SERVER['REMOTE_ADDR'];
 		}

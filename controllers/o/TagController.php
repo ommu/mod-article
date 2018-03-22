@@ -161,7 +161,7 @@ class TagController extends Controller
 		if(Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
 			$model->publish = 2;
-			$model->modified_id = !Yii::app()->user->isGuest ? Yii::app()->user->id : 0;
+			$model->modified_id = !Yii::app()->user->isGuest ? Yii::app()->user->id : null;
 			
 			if($model->update()) {
 				if((isset($_GET['type']) && $_GET['type'] == 'article') || isset($_GET['c'])) {
