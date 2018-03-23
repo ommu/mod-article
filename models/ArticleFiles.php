@@ -37,6 +37,7 @@ class ArticleFiles extends OActiveRecord
 	public $article_search;
 	public $creation_search;
 	public $modified_search;
+	public $download_search;
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -74,7 +75,7 @@ class ArticleFiles extends OActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('file_id, publish, article_id, file_filename, creation_date, creation_id, modified_date, modified_id, updated_date, 
-				category_search, article_search, creation_search, modified_search', 'safe', 'on'=>'search'),
+				category_search, article_search, creation_search, modified_search, download_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -86,6 +87,7 @@ class ArticleFiles extends OActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
+			'view' => array(self::BELONGS_TO, 'ViewArticleFiles', 'file_id'),
 			'article' => array(self::BELONGS_TO, 'Articles', 'article_id'),
 			'creation' => array(self::BELONGS_TO, 'Users', 'creation_id'),
 			'modified' => array(self::BELONGS_TO, 'Users', 'modified_id'),
@@ -112,6 +114,7 @@ class ArticleFiles extends OActiveRecord
 			'article_search' => Yii::t('attribute', 'Article'),
 			'creation_search' => Yii::t('attribute', 'Creation'),
 			'modified_search' => Yii::t('attribute', 'Modified'),
+			'download_search' => Yii::t('attribute', 'Downloads'),
 		);
 	}
 
@@ -177,6 +180,7 @@ class ArticleFiles extends OActiveRecord
 			$criteria->compare('article.publish', Yii::app()->getRequest()->getParam('publish'));
 		$criteria->compare('creation.displayname', strtolower($this->creation_search), true);
 		$criteria->compare('modified.displayname', strtolower($this->modified_search), true);
+		$criteria->compare('view.downloads', $this->download_search);
 
 		if(!Yii::app()->getRequest()->getParam('ArticleFiles_sort'))
 			$criteria->order = 't.file_id DESC';
@@ -329,6 +333,14 @@ class ArticleFiles extends OActiveRecord
 				), true),
 				*/
 			);
+			$this->templateColumns['download_search'] = array(
+				'name' => 'download_search',
+				'value' => 'CHtml::link($data->view->downloads ? $data->view->downloads : 0, Yii::app()->controller->createUrl(\'o/download/manage\', array(\'file\'=>$data->file_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
+			);
 			if(!Yii::app()->getRequest()->getParam('type')) {
 				$this->templateColumns['publish'] = array(
 					'name' => 'publish',
@@ -395,6 +407,9 @@ class ArticleFiles extends OActiveRecord
 							'{extensions}'=>Utility::formatFileType($media_file_type, false),
 						)));
 					
+				} else {
+					if($this->isNewRecord && $controller == 'o/file')
+						$this->addError('cover_filename', '{attribute} cannot be blank.', array('{attribute}'=>$this->getAttributeLabel('cover_filename')));
 				}
 			//}
 		}

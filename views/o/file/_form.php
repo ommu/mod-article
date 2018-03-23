@@ -39,7 +39,14 @@
 		<div class="form-group row">
 			<?php echo $form->labelEx($model, 'file_filename', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
-				<?php echo $form->fileField($model, 'file_filename', array('class'=>'form-control'));?>
+				<?php 
+				if(!$model->getErrors())
+					$model->old_file_filename_i = $model->file_filename;
+				echo $form->hiddenField($model, 'old_file_filename_i');
+				if($model->old_file_filename_i) {?>
+					<div class="mb-10">#OldFile: <?php echo CHtml::link($model->old_file_filename_i, Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->file_filename, array('target' => '_blank'));?></div>
+				<?php }
+				echo $form->fileField($model, 'file_filename', array('class'=>'form-control'));?>
 				<?php echo $form->error($model, 'file_filename'); ?>
 				<div class="small-px silent">extensions are allowed: <?php echo Utility::formatFileType($media_file_type, false);?></div>
 			</div>

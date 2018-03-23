@@ -134,17 +134,7 @@ class ArticleLikeHistory extends OActiveRecord
 			),
 		);
 
-		$criteria->compare('t.id', $this->id);
-		if(Yii::app()->getRequest()->getParam('type') == 'publish')
-			$criteria->compare('t.publish', 1);
-		elseif(Yii::app()->getRequest()->getParam('type') == 'unpublish')
-			$criteria->compare('t.publish', 0);
-		elseif(Yii::app()->getRequest()->getParam('type') == 'trash')
-			$criteria->compare('t.publish', 2);
-		else {
-			$criteria->addInCondition('t.publish', array(0,1));
-			$criteria->compare('t.publish', $this->publish);
-		}
+		$criteria->compare('t.publish', $this->publish);
 		$criteria->compare('t.like_id', Yii::app()->getRequest()->getParam('like') ? Yii::app()->getRequest()->getParam('like') : $this->like_id);
 		if($this->likes_date != null && !in_array($this->likes_date, array('0000-00-00 00:00:00', '1970-01-01 00:00:00')))
 			$criteria->compare('date(t.likes_date)', date('Y-m-d', strtotime($this->likes_date)));
@@ -237,20 +227,17 @@ class ArticleLikeHistory extends OActiveRecord
 					//'class' => 'center',
 				),
 			);
-			if(!Yii::app()->getRequest()->getParam('type')) {
-				$this->templateColumns['publish'] = array(
-					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'publish\',array(\'id\'=>$data->id)), $data->publish)',
-					'htmlOptions' => array(
-						'class' => 'center',
-					),
-					'filter'=>array(
-						1=>Yii::t('phrase', 'Yes'),
-						0=>Yii::t('phrase', 'No'),
-					),
-					'type' => 'raw',
-				);
-			}
+			$this->templateColumns['publish'] = array(
+				'name' => 'publish',
+				'value' => '$data->publish == 1 ? Yii::t(\'phrase\', \'Like\') : Yii::t(\'phrase\', \'Unlike\')',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Like'),
+					0=>Yii::t('phrase', 'Unlike'),
+				),
+			);
 		}
 		parent::afterConstruct();
 	}
