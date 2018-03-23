@@ -179,7 +179,7 @@ class ArticleTag extends OActiveRecord
 
 		$criteria->compare('article.cat_id', $this->category_search);
 		$criteria->compare('article.title', strtolower($this->article_search), true);
-		if(isset(Yii::app()->getRequest()->getParam('article')) && isset(Yii::app()->getRequest()->getParam('publish')))
+		if(Yii::app()->getRequest()->getParam('article') && Yii::app()->getRequest()->getParam('publish'))
 			$criteria->compare('article.publish', Yii::app()->getRequest()->getParam('publish'));
 		$tag_i = Utility::getUrlTitle(strtolower(trim($this->tag_i)));
 		$criteria->compare('tag.body', $tag_i, true);

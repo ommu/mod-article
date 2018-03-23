@@ -173,7 +173,7 @@ class ArticleFiles extends OActiveRecord
 
 		$criteria->compare('article.cat_id', $this->category_search);
 		$criteria->compare('article.title', strtolower($this->article_search), true);
-		if(isset(Yii::app()->getRequest()->getParam('article')) && isset(Yii::app()->getRequest()->getParam('publish')))
+		if(Yii::app()->getRequest()->getParam('article') && Yii::app()->getRequest()->getParam('publish'))
 			$criteria->compare('article.publish', Yii::app()->getRequest()->getParam('publish'));
 		$criteria->compare('creation.displayname', strtolower($this->creation_search), true);
 		$criteria->compare('modified.displayname', strtolower($this->modified_search), true);
