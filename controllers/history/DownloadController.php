@@ -9,6 +9,8 @@
  * TOC :
  *	Index
  *	Manage
+ *	View
+ *	Delete
  *
  *	LoadModel
  *	performAjaxValidation
@@ -17,6 +19,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 Ommu Platform (opensource.ommu.co)
  * @created date 8 January 2017, 21:21 WIB
+ * @modified date 23 March 2018, 16:13 WIB
  * @link https://github.com/ommu/ommu-article
  *
  *----------------------------------------------------------------------------------------------------------
@@ -66,7 +69,7 @@ class DownloadController extends Controller
 	{
 		return array(
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('index','manage'),
+				'actions'=>array('index','manage','view','delete'),
 				'users'=>array('@'),
 				'expression'=>'in_array($user->level, array(1,2))',
 			),
@@ -89,29 +92,29 @@ class DownloadController extends Controller
 	 */
 	public function actionManage($download=null) 
 	{
-		$pageTitle = Yii::t('phrase', 'Data Article Downloads');
-		if($download != null) {
-			$data = ArticleDownloads::model()->findByPk($download);
-			$pageTitle = Yii::t('phrase', 'Article Downloads Data: {article_title} from category {category_name} - user Guest', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->category->title->message));	
-			if($data->user->displayname)
-				$pageTitle = Yii::t('phrase', 'Article Downloads Data: {article_title} from category {category_name} - user {user_displayname}', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->category->title->message, '{user_displayname}'=>$data->user->displayname));
-		}
-		
 		$model=new ArticleDownloadHistory('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['ArticleDownloadHistory'])) {
-			$model->attributes=$_GET['ArticleDownloadHistory'];
+		if(Yii::app()->getRequest()->getParam('ArticleDownloadHistory')) {
+			$model->attributes=Yii::app()->getRequest()->getParam('ArticleDownloadHistory');
 		}
 
+		$gridColumn = Yii::app()->getRequest()->getParam('GridColumn');
 		$columnTemp = array();
-		if(isset($_GET['GridColumn'])) {
-			foreach($_GET['GridColumn'] as $key => $val) {
-				if($_GET['GridColumn'][$key] == 1) {
+		if($gridColumn) {
+			foreach($gridColumn as $key => $val) {
+				if($gridColumn[$key] == 1)
 					$columnTemp[] = $key;
-				}
 			}
 		}
 		$columns = $model->getGridColumn($columnTemp);
+
+		$pageTitle = Yii::t('phrase', 'Article Downloads Data');
+		if($download != null) {
+			$data = ArticleDownloads::model()->findByPk($download);
+			$pageTitle = Yii::t('phrase', 'Article Downloads Data: {file_filename} article {article_title} - user Guest', array ('{file_filename}'=>$data->file->file_filename, '{article_title}'=>$data->file->article->title));
+			if($data->user->displayname)
+				$pageTitle = Yii::t('phrase', 'Article Downloads Data: {file_filename} article {article_title} - user {user_displayname}', array ('{file_filename}'=>$data->file->file_filename, '{article_title}'=>$data->file->article->title, '{user_displayname}'=>$data->user->displayname));
+		}
 
 		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
@@ -120,6 +123,58 @@ class DownloadController extends Controller
 			'model'=>$model,
 			'columns' => $columns,
 		));
+	}
+	
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionView($id) 
+	{
+		$model=$this->loadModel($id);
+		
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 600;
+
+		$this->pageTitle = Yii::t('phrase', 'Detail Download History: {file_filename} article {article_title}', array('{file_filename}'=>$model->downlaod->file->file_filename, '{article_title}'=>$model->downlaod->file->article->title));
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_view', array(
+			'model'=>$model,
+		));
+	}
+
+	/**
+	 * Deletes a particular model.
+	 * If deletion is successful, the browser will be redirected to the 'admin' page.
+	 * @param integer $id the ID of the model to be deleted
+	 */
+	public function actionDelete($id) 
+	{
+		$model=$this->loadModel($id);
+		
+		if(Yii::app()->request->isPostRequest) {
+			// we only allow deletion via POST request
+			if($model->delete()) {
+				echo CJSON::encode(array(
+					'type' => 5,
+					'get' => Yii::app()->controller->createUrl('manage'),
+					'id' => 'partial-article-download-history',
+					'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article download history success deleted.').'</strong></div>',
+				));
+			}
+			Yii::app()->end();
+		}
+
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 350;
+
+		$this->pageTitle = Yii::t('phrase', 'Delete Download History: {file_filename} article {article_title}', array('{file_filename}'=>$model->downlaod->file->file_filename, '{article_title}'=>$model->downlaod->file->article->title));
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_delete');
 	}
 
 	/**

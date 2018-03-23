@@ -9,6 +9,7 @@
  * TOC :
  *	Index
  *	Manage
+ *	View
  *	Delete
  *
  *	LoadModel
@@ -18,6 +19,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 Ommu Platform (opensource.ommu.co)
  * @created date 8 January 2017, 20:54 WIB
+ * @modified date 23 March 2018, 05:30 WIB
  * @link https://github.com/ommu/ommu-article
  *
  *----------------------------------------------------------------------------------------------------------
@@ -67,7 +69,7 @@ class DownloadController extends Controller
 	{
 		return array(
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('index','manage','delete'),
+				'actions'=>array('index','manage','view','delete'),
 				'users'=>array('@'),
 				'expression'=>'in_array($user->level, array(1,2))',
 			),
@@ -88,36 +90,56 @@ class DownloadController extends Controller
 	/**
 	 * Manages all models.
 	 */
-	public function actionManage($article=null) 
+	public function actionManage($file=null) 
 	{
-		$pageTitle = Yii::t('phrase', 'Article Downloads');
-		if($article != null) {
-			$data = Articles::model()->findByPk($article);
-			$pageTitle = Yii::t('phrase', 'Article Downloads: {article_title} from category {category_name}', array ('{article_title}'=>$data->title, '{category_name}'=>$data->category->title->message));
-		}
-		
 		$model=new ArticleDownloads('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['ArticleDownloads'])) {
-			$model->attributes=$_GET['ArticleDownloads'];
+		if(Yii::app()->getRequest()->getParam('ArticleDownloads')) {
+			$model->attributes=Yii::app()->getRequest()->getParam('ArticleDownloads');
 		}
 
+		$gridColumn = Yii::app()->getRequest()->getParam('GridColumn');
 		$columnTemp = array();
-		if(isset($_GET['GridColumn'])) {
-			foreach($_GET['GridColumn'] as $key => $val) {
-				if($_GET['GridColumn'][$key] == 1) {
+		if($gridColumn) {
+			foreach($gridColumn as $key => $val) {
+				if($gridColumn[$key] == 1)
 					$columnTemp[] = $key;
-				}
 			}
 		}
 		$columns = $model->getGridColumn($columnTemp);
 
+		$pageTitle = Yii::t('phrase', 'Article Downloads');
+		if($file != null) {
+			$data = ArticleFiles::model()->findByPk($file);
+			$pageTitle = Yii::t('phrase', 'Article Downloads: {file_filename} article {article_title}', array('{file_filename}'=>$data->file_filename, '{article_title}'=>$data->article->title));
+		}
+		
 		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manage', array(
 			'model'=>$model,
 			'columns' => $columns,
+		));
+	}
+	
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionView($id) 
+	{
+		$model=$this->loadModel($id);
+		
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 600;
+
+		$this->pageTitle = Yii::t('phrase', 'Detail Download: {file_filename} article {article_title}', array('{file_filename}'=>$model->file->file_filename, '{article_title}'=>$model->file->article->title));
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_view', array(
+			'model'=>$model,
 		));
 	}
 
@@ -137,17 +159,17 @@ class DownloadController extends Controller
 					'type' => 5,
 					'get' => Yii::app()->controller->createUrl('manage'),
 					'id' => 'partial-article-downloads',
-					'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArticleDownloads success deleted.').'</strong></div>',
+					'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article download success deleted.').'</strong></div>',
 				));
 			}
 			Yii::app()->end();
 		}
-		
+
 		$this->dialogDetail = true;
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 350;
 
-		$this->pageTitle = Yii::t('phrase', 'Delete Downloads: {article_title}', array('{article_title}'=>$model->article->title));
+		$this->pageTitle = Yii::t('phrase', 'Delete Download: {file_filename} article {article_title}', array('{file_filename}'=>$model->file->file_filename, '{article_title}'=>$model->file->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_delete');

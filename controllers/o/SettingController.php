@@ -17,6 +17,7 @@
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @modified date 23 March 2018, 16:01 WIB
  * @link https://github.com/ommu/ommu-article
  *
  *----------------------------------------------------------------------------------------------------------
@@ -88,27 +89,29 @@ class SettingController extends Controller
 	{
 		$this->redirect(array('edit'));
 	}
-	
+
 	/**
-	 * Lists all models.
+	 * Updates a particular model.
+	 * If update is successful, the browser will be redirected to the 'view' page.
+	 * @param integer $id the ID of the model to be updated
 	 */
 	public function actionEdit() 
 	{
 		if(Yii::app()->user->level != 1)
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
-		
+
 		$category=new ArticleCategory('search');
 		$category->unsetAttributes();  // clear any default values
-		if(isset($_GET['ArticleCategory'])) {
-			$category->attributes=$_GET['ArticleCategory'];
+		if(Yii::app()->getRequest()->getParam('ArticleCategory')) {
+			$category->attributes=Yii::app()->getRequest()->getParam('ArticleCategory');
 		}
 
+		$gridColumn = Yii::app()->getRequest()->getParam('GridColumn');
 		$columnTemp = array();
-		if(isset($_GET['GridColumn'])) {
-			foreach($_GET['GridColumn'] as $key => $val) {
-				if($_GET['GridColumn'][$key] == 1) {
+		if($gridColumn) {
+			foreach($gridColumn as $key => $val) {
+				if($gridColumn[$key] == 1)
 					$columnTemp[] = $key;
-				}
 			}
 		}
 		$columns = $category->getGridColumn($columnTemp);
@@ -140,15 +143,14 @@ class SettingController extends Controller
 				echo $encode;
 
 			} else {
-				if(isset($_GET['enablesave']) && $_GET['enablesave'] == 1) {
+				if(Yii::app()->getRequest()->getParam('enablesave') == 1) {
 					if($model->save()) {
 						echo CJSON::encode(array(
 							'type' => 0,
 							'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article setting success updated.').'</strong></div>',
 						));
-					} else {
+					} else
 						print_r($model->getErrors());
-					}
 				}
 			}
 			Yii::app()->end();
@@ -180,7 +182,7 @@ class SettingController extends Controller
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_manual', array(
-			'manual_path'=>$manual_path,			
+			'manual_path'=>$manual_path,
 		));
 	}
 

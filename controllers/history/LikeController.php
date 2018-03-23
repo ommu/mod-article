@@ -9,6 +9,8 @@
  * TOC :
  *	Index
  *	Manage
+ *	View
+ *	Delete
  *
  *	LoadModel
  *	performAjaxValidation
@@ -17,6 +19,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 Ommu Platform (opensource.ommu.co)
  * @created date 7 February 2017, 02:35 WIB
+ * @modified date 23 March 2018, 16:13 WIB
  * @link https://github.com/ommu/ommu-article
  *
  *----------------------------------------------------------------------------------------------------------
@@ -66,7 +69,7 @@ class LikeController extends Controller
 	{
 		return array(
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('index','manage'),
+				'actions'=>array('index','manage','view','delete'),
 				'users'=>array('@'),
 				'expression'=>'in_array($user->level, array(1,2))',
 			),
@@ -89,29 +92,29 @@ class LikeController extends Controller
 	 */
 	public function actionManage($like=null) 
 	{
-		$pageTitle = Yii::t('phrase', 'Article Likes Data');
-		if($like != null) {
-			$data = ArticleLikes::model()->findByPk($like);
-			$pageTitle = Yii::t('phrase', 'Article Likes Data: {article_title} from category {category_name} - user Guest', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->category->title->message));	
-			if($data->user->displayname)
-				$pageTitle = Yii::t('phrase', 'Article Likes Data: {article_title} from category {category_name} - user {user_displayname}', array ('{article_title}'=>$data->article->title, '{category_name}'=>$data->article->category->title->message, '{user_displayname}'=>$data->user->displayname));
-		}
-		
 		$model=new ArticleLikeHistory('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['ArticleLikeHistory'])) {
-			$model->attributes=$_GET['ArticleLikeHistory'];
+		if(Yii::app()->getRequest()->getParam('ArticleLikeHistory')) {
+			$model->attributes=Yii::app()->getRequest()->getParam('ArticleLikeHistory');
 		}
 
+		$gridColumn = Yii::app()->getRequest()->getParam('GridColumn');
 		$columnTemp = array();
-		if(isset($_GET['GridColumn'])) {
-			foreach($_GET['GridColumn'] as $key => $val) {
-				if($_GET['GridColumn'][$key] == 1) {
+		if($gridColumn) {
+			foreach($gridColumn as $key => $val) {
+				if($gridColumn[$key] == 1)
 					$columnTemp[] = $key;
-				}
 			}
 		}
 		$columns = $model->getGridColumn($columnTemp);
+
+		$pageTitle = Yii::t('phrase', 'Article Likes Data');
+		if($like != null) {
+			$data = ArticleLikes::model()->findByPk($like);
+			$pageTitle = Yii::t('phrase', 'Article Likes Data: {article_title} - user Guest', array ('{article_title}'=>$data->article->title));
+			if($data->user->displayname)
+				$pageTitle = Yii::t('phrase', 'Article Likes Data: {article_title} - user {user_displayname}', array ('{article_title}'=>$data->article->title, '{user_displayname}'=>$data->user->displayname));
+		}
 
 		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
@@ -120,6 +123,60 @@ class LikeController extends Controller
 			'model'=>$model,
 			'columns' => $columns,
 		));
+	}
+	
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionView($id) 
+	{
+		$model=$this->loadModel($id);
+		
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 600;
+
+		$this->pageTitle = Yii::t('phrase', 'Detail Like History: {article_title}', array('{article_title}'=>$model->like->article->title));
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_view', array(
+			'model'=>$model,
+		));
+	}
+
+	/**
+	 * Deletes a particular model.
+	 * If deletion is successful, the browser will be redirected to the 'admin' page.
+	 * @param integer $id the ID of the model to be deleted
+	 */
+	public function actionDelete($id) 
+	{
+		$model=$this->loadModel($id);
+		
+		if(Yii::app()->request->isPostRequest) {
+			// we only allow deletion via POST request
+			$model->publish = 2;
+			
+			if($model->update()) {
+				echo CJSON::encode(array(
+					'type' => 5,
+					'get' => Yii::app()->controller->createUrl('manage'),
+					'id' => 'partial-article-like-history',
+					'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article like history success deleted.').'</strong></div>',
+				));
+			}
+			Yii::app()->end();
+		}
+
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 350;
+
+		$this->pageTitle = Yii::t('phrase', 'Delete Article Like History: {article_title}', array('{article_title}'=>$model->like->article->title));
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_delete');
 	}
 
 	/**

@@ -9,6 +9,7 @@
  * TOC :
  *	Index
  *	Manage
+ *	View
  *	RunAction
  *	Delete
  *	Publish
@@ -19,6 +20,7 @@
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @modified date 23 March 2018, 05:30 WIB
  * @link https://github.com/ommu/ommu-article
  *
  *----------------------------------------------------------------------------------------------------------
@@ -68,7 +70,7 @@ class LikeController extends Controller
 	{
 		return array(
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('index','manage','runaction','delete','publish'),
+				'actions'=>array('index','manage','view','runaction','delete','publish'),
 				'users'=>array('@'),
 				'expression'=>'in_array($user->level, array(1,2))',
 			),
@@ -91,27 +93,27 @@ class LikeController extends Controller
 	 */
 	public function actionManage($article=null) 
 	{
-		$pageTitle = Yii::t('phrase', 'Article Likes');
-		if($article != null) {
-			$data = Articles::model()->findByPk($article);
-			$pageTitle = Yii::t('phrase', 'Article Likes: {article_title} from category {category_name}', array ('{article_title}'=>$data->title, '{category_name}'=>$data->category->title->message));
-		}
-		
 		$model=new ArticleLikes('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['ArticleLikes'])) {
-			$model->attributes=$_GET['ArticleLikes'];
+		if(Yii::app()->getRequest()->getParam('ArticleLikes')) {
+			$model->attributes=Yii::app()->getRequest()->getParam('ArticleLikes');
 		}
 
+		$gridColumn = Yii::app()->getRequest()->getParam('GridColumn');
 		$columnTemp = array();
-		if(isset($_GET['GridColumn'])) {
-			foreach($_GET['GridColumn'] as $key => $val) {
-				if($_GET['GridColumn'][$key] == 1) {
+		if($gridColumn) {
+			foreach($gridColumn as $key => $val) {
+				if($gridColumn[$key] == 1)
 					$columnTemp[] = $key;
-				}
 			}
 		}
 		$columns = $model->getGridColumn($columnTemp);
+
+		$pageTitle = Yii::t('phrase', 'Article Likes');
+		if($article != null) {
+			$data = Articles::model()->findByPk($article);
+			$pageTitle = Yii::t('phrase', 'Article Likes: {article_title}', array ('{article_title}'=>$data->title));
+		}
 
 		$this->pageTitle = $pageTitle;
 		$this->pageDescription = '';
@@ -126,14 +128,34 @@ class LikeController extends Controller
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
 	 */
+	public function actionView($id) 
+	{
+		$model=$this->loadModel($id);
+		
+		$this->dialogDetail = true;
+		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
+		$this->dialogWidth = 600;
+
+		$this->pageTitle = Yii::t('phrase', 'Detail Like: {article_title}', array('{article_title}'=>$model->article->title));
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_view', array(
+			'model'=>$model,
+		));
+	}
+
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
 	public function actionRunAction() {
 		$id       = $_POST['trash_id'];
 		$criteria = null;
-		$actions  = $_GET['action'];
+		$actions  = Yii::app()->getRequest()->getParam('action');
 
 		if(count($id) > 0) {
 			$criteria = new CDbCriteria;
-			$criteria->addInCondition('id', $id);
+			$criteria->addInCondition('like_id', $id);
 
 			if($actions == 'publish') {
 				ArticleLikes::model()->updateAll(array(
@@ -153,7 +175,7 @@ class LikeController extends Controller
 		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax'])) {
+		if(!(Yii::app()->getRequest()->getParam('ajax'))) {
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('manage'));
 		}
 	}
@@ -176,17 +198,17 @@ class LikeController extends Controller
 					'type' => 5,
 					'get' => Yii::app()->controller->createUrl('manage'),
 					'id' => 'partial-article-likes',
-					'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Likes success deleted.').'</strong></div>',
+					'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article like success deleted.').'</strong></div>',
 				));
 			}
 			Yii::app()->end();
 		}
-		
+
 		$this->dialogDetail = true;
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 350;
 
-		$this->pageTitle = Yii::t('phrase', 'Delete Likes: {article_title}', array('{article_title}'=>$model->article->title));
+		$this->pageTitle = Yii::t('phrase', 'Delete Like: {article_title}', array('{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_delete');
@@ -214,17 +236,17 @@ class LikeController extends Controller
 					'type' => 5,
 					'get' => Yii::app()->controller->createUrl('manage'),
 					'id' => 'partial-article-likes',
-					'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'ArticleLikes success updated.').'</strong></div>',
+					'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article like success updated.').'</strong></div>',
 				));
 			}
 			Yii::app()->end();
 		}
-		
+
 		$this->dialogDetail = true;
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 350;
 
-		$this->pageTitle = Yii::t('phrase', '{title}: {article_title}', array('{title}'=>$title, '{article_title}'=>$model->article->title));
+		$this->pageTitle = Yii::t('phrase', '{title} Like: {article_title}', array('{title}'=>$title, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_publish', array(

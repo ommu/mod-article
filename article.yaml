@@ -33,7 +33,7 @@ plugin_menu		:
 				urlPath: {url: o/tag/manage, attr: -, icon: -}
 			- urlTitle: Views
 				urlRules: {siteType: "0,1", userLevel: "1,2"}
-				urlPath: {url: o/views/manage, attr: -, icon: -}
+				urlPath: {url: o/view/manage, attr: -, icon: -}
 			- urlTitle: Downloads
 				urlRules: {siteType: "0,1", userLevel: "1,2"}
 				urlPath: {url: o/download/manage, attr: -, icon: -}
@@ -102,18 +102,18 @@ content_menu	:
 		urlRules: {article, o/tag, manage, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
 
-# controller o/views
+# controller o/view
 	- urlTitle: Back to Article
-		urlRules: {article, o/views, manage, siteType: "0,1", userLevel: "1,2"}
+		urlRules: {article, o/view, manage, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: o/admin/manage, attr: -, icon: -}
 	- urlTitle: View Article Views Data
-		urlRules: {article, o/views, manage, siteType: "0,1", userLevel: "1,2"}
+		urlRules: {article, o/view, manage, siteType: "0,1", userLevel: "1,2"}
 		urlPath: {url: history/view/manage, attr: -, icon: -}
 
 # controller history/view
 	- urlTitle: Back to Article Views
 		urlRules: {article, history/view, manage, siteType: "0,1", userLevel: "1,2"}
-		urlPath: {url: o/views/manage, attr: -, icon: -}
+		urlPath: {url: o/view/manage, attr: -, icon: -}
 		
 # controller o/download
 	- urlTitle: Back to Article
