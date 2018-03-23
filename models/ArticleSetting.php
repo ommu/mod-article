@@ -200,6 +200,18 @@ class ArticleSetting extends OActiveRecord
 				'name' => 'license',
 				'value' => '$data->license',
 			);
+			$this->templateColumns['permission'] = array(
+				'name' => 'permission',
+				'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'permission\', array(\'id\'=>$data->id)), $data->permission)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Yes'),
+					0=>Yii::t('phrase', 'No'),
+				),
+				'type' => 'raw',
+			);
 			$this->templateColumns['meta_keyword'] = array(
 				'name' => 'meta_keyword',
 				'value' => '$data->meta_keyword',
@@ -211,6 +223,18 @@ class ArticleSetting extends OActiveRecord
 			$this->templateColumns['type_active'] = array(
 				'name' => 'type_active',
 				'value' => '$data->type_active',
+			);
+			$this->templateColumns['headline'] = array(
+				'name' => 'headline',
+				'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'headline\', array(\'id\'=>$data->id)), $data->headline)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Yes'),
+					0=>Yii::t('phrase', 'No'),
+				),
+				'type' => 'raw',
 			);
 			$this->templateColumns['headline_limit'] = array(
 				'name' => 'headline_limit',
@@ -240,10 +264,28 @@ class ArticleSetting extends OActiveRecord
 				'name' => 'media_file_limit',
 				'value' => '$data->media_file_limit',
 			);
+			$this->templateColumns['media_image_resize'] = array(
+				'name' => 'media_image_resize',
+				'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'media_image_resize\', array(\'id\'=>$data->id)), $data->media_image_resize)',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Yes'),
+					0=>Yii::t('phrase', 'No'),
+				),
+				'type' => 'raw',
+			);
 			$this->templateColumns['media_file_type'] = array(
 				'name' => 'media_file_type',
 				'value' => '$data->media_file_type',
 			);
+			if(!Yii::app()->getRequest()->getParam('modified')) {
+				$this->templateColumns['modified_search'] = array(
+					'name' => 'modified_search',
+					'value' => '$data->modified->displayname ? $data->modified->displayname : \'-\'',
+				);
+			}
 			$this->templateColumns['modified_date'] = array(
 				'name' => 'modified_date',
 				'value' => '!in_array($data->modified_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->modified_date) : \'-\'',
@@ -274,48 +316,6 @@ class ArticleSetting extends OActiveRecord
 					),
 				), true),
 				*/
-			);
-			if(!Yii::app()->getRequest()->getParam('modified')) {
-				$this->templateColumns['modified_search'] = array(
-					'name' => 'modified_search',
-					'value' => '$data->modified->displayname ? $data->modified->displayname : \'-\'',
-				);
-			}
-			$this->templateColumns['permission'] = array(
-				'name' => 'permission',
-				'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'permission\', array(\'id\'=>$data->id)), $data->permission)',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'filter'=>array(
-					1=>Yii::t('phrase', 'Yes'),
-					0=>Yii::t('phrase', 'No'),
-				),
-				'type' => 'raw',
-			);
-			$this->templateColumns['headline'] = array(
-				'name' => 'headline',
-				'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'headline\', array(\'id\'=>$data->id)), $data->headline)',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'filter'=>array(
-					1=>Yii::t('phrase', 'Yes'),
-					0=>Yii::t('phrase', 'No'),
-				),
-				'type' => 'raw',
-			);
-			$this->templateColumns['media_image_resize'] = array(
-				'name' => 'media_image_resize',
-				'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'media_image_resize\', array(\'id\'=>$data->id)), $data->media_image_resize)',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'filter'=>array(
-					1=>Yii::t('phrase', 'Yes'),
-					0=>Yii::t('phrase', 'No'),
-				),
-				'type' => 'raw',
 			);
 		}
 		parent::afterConstruct();

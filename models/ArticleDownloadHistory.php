@@ -28,6 +28,7 @@ class ArticleDownloadHistory extends OActiveRecord
 	// Variable Search
 	public $category_search;
 	public $article_search;
+	public $file_search;
 	public $user_search;
 
 	/**
@@ -65,7 +66,7 @@ class ArticleDownloadHistory extends OActiveRecord
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('id, download_id, download_date, download_ip,
-				category_search, article_search, user_search', 'safe', 'on'=>'search'),
+				category_search, article_search, file_search, user_search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -93,6 +94,7 @@ class ArticleDownloadHistory extends OActiveRecord
 			'download_ip' => Yii::t('attribute', 'Download Ip'),
 			'category_search' => Yii::t('attribute', 'Category'),
 			'article_search' => Yii::t('attribute', 'Article'),
+			'file_search' => Yii::t('attribute', 'File'),
 			'user_search' => Yii::t('attribute', 'User'),
 		);
 	}
@@ -119,9 +121,13 @@ class ArticleDownloadHistory extends OActiveRecord
 		$criteria->with = array(
 			'download' => array(
 				'alias'=>'download',
-				'select'=>'article_id, user_id'
+				'select'=>'file_id, user_id'
 			),
-			'download.article' => array(
+			'download.file' => array(
+				'alias'=>'download_file',
+				'select'=>'article_id, file_filename'
+			),
+			'download.file.article' => array(
 				'alias'=>'download_article',
 				'select'=>'cat_id, title'
 			),
@@ -139,6 +145,7 @@ class ArticleDownloadHistory extends OActiveRecord
 
 		$criteria->compare('download_article.cat_id', $this->category_search);
 		$criteria->compare('download_article.title', strtolower($this->article_search), true);
+		$criteria->compare('download_file.file_filename', strtolower($this->file_search), true);
 		$criteria->compare('download_user.displayname', strtolower($this->user_search), true);
 
 		if(!Yii::app()->getRequest()->getParam('ArticleDownloadHistory_sort'))
@@ -171,15 +178,19 @@ class ArticleDownloadHistory extends OActiveRecord
 				),
 			);
 			if(!Yii::app()->getRequest()->getParam('download')) {
+				$this->templateColumns['file_search'] = array(
+					'name' => 'file_search',
+					'value' => '$data->download->file->file_filename',
+				);
 				$this->templateColumns['category_search'] = array(
 					'name' => 'category_search',
-					'value' => '$data->download->article->category->title->message',
+					'value' => '$data->download->file->article->category->title->message',
 					'filter'=> ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);
 				$this->templateColumns['article_search'] = array(
 					'name' => 'article_search',
-					'value' => '$data->download->article->title',
+					'value' => '$data->download->file->article->title',
 				);
 				$this->templateColumns['user_search'] = array(
 					'name' => 'user_search',

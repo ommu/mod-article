@@ -189,6 +189,10 @@ class ArticleDownloads extends OActiveRecord
 				),
 			);
 			if(!Yii::app()->getRequest()->getParam('file')) {
+				$this->templateColumns['file_search'] = array(
+					'name' => 'file_search',
+					'value' => '$data->file->file_filename',
+				);
 				$this->templateColumns['category_search'] = array(
 					'name' => 'category_search',
 					'value' => '$data->file->article->category->title->message',
@@ -198,10 +202,6 @@ class ArticleDownloads extends OActiveRecord
 				$this->templateColumns['article_search'] = array(
 					'name' => 'article_search',
 					'value' => '$data->file->article->title',
-				);
-				$this->templateColumns['file_search'] = array(
-					'name' => 'file_search',
-					'value' => '$data->file_filename',
 				);
 			}
 			if(!Yii::app()->getRequest()->getParam('user')) {

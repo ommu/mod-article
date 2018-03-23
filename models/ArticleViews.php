@@ -213,14 +213,6 @@ class ArticleViews extends OActiveRecord
 					'value' => '$data->user->displayname ? $data->user->displayname : \'-\'',
 				);
 			}
-			$this->templateColumns['views'] = array(
-				'name' => 'views',
-				'value' => 'CHtml::link($data->views ? $data->views : 0, Yii::app()->controller->createUrl("history/view/manage", array(\'view\'=>$data->view_id)))',
-				'htmlOptions' => array(
-					'class' => 'center',
-				),
-				'type' => 'raw',
-			);
 			$this->templateColumns['view_date'] = array(
 				'name' => 'view_date',
 				'value' => '!in_array($data->view_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->view_date) : \'-\'',
@@ -289,6 +281,14 @@ class ArticleViews extends OActiveRecord
 					),
 				), true),
 				*/
+			);
+			$this->templateColumns['views'] = array(
+				'name' => 'views',
+				'value' => 'CHtml::link($data->views ? $data->views : 0, Yii::app()->controller->createUrl("history/view/manage", array(\'view\'=>$data->view_id)))',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'type' => 'raw',
 			);
 			if(!Yii::app()->getRequest()->getParam('type')) {
 				$this->templateColumns['publish'] = array(

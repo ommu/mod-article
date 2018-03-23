@@ -27,7 +27,7 @@
 
 class ArticleLikes extends OActiveRecord
 {
-	public $gridForbiddenColumn = array();
+	public $gridForbiddenColumn = array('updated_date','likes_ip');
 
 	// Variable Search
 	public $category_search;
@@ -221,7 +221,7 @@ class ArticleLikes extends OActiveRecord
 			}
 			$this->templateColumns['like_search'] = array(
 				'name' => 'like_search',
-				'value' => 'CHtml::link($data->view->likes ? $data->view->likes : 0, Yii::app()->controller->createUrl("history/like/manage", array(\'like\'=>$data->like_id,\'type\'=>\'publish\')))',
+				'value' => 'CHtml::link($data->view->likes ? $data->view->likes : 0, Yii::app()->controller->createUrl(\'history/like/manage\', array(\'like\'=>$data->like_id,\'type\'=>\'publish\')))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -229,7 +229,7 @@ class ArticleLikes extends OActiveRecord
 			);
 			$this->templateColumns['unlike_search'] = array(
 				'name' => 'unlike_search',
-				'value' => 'CHtml::link($data->view->unlikes ? $data->view->unlikes : 0, Yii::app()->controller->createUrl("history/like/manage", array(\'like\'=>$data->like_id,\'type\'=>\'unpublish\')))',
+				'value' => 'CHtml::link($data->view->unlikes ? $data->view->unlikes : 0, Yii::app()->controller->createUrl(\'history/like/manage\', array(\'like\'=>$data->like_id,\'type\'=>\'unpublish\')))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -307,7 +307,7 @@ class ArticleLikes extends OActiveRecord
 			if(!Yii::app()->getRequest()->getParam('type')) {
 				$this->templateColumns['publish'] = array(
 					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'publish\',array(\'id\'=>$data->like_id)), $data->publish)',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'publish\',array(\'id\'=>$data->like_id)), $data->publish, Yii::t(\'phrase\', \'Like,Unlike\'))',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),

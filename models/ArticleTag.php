@@ -215,6 +215,12 @@ class ArticleTag extends OActiveRecord
 					'class' => 'center',
 				),
 			);
+			if(!Yii::app()->getRequest()->getParam('tag')) {
+				$this->templateColumns['tag_i'] = array(
+					'name' => 'tag_i',
+					'value' => 'str_replace(\'-\', \' \', $data->tag->body)',
+				);
+			}
 			if(!Yii::app()->getRequest()->getParam('article')) {
 				$this->templateColumns['category_search'] = array(
 					'name' => 'category_search',
@@ -227,10 +233,10 @@ class ArticleTag extends OActiveRecord
 					'value' => '$data->article->title',
 				);
 			}
-			if(!Yii::app()->getRequest()->getParam('tag')) {
-				$this->templateColumns['tag_i'] = array(
-					'name' => 'tag_i',
-					'value' => 'str_replace(\'-\', \' \', $data->tag->body)',
+			if(!Yii::app()->getRequest()->getParam('creation')) {
+				$this->templateColumns['creation_search'] = array(
+					'name' => 'creation_search',
+					'value' => '$data->creation->displayname ? $data->creation->displayname : \'-\'',
 				);
 			}
 			$this->templateColumns['creation_date'] = array(
@@ -264,10 +270,10 @@ class ArticleTag extends OActiveRecord
 				), true),
 				*/
 			);
-			if(!Yii::app()->getRequest()->getParam('creation')) {
-				$this->templateColumns['creation_search'] = array(
-					'name' => 'creation_search',
-					'value' => '$data->creation->displayname ? $data->creation->displayname : \'-\'',
+			if(!Yii::app()->getRequest()->getParam('modified')) {
+				$this->templateColumns['modified_search'] = array(
+					'name' => 'modified_search',
+					'value' => '$data->modified->displayname ? $data->modified->displayname : \'-\'',
 				);
 			}
 			$this->templateColumns['modified_date'] = array(
@@ -301,12 +307,6 @@ class ArticleTag extends OActiveRecord
 				), true),
 				*/
 			);
-			if(!Yii::app()->getRequest()->getParam('modified')) {
-				$this->templateColumns['modified_search'] = array(
-					'name' => 'modified_search',
-					'value' => '$data->modified->displayname ? $data->modified->displayname : \'-\'',
-				);
-			}
 			$this->templateColumns['updated_date'] = array(
 				'name' => 'updated_date',
 				'value' => '!in_array($data->updated_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->updated_date) : \'-\'',

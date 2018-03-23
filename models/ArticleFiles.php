@@ -224,6 +224,12 @@ class ArticleFiles extends OActiveRecord
 				'value' => '$data->file_filename ? CHtml::link($data->file_filename, Yii::app()->request->baseUrl.\'/public/article/\'.$data->article_id.\'/\'.$data->file_filename, array(\'target\' => \'_blank\')) : \'-\'',
 				'type' => 'raw',
 			);
+			if(!Yii::app()->getRequest()->getParam('creation')) {
+				$this->templateColumns['creation_search'] = array(
+					'name' => 'creation_search',
+					'value' => '$data->creation->displayname ? $data->creation->displayname : \'-\'',
+				);
+			}
 			$this->templateColumns['creation_date'] = array(
 				'name' => 'creation_date',
 				'value' => '!in_array($data->creation_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->creation_date) : \'-\'',
@@ -255,10 +261,10 @@ class ArticleFiles extends OActiveRecord
 				), true),
 				*/
 			);
-			if(!Yii::app()->getRequest()->getParam('creation')) {
-				$this->templateColumns['creation_search'] = array(
-					'name' => 'creation_search',
-					'value' => '$data->creation->displayname ? $data->creation->displayname : \'-\'',
+			if(!Yii::app()->getRequest()->getParam('modified')) {
+				$this->templateColumns['modified_search'] = array(
+					'name' => 'modified_search',
+					'value' => '$data->modified->displayname ? $data->modified->displayname : \'-\'',
 				);
 			}
 			$this->templateColumns['modified_date'] = array(
@@ -292,12 +298,6 @@ class ArticleFiles extends OActiveRecord
 				), true),
 				*/
 			);
-			if(!Yii::app()->getRequest()->getParam('modified')) {
-				$this->templateColumns['modified_search'] = array(
-					'name' => 'modified_search',
-					'value' => '$data->modified->displayname ? $data->modified->displayname : \'-\'',
-				);
-			}
 			$this->templateColumns['updated_date'] = array(
 				'name' => 'updated_date',
 				'value' => '!in_array($data->updated_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->updated_date) : \'-\'',

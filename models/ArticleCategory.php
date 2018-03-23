@@ -260,6 +260,12 @@ class ArticleCategory extends OActiveRecord
 				'name' => 'parent_id',
 				'value' => '$data->parent != 0 ? $data->parent->title->message : \'-\'',
 			);
+			if(!Yii::app()->getRequest()->getParam('creation')) {
+				$this->templateColumns['creation_search'] = array(
+					'name' => 'creation_search',
+					'value' => '$data->creation->displayname ? $data->creation->displayname : \'-\'',
+				);
+			}
 			$this->templateColumns['creation_date'] = array(
 				'name' => 'creation_date',
 				'value' => '!in_array($data->creation_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->creation_date) : \'-\'',
@@ -291,10 +297,10 @@ class ArticleCategory extends OActiveRecord
 				), true),
 				*/
 			);
-			if(!Yii::app()->getRequest()->getParam('creation')) {
-				$this->templateColumns['creation_search'] = array(
-					'name' => 'creation_search',
-					'value' => '$data->creation->displayname ? $data->creation->displayname : \'-\'',
+			if(!Yii::app()->getRequest()->getParam('modified')) {
+				$this->templateColumns['modified_search'] = array(
+					'name' => 'modified_search',
+					'value' => '$data->modified->displayname ? $data->modified->displayname : \'-\'',
 				);
 			}
 			$this->templateColumns['modified_date'] = array(
@@ -328,12 +334,6 @@ class ArticleCategory extends OActiveRecord
 				), true),
 				*/
 			);
-			if(!Yii::app()->getRequest()->getParam('modified')) {
-				$this->templateColumns['modified_search'] = array(
-					'name' => 'modified_search',
-					'value' => '$data->modified->displayname ? $data->modified->displayname : \'-\'',
-				);
-			}
 			$this->templateColumns['updated_date'] = array(
 				'name' => 'updated_date',
 				'value' => '!in_array($data->updated_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->updated_date) : \'-\'',
