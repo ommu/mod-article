@@ -166,7 +166,7 @@ class ArticleLikes extends OActiveRecord
 
 		$criteria->compare('article.cat_id', $this->category_search);
 		$criteria->compare('article.title', strtolower($this->article_search), true);
-		if(Yii::app()->getRequest()->getParam('article') && Yii::app()->getRequest()->getParam('publish'))
+		if(isset(Yii::app()->getRequest()->getParam('article')) && isset(Yii::app()->getRequest()->getParam('publish')))
 			$criteria->compare('digital.publish', Yii::app()->getRequest()->getParam('publish'));
 		$criteria->compare('user.displayname', strtolower($this->user_search), true);
 		$criteria->compare('view.likes', $this->like_search);
@@ -367,7 +367,7 @@ class ArticleLikes extends OActiveRecord
 	{
 		if(parent::beforeValidate()) {
 			if($this->isNewRecord)
-				$this->user_id = !Yii::app()->user->isGuest ? Yii::app()->user->id : null;
+				$this->user_id = Yii::app()->user->id;
 				
 			$this->likes_ip = $_SERVER['REMOTE_ADDR'];
 		}

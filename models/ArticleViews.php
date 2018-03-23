@@ -162,7 +162,7 @@ class ArticleViews extends OActiveRecord
 
 		$criteria->compare('article.cat_id', $this->category_search);
 		$criteria->compare('article.title', strtolower($this->article_search), true);
-		if(Yii::app()->getRequest()->getParam('article') && Yii::app()->getRequest()->getParam('publish'))
+		if(isset(Yii::app()->getRequest()->getParam('article')) && isset(Yii::app()->getRequest()->getParam('publish')))
 			$criteria->compare('article.publish', Yii::app()->getRequest()->getParam('publish'));
 		$criteria->compare('user.displayname', strtolower($this->user_search), true);
 
