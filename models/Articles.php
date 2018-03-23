@@ -423,7 +423,7 @@ class Articles extends CActiveRecord
 			);
 			$this->defaultColumns[] = array(
 				'name' => 'view_search',
-				'value' => 'CHtml::link($data->view->views ? $data->view->views : 0, Yii::app()->controller->createUrl("o/views/manage", array(\'article\'=>$data->article_id)))',
+				'value' => 'CHtml::link($data->view->views ? $data->view->views : 0, Yii::app()->controller->createUrl("o/view/manage", array(\'article\'=>$data->article_id)))',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
