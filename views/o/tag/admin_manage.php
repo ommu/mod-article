@@ -1,12 +1,13 @@
 <?php
 /**
- * Article Tag (article-tag)
+ * Article Tags (article-tag)
  * @var $this TagController
  * @var $model ArticleTag
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @modified date 23 March 2018, 05:30 WIB
  * @link https://github.com/ommu/ommu-article
  *
  */
@@ -15,25 +16,18 @@
 		'Article Tags'=>array('manage'),
 		'Manage',
 	);
-	
 	$this->menu=array(
 		array(
-			'label' => Yii::t('phrase', 'Filter'), 
+			'label' => Yii::t('phrase', 'Filter'),
 			'url' => array('javascript:void(0);'),
 			'itemOptions' => array('class' => 'search-button'),
-			'linkOptions' => array(
-				'title' => Yii::t('phrase', 'Filter'),
-				'off_address' => '',
-			),
+			'linkOptions' => array('title' => Yii::t('phrase', 'Filter')),
 		),
 		array(
-			'label' => Yii::t('phrase', 'Grid Options'), 
+			'label' => Yii::t('phrase', 'Grid Options'),
 			'url' => array('javascript:void(0);'),
 			'itemOptions' => array('class' => 'grid-button'),
-			'linkOptions' => array(
-				'title' => Yii::t('phrase', 'Grid Options'),
-				'off_address' => '',
-			),
+			'linkOptions' => array('title' => Yii::t('phrase', 'Grid Options')),
 		),
 	);
 
@@ -51,6 +45,7 @@
 <div class="grid-form">
 <?php $this->renderPartial('_option_form', array(
 	'model'=>$model,
+	'gridColumns'=>Utility::getActiveDefaultColumns($columns),
 )); ?>
 </div>
 <?php //end.Grid Option ?>
@@ -59,10 +54,10 @@
 	<?php //begin.Messages ?>
 	<div id="ajax-message">
 	<?php
-		if(Yii::app()->user->hasFlash('error'))
-			echo Utility::flashError(Yii::app()->user->getFlash('error'));
-		if(Yii::app()->user->hasFlash('success'))
-			echo Utility::flashSuccess(Yii::app()->user->getFlash('success'));
+	if(Yii::app()->user->hasFlash('error'))
+		echo Utility::flashError(Yii::app()->user->getFlash('error'));
+	if(Yii::app()->user->hasFlash('success'))
+		echo Utility::flashSuccess(Yii::app()->user->getFlash('success'));
 	?>
 	</div>
 	<?php //begin.Messages ?>
@@ -76,28 +71,28 @@
 				'class'=>'CButtonColumn',
 				'buttons' => array(
 					'view' => array(
-						'label' => 'view',
+						'label' => Yii::t('phrase', 'Detail Article Tag'),
 						'imageUrl' => false,
-						'options' => array(							
+						'options' => array(
 							'class' => 'view',
 						),
-						'url' => 'Yii::app()->controller->createUrl("view", array("id"=>$data->primaryKey))'),
+						'url' => 'Yii::app()->controller->createUrl(\'view\', array(\'id\'=>$data->primaryKey))'),
 					'update' => array(
-						'label' => 'update',
+						'label' => Yii::t('phrase', 'Update Article Tag'),
 						'imageUrl' => false,
 						'options' => array(
-							'class' => 'update'
+							'class' => 'update',
 						),
-						'url' => 'Yii::app()->controller->createUrl("edit", array("id"=>$data->primaryKey))'),
+						'url' => 'Yii::app()->controller->createUrl(\'edit\', array(\'id\'=>$data->primaryKey))'),
 					'delete' => array(
-						'label' => 'delete',
+						'label' => Yii::t('phrase', 'Delete Article Tag'),
 						'imageUrl' => false,
 						'options' => array(
-							'class' => 'delete'
+							'class' => 'delete',
 						),
-						'url' => 'Yii::app()->controller->createUrl("delete", array("id"=>$data->primaryKey))')
+						'url' => 'Yii::app()->controller->createUrl(\'delete\', array(\'id\'=>$data->primaryKey))'),
 				),
-				'template' => '{delete}',
+				'template' => '{view}|{delete}',
 			));
 
 			$this->widget('application.libraries.core.components.system.OGridView', array(

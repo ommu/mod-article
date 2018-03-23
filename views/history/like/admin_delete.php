@@ -1,26 +1,27 @@
 <?php
 /**
- * Article Likes (article-likes)
+ * Article Like Histories (article-like-history)
  * @var $this LikeController
- * @var $model ArticleLikes
+ * @var $model ArticleLikeHistory
  * @var $form CActiveForm
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
- * @modified date 23 March 2018, 05:30 WIB
+ * @copyright Copyright (c) 2018 Ommu Platform (opensource.ommu.co)
+ * @created date 23 March 2018, 16:13 WIB
+ * @modified date 23 March 2018, 16:13 WIB
  * @link https://github.com/ommu/ommu-article
  *
  */
 
 	$this->breadcrumbs=array(
-		'Article Likes'=>array('manage'),
+		'Article Like Histories'=>array('manage'),
 		'Delete',
 	);
 ?>
 
 <?php $form=$this->beginWidget('application.libraries.core.components.system.OActiveForm', array(
-	'id'=>'article-likes-form',
+	'id'=>'article-like-history-form',
 	'enableAjaxValidation'=>true,
 	//'htmlOptions' => array('enctype' => 'multipart/form-data')
 )); ?>

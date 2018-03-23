@@ -1,6 +1,6 @@
 <?php
 /**
- * Article Download Details (article-download-history)
+ * Article Download Histories (article-download-history)
  * @var $this DownloadController
  * @var $model ArticleDownloadHistory
  *
@@ -8,23 +8,24 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 Ommu Platform (opensource.ommu.co)
  * @created date 8 January 2017, 21:21 WIB
+ * @modified date 23 March 2018, 16:13 WIB
  * @link https://github.com/ommu/ommu-article
  *
  */
 
 	$this->breadcrumbs=array(
-		'Article Download Details'=>array('manage'),
+		'Article Download Histories'=>array('manage'),
 		'Manage',
 	);
 	$this->menu=array(
 		array(
-			'label' => Yii::t('phrase', 'Filter'), 
+			'label' => Yii::t('phrase', 'Filter'),
 			'url' => array('javascript:void(0);'),
 			'itemOptions' => array('class' => 'search-button'),
 			'linkOptions' => array('title' => Yii::t('phrase', 'Filter')),
 		),
 		array(
-			'label' => Yii::t('phrase', 'Grid Options'), 
+			'label' => Yii::t('phrase', 'Grid Options'),
 			'url' => array('javascript:void(0);'),
 			'itemOptions' => array('class' => 'grid-button'),
 			'linkOptions' => array('title' => Yii::t('phrase', 'Grid Options')),
@@ -45,6 +46,7 @@
 <div class="grid-form">
 <?php $this->renderPartial('_option_form', array(
 	'model'=>$model,
+	'gridColumns'=>Utility::getActiveDefaultColumns($columns),
 )); ?>
 </div>
 <?php //end.Grid Option ?>
@@ -65,36 +67,34 @@
 		<?php //begin.Grid Item ?>
 		<?php 
 			$columnData   = $columns;
-			/*
 			array_push($columnData, array(
 				'header' => Yii::t('phrase', 'Options'),
 				'class'=>'CButtonColumn',
 				'buttons' => array(
 					'view' => array(
-						'label' => 'view',
+						'label' => Yii::t('phrase', 'Detail Article Download History'),
 						'imageUrl' => false,
-						'options' => array(							
+						'options' => array(
 							'class' => 'view',
 						),
-						'url' => 'Yii::app()->controller->createUrl("view", array("id"=>$data->primaryKey))'),
+						'url' => 'Yii::app()->controller->createUrl(\'view\', array(\'id\'=>$data->primaryKey))'),
 					'update' => array(
-						'label' => 'update',
+						'label' => Yii::t('phrase', 'Update Article Download History'),
 						'imageUrl' => false,
 						'options' => array(
-							'class' => 'update'
+							'class' => 'update',
 						),
-						'url' => 'Yii::app()->controller->createUrl("edit", array("id"=>$data->primaryKey))'),
+						'url' => 'Yii::app()->controller->createUrl(\'edit\', array(\'id\'=>$data->primaryKey))'),
 					'delete' => array(
-						'label' => 'delete',
+						'label' => Yii::t('phrase', 'Delete Article Download History'),
 						'imageUrl' => false,
 						'options' => array(
-							'class' => 'delete'
+							'class' => 'delete',
 						),
-						'url' => 'Yii::app()->controller->createUrl("delete", array("id"=>$data->primaryKey))')
+						'url' => 'Yii::app()->controller->createUrl(\'delete\', array(\'id\'=>$data->primaryKey))'),
 				),
-				'template' => '{view}|{update}|{delete}',
+				'template' => '{view}|{delete}',
 			));
-			*/
 
 			$this->widget('application.libraries.core.components.system.OGridView', array(
 				'id'=>'article-download-history-grid',

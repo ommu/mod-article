@@ -137,7 +137,7 @@ class DownloadController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 600;
 
-		$this->pageTitle = Yii::t('phrase', 'Detail Download History: {file_filename} article {article_title}', array('{file_filename}'=>$model->downlaod->file->file_filename, '{article_title}'=>$model->downlaod->file->article->title));
+		$this->pageTitle = Yii::t('phrase', 'Detail Download History: {file_filename} article {article_title}', array('{file_filename}'=>$model->download->file->file_filename, '{article_title}'=>$model->download->file->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_view', array(
@@ -171,7 +171,7 @@ class DownloadController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 350;
 
-		$this->pageTitle = Yii::t('phrase', 'Delete Download History: {file_filename} article {article_title}', array('{file_filename}'=>$model->downlaod->file->file_filename, '{article_title}'=>$model->downlaod->file->article->title));
+		$this->pageTitle = Yii::t('phrase', 'Delete Download History: {file_filename} article {article_title}', array('{file_filename}'=>$model->download->file->file_filename, '{article_title}'=>$model->download->file->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_delete');

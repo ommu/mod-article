@@ -223,7 +223,7 @@ class LikeController extends Controller
 	{
 		$model=$this->loadModel($id);
 		
-		$title = $model->publish == 1 ? Yii::t('phrase', 'Unpublish') : Yii::t('phrase', 'Publish');
+		$title = $model->publish == 1 ? Yii::t('phrase', 'Unlike') : Yii::t('phrase', 'Like');
 		$replace = $model->publish == 1 ? 0 : 1;
 
 		if(Yii::app()->request->isPostRequest) {
@@ -246,7 +246,7 @@ class LikeController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 350;
 
-		$this->pageTitle = Yii::t('phrase', '{title} Like: {article_title}', array('{title}'=>$title, '{article_title}'=>$model->article->title));
+		$this->pageTitle = Yii::t('phrase', '{title}: {article_title}', array('{title}'=>$title, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_publish', array(
