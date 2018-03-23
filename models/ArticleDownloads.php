@@ -151,10 +151,10 @@ class ArticleDownloads extends OActiveRecord
 
 		$criteria->compare('article.cat_id', $this->category_search);
 		$criteria->compare('article.title', strtolower($this->article_search), true);
-		if(isset(Yii::app()->getRequest()->getParam('article')) && isset(Yii::app()->getRequest()->getParam('publish')))
+		if(Yii::app()->getRequest()->getParam('article') && Yii::app()->getRequest()->getParam('publish'))
 			$criteria->compare('article.publish', Yii::app()->getRequest()->getParam('publish'));
 		$criteria->compare('file.file_filename',strtolower($this->file_search), true);
-		if(isset(Yii::app()->getRequest()->getParam('file')) && isset(Yii::app()->getRequest()->getParam('publish')))
+		if(Yii::app()->getRequest()->getParam('file') && Yii::app()->getRequest()->getParam('publish'))
 			$criteria->compare('file.publish', Yii::app()->getRequest()->getParam('publish'));
 		$criteria->compare('file.column_name_relation', strtolower($this->file_search), true);
 		$criteria->compare('user.displayname', strtolower($this->user_search), true);
