@@ -109,8 +109,8 @@ class ViewArticleTag extends OActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.tag_id', $this->tag_id);
-		$criteria->compare('t.articles', strtolower($this->articles), true);
-		$criteria->compare('t.article_all', strtolower($this->article_all), true);
+		$criteria->compare('t.articles', $this->articles);
+		$criteria->compare('t.article_all', $this->article_all);
 
 		if(!Yii::app()->getRequest()->getParam('ViewArticleTag_sort'))
 			$criteria->order = 't.tag_id DESC';

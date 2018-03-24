@@ -383,6 +383,7 @@ class ArticleFiles extends OActiveRecord
 	{
 		$controller = strtolower(Yii::app()->controller->id);
 		$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
+
 		$setting = ArticleSetting::model()->findByPk(1, array(
 			'select'=>'media_file_type',
 		));
@@ -399,7 +400,7 @@ class ArticleFiles extends OActiveRecord
 			
 			//if($currentAction != 'o/admin/insertcover') {
 				$file_filename = CUploadedFile::getInstance($this, 'file_filename');
-				if($file_filename != null && $this->article->article_type == 'standard') {
+				if($file_filename != null) {
 					$extension = pathinfo($file_filename->name, PATHINFO_EXTENSION);
 					if(!in_array(strtolower($extension), $media_file_type))
 						$this->addError('file_filename', Yii::t('phrase', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}.', array(
@@ -409,7 +410,7 @@ class ArticleFiles extends OActiveRecord
 					
 				} else {
 					if($this->isNewRecord && $controller == 'o/file')
-						$this->addError('cover_filename', '{attribute} cannot be blank.', array('{attribute}'=>$this->getAttributeLabel('cover_filename')));
+						$this->addError('file_filename', '{attribute} cannot be blank.', array('{attribute}'=>$this->getAttributeLabel('file_filename')));
 				}
 			//}
 		}
@@ -427,35 +428,33 @@ class ArticleFiles extends OActiveRecord
 		if(parent::beforeSave()) {
 			$article_path = "public/article/".$this->article_id;
 
-			if($this->article->article_type == 'standard') {
-				// Add directory
-				if(!file_exists($article_path)) {
-					@mkdir($article_path, 0755, true);
+			// Add directory
+			if(!file_exists($article_path)) {
+				@mkdir($article_path, 0755, true);
 
-					// Add file in directory (index.php)
-					$newFile = $article_path.'/index.php';
-					$FileHandle = fopen($newFile, 'w');
-				} else
-					@chmod($article_path, 0755, true);
-			
-				//Update article file
-				if(in_array($currentAction, array('o/file/add','o/file/edit'))) {
-					$this->file_filename = CUploadedFile::getInstance($this, 'file_filename');
-					if($this->file_filename != null) {
-						if($this->file_filename instanceOf CUploadedFile) {
-							$fileName = time().'_'.Utility::getUrlTitle($this->article->title).'.'.strtolower($this->file_filename->extensionName);
-							if($this->file_filename->saveAs($article_path.'/'.$fileName)) {
-								if(!$this->isNewRecord) {
-									if($this->old_file_filename_i != '' && file_exists($article_path.'/'.$this->old_file_filename_i))
-										rename($article_path.'/'.$this->old_file_filename_i, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_file_filename_i);
-								}
-								$this->file_filename = $fileName;
+				// Add file in directory (index.php)
+				$newFile = $article_path.'/index.php';
+				$FileHandle = fopen($newFile, 'w');
+			} else
+				@chmod($article_path, 0755, true);
+		
+			//Update article file
+			if(in_array($currentAction, array('o/file/edit'))) {
+				$this->file_filename = CUploadedFile::getInstance($this, 'file_filename');
+				if($this->file_filename != null) {
+					if($this->file_filename instanceOf CUploadedFile) {
+						$fileName = time().'_'.Utility::getUrlTitle($this->article->title).'.'.strtolower($this->file_filename->extensionName);
+						if($this->file_filename->saveAs($article_path.'/'.$fileName)) {
+							if(!$this->isNewRecord) {
+								if($this->old_file_filename_i != '' && file_exists($article_path.'/'.$this->old_file_filename_i))
+									rename($article_path.'/'.$this->old_file_filename_i, 'public/article/verwijderen/'.$this->article_id.'_'.$this->old_file_filename_i);
 							}
+							$this->file_filename = $fileName;
 						}
-					} else {
-						if(!$this->isNewRecord && $this->file_filename == '')
-							$this->file_filename = $this->old_file_filename_i;
 					}
+				} else {
+					if(!$this->isNewRecord && $this->file_filename == '')
+						$this->file_filename = $this->old_file_filename_i;
 				}
 			}
 		}
@@ -474,30 +473,28 @@ class ArticleFiles extends OActiveRecord
 		));
 		$article_path = "public/article/".$this->article_id;
 
-		if($this->article->article_type == 'standard') {
-			if(!file_exists($article_path)) {
-				@mkdir($article_path, 0755, true);
+		if(!file_exists($article_path)) {
+			@mkdir($article_path, 0755, true);
 
-				// Add file in directory (index.php)
-				$newFile = $article_path.'/index.php';
-				$FileHandle = fopen($newFile, 'w');
-			} else
-				@chmod($article_path, 0755, true);
-			
-			//delete other file (if media_file_limit = 1)
-			if($setting->media_file_limit == 1) {
-				$files = self::model()->findAll(array(
-					'condition'=>'file_id <> :file AND publish <> :publish AND article_id = :article',
-					'params'=>array(
-						':file'=>$this->file_id,
-						':publish'=>2,
-						':article'=>$this->article_id,
-					),
-				));
-				if($files != null) {
-					foreach($files as $key => $val)
-						self::model()->updateByPk($val->file_id, array('publish'=>2));
-				}
+			// Add file in directory (index.php)
+			$newFile = $article_path.'/index.php';
+			$FileHandle = fopen($newFile, 'w');
+		} else
+			@chmod($article_path, 0755, true);
+		
+		//delete other file (if media_file_limit = 1)
+		if($setting->media_file_limit == 1) {
+			$files = self::model()->findAll(array(
+				'condition'=>'file_id <> :file AND publish <> :publish AND article_id = :article',
+				'params'=>array(
+					':file'=>$this->file_id,
+					':publish'=>2,
+					':article'=>$this->article_id,
+				),
+			));
+			if($files != null) {
+				foreach($files as $key => $val)
+					self::model()->updateByPk($val->file_id, array('publish'=>2));
 			}
 		}
 	}
@@ -511,7 +508,7 @@ class ArticleFiles extends OActiveRecord
 		//delete article file
 		$article_path = "public/article/".$this->article_id;
 		
-		if($this->article->article_type == 'standard' && $this->file_filename != '' && file_exists($article_path.'/'.$this->file_filename))
+		if($this->file_filename != '' && file_exists($article_path.'/'.$this->file_filename))
 			rename($article_path.'/'.$this->file_filename, 'public/article/verwijderen/'.$this->article_id.'_'.$this->file_filename);
 	}
 

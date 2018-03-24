@@ -1,22 +1,23 @@
 <?php
 /**
- * ViewArticleFiles
+ * ViewArticleMedia
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2018 Ommu Platform (opensource.ommu.co)
- * @created date 22 March 2018, 16:56 WIB
+ * @created date 24 March 2018, 00:06 WIB
  * @link https://github.com/ommu/ommu-article
  *
- * This is the model class for table "_article_files".
+ * This is the model class for table "_article_media".
  *
- * The followings are the available columns in table '_article_files':
- * @property string $file_id
- * @property string $article_id
- * @property string $downloads
+ * The followings are the available columns in table '_article_media':
+ * @property string $media_id
+ * @property string $media
+ * @property integer $caption
+ * @property integer $description
  */
 
-class ViewArticleFiles extends OActiveRecord
+class ViewArticleMedia extends OActiveRecord
 {
 	public $gridForbiddenColumn = array();
 
@@ -24,7 +25,7 @@ class ViewArticleFiles extends OActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return ViewArticleFiles the static model class
+	 * @return ViewArticleMedia the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -37,7 +38,7 @@ class ViewArticleFiles extends OActiveRecord
 	public function tableName()
 	{
 		preg_match("/dbname=([^;]+)/i", $this->dbConnection->connectionString, $matches);
-		return $matches[1].'._article_files';
+		return $matches[1].'._article_media';
 	}
 
 	/**
@@ -45,7 +46,7 @@ class ViewArticleFiles extends OActiveRecord
 	 */
 	public function primaryKey()
 	{
-		return 'file_id';
+		return 'media_id';
 	}
 
 	/**
@@ -56,11 +57,12 @@ class ViewArticleFiles extends OActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('file_id, article_id', 'length', 'max'=>11),
-			array('downloads', 'length', 'max'=>32),
+			array('caption, description', 'numerical', 'integerOnly'=>true),
+			array('media_id', 'length', 'max'=>11),
+			array('media', 'length', 'max'=>5),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('file_id, article_id, downloads', 'safe', 'on'=>'search'),
+			array('media_id, media, caption, description', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -81,9 +83,10 @@ class ViewArticleFiles extends OActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'file_id' => Yii::t('attribute', 'File'),
-			'article_id' => Yii::t('attribute', 'Article'),
-			'downloads' => Yii::t('attribute', 'Downloads'),
+			'media_id' => Yii::t('attribute', 'Media'),
+			'media' => Yii::t('attribute', 'Media Type'),
+			'caption' => Yii::t('attribute', 'Caption'),
+			'description' => Yii::t('attribute', 'Description'),
 		);
 	}
 
@@ -105,12 +108,13 @@ class ViewArticleFiles extends OActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('t.file_id', $this->file_id);
-		$criteria->compare('t.article_id', $this->article_id);
-		$criteria->compare('t.downloads', $this->downloads);
+		$criteria->compare('t.media_id', $this->media_id);
+		$criteria->compare('t.media', $this->media);
+		$criteria->compare('t.caption', $this->caption);
+		$criteria->compare('t.description', $this->description);
 
-		if(!Yii::app()->getRequest()->getParam('ViewArticleFiles_sort'))
-			$criteria->order = 't.file_id DESC';
+		if(!(Yii::app()->getRequest()->getParam('ViewArticleMedia_sort')))
+			$criteria->order = 't.media_id DESC';
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -138,13 +142,40 @@ class ViewArticleFiles extends OActiveRecord
 					'class' => 'center',
 				),
 			);
-			$this->templateColumns['article_id'] = array(
-				'name' => 'article_id',
-				'value' => '$data->article_id',
+			$this->templateColumns['media'] = array(
+				'name' => 'media',
+				'value' => '$data->media == \'video\' ? Yii::t(\'phrase\', \'Video\') : Yii::t(\'phrase\', \'Photo\')',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					'video'=>Yii::t('phrase', 'Video'),
+					'photo'=>Yii::t('phrase', 'Photo'),
+				),
 			);
-			$this->templateColumns['downloads'] = array(
-				'name' => 'downloads',
-				'value' => '$data->downloads',
+			$this->templateColumns['caption'] = array(
+				'name' => 'caption',
+				'value' => '$data->caption == 1 ? CHtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : CHtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Yes'),
+					0=>Yii::t('phrase', 'No'),
+				),
+				'type' => 'raw',
+			);
+			$this->templateColumns['description'] = array(
+				'name' => 'description',
+				'value' => '$data->description == 1 ? CHtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : CHtml::image(Yii::app()->theme->baseUrl.\'/images/icons/unpublish.png\')',
+				'htmlOptions' => array(
+					'class' => 'center',
+				),
+				'filter'=>array(
+					1=>Yii::t('phrase', 'Yes'),
+					0=>Yii::t('phrase', 'No'),
+				),
+				'type' => 'raw',
 			);
 		}
 		parent::afterConstruct();
@@ -156,7 +187,7 @@ class ViewArticleFiles extends OActiveRecord
 	public static function getInfo($id, $column=null)
 	{
 		if($column != null) {
-			$model = self::model()->findByPk($id,array(
+			$model = self::model()->findByPk($id, array(
 				'select' => $column
 			));
 			return $model->$column;

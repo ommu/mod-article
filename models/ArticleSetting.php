@@ -16,7 +16,6 @@
  * @property integer $permission
  * @property string $meta_keyword
  * @property string $meta_description
- * @property string $type_active
  * @property integer $headline
  * @property integer $headline_limit
  * @property string $headline_category
@@ -66,7 +65,7 @@ class ArticleSetting extends OActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('license, permission, meta_keyword, meta_description, type_active, headline, headline_limit, media_image_limit, media_image_resize, media_image_type, media_file_limit, media_file_type', 'required'),
+			array('license, permission, meta_keyword, meta_description, headline, headline_limit, media_image_limit, media_image_resize, media_image_type, media_file_limit, media_file_type', 'required'),
 			array('permission, headline, headline_limit, media_image_limit, media_image_resize, media_file_limit', 'numerical', 'integerOnly'=>true),
 			array('license', 'length', 'max'=>32),
 			array('modified_id', 'length', 'max'=>11),
@@ -74,7 +73,7 @@ class ArticleSetting extends OActiveRecord
 			array('headline_category, media_image_resize_size, media_image_view_size, media_image_type, media_file_type', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, license, permission, meta_keyword, meta_description, type_active, headline, headline_limit, headline_category, media_image_limit, media_image_resize, media_image_resize_size, media_image_view_size, media_image_type, media_file_limit, media_file_type, modified_date, modified_id, 
+			array('id, license, permission, meta_keyword, meta_description, headline, headline_limit, headline_category, media_image_limit, media_image_resize, media_image_resize_size, media_image_view_size, media_image_type, media_file_limit, media_file_type, modified_date, modified_id, 
 				modified_search', 'safe', 'on'=>'search'),
 		);
 	}
@@ -102,7 +101,6 @@ class ArticleSetting extends OActiveRecord
 			'permission' => Yii::t('attribute', 'Public Permission Defaults'),
 			'meta_keyword' => Yii::t('attribute', 'Meta Keyword'),
 			'meta_description' => Yii::t('attribute', 'Meta Description'),
-			'type_active' => Yii::t('attribute', 'Type Active'),
 			'headline' => Yii::t('attribute', 'Headline'),
 			'headline_limit' => Yii::t('attribute', 'Headline Limit'),
 			'headline_category' => Yii::t('attribute', 'Headline Category'),
@@ -150,7 +148,6 @@ class ArticleSetting extends OActiveRecord
 		$criteria->compare('t.permission', $this->permission);
 		$criteria->compare('t.meta_keyword', strtolower($this->meta_keyword), true);
 		$criteria->compare('t.meta_description', strtolower($this->meta_description), true);
-		$criteria->compare('t.type_active', $this->type_active, true);
 		$criteria->compare('t.headline', $this->headline);
 		$criteria->compare('t.headline_limit', $this->headline_limit);
 		$criteria->compare('t.headline_category', $this->headline_category, true);
@@ -219,10 +216,6 @@ class ArticleSetting extends OActiveRecord
 			$this->templateColumns['meta_description'] = array(
 				'name' => 'meta_description',
 				'value' => '$data->meta_description',
-			);
-			$this->templateColumns['type_active'] = array(
-				'name' => 'type_active',
-				'value' => '$data->type_active',
 			);
 			$this->templateColumns['headline'] = array(
 				'name' => 'headline',
@@ -425,7 +418,6 @@ class ArticleSetting extends OActiveRecord
 	protected function beforeSave() 
 	{
 		if(parent::beforeSave()) {
-			$this->type_active = serialize($this->type_active);
 			$this->headline_category = serialize($this->headline_category);
 			$this->media_image_resize_size = serialize($this->media_image_resize_size);
 			$this->media_image_view_size = serialize($this->media_image_view_size);
