@@ -99,7 +99,6 @@
 				'id'=>'article-tag-grid',
 				'dataProvider'=>$model->search(),
 				'filter'=>$model,
-				'afterAjaxUpdate' => 'reinstallDatePicker',
 				'columns' => $columnData,
 				'pager' => array('header' => ''),
 			));
