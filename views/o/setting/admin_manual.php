@@ -1,12 +1,13 @@
 <?php
 /**
- * Article Setting (article-setting)
+ * Article Settings (article-setting)
  * @var $this SettingController
  * @var $model ArticleSetting
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @modified date 23 March 2018, 16:01 WIB
  * @link https://github.com/ommu/ommu-article
  *
  */

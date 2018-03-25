@@ -230,13 +230,13 @@ class MediaController extends Controller
 			$model->modified_id = !Yii::app()->user->isGuest ? Yii::app()->user->id : null;
 			
 			if($model->update()) {
-				if(isset($_GET['hook']) && $_GET['hook'] == 'admin') {
-					$url = Yii::app()->controller->createUrl('o/admin/getcover', array('id'=>$model->article_id,'replace'=>'true'));
+				if(Yii::app()->getRequest()->getParam('hook') == 'admin') {
+					$url = Yii::app()->controller->createUrl('o/admin/getcover', array('id'=>$model->article_id, 'replace'=>'true'));
 					echo CJSON::encode(array(
 						'type' => 2,
 						'id' => 'media-render',
 						'get' => $url,
-					));				
+					));
 				} else {
 					echo CJSON::encode(array(
 						'type' => 5,
@@ -248,8 +248,8 @@ class MediaController extends Controller
 			}
 			Yii::app()->end();
 		}
-		
-		if(isset($_GET['hook']) && $_GET['hook'] == 'admin')
+
+		if(Yii::app()->getRequest()->getParam('hook') == 'admin')
 			$dialogGroundUrl = Yii::app()->controller->createUrl('o/admin/edit', array('id'=>$model->article_id));
 		else 
 			$dialogGroundUrl = Yii::app()->controller->createUrl('manage');
@@ -322,7 +322,7 @@ class MediaController extends Controller
 			
 			if($model->update()) {
 				if(isset($_GET['hook']) && $_GET['hook'] == 'admin') {
-					$url = Yii::app()->controller->createUrl('o/admin/getcover', array('id'=>$model->article_id,'replace'=>'true'));
+					$url = Yii::app()->controller->createUrl('o/admin/getcover', array('id'=>$model->article_id, 'replace'=>'true'));
 					echo CJSON::encode(array(
 						'type' => 2,
 						'id' => 'media-render',
@@ -343,12 +343,12 @@ class MediaController extends Controller
 		if(isset($_GET['hook']) && $_GET['hook'] == 'admin')
 			$dialogGroundUrl = Yii::app()->controller->createUrl('o/admin/edit', array('id'=>$model->article_id));
 		else 
-			$dialogGroundUrl = Yii::app()->controller->createUrl('manage');		
+			$dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogDetail = true;
 		$this->dialogGroundUrl = $dialogGroundUrl;
 		$this->dialogWidth = 350;
 
-		$this->pageTitle = Yii::t('phrase', 'Cover Photo: {photo_media} from article {article_title}', array('{photo_media}'=>$model->cover_filename, '{article_title}'=>$model->article->title));
+		$this->pageTitle = Yii::t('phrase', 'Cover Photo: {cover_filename} article {article_title}', array('{cover_filename}'=>$model->cover_filename, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_cover');

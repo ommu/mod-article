@@ -1,6 +1,6 @@
 <?php
 /**
- * Article Setting (article-setting)
+ * Article Settings (article-setting)
  * @var $this SettingController
  * @var $model ArticleSetting
  * @var $form CActiveForm
@@ -8,6 +8,7 @@
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @modified date 23 March 2018, 16:01 WIB
  * @link https://github.com/ommu/ommu-article
  *
  */
@@ -23,10 +24,10 @@
 	<?php //begin.Messages ?>
 	<div id="ajax-message">
 	<?php
-		if(Yii::app()->user->hasFlash('error'))
-			echo Utility::flashError(Yii::app()->user->getFlash('error'));
-		if(Yii::app()->user->hasFlash('success'))
-			echo Utility::flashSuccess(Yii::app()->user->getFlash('success'));
+	if(Yii::app()->user->hasFlash('error'))
+		echo Utility::flashError(Yii::app()->user->getFlash('error'));
+	if(Yii::app()->user->hasFlash('success'))
+		echo Utility::flashSuccess(Yii::app()->user->getFlash('success'));
 	?>
 	</div>
 	<?php //begin.Messages ?>
@@ -41,28 +42,28 @@
 				'class'=>'CButtonColumn',
 				'buttons' => array(
 					'view' => array(
-						'label' => 'view',
+						'label' => Yii::t('phrase', 'Detail Article Category'),
 						'imageUrl' => false,
 						'options' => array(
 							'class' => 'view',
 						),
-						'url' => 'Yii::app()->controller->createUrl("o/category/view", array("id"=>$data->primaryKey))'),
+						'url' => 'Yii::app()->controller->createUrl(\'o/category/view\',array(\'id\'=>$data->primaryKey))'),
 					'update' => array(
-						'label' => 'update',
+						'label' => Yii::t('phrase', 'Update Article Category'),
 						'imageUrl' => false,
 						'options' => array(
-							'class' => 'update'
+							'class' => 'update',
 						),
-						'url' => 'Yii::app()->controller->createUrl("o/category/edit", array("id"=>$data->primaryKey))'),
+						'url' => 'Yii::app()->controller->createUrl(\'o/category/edit\',array(\'id\'=>$data->primaryKey))'),
 					'delete' => array(
-						'label' => 'delete',
+						'label' => Yii::t('phrase', 'Delete Article Category'),
 						'imageUrl' => false,
 						'options' => array(
-							'class' => 'delete'
+							'class' => 'delete',
 						),
-						'url' => 'Yii::app()->controller->createUrl("o/category/delete", array("id"=>$data->primaryKey))')
+						'url' => 'Yii::app()->controller->createUrl(\'o/category/delete\',array(\'id\'=>$data->primaryKey))'),
 				),
-				'template' => '{update}|{delete}',
+				'template' => '{view}|{update}|{delete}',
 			));
 
 			$this->widget('application.libraries.core.components.system.OGridView', array(

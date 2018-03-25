@@ -34,7 +34,7 @@
 
 class ArticleMedia extends OActiveRecord
 {
-	public $gridForbiddenColumn = array('caption','description','creation_date','creation_search','modified_date','modified_search','updated_date');
+	public $gridForbiddenColumn = array('orders','caption','description','creation_date','creation_search','modified_date','modified_search','updated_date');
 	public $media_type_i;	//0=video, 1=photo
 	public $old_cover_filename_i;
 	
@@ -116,7 +116,7 @@ class ArticleMedia extends OActiveRecord
 			'cover' => Yii::t('attribute', 'Cover'),
 			'orders' => Yii::t('attribute', 'Orders'),
 			'article_id' => Yii::t('attribute', 'Article'),
-			'media_filename' => Yii::t('attribute', 'Video Feeder ID'),
+			'media_filename' => Yii::t('attribute', 'Video Feeder'),
 			'cover_filename' => Yii::t('attribute', 'Cover Photo'),
 			'caption' => Yii::t('attribute', 'Caption'),
 			'description' => Yii::t('attribute', 'Description'),
