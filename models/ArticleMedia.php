@@ -75,13 +75,14 @@ class ArticleMedia extends OActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('article_id, cover_filename', 'required'),
+			array('article_id,
+				media_type_i', 'required'),
 			array('publish, cover, orders,
 				media_type_i', 'numerical', 'integerOnly'=>true),
 			array('article_id, creation_id, modified_id', 'length', 'max'=>11),
 			array('caption', 'length', 'max'=>150),
-			array('cover, orders, media_filename, caption, description,
-				media_type_i, old_cover_filename_i', 'safe'),
+			array('cover, orders, media_filename, cover_filename, caption, description,
+				old_cover_filename_i', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('media_id, publish, cover, orders, article_id, media_filename, cover_filename, caption, description, creation_date, creation_id, modified_date, modified_id, updated_date, 
@@ -115,8 +116,8 @@ class ArticleMedia extends OActiveRecord
 			'cover' => Yii::t('attribute', 'Cover'),
 			'orders' => Yii::t('attribute', 'Orders'),
 			'article_id' => Yii::t('attribute', 'Article'),
-			'media_filename' => Yii::t('attribute', 'Media Filename'),
-			'cover_filename' => Yii::t('attribute', 'Cover Filename'),
+			'media_filename' => Yii::t('attribute', 'Video Feeder ID'),
+			'cover_filename' => Yii::t('attribute', 'Cover Photo'),
 			'caption' => Yii::t('attribute', 'Caption'),
 			'description' => Yii::t('attribute', 'Description'),
 			'creation_date' => Yii::t('attribute', 'Creation Date'),
@@ -124,7 +125,8 @@ class ArticleMedia extends OActiveRecord
 			'modified_date' => Yii::t('attribute', 'Modified Date'),
 			'modified_id' => Yii::t('attribute', 'Modified'),
 			'updated_date' => Yii::t('attribute', 'Updated Date'),
-			'old_cover_filename_i' => Yii::t('attribute', 'Old Cover Filename'),
+			'media_type_i' => Yii::t('attribute', 'Media Type'),
+			'old_cover_filename_i' => Yii::t('attribute', 'Old Cover Photo'),
 			'category_search' => Yii::t('attribute', 'Category'),
 			'article_search' => Yii::t('attribute', 'Article'),
 			'creation_search' => Yii::t('attribute', 'Creation'),

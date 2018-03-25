@@ -1,6 +1,6 @@
 <?php
 /**
- * ArticleMedia (article-media)
+ * Article Media (article-media)
  * @var $this MediaController
  * @var $model ArticleMedia
  * @var $form CActiveForm
@@ -8,79 +8,128 @@
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @modified date 24 March 2018, 20:56 WIB
  * @link https://github.com/ommu/ommu-article
  *
  */
+
+	$cs = Yii::app()->getClientScript();
+$js=<<<EOP
+	$('select#ArticleMedia_media_type_i').on('change', function() {
+		var id = $(this).val();
+		if(id == '0') {
+			$('div#video').slideDown();
+		} else {
+			$('div#video').slideUp();
+		}
+	});
+EOP;
+	$cs->registerScript('js', $js, CClientScript::POS_END);
 ?>
 
 <?php $form=$this->beginWidget('application.libraries.core.components.system.OActiveForm', array(
 	'id'=>'article-media-form',
 	'enableAjaxValidation'=>true,
-	'htmlOptions' => array('enctype' => 'multipart/form-data')
+	/*
+	'enableClientValidation'=>true,
+	'clientOptions'=>array(
+		'validateOnSubmit'=>true,
+	),
+	*/
+	'htmlOptions' => array(
+		'enctype' => 'multipart/form-data',
+	),
 )); ?>
 
 	<?php //begin.Messages ?>
 	<div id="ajax-message">
-		<?php
-		echo $form->errorSummary($model);
+		<?php echo $form->errorSummary($model);
 		if(Yii::app()->user->hasFlash('error'))
 			echo Utility::flashError(Yii::app()->user->getFlash('error'));
 		if(Yii::app()->user->hasFlash('success'))
-			echo Utility::flashSuccess(Yii::app()->user->getFlash('success'));
-		?>
+			echo Utility::flashSuccess(Yii::app()->user->getFlash('success')); ?>
 	</div>
 	<?php //begin.Messages ?>
 
 	<fieldset>
-	
-		<?php if(!$model->isNewRecord) {?>		
+
 		<div class="form-group row">
-			<?php echo $form->labelEx($model, 'old_media_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+			<?php echo $form->labelEx($model, 'media_type_i', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
-				<?php 
-				if(!$model->getErrors())
-					$model->old_media_input = $model->cover_filename;
-				echo $form->hiddenField($model, 'old_media_input');
-				if($model->article->article_type == 'standard') {
-					$cover_filename = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_media_input;?>
-					<img src="<?php echo Utility::getTimThumb($cover_filename, 400, 400, 3);?>" alt="">
-				<?php } else if($model->article->article_type == 'video') {?>
-					<iframe width="320" height="200" src="//www.youtube.com/embed/<?php echo $model->old_media_input;?>" frameborder="0" allowfullscreen></iframe>
-				<?php }?>
+				<?php $media_type_i = array(
+					'0'=>Yii::t('phrase', 'Video'),
+					'1'=>Yii::t('phrase', 'Photo'),
+				);
+				if(!$model->getErrors()) {
+					$model->media_type_i = 1;
+					if(!$model->isNewRecord && $model->view->media == 'video')
+						$model->media_type_i = 0;
+				}
+				echo $form->dropDownList($model, 'media_type_i', $media_type_i, array('class'=>'form-control')); ?>
+				<?php echo $form->error($model, 'media_type_i'); ?>
 			</div>
 		</div>
-		<?php }?>
-
-		<?php if($model->article->article_type == 'standard') {?>
-			<div class="form-group row">
-				<?php echo $form->labelEx($model, 'cover_filename', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-				<div class="col-lg-8 col-md-9 col-sm-12">
-					<?php echo $form->fileField($model, 'cover_filename', array('maxlength'=>64, 'class'=>'form-control')); ?>
-					<?php echo $form->error($model, 'cover_filename'); ?>
-					<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($media_image_type, false);?></span>
-				</div>
+		
+		<div id="video" class="form-group row <?php echo $model->media_type_i == 1 ? 'hide' : '';?>">
+			<?php echo $form->labelEx($model, 'media_filename', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
+				<?php echo $form->textArea($model, 'media_filename', array('maxlength'=>32, 'class'=>'form-control smaller')); ?>
+				<?php echo $form->error($model, 'media_filename'); ?>
+				<span class="small-px">http://www.youtube.com/watch?v=<strong>HOAqSoDZSho</strong></span>
 			</div>
-			
-		<?php }
-			if($model->article->article_type == 'video') {?>
-			<div class="form-group row">
-				<?php echo $form->labelEx($model, 'video_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-				<div class="col-lg-8 col-md-9 col-sm-12">
-					<?php
+		</div>
+
+		<div class="form-group row">
+			<?php echo $form->labelEx($model, 'cover_filename', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
+				<?php if(!$model->isNewRecord) {
 					if(!$model->getErrors())
-						$model->video_input = $model->media_filename;
-					echo $form->textField($model, 'video_input', array('maxlength'=>32, 'class'=>'form-control')); ?>
-					<?php echo $form->error($model, 'video_input'); ?>
-					<span class="small-px">http://www.youtube.com/watch?v=<strong>HOAqSoDZSho</strong></span>
-				</div>
-			</div>			
-		<?php }?>
+						$model->old_cover_filename_i = $model->cover_filename;
+					echo $form->hiddenField($model, 'old_cover_filename_i');
+				}
+		 		if($model->old_cover_filename_i != '') {
+					$cover_filename = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_cover_filename_i;?>
+					<div class="mb-10"><img src="<?php echo Utility::getTimThumb($cover_filename, 400, 400, 3);?>" alt=""></div>
+				<?php }?>
+				<?php echo $form->fileField($model, 'cover_filename', array('maxlength'=>64, 'class'=>'form-control')); ?>
+				<?php echo $form->error($model, 'cover_filename'); ?>
+				<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($media_image_type, false);?></span>
+			</div>
+		</div>
 
 		<div class="form-group row">
 			<?php echo $form->labelEx($model, 'caption', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
-				<?php echo $form->textArea($model, 'caption', array('rows'=>6, 'cols'=>50, 'class'=>'form-control')); ?>
+				<?php echo $form->textField($model, 'caption', array('maxlength'=>150, 'class'=>'form-control')); ?>
 				<?php echo $form->error($model, 'caption'); ?>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<?php echo $form->labelEx($model, 'description', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-8 col-md-9 col-sm-12">
+				<?php //echo $form->textArea($model, 'description', array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));
+				$this->widget('yiiext.imperavi-redactor-widget.ImperaviRedactorWidget', array(
+					'model'=>$model,
+					'attribute'=>'description',
+					'options'=>array(
+						'buttons'=>array(
+							'html', 'formatting', '|', 
+							'bold', 'italic', 'deleted', '|',
+							'unorderedlist', 'orderedlist', 'outdent', 'indent', '|',
+							'link', '|',
+						),
+					),
+					'plugins' => array(
+						'fontcolor' => array('js' => array('fontcolor.js')),
+						'table' => array('js' => array('table.js')),
+						'fullscreen' => array('js' => array('fullscreen.js')),
+					),
+					'htmlOptions'=>array(
+						'class' => 'form-control',
+					),
+				)); ?>
+				<?php echo $form->error($model, 'description'); ?>
 			</div>
 		</div>
 

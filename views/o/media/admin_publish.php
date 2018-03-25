@@ -1,6 +1,6 @@
 <?php
 /**
- * ArticleMedia (article-media)
+ * Article Media (article-media)
  * @var $this MediaController
  * @var $model ArticleMedia
  * @var $form CActiveForm
@@ -9,18 +9,19 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
  * @created date 7 November 2016, 09:56 WIB
+ * @modified date 24 March 2018, 20:56 WIB
  * @link https://github.com/ommu/ommu-article
  *
  */
 
 	$this->breadcrumbs=array(
-		'Article Medias'=>array('manage'),
+		'Article Media'=>array('manage'),
 		'Publish',
 	);
 ?>
 
 <?php $form=$this->beginWidget('application.libraries.core.components.system.OActiveForm', array(
-	'id'=>'digital-cover-form',
+	'id'=>'article-media-form',
 	'enableAjaxValidation'=>true,
 	//'htmlOptions' => array('enctype' => 'multipart/form-data')
 )); ?>

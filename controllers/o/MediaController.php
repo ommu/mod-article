@@ -22,6 +22,7 @@
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @modified date 24 March 2018, 20:56 WIB
  * @link https://github.com/ommu/ommu-article
  *
  *----------------------------------------------------------------------------------------------------------
@@ -96,24 +97,24 @@ class MediaController extends Controller
 	{
 		$model=new ArticleMedia('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['ArticleMedia'])) {
-			$model->attributes=$_GET['ArticleMedia'];
+		if(Yii::app()->getRequest()->getParam('ArticleMedia')) {
+			$model->attributes=Yii::app()->getRequest()->getParam('ArticleMedia');
 		}
 
+		$gridColumn = Yii::app()->getRequest()->getParam('GridColumn');
 		$columnTemp = array();
-		if(isset($_GET['GridColumn'])) {
-			foreach($_GET['GridColumn'] as $key => $val) {
-				if($_GET['GridColumn'][$key] == 1) {
+		if($gridColumn) {
+			foreach($gridColumn as $key => $val) {
+				if($gridColumn[$key] == 1)
 					$columnTemp[] = $key;
-				}
 			}
 		}
 		$columns = $model->getGridColumn($columnTemp);
-		
+
 		$pageTitle = Yii::t('phrase', 'Article Medias');
 		if($article != null) {
 			$data = Articles::model()->findByPk($article);
-			$pageTitle = Yii::t('phrase', 'Article Media: {article_title} from category {category_name}', array ('{article_title}'=>$data->title, '{category_name}'=>$data->category->title->message));
+			$pageTitle = Yii::t('phrase', 'Article Media: {article_title}', array ('{article_title}'=>$data->title));
 		}
 
 		$this->pageTitle = $pageTitle;
@@ -138,7 +139,7 @@ class MediaController extends Controller
 		$media_image_type = unserialize($setting->media_image_type);
 		if(empty($media_image_type))
 			$media_image_type = array();
-		
+
 		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
@@ -146,14 +147,14 @@ class MediaController extends Controller
 
 		if(isset($_POST['ArticleMedia'])) {
 			$model->attributes=$_POST['ArticleMedia'];
-			
+
 			if($model->save()) {
 				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Article media success updated.'));
 				$this->redirect(array('edit','id'=>$model->media_id));
 			}
 		}
 
-		$this->pageTitle = Yii::t('phrase', 'Update Media: {photo_media} from article {article_title}', array('{photo_media}'=>$model->cover_filename, '{article_title}'=>$model->article->title));
+		$this->pageTitle = Yii::t('phrase', 'Update Media: {cover_filename} article {article_title}', array('{cover_filename}'=>$model->cover_filename, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_edit', array(
@@ -170,7 +171,7 @@ class MediaController extends Controller
 	{
 		$model=$this->loadModel($id);
 
-		$this->pageTitle = Yii::t('phrase', 'View Media: {photo_media} from article {article_title}', array('{photo_media}'=>$model->cover_filename, '{article_title}'=>$model->article->title));
+		$this->pageTitle = Yii::t('phrase', 'Detail Media: {cover_filename} article {article_title}', array('{cover_filename}'=>$model->cover_filename, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_view', array(
@@ -185,7 +186,7 @@ class MediaController extends Controller
 	public function actionRunAction() {
 		$id       = $_POST['trash_id'];
 		$criteria = null;
-		$actions  = $_GET['action'];
+		$actions  = Yii::app()->getRequest()->getParam('action');
 
 		if(count($id) > 0) {
 			$criteria = new CDbCriteria;
@@ -209,7 +210,7 @@ class MediaController extends Controller
 		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax'])) {
+		if(!(Yii::app()->getRequest()->getParam('ajax'))) {
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('manage'));
 		}
 	}
@@ -256,7 +257,7 @@ class MediaController extends Controller
 		$this->dialogGroundUrl = $dialogGroundUrl;
 		$this->dialogWidth = 350;
 
-		$this->pageTitle = Yii::t('phrase', 'Delete Media: {photo_media} from article {article_title}', array('{photo_media}'=>$model->cover_filename, '{article_title}'=>$model->article->title));
+		$this->pageTitle = Yii::t('phrase', 'Delete Media: {cover_filename} article {article_title}', array('{cover_filename}'=>$model->cover_filename, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_delete');
@@ -290,12 +291,12 @@ class MediaController extends Controller
 			}
 			Yii::app()->end();
 		}
-		
+
 		$this->dialogDetail = true;
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 350;
 
-		$this->pageTitle = Yii::t('phrase', '{title}: {photo_media} from article {article_title}', array('{title}'=>$title, '{photo_media}'=>$model->cover_filename, '{article_title}'=>$model->article->title));
+		$this->pageTitle = Yii::t('phrase', '{title} Media: {cover_filename} article {article_title}', array('{title}'=>$title, '{cover_filename}'=>$model->cover_filename, '{article_title}'=>$model->article->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_publish', array(
