@@ -17,17 +17,9 @@ if($model != null) {?>
 		<?php foreach($model as $key => $val) {?>
 		<div class="sep">
 			<?php
-			if($val->article_type == 'standard') {
-				if($val->view->article_cover != '')
-					$article_cover = Yii::app()->request->baseUrl.'/public/article/'.$val->article_id.'/'.$val->view->article_cover;
-				else
-					$article_cover = Yii::app()->request->baseUrl.'/public/article/article_default.png';
-				
-			} else if($val->article_type == 'video')
-				$article_cover = Yii::app()->request->baseUrl.'/public/article/article_default_video.png';
-			
-			else if($val->article_type == 'quote')
-				$article_cover = Yii::app()->request->baseUrl.'/public/article/article_default_quote.png';?>
+			$article_cover = Yii::app()->request->baseUrl.'/public/article/article_default.png';
+			if($val->view->article_cover != '')
+				$article_cover = Yii::app()->request->baseUrl.'/public/article/'.$val->article_id.'/'.$val->view->article_cover;?>
 
 			<a class="img" href="<?php echo Yii::app()->createUrl('article/'.$controller.'/view', array('id'=>$val->article_id, 'slug'=>Utility::getUrlTitle($val->title)));?>" title="<?php echo $val->title;?>"><img src="<?php echo Utility::getTimThumb($article_cover, 400, 270, 1);?>"></a> 
 			<div class="date">

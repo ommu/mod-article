@@ -24,7 +24,6 @@
 		'article_id',
 		'publish',
 		'cat_id',
-		'article_type',
 		'title',
 		'body',
 		'quote',

@@ -24,11 +24,6 @@
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('cat_id')); ?>:</b>
 	<?php echo CHtml::encode($data->cat_id); ?>
-	<br />
-	
-	<b><?php echo CHtml::encode($data->getAttributeLabel('article_type')); ?>:</b>
-	<?php echo CHtml::encode($data->article_type); ?>
-	<br />
 
 	<b><?php echo CHtml::encode($data->getAttributeLabel('title')); ?>:</b>
 	<?php echo CHtml::encode($data->title); ?>

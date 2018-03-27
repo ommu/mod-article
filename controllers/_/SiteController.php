@@ -156,10 +156,7 @@ class SiteController extends Controller
 		$this->pageMeta = ArticleTag::getKeyword($setting->meta_keyword, $model->tags);
 		if(!empty($medias)) {
 			$article_cover = $model->view->article_cover ? $model->view->article_cover : $medias[0]->cover_filename;
-			if($model->article_type == 'standard')
-				$article_cover = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$article_cover;
-			else if($model->article_type == 'video')
-				$article_cover = 'http://www.youtube.com/watch?v='.$media_filename;
+			$article_cover = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$article_cover;
 			$this->pageImage = $article_cover;
 		}
 		$this->render('front_view', array(
