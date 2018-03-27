@@ -395,7 +395,7 @@ class AdminController extends Controller
 		$medias = $model->medias;
 
 		$data = '';
-		if(isset($_GET['replace']))
+		if(Yii::app()->getRequest()->getParam('replace'))
 			$data .= $this->renderPartial('_form_cover', array('model'=>$model, 'medias'=>$medias, 'media_image_limit'=>$media_image_limit), true, false);
 		
 		if(!empty($medias)) {	

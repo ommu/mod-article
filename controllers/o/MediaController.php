@@ -321,7 +321,7 @@ class MediaController extends Controller
 			$model->modified_id = !Yii::app()->user->isGuest ? Yii::app()->user->id : null;
 			
 			if($model->update()) {
-				if(isset($_GET['hook']) && $_GET['hook'] == 'admin') {
+				if(Yii::app()->getRequest()->getParam('hook') == 'admin') {
 					$url = Yii::app()->controller->createUrl('o/admin/getcover', array('id'=>$model->article_id, 'replace'=>'true'));
 					echo CJSON::encode(array(
 						'type' => 2,
@@ -340,7 +340,7 @@ class MediaController extends Controller
 			Yii::app()->end();
 		}
 		
-		if(isset($_GET['hook']) && $_GET['hook'] == 'admin')
+		if(Yii::app()->getRequest()->getParam('hook') == 'admin')
 			$dialogGroundUrl = Yii::app()->controller->createUrl('o/admin/edit', array('id'=>$model->article_id));
 		else 
 			$dialogGroundUrl = Yii::app()->controller->createUrl('manage');
