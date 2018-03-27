@@ -8,85 +8,60 @@
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @modified date 26 March 2018, 14:07 WIB
  * @link https://github.com/ommu/ommu-article
  *
  */
 
-	if($model->isNewRecord || (!$model->isNewRecord && $condition == 0))
+	if($model->isNewRecord || (!$model->isNewRecord && ($photoCondition == 0 || $fileCondition == 0)))
 		$validation = false;
 	else
 		$validation = true;
 
 	$cs = Yii::app()->getClientScript();
 $js=<<<EOP
-	$('select#Articles_article_type').on('change', function() {
+	$('select#Articles_media_type_i').on('change', function() {
 		var id = $(this).val();
-		$('fieldset div.filter').slideUp();
-		$('div#title').slideDown();
-		$('div#quote').slideDown();
-		if(id == 'standard') {
-			$('div.filter#media').slideDown();
-			$('div#file').slideDown();
-		} else if(id == 'video') {
-			$('div.filter#video').slideDown();
-			$('div#file').slideDown();
-		} else if(id == 'quote') {
-			$('div#title').slideUp();
-			$('div#quote').slideUp();
-			$('div#file').slideUp();
+		if(id == '0') {
+			$('div#video').slideDown();
+		} else {
+			$('div#video').slideUp();
 		}
 	});
 EOP;
-	$cs->registerScript('type', $js, CClientScript::POS_END);
+	$cs->registerScript('media-type', $js, CClientScript::POS_END);
 ?>
 
 <?php $form=$this->beginWidget('application.libraries.core.components.system.OActiveForm', array(
 	'id'=>'articles-form',
 	'enableAjaxValidation'=>$validation,
-	'htmlOptions' => array('enctype' => 'multipart/form-data')
+	/*
+	'enableClientValidation'=>true,
+	'clientOptions'=>array(
+		'validateOnSubmit'=>true,
+	),
+	*/
+	'htmlOptions' => array(
+		'enctype' => 'multipart/form-data',
+	),
 )); ?>
 
-	<?php //begin.Messages ?>
-	<div id="ajax-message">
-		<?php 
-		echo $form->errorSummary($model);
-		if(Yii::app()->user->hasFlash('error'))
-			echo Utility::flashError(Yii::app()->user->getFlash('error'));
-		if(Yii::app()->user->hasFlash('success'))
-			echo Utility::flashSuccess(Yii::app()->user->getFlash('success'));
-		?>
-	</div>
-	<?php //begin.Messages ?>
+<?php //begin.Messages ?>
+<div id="ajax-message">
+	<?php 
+	echo $form->errorSummary($model);
+	if(Yii::app()->user->hasFlash('error'))
+		echo Utility::flashError(Yii::app()->user->getFlash('error'));
+	if(Yii::app()->user->hasFlash('success'))
+		echo Utility::flashSuccess(Yii::app()->user->getFlash('success'));
+	?>
+</div>
+<?php //begin.Messages ?>
 
 	<fieldset>
+
 		<div class="row">
 			<div class="col-lg-8 col-md-12">
-				<div class="form-group row" id="type">
-					<?php echo $model->isNewRecord ? $form->labelEx($model, 'article_type', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')) : '<label class="col-form-label col-lg-4 col-md-3 col-sm-12">'.$model->getAttributeLabel('article_type').'</label>'; ?>
-					<div class="col-lg-8 col-md-9 col-sm-12">
-						<?php
-						if($model->isNewRecord) {
-							$type_active = unserialize($setting->type_active);
-							$arrAttrParams = array();
-							if($setting->type_active != '' && !empty($type_active)) {
-								foreach($type_active as $key => $row) {
-									$part = explode('=', $row);
-									$arrAttrParams[$part[0]] = Yii::t('phrase', $part[1]);
-								}
-							}
-							echo $form->dropDownList($model, 'article_type', $arrAttrParams, array('class'=>'form-control'));
-							//echo $form->dropDownList($model, 'article_type', $arrAttrParams, array('prompt'=>Yii::t('phrase', 'Choose one'), 'class'=>'form-control'));
-						} else {
-							if($model->article_type == 'standard')
-								echo '<strong>'.Yii::t('phrase', 'Standard').'</strong>';
-							elseif($model->article_type == 'video')
-								echo '<strong>'.Yii::t('phrase', 'Video').'</strong>';
-							elseif($model->article_type == 'quote')
-								echo '<strong>'.Yii::t('phrase', 'Quote').'</strong>';
-						}?>
-						<?php echo $form->error($model, 'article_type'); ?>
-					</div>
-				</div>
 
 				<div class="form-group row">
 					<?php echo $form->labelEx($model, 'cat_id', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
@@ -98,78 +73,94 @@ EOP;
 						if($category != null)
 							echo $form->dropDownList($model, 'cat_id', $category, array('class'=>'form-control'));
 						else
-							echo $form->dropDownList($model, 'cat_id', array('prompt'=>Yii::t('phrase', 'No Parent')), array('class'=>'form-control'));?>
+							echo $form->dropDownList($model, 'cat_id', array('prompt'=>Yii::t('phrase', 'No Category')), array('class'=>'form-control'));?>
 						<?php echo $form->error($model, 'cat_id'); ?>
 					</div>
 				</div>
 	
-				<div id="title" class="form-group row <?php echo $model->article_type == 'quote' ? 'hide' : '';?>">
-					<label class="col-form-label col-lg-4 col-md-3 col-sm-12"><?php echo $model->getAttributeLabel('title');?> <span class="required">*</span></label>
+				<div class="form-group row">
+					<?php echo $form->labelEx($model, 'title', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 					<div class="col-lg-8 col-md-9 col-sm-12">
 						<?php echo $form->textField($model, 'title', array('maxlength'=>128, 'class'=>'form-control')); ?>
 						<?php echo $form->error($model, 'title'); ?>
 					</div>
 				</div>
-	
-				<?php if(!$model->isNewRecord && $condition == 0) {
-					$medias = $model->medias;
-					if(!empty($medias)) {
-						$article_cover = $model->view->article_cover ? $model->view->article_cover : $medias[0]->cover_filename;
-						if(!$model->getErrors())
-							$model->old_media_input = $article_cover;
-						echo $form->hiddenField($model, 'old_media_input');
-						$article_cover = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_media_input;
-						$article_cover = '<img src="'.Utility::getTimThumb($article_cover, 320, 150, 1).'" alt="">';
-						echo '<div class="form-group row">';
-						echo $form->labelEx($model, 'old_media_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12'));
-						echo '<div class="col-lg-8 col-md-9 col-sm-12">'.$article_cover.'</div>';
-						echo '</div>';
-					}
-				}?>
 
-				<?php if($model->isNewRecord || (!$model->isNewRecord && $condition == 0)) {?>
-				<div id="media" class="<?php echo (($model->isNewRecord && !$model->getErrors()) || ($model->article_type == 'standard' && (($model->isNewRecord && $model->getErrors()) || (!$model->isNewRecord && ($setting->media_image_limit == 1 || ($setting->media_image_limit != 1 && $model->category->single_photo == 1)))))) ? '' : 'hide';?> form-group row filter">
-					<?php echo $form->labelEx($model, 'media_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-					<div class="col-lg-8 col-md-9 col-sm-12">
-						<?php echo $form->fileField($model, 'media_input', array('class'=>'form-control')); ?>
-						<?php echo $form->error($model, 'media_input'); ?>
-						<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($media_image_type, false);?></span>
-					</div>
-				</div>
-				<?php }?>
-
-				<?php if($model->isNewRecord || (!$model->isNewRecord && $model->article_type == 'video')) {?>
-					<div id="video" class="<?php echo ($model->article_type == 'video' && (($model->isNewRecord && $model->getErrors()) || !$model->isNewRecord)) ? '' : 'hide';?> form-group row filter">
-						<label for="Articles_video_input"><?php echo $model->getAttributeLabel('video_input');?> <span class="required">*</span></label>
+				<?php if($model->isNewRecord || (!$model->isNewRecord && $photoCondition == 0)) {?>
+					<div class="form-group row">
+						<?php echo $form->labelEx($model, 'media_type_i', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 						<div class="col-lg-8 col-md-9 col-sm-12">
-							<?php
-							$medias = $model->medias;
-							if(!empty($medias))
-								$article_cover = $model->view->article_cover ? $model->view->article_cover : $medias[0]->cover_filename;
-							if(!$model->getErrors())
-								$model->video_input = $article_cover;
-							echo $form->textField($model, 'video_input', array('maxlength'=>32, 'class'=>'form-control'));?>
-							<?php echo $form->error($model, 'video_input'); ?>
-							<span class="small-px">http://www.youtube.com/watch?v=<strong>HOAqSoDZSho</strong></span>
+							<?php $media_type_i = array(
+								'0'=>Yii::t('phrase', 'Video'),
+								'1'=>Yii::t('phrase', 'Photo'),
+							);
+							if(!$model->getErrors()) {
+								$model->media_type_i = 1;
+								$medias = $model->medias;
+								$media_id = $model->view->media_id ? $model->view->media_id : $medias[0]->media_id;
+								$media = ArticleMedia::model()->findByPk($media_id);
+								if(!$model->isNewRecord && $media->view->media == 'video')
+									$model->media_type_i = 0;
+							}
+							echo $form->dropDownList($model, 'media_type_i', $media_type_i, array('class'=>'form-control')); ?>
+							<?php echo $form->error($model, 'media_type_i'); ?>
+						</div>
+					</div>
+
+					<div class="form-group row filter">
+						<?php echo $form->labelEx($model, 'media_photo_i', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+						<div class="col-lg-8 col-md-9 col-sm-12">
+							<?php if(!$model->isNewRecord) {
+								$medias = $model->medias;
+								if(!empty($medias)) {
+									$article_cover = $model->view->article_cover ? $model->view->article_cover : $medias[0]->cover_filename;
+									if(!$model->getErrors())
+										$model->old_media_photo_i = $article_cover;
+									echo $form->hiddenField($model, 'old_media_photo_i');
+									if($model->old_media_photo_i != '') {
+										$article_cover = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_media_photo_i;?>
+										<div class="mb-15"><img src="<?php echo Utility::getTimThumb($article_cover, 320, 150, 1);?>" alt="<?php echo $model->old_media_photo_i;?>"></div>
+									<?php }
+								}
+							}?>
+							<?php echo $form->fileField($model, 'media_photo_i', array('class'=>'form-control')); ?>
+							<?php echo $form->error($model, 'media_photo_i'); ?>
+							<div class="small-px silent">extensions are allowed: <?php echo Utility::formatFileType($media_image_type, false);?></div>
+						</div>
+					</div>
+
+					<div id="video" class="form-group row <?php echo $model->media_type_i == 1 ? 'hide' : '';?>">
+						<?php echo $form->labelEx($model, 'media_video_i', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+						<div class="col-lg-8 col-md-9 col-sm-12">
+							<?php if(!$model->isNewRecord) {
+								$medias = $model->medias;
+								if(!empty($medias))
+									$article_video = $model->view->article_video ? $model->view->article_video : $medias[0]->media_filename;
+								if(!$model->getErrors())
+									$model->media_video_i = $article_video;
+							}
+							echo $form->textArea($model, 'media_video_i', array('maxlength'=>32, 'class'=>'form-control smaller')); ?>
+							<?php echo $form->error($model, 'media_video_i'); ?>
+							<div class="small-px slient">http://www.youtube.com/watch?v=<strong>HOAqSoDZSho</strong></div>
 						</div>
 					</div>
 				<?php }?>
 				
 				<div class="form-group row">
-					<?php echo $form->labelEx($model, 'keyword_input', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
+					<?php echo $form->labelEx($model, 'keyword_i', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 					<div class="col-lg-8 col-md-9 col-sm-12">
 						<?php 
 						if($model->isNewRecord) {
-							echo $form->textArea($model, 'keyword_input', array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));
+							echo $form->textArea($model, 'keyword_i', array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));
 							
 						} else {
-							//echo $form->textField($model, 'keyword_input', array('maxlength'=>32,'class'=>'span-6'));
+							//echo $form->textField($model, 'keyword_i', array('maxlength'=>32,'class'=>'span-6'));
 							$url = Yii::app()->controller->createUrl('o/tag/add', array('type'=>'article'));
 							$article = $model->article_id;
-							$tagId = 'Articles_keyword_input';
+							$tagId = 'Articles_keyword_i';
 							$this->widget('zii.widgets.jui.CJuiAutoComplete', array(
 								'model' => $model,
-								'attribute' => 'keyword_input',
+								'attribute' => 'keyword_i',
 								'source' => Yii::app()->createUrl('globaltag/suggest'),
 								'options' => array(
 									//'delay '=> 50,
@@ -193,11 +184,12 @@ EOP;
 									'class'=>'form-control'
 								),
 							));
-							echo $form->error($model, 'keyword_input');
+							echo $form->error($model, 'keyword_i');
 						}?>
-						<div id="keyword-suggest" class="suggest clearfix">
+						<?php if($model->isNewRecord) {?><div class="small-px slient">tambahkan tanda koma (,) jika ingin menambahkan keyword lebih dari satu</div><?php }?>
+						<div id="keyword-suggest" class="suggest">
 							<?php 
-							if($setting->meta_keyword && $setting->meta_keyword != '-') {
+							if($setting->meta_keyword != '-') {
 								$arrKeyword = explode(',', $setting->meta_keyword);
 								foreach($arrKeyword as $row) {?>
 									<div class="d"><?php echo $row;?></div>
@@ -212,58 +204,56 @@ EOP;
 								}
 							}?>
 						</div>
-						<?php if($model->isNewRecord) {?><span class="small-px">tambahkan tanda koma (,) jika ingin menambahkan keyword lebih dari satu</span><?php }?>
 					</div>
 				</div>
 
 			</div>
 			<div class="col-lg-4 col-md-12">
-				<?php
-				if(!$model->isNewRecord) {
-					if(!$model->getErrors())
-						$model->old_media_file_input = $model->media_file;
-					echo $form->hiddenField($model, 'old_media_file_input');
-					if($model->media_file != '') {
-						$file = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_media_file_input;
-						echo '<div class="form-group row">';
-						echo $form->labelEx($model, 'old_media_file_input', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12'));
-						echo '<div class="col-lg-12 col-md-9 col-sm-12"><a href="'.$file.'" title="'.$model->old_media_file_input.'">'.$model->old_media_file_input.'</a></div>';
-						echo '</div>';
-					}
-				}?>
 				
-				<?php if($model->isNewRecord || (!$model->isNewRecord && in_array($model->article_type, array('standard','video')))) {?>
-				<div id="file" class="<?php echo (($model->isNewRecord && !$model->getErrors()) || (in_array($model->article_type, array('standard','video')) && ($model->isNewRecord && $model->getErrors()) || !$model->isNewRecord)) ? '' : 'hide';?> form-group row">
-					<?php echo $form->labelEx($model, 'media_file', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
-					<div class="col-lg-12 col-md-9 col-sm-12">
-						<?php echo $form->fileField($model, 'media_file', array('class'=>'form-control')); ?>
-						<?php echo $form->error($model, 'media_file'); ?>
-						<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($media_file_type, false);?></span>
+				<?php if($model->isNewRecord || (!$model->isNewRecord && $fileCondition == 0)) {?>
+					<div class="form-group row">
+						<?php echo $form->labelEx($model, 'media_file_i', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
+						<div class="col-lg-12 col-md-9 col-sm-12">
+							<?php if(!$model->isNewRecord) {
+								$files = $model->files;
+								if(!empty($files)) {
+									$article_file = $model->view->article_file ? $model->view->article_file : $files[0]->article_file;
+									if(!$model->getErrors())
+										$model->old_media_file_i = $article_file;
+									echo $form->hiddenField($model, 'old_media_file_i');
+									if($model->old_media_file_i != '') {
+										$file = Yii::app()->request->baseUrl.'/public/article/'.$model->article_id.'/'.$model->old_media_file_i;?>
+										<div class="mb-15"><a href="<?php echo $file;?>"><?php echo $model->old_media_file_i;?></a></div>
+									<?php }
+								}
+							}?>
+							<?php echo $form->fileField($model, 'media_file_i', array('class'=>'form-control')); ?>
+							<?php echo $form->error($model, 'media_file_i'); ?>
+							<div class="small-px silent">extensions are allowed: <?php echo Utility::formatFileType($media_file_type, false);?></div>
+						</div>
 					</div>
-				</div>
 				<?php }?>
-	
+
 				<div class="form-group row">
 					<?php echo $form->labelEx($model, 'published_date', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
 					<div class="col-lg-12 col-md-9 col-sm-12">
-						<?php 
-						$model->published_date = $model->isNewRecord && $model->published_date == '' ? date('d-m-Y') : date('d-m-Y', strtotime($model->published_date));
-						//echo $form->textField($model, 'published_date', array('class'=>'span-7'));
-						$this->widget('application.libraries.core.components.system.CJuiDatePicker', array(
-							'model'=>$model, 
+						<?php $model->published_date = !$model->isNewRecord ? (!in_array($model->published_date, array('0000-00-00','1970-01-01')) ? date('Y-m-d', strtotime($model->published_date)) : '') : '';
+						/* $this->widget('application.libraries.core.components.system.CJuiDatePicker', array(
+							'model'=>$model,
 							'attribute'=>'published_date',
 							//'mode'=>'datetime',
 							'options'=>array(
 								'dateFormat' => 'dd-mm-yy',
 							),
 							'htmlOptions'=>array(
-								'class'=>'form-control'
-							 ),
-						));	?>
+								'class' => 'form-control',
+							),
+						)); */
+						echo $form->dateField($model, 'published_date', array('class'=>'form-control')); ?>
 						<?php echo $form->error($model, 'published_date'); ?>
 					</div>
 				</div>
-	
+
 				<?php if(OmmuSettings::getInfo('site_type') == 1) {?>
 				<div class="form-group row publish">
 					<?php echo $form->labelEx($model, 'comment_code', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
@@ -277,7 +267,7 @@ EOP;
 					$model->comment_code = 0;
 					echo $form->hiddenField($model, 'comment_code');
 				}?>
-	
+
 				<?php if($setting->headline == 1) {?>
 				<div class="form-group row publish">
 					<?php echo $form->labelEx($model, 'headline', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
@@ -291,7 +281,7 @@ EOP;
 					$model->headline = 0;
 					echo $form->hiddenField($model, 'headline');
 				}?>
-	
+
 				<div class="form-group row publish">
 					<?php echo $form->labelEx($model, 'publish', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
 					<div class="col-lg-12 col-md-9 col-sm-12">
@@ -306,18 +296,15 @@ EOP;
 	</fieldset>
 
 	<fieldset>
-		<?php if($model->isNewRecord || (!$model->isNewRecord && $model->article_type != 'quote')) {?>
-		<div class="form-group row <?php echo $model->article_type == 'quote' ? 'hide' : '';?>" id="quote">
+	
+		<div class="form-group row">
 			<?php echo $form->labelEx($model, 'quote', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
-				<?php 
-				//echo $form->textArea($model, 'body', array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));
+				<?php //echo $form->textArea($model, 'quote', array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));
 				$this->widget('yiiext.imperavi-redactor-widget.ImperaviRedactorWidget', array(
 					'model'=>$model,
-					'attribute'=>quote,
-					// Redactor options
+					'attribute'=>'quote',
 					'options'=>array(
-						//'lang'=>'fi',
 						'buttons'=>array(
 							'html', '|', 
 							'bold', 'italic', 'deleted', '|',
@@ -325,31 +312,26 @@ EOP;
 					),
 					'plugins' => array(
 						'fontcolor' => array('js' => array('fontcolor.js')),
+						'table' => array('js' => array('table.js')),
 						'fullscreen' => array('js' => array('fullscreen.js')),
 					),
-					'htmlOptions' => array(
-						'class'=>'form-control'
+					'htmlOptions'=>array(
+						'class' => 'form-control',
 					),
 				)); ?>
-				<?php if($model->isNewRecord || (!$model->isNewRecord && $model->article_type != 'quote')) {?>
-					<span class="small-px"><?php echo Yii::t('phrase', 'Note : add {$quote} in description article');?></span>
-				<?php }?>
+				<div class="small-px silent"><?php echo Yii::t('phrase', 'Note : add {$quote} in description article');?></div>
 				<?php echo $form->error($model, 'quote'); ?>
 			</div>
 		</div>
-		<?php }?>
 
 		<div class="form-group row">
 			<?php echo $form->labelEx($model, 'body', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-8 col-md-9 col-sm-12">
-				<?php 
-				//echo $form->textArea($model, 'body', array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));
+				<?php //echo $form->textArea($model, 'body', array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));
 				$this->widget('yiiext.imperavi-redactor-widget.ImperaviRedactorWidget', array(
 					'model'=>$model,
-					'attribute'=>body,
-					// Redactor options
+					'attribute'=>'body',
 					'options'=>array(
-						//'lang'=>'fi',
 						'buttons'=>array(
 							'html', 'formatting', '|', 
 							'bold', 'italic', 'deleted', '|',
@@ -362,8 +344,8 @@ EOP;
 						'table' => array('js' => array('table.js')),
 						'fullscreen' => array('js' => array('fullscreen.js')),
 					),
-					'htmlOptions' => array(
-						'class'=>'form-control'
+					'htmlOptions'=>array(
+						'class' => 'form-control',
 					),
 				)); ?>
 				<?php echo $form->error($model, 'body'); ?>
@@ -376,5 +358,6 @@ EOP;
 				<?php echo CHtml::submitButton($model->isNewRecord ? Yii::t('phrase', 'Create') : Yii::t('phrase', 'Save'), array('onclick' => 'setEnableSave()')); ?>
 			</div>
 		</div>
+
 	</fieldset>
 <?php $this->endWidget(); ?>

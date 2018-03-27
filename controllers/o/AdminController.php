@@ -11,6 +11,7 @@
  *	Manage
  *	Add
  *	Edit
+ *	View
  *	RunAction
  *	Delete
  *	Publish
@@ -24,6 +25,7 @@
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @modified date 26 March 2018, 14:07 WIB
  * @link https://github.com/ommu/ommu-article
  *
  *----------------------------------------------------------------------------------------------------------
@@ -73,7 +75,7 @@ class AdminController extends Controller
 	{
 		return array(
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('index','manage','add','edit','runaction','delete','publish','headline','getcover','insertcover'),
+				'actions'=>array('index','manage','add','edit','view','runaction','delete','publish','headline','getcover','insertcover'),
 				'users'=>array('@'),
 				'expression'=>'in_array($user->level, array(1,2))',
 			),
@@ -96,27 +98,27 @@ class AdminController extends Controller
 	 */
 	public function actionManage($category=null) 
 	{
+		$model=new Articles('search');
+		$model->unsetAttributes();  // clear any default values
+		if(Yii::app()->getRequest()->getParam('Articles')) {
+			$model->attributes=Yii::app()->getRequest()->getParam('Articles');
+		}
+
+		$gridColumn = Yii::app()->getRequest()->getParam('GridColumn');
+		$columnTemp = array();
+		if($gridColumn) {
+			foreach($gridColumn as $key => $val) {
+				if($gridColumn[$key] == 1)
+					$columnTemp[] = $key;
+			}
+		}
+		$columns = $model->getGridColumn($columnTemp);
+
 		$pageTitle = Yii::t('phrase', 'Articles');
 		if($category != null) {
 			$data = ArticleCategory::model()->findByPk($category);
 			$pageTitle = Yii::t('phrase', 'Articles: Category {category_name}', array ('{category_name}'=>$data->title->message));
 		}
-		
-		$model=new Articles('search');
-		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Articles'])) {
-			$model->attributes=$_GET['Articles'];
-		}
-
-		$columnTemp = array();
-		if(isset($_GET['GridColumn'])) {
-			foreach($_GET['GridColumn'] as $key => $val) {
-				if($_GET['GridColumn'][$key] == 1) {
-					$columnTemp[] = $key;
-				}
-			}
-		}
-		$columns = $model->getGridColumn($columnTemp);
 
 		$this->pageTitle = $pageTitle;
 		$this->pageDescription = Yii::t('phrase', 'Use this page to search for and manage article entries. To Approve or Feature an article, just click on the icon, it will automate turn on and off per that setting. To edit, delete, or manage an article, please login as that user, and perform your actions.');
@@ -134,7 +136,7 @@ class AdminController extends Controller
 	public function actionAdd() 
 	{
 		$setting = ArticleSetting::model()->findByPk(1, array(
-			'select' => 'meta_keyword, type_active, headline, media_image_type, media_file_type',
+			'select' => 'meta_keyword, headline, media_image_type, media_file_type',
 		));	
 		$media_image_type = unserialize($setting->media_image_type);
 		if(empty($media_image_type))
@@ -142,7 +144,7 @@ class AdminController extends Controller
 		$media_file_type = unserialize($setting->media_file_type);
 		if(empty($media_file_type))
 			$media_file_type = array();
-		
+
 		$model=new Articles;
 
 		// Uncomment the following line if AJAX validation is needed
@@ -150,11 +152,6 @@ class AdminController extends Controller
 
 		if(isset($_POST['Articles'])) {
 			$model->attributes=$_POST['Articles'];
-			
-			if($model->article_type == 'standard')
-				$model->scenario = 'formStandard';
-			else if($model->article_type == 'video')
-				$model->scenario = 'formVideo';
 
 			if($model->save()) {
 				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Article success created.'));
@@ -181,7 +178,7 @@ class AdminController extends Controller
 	public function actionEdit($id) 
 	{
 		$setting = ArticleSetting::model()->findByPk(1, array(
-			'select' => 'meta_keyword, type_active, headline, media_image_limit, media_image_type, media_file_type',
+			'select' => 'meta_keyword, headline, media_image_limit, media_image_type, media_file_limit, media_file_type',
 		));
 		$media_image_type = unserialize($setting->media_image_type);
 		if(empty($media_image_type))
@@ -189,7 +186,7 @@ class AdminController extends Controller
 		$media_file_type = unserialize($setting->media_file_type);
 		if(empty($media_file_type))
 			$media_file_type = array();
-		
+
 		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
@@ -197,53 +194,14 @@ class AdminController extends Controller
 
 		if(isset($_POST['Articles'])) {
 			$model->attributes=$_POST['Articles'];
-			
-			if($model->article_type == 'standard')
-				$model->scenario = 'formStandard';
-			else if($model->article_type == 'video')
-				$model->scenario = 'formVideo';
 
-			/*
-			if($model->article_type == 'standard' && $setting->media_image_limit != 1) {
-				$jsonError = CActiveForm::validate($model);
-				if(strlen($jsonError) > 2) {
-					$errors = $model->getErrors();
-					$summary['msg'] = "<div class='errorSummary'><strong>".Yii::t('phrase', 'Please fix the following input errors:')."</strong>";
-					$summary['msg'] .= "<ul>";
-					foreach($errors as $key => $value) {
-						$summary['msg'] .= "<li>{$value[0]}</li>";
-					}
-					$summary['msg'] .= "</ul></div>";
-
-					$message = json_decode($jsonError, true);
-					$merge = array_merge_recursive($summary, $message);
-					$encode = json_encode($merge);
-					echo $encode;
-
-				} else {
-					if(isset($_GET['enablesave']) && $_GET['enablesave'] == 1) {
-						if($model->save()) {
-							echo CJSON::encode(array(
-								'type' => 0,
-								'msg' => '<div class="errorSummary success"><strong>'.Yii::t('phrase', 'Article success updated.').'</strong></div>',
-							));
-						} else {
-							print_r($model->getErrors());
-						}
-					}
-				}
-				Yii::app()->end();
-			
-			} else {
-			*/
-				if($model->save()) {
-					Yii::app()->user->setFlash('success', Yii::t('phrase', 'Article success updated.'));
-					$this->redirect(array('edit','id'=>$model->article_id));
-				}
-			//}
+			if($model->save()) {
+				Yii::app()->user->setFlash('success', Yii::t('phrase', 'Article success updated.'));
+				$this->redirect(array('edit', 'id'=>$model->article_id));
+			}
 		}
 
-		$this->pageTitle = Yii::t('phrase', 'Update Article: {article_title}', array('{article_title}'=>$model->title));
+		$this->pageTitle = Yii::t('phrase', 'Update Article: {title}', array('{title}'=>$model->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_edit', array(
@@ -251,6 +209,22 @@ class AdminController extends Controller
 			'setting'=>$setting,
 			'media_image_type'=>$media_image_type,
 			'media_file_type'=>$media_file_type,
+		));
+	}
+	
+	/**
+	 * Displays a particular model.
+	 * @param integer $id the ID of the model to be displayed
+	 */
+	public function actionView($id) 
+	{
+		$model=$this->loadModel($id);
+
+		$this->pageTitle = Yii::t('phrase', 'Detail Article: {title}', array('{title}'=>$model->title));
+		$this->pageDescription = '';
+		$this->pageMeta = '';
+		$this->render('admin_view', array(
+			'model'=>$model,
 		));
 	}
 
@@ -261,11 +235,11 @@ class AdminController extends Controller
 	public function actionRunAction() {
 		$id       = $_POST['trash_id'];
 		$criteria = null;
-		$actions  = $_GET['action'];
+		$actions  = Yii::app()->getRequest()->getParam('action');
 
 		if(count($id) > 0) {
 			$criteria = new CDbCriteria;
-			$criteria->addInCondition('id', $id);
+			$criteria->addInCondition('article_id', $id);
 
 			if($actions == 'publish') {
 				Articles::model()->updateAll(array(
@@ -285,7 +259,7 @@ class AdminController extends Controller
 		}
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax'])) {
+		if(!(Yii::app()->getRequest()->getParam('ajax'))) {
 			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('manage'));
 		}
 	}
@@ -319,7 +293,7 @@ class AdminController extends Controller
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 350;
 
-		$this->pageTitle = Yii::t('phrase', 'Delete Article: {article_title}', array('{article_title}'=>$model->title));
+		$this->pageTitle = Yii::t('phrase', 'Delete Article: {title}', array('{title}'=>$model->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_delete');
@@ -353,12 +327,12 @@ class AdminController extends Controller
 			}
 			Yii::app()->end();
 		}
-		
+
 		$this->dialogDetail = true;
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 350;
 
-		$this->pageTitle = Yii::t('phrase', '{title}: {article_title}', array('{title}'=>$title, '{article_title}'=>$model->title));
+		$this->pageTitle = Yii::t('phrase', '{title} Article: {article_title}', array('{title}'=>$title, '{article_title}'=>$model->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_publish', array(
@@ -395,12 +369,12 @@ class AdminController extends Controller
 			}
 			Yii::app()->end();
 		}
-		
+
 		$this->dialogDetail = true;
 		$this->dialogGroundUrl = Yii::app()->controller->createUrl('manage');
 		$this->dialogWidth = 350;
 
-		$this->pageTitle = Yii::t('phrase', 'Headline: {article_title}', array('{article_title}'=>$model->title));
+		$this->pageTitle = Yii::t('phrase', 'Headline Article: {title}', array('{title}'=>$model->title));
 		$this->pageDescription = '';
 		$this->pageMeta = '';
 		$this->render('admin_headline');
@@ -464,14 +438,14 @@ class AdminController extends Controller
 			$fileName = time().'_'.Utility::getUrlTitle($model->title).'.'.strtolower($uploadPhoto->extensionName);
 			if($uploadPhoto->saveAs($article_path.'/'.$fileName)) {
 				$photo = new ArticleMedia;
+				$photo->media_type_i = 1;
 				$photo->cover = $model->medias == null ? '1' : '0';
 				$photo->article_id = $model->article_id;
 				$photo->cover_filename = $fileName;
 				if($photo->save()) {
-					$url = Yii::app()->controller->createUrl('getcover', array('id'=>$model->article_id,'replace'=>'true'));
 					echo CJSON::encode(array(
 						'id' => 'media-render',
-						'get' => $url,
+						'get' => Yii::app()->controller->createUrl('getcover', array('id'=>$model->article_id, 'replace'=>'true')),
 					));
 				}
 			}

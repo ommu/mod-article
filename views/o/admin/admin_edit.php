@@ -8,6 +8,7 @@
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @modified date 26 March 2018, 14:07 WIB
  * @link https://github.com/ommu/ommu-article
  *
  */
@@ -20,22 +21,26 @@
 
 	$medias = $model->medias;
 	$media_image_limit = $setting->media_image_limit;
-	$condition = 0;
-	if($model->article_type == 'standard' && $media_image_limit != 1 && $model->category->single_photo == 0)
-		$condition = 1;
+	$photoCondition = 0;
+	$fileCondition = 0;
+	if($media_image_limit != 1 && $model->category->single_photo == 0)
+		$photoCondition = 1;
+	if($media_file_limit != 1 && $model->category->single_file == 0)
+		$fileCondition = 1;
 ?>
 
-<div class="form" <?php //echo ($model->article_type == 'standard' && $media_image_limit != 1) ? 'name="post-on"' : ''; ?>>
+<div class="form">
 	<?php echo $this->renderPartial('_form', array(
 		'model'=>$model,
 		'setting'=>$setting,
-		'condition'=>$condition,
+		'photoCondition'=>$photoCondition,
+		'fileCondition'=>$fileCondition,
 		'media_image_type'=>$media_image_type,
 		'media_file_type'=>$media_file_type,
 	)); ?>
 </div>
 
-<?php if($condition == 1) {?>
+<?php if($photoCondition == 1) {?>
 <div class="boxed mt-15">
 	<h3><?php echo Yii::t('phrase', 'Article Photo'); ?></h3>
 	<div class="clearfix horizontal-data" name="four">

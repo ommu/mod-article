@@ -14,8 +14,10 @@
  * The followings are the available columns in table '_articles':
  * @property string $article_id
  * @property string $article_cover
+ * @property string $article_video
  * @property string $media_id
- * @property string $media_caption
+ * @property string $article_file
+ * @property string $file_id
  * @property string $medias
  * @property string $media_all
  * @property string $files
@@ -68,15 +70,14 @@ class ViewArticles extends OActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('article_id, media_id', 'length', 'max'=>11),
-			array('media_caption', 'length', 'max'=>150),
+			array('article_id, media_id, file_id', 'length', 'max'=>11),
 			array('medias, files, likes', 'length', 'max'=>23),
 			array('media_all, file_all, like_all, tags', 'length', 'max'=>21),
 			array('views, view_all, downloads', 'length', 'max'=>32),
-			array('article_cover', 'safe'),
+			array('article_cover, article_video, article_file', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('article_id, article_cover, media_id, media_caption, medias, media_all, files, file_all, likes, like_all, views, view_all, downloads, tags', 'safe', 'on'=>'search'),
+			array('article_id, article_cover, article_video, media_id, article_file, file_id, medias, media_all, files, file_all, likes, like_all, views, view_all, downloads, tags', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -99,8 +100,10 @@ class ViewArticles extends OActiveRecord
 		return array(
 			'article_id' => Yii::t('attribute', 'Article'),
 			'article_cover' => Yii::t('attribute', 'Article Cover'),
+			'article_video' => Yii::t('attribute', 'Article Video'),
 			'media_id' => Yii::t('attribute', 'Media'),
-			'media_caption' => Yii::t('attribute', 'Media Caption'),
+			'article_file' => Yii::t('attribute', 'Article File'),
+			'file_id' => Yii::t('attribute', 'File'),
 			'medias' => Yii::t('attribute', 'Medias'),
 			'media_all' => Yii::t('attribute', 'Media All'),
 			'files' => Yii::t('attribute', 'Files'),
@@ -134,8 +137,10 @@ class ViewArticles extends OActiveRecord
 
 		$criteria->compare('t.article_id', $this->article_id);
 		$criteria->compare('t.article_cover',strtolower($this->article_cover),true);
+		$criteria->compare('t.article_video',strtolower($this->article_video),true);
 		$criteria->compare('t.media_id', $this->media_id);
-		$criteria->compare('t.media_caption',strtolower($this->media_caption),true);
+		$criteria->compare('t.article_file',strtolower($this->article_file),true);
+		$criteria->compare('t.file_id', $this->file_id);
 		$criteria->compare('t.medias', $this->medias);
 		$criteria->compare('t.media_all', $this->media_all);
 		$criteria->compare('t.files', $this->files);
@@ -184,13 +189,21 @@ class ViewArticles extends OActiveRecord
 				'name' => 'article_cover',
 				'value' => '$data->article_cover',
 			);
+			$this->templateColumns['article_video'] = array(
+				'name' => 'article_video',
+				'value' => '$data->article_video',
+			);
 			$this->templateColumns['media_id'] = array(
 				'name' => 'media_id',
 				'value' => '$data->media_id',
 			);
-			$this->templateColumns['media_caption'] = array(
-				'name' => 'media_caption',
-				'value' => '$data->media_caption',
+			$this->templateColumns['article_file'] = array(
+				'name' => 'article_file',
+				'value' => '$data->article_file',
+			);
+			$this->templateColumns['file_id'] = array(
+				'name' => 'file_id',
+				'value' => '$data->file_id',
 			);
 			$this->templateColumns['medias'] = array(
 				'name' => 'medias',
