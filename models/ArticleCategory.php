@@ -110,7 +110,7 @@ class ArticleCategory extends OActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'view' => array(self::BELONGS_TO, 'ViewArticleCategory', 'cat_id'),
-			'articles' => array(self::HAS_MANY, 'Articles', 'cat_id'),
+			'articles' => array(self::HAS_MANY, 'Articles', 'cat_id', 'on'=>'articles.publish = 1'),
 			'title' => array(self::BELONGS_TO, 'SourceMessage', 'name'),
 			'description' => array(self::BELONGS_TO, 'SourceMessage', 'desc'),
 			'parent' => array(self::BELONGS_TO, 'ArticleCategory', 'parent_id'),
@@ -258,7 +258,7 @@ class ArticleCategory extends OActiveRecord
 			);
 			$this->templateColumns['parent_id'] = array(
 				'name' => 'parent_id',
-				'value' => '$data->parent != 0 ? $data->parent->title->message : \'-\'',
+				'value' => '$data->parent_id != 0 ? $data->parent->title->message : \'-\'',
 			);
 			if(!Yii::app()->getRequest()->getParam('creation')) {
 				$this->templateColumns['creation_search'] = array(
@@ -447,7 +447,7 @@ class ArticleCategory extends OActiveRecord
 		if($publish != null)
 			$criteria->compare('t.publish', $publish);
 		if($parent != null)
-			$criteria->compare('parent', $parent);
+			$criteria->compare('parent_id', $parent);
 
 		$model = self::model()->findAll($criteria);
 
@@ -455,7 +455,7 @@ class ArticleCategory extends OActiveRecord
 			$items = array();
 			if($model != null) {
 				foreach($model as $key => $val) {
-					if($currentAction == 'o/setting/edit' && $val->parent != 0)
+					if($currentAction == 'o/setting/edit' && $val->parent_id != 0)
 						$items[$val->cat_id] = $val->parent->title->message.' / '.$val->title->message;
 					else
 						$items[$val->cat_id] = $val->title->message;

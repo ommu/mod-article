@@ -443,7 +443,7 @@ class ArticleFiles extends OActiveRecord
 				$this->file_filename = CUploadedFile::getInstance($this, 'file_filename');
 				if($this->file_filename != null) {
 					if($this->file_filename instanceOf CUploadedFile) {
-						$fileName = time().'_'.Utility::getUrlTitle($this->article->title).'.'.strtolower($this->file_filename->extensionName);
+						$fileName = time().'_file-'.Utility::getUrlTitle($this->article->title).'.'.strtolower($this->file_filename->extensionName);
 						if($this->file_filename->saveAs($article_path.'/'.$fileName)) {
 							if(!$this->isNewRecord) {
 								if($this->old_file_filename_i != '' && file_exists($article_path.'/'.$this->old_file_filename_i))

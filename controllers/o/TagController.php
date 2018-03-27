@@ -140,7 +140,7 @@ class TagController extends Controller
 		{
 			$model->article_id = $_POST['article_id'];
 			$model->tag_id = $_POST['tag_id'];
-			$model->tag_input = $_POST['tag'];
+			$model->tag_i = $_POST['tag'];
 
 			if($model->save()) {
 				if(Yii::app()->getRequest()->getParam('type') == 'article')
