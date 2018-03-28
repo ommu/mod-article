@@ -344,7 +344,7 @@ class ArticleSetting extends OActiveRecord
 		if(empty($headline_category))
 			$headline_category = array();
 		
-		return $headline_category;		
+		return $headline_category;
 	}
 
 	/**

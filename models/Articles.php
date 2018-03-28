@@ -556,7 +556,7 @@ class Articles extends OActiveRecord
 			if($setting->headline == 1) {
 				$this->templateColumns['headline'] = array(
 					'name' => 'headline',
-					'value' => 'in_array($data->cat_id, ArticleSetting::getHeadlineCategory()) ? ($data->headline == 1 ? CHtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Utility::getPublish(Yii::app()->controller->createUrl(\'headline\', array((\'id\'=>$data->article_id)), $data->headline, Yii::t(\'phrase\', \'Headline,Headline\'))) : \'-\'',
+					'value' => 'in_array($data->cat_id, ArticleSetting::getHeadlineCategory()) ? ($data->headline == 1 ? CHtml::image(Yii::app()->theme->baseUrl.\'/images/icons/publish.png\') : Utility::getPublish(Yii::app()->controller->createUrl(\'headline\', array(\'id\'=>$data->article_id)), $data->headline, Yii::t(\'phrase\', \'Headline,Headline\'))) : \'-\'',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
@@ -640,7 +640,7 @@ class Articles extends OActiveRecord
 	 */
 	public function searchIndexing($index)
 	{
-		Yii::import('application.modules.article.models.*');
+		Yii::import('application.vendor.ommu.article.models.*');
 		
 		$criteria=new CDbCriteria;
 		$criteria->compare('publish', 1);

@@ -29,9 +29,9 @@ class WidgetArticleHeadline extends CWidget
 		$currentModuleAction = strtolower(Yii::app()->controller->module->id.'/'.Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
 		
 		//import model
-		Yii::import('application.modules.article.models.Articles');
-		Yii::import('application.modules.article.models.ArticleMedia');
-		Yii::import('application.modules.article.models.ArticleSetting');
+		Yii::import('application.vendor.ommu.article.models.Articles');
+		Yii::import('application.vendor.ommu.article.models.ArticleMedia');
+		Yii::import('application.vendor.ommu.article.models.ArticleSetting');
 		
 		//$cat = ($controller == 'site') ? 1 : 2;
 		$model = Articles::model()->findAll(array(

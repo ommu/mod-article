@@ -29,8 +29,8 @@ class WidgetArticlePopular extends CWidget
 		$currentModuleAction = strtolower(Yii::app()->controller->module->id.'/'.Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
 		
 		//import model
-		Yii::import('application.modules.article.models.Articles');
-		Yii::import('application.modules.article.models.ArticleCategory');
+		Yii::import('application.vendor.ommu.article.models.Articles');
+		Yii::import('application.vendor.ommu.article.models.ArticleCategory');
 		
 		//Category
 		//$cat = ($controller == 'site') ? 1 : 2 ;

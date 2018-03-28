@@ -30,7 +30,7 @@ class WidgetArticleCategory extends CWidget
 		$currentModuleAction = strtolower(Yii::app()->controller->module->id.'/'.Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
 		
 		//import model
-		Yii::import('application.modules.article.models.ArticleCategory');
+		Yii::import('application.vendor.ommu.article.models.ArticleCategory');
 
 		$criteria=new CDbCriteria;
 		if($this->publish != null) {
