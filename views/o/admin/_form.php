@@ -217,7 +217,7 @@ EOP;
 							<?php if(!$model->isNewRecord) {
 								$files = $model->files;
 								if(!empty($files)) {
-									$article_file = $model->view->article_file ? $model->view->article_file : $files[0]->article_file;
+									$article_file = $model->view->article_file ? $model->view->article_file : $files[0]->file_filename;
 									if(!$model->getErrors())
 										$model->old_media_file_i = $article_file;
 									echo $form->hiddenField($model, 'old_media_file_i');
