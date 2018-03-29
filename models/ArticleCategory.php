@@ -441,13 +441,22 @@ class ArticleCategory extends OActiveRecord
 	 * 0 = unpublish
 	 * 1 = publish
 	 */
-	public static function getCategory($publish=null, $parent=null, $type=null) 
+	public static function getCategory($publish=null, $parent=null, $order=false, $type=null) 
 	{
 		$criteria=new CDbCriteria;
 		if($publish != null)
 			$criteria->compare('t.publish', $publish);
 		if($parent != null)
 			$criteria->compare('parent_id', $parent);
+		if($order == true) {
+			$criteria->with = array(
+				'title' => array(
+					'alias'=>'title',
+					'select'=>'message',
+				),
+			);
+			$criteria->order = 'title.message ASC';
+		}
 
 		$model = self::model()->findAll($criteria);
 

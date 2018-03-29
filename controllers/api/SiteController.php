@@ -97,7 +97,7 @@ class SiteController extends ControllerApi
 						$criteriaArticle->compare('t.cat_id', $val->cat_id);						
 					else {
 						$subCategoryFind = ArticleCategory::model()->findAll(array(
-							'condition' => 'publish = :publish AND parent = :parent',
+							'condition' => 'publish = :publish AND parent_id = :parent',
 							'params' => array(
 								':publish' => 1,
 								':parent' => $val->cat_id,
@@ -203,7 +203,7 @@ class SiteController extends ControllerApi
 								$catData[] = $val;
 						} else {
 							$subCategoryFind = ArticleCategory::model()->findAll(array(
-								'condition' => 'publish = :publish AND parent = :parent',
+								'condition' => 'publish = :publish AND parent_id = :parent',
 								'params' => array(
 									':publish' => 1,
 									':parent' => $val,
