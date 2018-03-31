@@ -68,7 +68,7 @@ class ArticleLikes extends OActiveRecord
 			array('publish', 'numerical', 'integerOnly'=>true),
 			array('article_id, user_id', 'length', 'max'=>11),
 			array('likes_ip', 'length', 'max'=>20),
-			array('publish', 'safe'),
+			array('publish, user_id', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('like_id, publish, article_id, user_id, likes_date, likes_ip, updated_date,
@@ -342,12 +342,15 @@ class ArticleLikes extends OActiveRecord
 	/**
 	 * User get information
 	 */
-	public static function updateLike($article_id)
+	public static function insertLike($article_id)
 	{
 		$criteria=new CDbCriteria;
 		$criteria->select = 'like_id, publish, article_id, user_id';
 		$criteria->compare('banner_id', $article_id);
-		$criteria->compare('user_id', Yii::app()->user->id);
+		if(!Yii::app()->user->isGuest)
+			$criteria->compare('user_id', Yii::app()->user->id);
+		else
+			$criteria->addCondition('user_id IS NULL');
 		$findLike = self::model()->find($criteria);
 		
 		if($findLike != null) {

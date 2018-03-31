@@ -67,6 +67,7 @@ class ArticleDownloads extends OActiveRecord
 			array('downloads', 'numerical', 'integerOnly'=>true),
 			array('file_id, user_id', 'length', 'max'=>11),
 			array('download_ip', 'length', 'max'=>20),
+			array('user_id', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('download_id, file_id, user_id, downloads, download_date, download_ip,

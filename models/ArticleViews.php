@@ -68,7 +68,7 @@ class ArticleViews extends OActiveRecord
 			array('publish, views', 'numerical', 'integerOnly'=>true),
 			array('article_id, user_id', 'length', 'max'=>11),
 			array('view_ip', 'length', 'max'=>20),
-			array('publish', 'safe'),
+			array('publish, user_id', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('view_id, publish, article_id, user_id, views, view_date, view_ip, deleted_date,
