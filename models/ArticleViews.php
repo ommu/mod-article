@@ -64,11 +64,11 @@ class ArticleViews extends OActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('publish, article_id, user_id', 'required'),
+			array('article_id', 'required'),
 			array('publish, views', 'numerical', 'integerOnly'=>true),
 			array('article_id, user_id', 'length', 'max'=>11),
 			array('view_ip', 'length', 'max'=>20),
-			array('', 'safe'),
+			array('publish', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('view_id, publish, article_id, user_id, views, view_date, view_ip, deleted_date,
@@ -334,7 +334,10 @@ class ArticleViews extends OActiveRecord
 		$criteria->select = 'view_id, publish, article_id, user_id, views';
 		$criteria->compare('publish', 1);
 		$criteria->compare('article_id', $article_id);
-		$criteria->compare('user_id', !Yii::app()->user->isGuest ? Yii::app()->user->id : null);
+		if(!Yii::app()->user->isGuest)
+			$criteria->compare('user_id', Yii::app()->user->id);
+		else
+			$criteria->addCondition('user_id IS NULL');
 		$findView = self::model()->find($criteria);
 		
 		if($findView != null)

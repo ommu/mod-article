@@ -64,11 +64,11 @@ class ArticleLikes extends OActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('publish, article_id, user_id', 'required'),
+			array('article_id, user_id', 'required'),
 			array('publish', 'numerical', 'integerOnly'=>true),
 			array('article_id, user_id', 'length', 'max'=>11),
 			array('likes_ip', 'length', 'max'=>20),
-			array('', 'safe'),
+			array('publish', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
 			array('like_id, publish, article_id, user_id, likes_date, likes_ip, updated_date,
@@ -353,6 +353,7 @@ class ArticleLikes extends OActiveRecord
 		if($findLike != null) {
 			$replace = $findLike->publish == 0 ? 1 : 0;
 			self::model()->updateByPk($findLike->like_id, array('publish'=>$replace, 'likes_ip'=>$_SERVER['REMOTE_ADDR']));
+			
 		} else {
 			$like=new ArticleLikes;
 			$like->article_id = $article_id;

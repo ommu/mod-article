@@ -63,7 +63,7 @@ class ArticleDownloads extends OActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('file_id, user_id', 'required'),
+			array('file_id', 'required'),
 			array('downloads', 'numerical', 'integerOnly'=>true),
 			array('file_id, user_id', 'length', 'max'=>11),
 			array('download_ip', 'length', 'max'=>20),
@@ -285,12 +285,15 @@ class ArticleDownloads extends OActiveRecord
 		$criteria=new CDbCriteria;
 		$criteria->select = 'download_id, file_id, user_id, downloads';
 		$criteria->compare('file_id', $file_id);
-		$criteria->compare('user_id', !Yii::app()->user->isGuest ? Yii::app()->user->id : null);
+		if(!Yii::app()->user->isGuest)
+			$criteria->compare('user_id', Yii::app()->user->id);
+		else
+			$criteria->addCondition('user_id IS NULL');
 		$findDownload = self::model()->find($criteria);
 		
 		if($findDownload != null)
 			self::model()->updateByPk($findDownload->download_id, array('downloads'=>$findDownload->downloads + 1, 'download_ip'=>$_SERVER['REMOTE_ADDR']));
-		
+			
 		else {
 			$download=new ArticleDownloads;
 			$download->file_id = $file_id;
