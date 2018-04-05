@@ -6,7 +6,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
  * @modified date 26 March 2018, 05:07 WIB
- * @link https://github.com/ommu/ommu-article
+ * @link https://github.com/ommu/mod-article
  *
  * This is the model class for table "ommu_articles".
  *

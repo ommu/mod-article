@@ -9,7 +9,7 @@
  * @copyright Copyright (c) 2018 Ommu Platform (opensource.ommu.co)
  * @created date 26 March 2018, 14:07 WIB
  * @modified date 26 March 2018, 14:07 WIB
- * @link https://github.com/ommu/ommu-article
+ * @link https://github.com/ommu/mod-article
  *
  */
 

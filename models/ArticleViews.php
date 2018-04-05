@@ -7,7 +7,7 @@
  * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
  * @created date 8 December 2016, 10:18 WIB
  * @modified date 22 March 2018, 16:55 WIB
- * @link https://github.com/ommu/ommu-article
+ * @link https://github.com/ommu/mod-article
  *
  * This is the model class for table "ommu_article_views".
  *

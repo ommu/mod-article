@@ -7,7 +7,7 @@
  * @copyright Copyright (c) 2017 Ommu Platform (opensource.ommu.co)
  * @created date 7 February 2017, 02:26 WIB
  * @modified date 22 March 2018, 16:54 WIB
- * @link https://github.com/ommu/ommu-article
+ * @link https://github.com/ommu/mod-article
  *
  * This is the model class for table "ommu_article_like_history".
  *
