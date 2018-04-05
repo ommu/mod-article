@@ -98,8 +98,8 @@ class SiteController extends Controller
 			'select' => 'meta_description, meta_keyword',
 		));
 		
-		if(isset($_GET['category']) && $_GET['category'])
-			$title = ArticleCategory::model()->findByPk($_GET['category']);
+		if(Yii::app()->getRequest()->getParam('category'))
+			$title = ArticleCategory::model()->findByPk(Yii::app()->getRequest()->getParam('category'));
 
 		$criteria=new CDbCriteria;
 		$criteria->condition = 'publish = :publish AND published_date <= curdate()';
@@ -107,8 +107,8 @@ class SiteController extends Controller
 			':publish'=>1,
 		);
 		$criteria->order = 'published_date DESC';
-		if(isset($_GET['category']) && $_GET['category'] != '')
-			$criteria->compare('cat_id',$_GET['category']);
+		if(Yii::app()->getRequest()->getParam('category') != '')
+			$criteria->compare('cat_id',Yii::app()->getRequest()->getParam('category'));
 
 		$dataProvider = new CActiveDataProvider('Articles', array(
 			'criteria'=>$criteria,
@@ -117,7 +117,7 @@ class SiteController extends Controller
 			),
 		));
 
-		$this->pageTitle = (isset($_GET['category']) && $_GET['category']) ? $title->title->message : Yii::t('phrase', 'Articles');
+		$this->pageTitle = (Yii::app()->getRequest()->getParam('category')) ? $title->title->message : Yii::t('phrase', 'Articles');
 		$this->pageDescription = $setting->meta_description;
 		$this->pageMeta = $setting->meta_keyword;
 		$this->render('front_index', array(
