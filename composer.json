@@ -6,7 +6,7 @@
 		"article",
 		"news",
 		"ommu",
-		"ommu platform"
+		"ommu-platform"
 	],
 	"homepage": "https://github.com/ommu/mod-article",
 	"type": "ommu-module",

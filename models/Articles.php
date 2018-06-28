@@ -357,7 +357,7 @@ class Articles extends OActiveRecord
 					),
 					'options'=>array(
 						'showOn' => 'focus',
-						'dateFormat' => 'dd-mm-yy',
+						'dateFormat' => 'yy-mm-dd',
 						'showOtherMonths' => true,
 						'selectOtherMonths' => true,
 						'changeMonth' => true,
@@ -388,7 +388,7 @@ class Articles extends OActiveRecord
 					),
 					'options'=>array(
 						'showOn' => 'focus',
-						'dateFormat' => 'dd-mm-yy',
+						'dateFormat' => 'yy-mm-dd',
 						'showOtherMonths' => true,
 						'selectOtherMonths' => true,
 						'changeMonth' => true,
@@ -425,7 +425,7 @@ class Articles extends OActiveRecord
 					),
 					'options'=>array(
 						'showOn' => 'focus',
-						'dateFormat' => 'dd-mm-yy',
+						'dateFormat' => 'yy-mm-dd',
 						'showOtherMonths' => true,
 						'selectOtherMonths' => true,
 						'changeMonth' => true,
@@ -456,7 +456,7 @@ class Articles extends OActiveRecord
 					),
 					'options'=>array(
 						'showOn' => 'focus',
-						'dateFormat' => 'dd-mm-yy',
+						'dateFormat' => 'yy-mm-dd',
 						'showOtherMonths' => true,
 						'selectOtherMonths' => true,
 						'changeMonth' => true,
@@ -487,7 +487,7 @@ class Articles extends OActiveRecord
 					),
 					'options'=>array(
 						'showOn' => 'focus',
-						'dateFormat' => 'dd-mm-yy',
+						'dateFormat' => 'yy-mm-dd',
 						'showOtherMonths' => true,
 						'selectOtherMonths' => true,
 						'changeMonth' => true,
@@ -592,9 +592,12 @@ class Articles extends OActiveRecord
 	{
 		if($column != null) {
 			$model = self::model()->findByPk($id, array(
-				'select' => $column
+				'select' => $column,
 			));
-			return $model->$column;
+ 			if(count(explode(',', $column)) == 1)
+ 				return $model->$column;
+ 			else
+ 				return $model;
 			
 		} else {
 			$model = self::model()->findByPk($id);
@@ -739,16 +742,18 @@ class Articles extends OActiveRecord
 	protected function beforeSave() 
 	{
 		if(parent::beforeSave()) {
-			$article_path = "public/article/".$this->article_id;
-			// Add directory
-			if(!file_exists($article_path)) {
-				@mkdir($article_path, 0755, true);
+			if($this->isNewRecord) {
+				$article_path = "public/article/".$this->article_id;
+				// Add directory
+				if(!file_exists($article_path)) {
+					@mkdir($article_path, 0755, true);
 
-				// Add file in directory (index.php)
-				$newFile = $article_path.'/index.php';
-				$FileHandle = fopen($newFile, 'w');
-			} else
-				@chmod($article_path, 0755, true);
+					// Add file in directory (index.php)
+					$newFile = $article_path.'/index.php';
+					$FileHandle = fopen($newFile, 'w');
+				} else
+					@chmod($article_path, 0755, true);
+			}
 			
 			$this->published_date = date('Y-m-d', strtotime($this->published_date));
 		}
