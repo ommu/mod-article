@@ -158,10 +158,10 @@ class ArticleLikes extends OActiveRecord
 		}
 		$criteria->compare('t.article_id', Yii::app()->getRequest()->getParam('article') ? Yii::app()->getRequest()->getParam('article') : $this->article_id);
 		$criteria->compare('t.user_id', Yii::app()->getRequest()->getParam('user') ? Yii::app()->getRequest()->getParam('user') : $this->user_id);
-		if($this->likes_date != null && !in_array($this->likes_date, array('0000-00-00 00:00:00', '1970-01-01 00:00:00')))
+		if($this->likes_date != null && !in_array($this->likes_date, array('0000-00-00 00:00:00','1970-01-01 00:00:00','0002-12-02 07:07:12','-0001-11-30 00:00:00')))
 			$criteria->compare('date(t.likes_date)', date('Y-m-d', strtotime($this->likes_date)));
 		$criteria->compare('t.likes_ip', strtolower($this->likes_ip), true);
-		if($this->updated_date != null && !in_array($this->updated_date, array('0000-00-00 00:00:00', '1970-01-01 00:00:00')))
+		if($this->updated_date != null && !in_array($this->updated_date, array('0000-00-00 00:00:00','1970-01-01 00:00:00','0002-12-02 07:07:12','-0001-11-30 00:00:00')))
 			$criteria->compare('date(t.updated_date)', date('Y-m-d', strtotime($this->updated_date)));
 
 		$criteria->compare('article.cat_id', $this->category_search);
@@ -237,7 +237,7 @@ class ArticleLikes extends OActiveRecord
 			);
 			$this->templateColumns['likes_date'] = array(
 				'name' => 'likes_date',
-				'value' => '!in_array($data->likes_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->likes_date) : \'-\'',
+				'value' => '!in_array($data->likes_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\', \'0002-12-02 07:07:12\', \'-0001-11-30 00:00:00\')) ? Utility::dateFormat($data->likes_date) : \'-\'',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
@@ -275,7 +275,7 @@ class ArticleLikes extends OActiveRecord
 			);
 			$this->templateColumns['updated_date'] = array(
 				'name' => 'updated_date',
-				'value' => '!in_array($data->updated_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->updated_date) : \'-\'',
+				'value' => '!in_array($data->updated_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\', \'0002-12-02 07:07:12\', \'-0001-11-30 00:00:00\')) ? Utility::dateFormat($data->updated_date) : \'-\'',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),

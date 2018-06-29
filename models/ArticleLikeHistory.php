@@ -136,7 +136,7 @@ class ArticleLikeHistory extends OActiveRecord
 
 		$criteria->compare('t.publish', $this->publish);
 		$criteria->compare('t.like_id', Yii::app()->getRequest()->getParam('like') ? Yii::app()->getRequest()->getParam('like') : $this->like_id);
-		if($this->likes_date != null && !in_array($this->likes_date, array('0000-00-00 00:00:00', '1970-01-01 00:00:00')))
+		if($this->likes_date != null && !in_array($this->likes_date, array('0000-00-00 00:00:00','1970-01-01 00:00:00','0002-12-02 07:07:12','-0001-11-30 00:00:00')))
 			$criteria->compare('date(t.likes_date)', date('Y-m-d', strtotime($this->likes_date)));
 		$criteria->compare('t.likes_ip', strtolower($this->likes_ip), true);
 
@@ -191,7 +191,7 @@ class ArticleLikeHistory extends OActiveRecord
 			}
 			$this->templateColumns['likes_date'] = array(
 				'name' => 'likes_date',
-				'value' => '!in_array($data->likes_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->likes_date) : \'-\'',
+				'value' => '!in_array($data->likes_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\', \'0002-12-02 07:07:12\', \'-0001-11-30 00:00:00\')) ? Utility::dateFormat($data->likes_date) : \'-\'',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),

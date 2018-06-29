@@ -237,7 +237,7 @@ EOP;
 				<div class="form-group row">
 					<?php echo $form->labelEx($model, 'published_date', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
 					<div class="col-lg-12 col-md-9 col-sm-12">
-						<?php $model->published_date = !$model->isNewRecord ? (!in_array($model->published_date, array('0000-00-00','1970-01-01')) ? date('Y-m-d', strtotime($model->published_date)) : '') : '';
+						<?php $model->published_date = !$model->isNewRecord ? (!in_array($model->published_date, array('0000-00-00','1970-01-01','0002-12-02','-0001-11-30')) ? date('Y-m-d', strtotime($model->published_date)) : '') : '';
 						/* $this->widget('application.libraries.core.components.system.CJuiDatePicker', array(
 							'model'=>$model,
 							'attribute'=>'published_date',

@@ -146,7 +146,7 @@ class ArticleDownloads extends OActiveRecord
 		$criteria->compare('t.file_id', Yii::app()->getRequest()->getParam('file') ? Yii::app()->getRequest()->getParam('file') : $this->file_id);
 		$criteria->compare('t.user_id', Yii::app()->getRequest()->getParam('user') ? Yii::app()->getRequest()->getParam('user') : $this->user_id);
 		$criteria->compare('t.downloads', $this->downloads);
-		if($this->download_date != null && !in_array($this->download_date, array('0000-00-00 00:00:00', '1970-01-01 00:00:00')))
+		if($this->download_date != null && !in_array($this->download_date, array('0000-00-00 00:00:00','1970-01-01 00:00:00','0002-12-02 07:07:12','-0001-11-30 00:00:00')))
 			$criteria->compare('date(t.download_date)', date('Y-m-d', strtotime($this->download_date)));
 		$criteria->compare('t.download_ip', strtolower($this->download_ip), true);
 
@@ -221,7 +221,7 @@ class ArticleDownloads extends OActiveRecord
 			);
 			$this->templateColumns['download_date'] = array(
 				'name' => 'download_date',
-				'value' => '!in_array($data->download_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->download_date) : \'-\'',
+				'value' => '!in_array($data->download_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\', \'0002-12-02 07:07:12\', \'-0001-11-30 00:00:00\')) ? Utility::dateFormat($data->download_date) : \'-\'',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),

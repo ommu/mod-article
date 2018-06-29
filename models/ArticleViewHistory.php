@@ -133,7 +133,7 @@ class ArticleViewHistory extends OActiveRecord
 
 		$criteria->compare('t.id', $this->id);
 		$criteria->compare('t.view_id', Yii::app()->getRequest()->getParam('view') ? Yii::app()->getRequest()->getParam('view') : $this->view_id);
-		if($this->view_date != null && !in_array($this->view_date, array('0000-00-00 00:00:00', '1970-01-01 00:00:00')))
+		if($this->view_date != null && !in_array($this->view_date, array('0000-00-00 00:00:00','1970-01-01 00:00:00','0002-12-02 07:07:12','-0001-11-30 00:00:00')))
 			$criteria->compare('date(t.view_date)', date('Y-m-d', strtotime($this->view_date)));
 		$criteria->compare('t.view_ip', strtolower($this->view_ip), true);
 
@@ -188,7 +188,7 @@ class ArticleViewHistory extends OActiveRecord
 			}
 			$this->templateColumns['view_date'] = array(
 				'name' => 'view_date',
-				'value' => '!in_array($data->view_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\')) ? Utility::dateFormat($data->view_date) : \'-\'',
+				'value' => '!in_array($data->view_date, array(\'0000-00-00 00:00:00\', \'1970-01-01 00:00:00\', \'0002-12-02 07:07:12\', \'-0001-11-30 00:00:00\')) ? Utility::dateFormat($data->view_date) : \'-\'',
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
