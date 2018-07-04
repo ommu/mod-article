@@ -4,7 +4,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2012 Ommu Platform (www.ommu.co)
  * @modified date 22 March 2018, 19:23 WIB
  * @link https://github.com/ommu/mod-article
  *
@@ -348,33 +348,6 @@ class ArticleSetting extends OActiveRecord
 			$headline_category = array();
 		
 		return $headline_category;
-	}
-
-	/**
-	 * get Module License
-	 */
-	public static function getLicense($source='1234567890', $length=16, $char=4)
-	{
-		$mod = $length%$char;
-		if($mod == 0)
-			$sep = ($length/$char);
-		else
-			$sep = (int)($length/$char)+1;
-		
-		$sourceLength = strlen($source);
-		$random = '';
-		for ($i = 0; $i < $length; $i++)
-			$random .= $source[rand(0, $sourceLength - 1)];
-		
-		$license = '';
-		for ($i = 0; $i < $sep; $i++) {
-			if($i != $sep-1)
-				$license .= substr($random,($i*$char),$char).'-';
-			else
-				$license .= substr($random,($i*$char),$char);
-		}
-
-		return $license;
 	}
 
 	/**

@@ -7,7 +7,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2012 Ommu Platform (www.ommu.co)
  * @modified date 26 March 2018, 14:07 WIB
  * @link https://github.com/ommu/mod-article
  *
@@ -45,7 +45,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('published_date'); ?>
-			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker',array(
+			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker', array(
 				'model'=>$model,
 				'attribute'=>'published_date',
 				//'mode'=>'datetime',
@@ -61,7 +61,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('creation_date'); ?>
-			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker',array(
+			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker', array(
 				'model'=>$model,
 				'attribute'=>'creation_date',
 				//'mode'=>'datetime',
@@ -82,7 +82,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('modified_date'); ?>
-			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker',array(
+			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker', array(
 				'model'=>$model,
 				'attribute'=>'modified_date',
 				//'mode'=>'datetime',
@@ -103,7 +103,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('headline_date'); ?>
-			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker',array(
+			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker', array(
 				'model'=>$model,
 				'attribute'=>'headline_date',
 				//'mode'=>'datetime',
@@ -119,7 +119,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('updated_date'); ?>
-			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker',array(
+			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker', array(
 				'model'=>$model,
 				'attribute'=>'updated_date',
 				//'mode'=>'datetime',

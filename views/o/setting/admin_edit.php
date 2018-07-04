@@ -7,7 +7,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2012 Ommu Platform (www.ommu.co)
  * @modified date 23 March 2018, 16:01 WIB
  * @link https://github.com/ommu/mod-article
  *
@@ -47,21 +47,21 @@
 						'options' => array(
 							'class' => 'view',
 						),
-						'url' => 'Yii::app()->controller->createUrl(\'o/category/view\',array(\'id\'=>$data->primaryKey))'),
+						'url' => 'Yii::app()->controller->createUrl(\'o/category/view\', array(\'id\'=>$data->primaryKey))'),
 					'update' => array(
 						'label' => Yii::t('phrase', 'Update Article Category'),
 						'imageUrl' => false,
 						'options' => array(
 							'class' => 'update',
 						),
-						'url' => 'Yii::app()->controller->createUrl(\'o/category/edit\',array(\'id\'=>$data->primaryKey))'),
+						'url' => 'Yii::app()->controller->createUrl(\'o/category/edit\', array(\'id\'=>$data->primaryKey))'),
 					'delete' => array(
 						'label' => Yii::t('phrase', 'Delete Article Category'),
 						'imageUrl' => false,
 						'options' => array(
 							'class' => 'delete',
 						),
-						'url' => 'Yii::app()->controller->createUrl(\'o/category/delete\',array(\'id\'=>$data->primaryKey))'),
+						'url' => 'Yii::app()->controller->createUrl(\'o/category/delete\', array(\'id\'=>$data->primaryKey))'),
 				),
 				'template' => '{update}|{delete}',
 			));

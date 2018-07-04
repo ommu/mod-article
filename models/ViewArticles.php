@@ -4,7 +4,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 9 November 2016, 18:13 WIB
  * @modified date 22 March 2018, 16:57 WIB
  * @link https://github.com/ommu/mod-article
@@ -136,10 +136,10 @@ class ViewArticles extends OActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('t.article_id', $this->article_id);
-		$criteria->compare('t.article_cover',strtolower($this->article_cover),true);
-		$criteria->compare('t.article_video',strtolower($this->article_video),true);
+		$criteria->compare('t.article_cover', strtolower($this->article_cover), true);
+		$criteria->compare('t.article_video', strtolower($this->article_video), true);
 		$criteria->compare('t.media_id', $this->media_id);
-		$criteria->compare('t.article_file',strtolower($this->article_file),true);
+		$criteria->compare('t.article_file', strtolower($this->article_file), true);
 		$criteria->compare('t.file_id', $this->file_id);
 		$criteria->compare('t.medias', $this->medias);
 		$criteria->compare('t.media_all', $this->media_all);

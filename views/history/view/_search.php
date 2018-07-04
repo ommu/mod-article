@@ -7,7 +7,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2017 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2017 Ommu Platform (www.ommu.co)
  * @created date 8 January 2017, 21:21 WIB
  * @modified date 23 March 2018, 16:13 WIB
  * @link https://github.com/ommu/mod-article
@@ -41,7 +41,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('view_date'); ?>
-			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker',array(
+			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker', array(
 				'model'=>$model,
 				'attribute'=>'view_date',
 				//'mode'=>'datetime',

@@ -7,7 +7,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2012 Ommu Platform (www.ommu.co)
  * @modified date 23 March 2018, 16:01 WIB
  * @link https://github.com/ommu/mod-article
  *
@@ -66,12 +66,10 @@ EOP;
 		</label>
 		<div class="col-lg-8 col-md-9 col-sm-12">
 			<?php 
-			if($model->isNewRecord || (!$model->isNewRecord && $model->license == ''))
-				$model->license = ArticleSetting::getLicense();
-		
-			if($model->isNewRecord || (!$model->isNewRecord && $model->license == ''))
+			if($model->isNewRecord || (!$model->isNewRecord && $model->license == '')) {
+				$model->license = $this->licenseCode();
 				echo $form->textField($model, 'license', array('maxlength'=>32, 'class'=>'form-control'));
-			else
+			} else
 				echo $form->textField($model, 'license', array('maxlength'=>32, 'class'=>'form-control', 'disabled'=>'disabled'));?>
 			<?php echo $form->error($model, 'license'); ?>
 			<span class="small-px"><?php echo Yii::t('phrase', 'Format: XXXX-XXXX-XXXX-XXXX');?></span>

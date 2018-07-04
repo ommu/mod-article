@@ -4,7 +4,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2016 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2016 Ommu Platform (www.ommu.co)
  * @created date 8 December 2016, 11:36 WIB
  * @modified date 22 March 2018, 16:54 WIB
  * @link https://github.com/ommu/mod-article
@@ -154,7 +154,7 @@ class ArticleDownloads extends OActiveRecord
 		$criteria->compare('article.title', strtolower($this->article_search), true);
 		if(Yii::app()->getRequest()->getParam('article') && Yii::app()->getRequest()->getParam('publish'))
 			$criteria->compare('article.publish', Yii::app()->getRequest()->getParam('publish'));
-		$criteria->compare('file.file_filename',strtolower($this->file_search), true);
+		$criteria->compare('file.file_filename', strtolower($this->file_search), true);
 		if(Yii::app()->getRequest()->getParam('file') && Yii::app()->getRequest()->getParam('publish'))
 			$criteria->compare('file.publish', Yii::app()->getRequest()->getParam('publish'));
 		$criteria->compare('file.column_name_relation', strtolower($this->file_search), true);

@@ -6,7 +6,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2018 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2018 Ommu Platform (www.ommu.co)
  * @created date 26 March 2018, 14:07 WIB
  * @modified date 26 March 2018, 14:07 WIB
  * @link https://github.com/ommu/mod-article

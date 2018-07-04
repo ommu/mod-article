@@ -4,7 +4,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2012 Ommu Platform (www.ommu.co)
  * @modified date 22 March 2018, 16:54 WIB
  * @link https://github.com/ommu/mod-article
  *
@@ -307,7 +307,7 @@ class ArticleLikes extends OActiveRecord
 			if(!Yii::app()->getRequest()->getParam('type')) {
 				$this->templateColumns['publish'] = array(
 					'name' => 'publish',
-					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'publish\',array(\'id\'=>$data->like_id)), $data->publish, Yii::t(\'phrase\', \'Like,Unlike\'))',
+					'value' => 'Utility::getPublish(Yii::app()->controller->createUrl(\'publish\', array(\'id\'=>$data->like_id)), $data->publish, Yii::t(\'phrase\', \'Like,Unlike\'))',
 					'htmlOptions' => array(
 						'class' => 'center',
 					),

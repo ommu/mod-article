@@ -4,7 +4,7 @@
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2012 Ommu Platform (opensource.ommu.co)
+ * @copyright Copyright (c) 2012 Ommu Platform (www.ommu.co)
  * @modified date 26 March 2018, 05:07 WIB
  * @link https://github.com/ommu/mod-article
  *
@@ -66,7 +66,7 @@ class Articles extends OActiveRecord
 	{
 		return array(
 			'sluggable' => array(
-				'class'=>'ext.yii-behavior-sluggable.SluggableBehavior',
+				'class'=>'ext.yii-sluggable.SluggableBehavior',
 				'columns' => array('title'),
 				'unique' => true,
 				'update' => true,
@@ -265,13 +265,13 @@ class Articles extends OActiveRecord
 
 		$criteria->compare('creation.displayname', strtolower($this->creation_search), true);
 		$criteria->compare('modified.displayname', strtolower($this->modified_search), true);
-		$criteria->compare('view.medias',$this->photo_search);
-		$criteria->compare('view.views',$this->view_search);
-		$criteria->compare('view.likes',$this->like_search);
-		$criteria->compare('view.downloads',$this->downlaod_search);
-		$criteria->compare('view.tags',$this->tag_search);
+		$criteria->compare('view.medias', $this->photo_search);
+		$criteria->compare('view.views', $this->view_search);
+		$criteria->compare('view.likes', $this->like_search);
+		$criteria->compare('view.downloads', $this->downlaod_search);
+		$criteria->compare('view.tags', $this->tag_search);
 
-		if(!(Yii::app()->getRequest()->getParam('Articles_sort')))
+		if(!Yii::app()->getRequest()->getParam('Articles_sort'))
 			$criteria->order = 't.article_id DESC';
 
 		return new CActiveDataProvider($this, array(
