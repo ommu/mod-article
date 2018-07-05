@@ -150,7 +150,7 @@ class SiteController extends ControllerApi
 						'id' => $val->cat_id,
 						'category' => $categoryTitle,
 						//'count' => $articleCount,
-						'category_slug' => $val->slug ? $val->slug : Utility::getUrlTitle($categoryTitle),
+						'category_slug' => $val->slug ? $val->slug : $this->urlTitle($categoryTitle),
 						'data' => $data,
 					);
 				}

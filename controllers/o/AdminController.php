@@ -435,7 +435,7 @@ class AdminController extends Controller
 			$model = $this->loadModel($id);
 			
 			$uploadPhoto = CUploadedFile::getInstanceByName('namaFile');
-			$fileName = time().'_'.Utility::getUrlTitle($model->title).'.'.strtolower($uploadPhoto->extensionName);
+			$fileName = time().'_'.$this->urlTitle($model->title).'.'.strtolower($uploadPhoto->extensionName);
 			if($uploadPhoto->saveAs($article_path.'/'.$fileName)) {
 				$photo = new ArticleMedia;
 				$photo->media_type_i = 1;

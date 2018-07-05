@@ -21,7 +21,7 @@ if($model != null) {?>
 			if($val->view->article_cover != '')
 				$article_cover = Yii::app()->request->baseUrl.'/public/article/'.$val->article_id.'/'.$val->view->article_cover;?>
 
-			<a class="img" href="<?php echo Yii::app()->createUrl('article/'.$controller.'/view', array('id'=>$val->article_id, 'slug'=>Utility::getUrlTitle($val->title)));?>" title="<?php echo $val->title;?>"><img src="<?php echo Utility::getTimThumb($article_cover, 400, 270, 1);?>"></a> 
+			<a class="img" href="<?php echo Yii::app()->createUrl('article/'.$controller.'/view', array('id'=>$val->article_id, 'slug'=>$this->urlTitle($val->title)));?>" title="<?php echo $val->title;?>"><img src="<?php echo Utility::getTimThumb($article_cover, 400, 270, 1);?>"></a> 
 			<div class="date">
 				<?php echo Utility::dateFormat($val->creation_date, true);?>
 				<?php //begin.Tools ?>
@@ -32,7 +32,7 @@ if($model != null) {?>
 				</div>
 				<?php //end.Tools ?>
 			</div>
-			<a class="title" href="<?php echo Yii::app()->createUrl('article/'.$controller.'/view', array('id'=>$val->article_id, 'slug'=>Utility::getUrlTitle($val->title)));?>" title="<?php echo $val->title;?>"><?php echo $val->title;?></a><br/>
+			<a class="title" href="<?php echo Yii::app()->createUrl('article/'.$controller.'/view', array('id'=>$val->article_id, 'slug'=>$this->urlTitle($val->title)));?>" title="<?php echo $val->title;?>"><?php echo $val->title;?></a><br/>
 			<p><?php echo Utility::shortText(Utility::hardDecode($val->body),300,' ...'); ?></p>
 		</div>
 		<?php }?>

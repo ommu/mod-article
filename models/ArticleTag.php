@@ -30,6 +30,8 @@
 
 class ArticleTag extends OActiveRecord
 {
+	use UtilityTrait;
+
 	public $gridForbiddenColumn = array('modified_date','modified_search','updated_date');
 	public $tag_i;
 
@@ -181,7 +183,7 @@ class ArticleTag extends OActiveRecord
 		$criteria->compare('article.title', strtolower($this->article_search), true);
 		if(Yii::app()->getRequest()->getParam('article') && Yii::app()->getRequest()->getParam('publish'))
 			$criteria->compare('article.publish', Yii::app()->getRequest()->getParam('publish'));
-		$tag_i = Utility::getUrlTitle(strtolower(trim($this->tag_i)));
+		$tag_i = $this->urlTitle($this->tag_i);
 		$criteria->compare('tag.body', $tag_i, true);
 		$criteria->compare('creation.displayname', strtolower($this->creation_search), true);
 		$criteria->compare('modified.displayname', strtolower($this->modified_search), true);
@@ -415,7 +417,7 @@ class ArticleTag extends OActiveRecord
 	{
 		if(parent::beforeSave()) {
 			if($this->isNewRecord) {
-				$tag_i = Utility::getUrlTitle(strtolower(trim($this->tag_i)));
+				$tag_i = $this->urlTitle($this->tag_i);
 				if($this->tag_id == 0) {
 					$tag = OmmuTags::model()->find(array(
 						'select' => 'tag_id, body',

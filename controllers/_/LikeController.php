@@ -105,7 +105,7 @@ class LikeController extends Controller
 		
 		else {
 			if(ArticleLikes::insertLike($model->article_id))
-				$this->redirect(array('site/view','id'=>$model->article_id,'slug'=>Utility::getUrlTitle($model->title)));
+				$this->redirect(array('site/view','id'=>$model->article_id,'slug'=>$this->urlTitle($model->title)));
 		}
 	}
 	

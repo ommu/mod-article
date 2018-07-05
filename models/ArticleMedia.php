@@ -34,6 +34,8 @@
 
 class ArticleMedia extends OActiveRecord
 {
+	use UtilityTrait;
+
 	public $gridForbiddenColumn = array('orders','caption','description','creation_date','creation_search','modified_date','modified_search','updated_date');
 	public $media_type_i;	//0=video, 1=photo
 	public $old_cover_filename_i;
@@ -552,7 +554,7 @@ class ArticleMedia extends OActiveRecord
 				$this->cover_filename = CUploadedFile::getInstance($this, 'cover_filename');
 				if($this->cover_filename != null) {
 					if($this->cover_filename instanceOf CUploadedFile) {
-						$fileName = time().'_'.Utility::getUrlTitle($this->article->title).'.'.strtolower($this->cover_filename->extensionName);
+						$fileName = time().'_'.$this->urlTitle($this->article->title).'.'.strtolower($this->cover_filename->extensionName);
 						if($this->cover_filename->saveAs($article_path.'/'.$fileName)) {
 							if(!$this->isNewRecord) {
 								if($this->old_cover_filename_i != '' && file_exists($article_path.'/'.$this->old_cover_filename_i))
