@@ -45,9 +45,9 @@ EOP;
 	<div id="ajax-message">
 		<?php echo $form->errorSummary($model);
 		if(Yii::app()->user->hasFlash('error'))
-			echo Utility::flashError(Yii::app()->user->getFlash('error'));
+			echo $this->flashMessage(Yii::app()->user->getFlash('error'), 'error');
 		if(Yii::app()->user->hasFlash('success'))
-			echo Utility::flashSuccess(Yii::app()->user->getFlash('success')); ?>
+			echo $this->flashMessage(Yii::app()->user->getFlash('success'), 'success'); ?>
 	</div>
 	<?php //begin.Messages ?>
 
