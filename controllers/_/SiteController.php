@@ -39,7 +39,7 @@ class SiteController extends Controller
 		$permission = ArticleSetting::getInfo('permission');
 		$siteType = OmmuSettings::getInfo('site_type');
 		if($permission == 1 || ($permission == 0 && !Yii::app()->user->isGuest)) {
-			$arrThemes = Utility::getCurrentTemplate('public');
+			$arrThemes = $this->currentTemplate('public');
 			Yii::app()->theme = $arrThemes['folder'];
 			$this->layout = $arrThemes['layout'];
 		} else
