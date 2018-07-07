@@ -32,6 +32,8 @@
 
 class ArticleSetting extends OActiveRecord
 {
+	use GridViewTrait;
+
 	public $gridForbiddenColumn = array();
 
 	// Variable Search
@@ -203,10 +205,7 @@ class ArticleSetting extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>array(
-					1=>Yii::t('phrase', 'Yes'),
-					0=>Yii::t('phrase', 'No'),
-				),
+				'filter'=>$this->filterYesNo(),
 				'type' => 'raw',
 			);
 			$this->templateColumns['meta_keyword'] = array(
@@ -223,10 +222,7 @@ class ArticleSetting extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>array(
-					1=>Yii::t('phrase', 'Yes'),
-					0=>Yii::t('phrase', 'No'),
-				),
+				'filter'=>$this->filterYesNo(),
 				'type' => 'raw',
 			);
 			$this->templateColumns['headline_limit'] = array(
@@ -263,10 +259,7 @@ class ArticleSetting extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>array(
-					1=>Yii::t('phrase', 'Yes'),
-					0=>Yii::t('phrase', 'No'),
-				),
+				'filter'=>$this->filterYesNo(),
 				'type' => 'raw',
 			);
 			$this->templateColumns['media_file_type'] = array(

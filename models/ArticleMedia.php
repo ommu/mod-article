@@ -35,6 +35,7 @@
 class ArticleMedia extends OActiveRecord
 {
 	use UtilityTrait;
+	use GridViewTrait;
 
 	public $gridForbiddenColumn = array('orders','caption','description','creation_date','creation_search','modified_date','modified_search','updated_date');
 	public $media_type_i;	//0=video, 1=photo
@@ -399,10 +400,7 @@ class ArticleMedia extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>array(
-					1=>Yii::t('phrase', 'Yes'),
-					0=>Yii::t('phrase', 'No'),
-				),
+				'filter'=>$this->filterYesNo(),
 				'type' => 'raw',
 			);
 			$this->templateColumns['description_search'] = array(
@@ -411,10 +409,7 @@ class ArticleMedia extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>array(
-					1=>Yii::t('phrase', 'Yes'),
-					0=>Yii::t('phrase', 'No'),
-				),
+				'filter'=>$this->filterYesNo(),
 				'type' => 'raw',
 			);
 			$this->templateColumns['cover'] = array(
@@ -423,10 +418,7 @@ class ArticleMedia extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>array(
-					1=>Yii::t('phrase', 'Yes'),
-					0=>Yii::t('phrase', 'No'),
-				),
+				'filter'=>$this->filterYesNo(),
 				'type' => 'raw',
 			);
 			if(!Yii::app()->getRequest()->getParam('type')) {
@@ -436,10 +428,7 @@ class ArticleMedia extends OActiveRecord
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
-					'filter'=>array(
-						1=>Yii::t('phrase', 'Yes'),
-						0=>Yii::t('phrase', 'No'),
-					),
+					'filter'=>$this->filterYesNo(),
 					'type' => 'raw',
 				);
 			}

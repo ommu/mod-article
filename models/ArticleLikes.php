@@ -27,6 +27,8 @@
 
 class ArticleLikes extends OActiveRecord
 {
+	use GridViewTrait;
+
 	public $gridForbiddenColumn = array('updated_date','likes_ip');
 
 	// Variable Search
@@ -311,10 +313,7 @@ class ArticleLikes extends OActiveRecord
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
-					'filter'=>array(
-						1=>Yii::t('phrase', 'Yes'),
-						0=>Yii::t('phrase', 'No'),
-					),
+					'filter'=>$this->filterYesNo(),
 					'type' => 'raw',
 				);
 			}

@@ -34,6 +34,7 @@
 class ArticleCategory extends OActiveRecord
 {
 	use UtilityTrait;
+	use GridViewTrait;
 
 	public $gridForbiddenColumn = array('desc_i','modified_date','modified_search','updated_date','slug');
 	public $name_i;
@@ -385,10 +386,7 @@ class ArticleCategory extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>array(
-					1=>Yii::t('phrase', 'Yes'),
-					0=>Yii::t('phrase', 'No'),
-				),
+				'filter'=>$this->filterYesNo(),
 				'type' => 'raw',
 			);
 			$this->templateColumns['single_file'] = array(
@@ -397,10 +395,7 @@ class ArticleCategory extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>array(
-					1=>Yii::t('phrase', 'Yes'),
-					0=>Yii::t('phrase', 'No'),
-				),
+				'filter'=>$this->filterYesNo(),
 				'type' => 'raw',
 			);
 			if(!Yii::app()->getRequest()->getParam('type')) {
@@ -410,10 +405,7 @@ class ArticleCategory extends OActiveRecord
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
-					'filter'=>array(
-						1=>Yii::t('phrase', 'Yes'),
-						0=>Yii::t('phrase', 'No'),
-					),
+					'filter'=>$this->filterYesNo(),
 					'type' => 'raw',
 				);
 			}

@@ -29,6 +29,8 @@
 
 class ArticleViews extends OActiveRecord
 {
+	use GridViewTrait;
+
 	public $gridForbiddenColumn = array('view_ip','deleted_date');
 
 	// Variable Search
@@ -297,10 +299,7 @@ class ArticleViews extends OActiveRecord
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
-					'filter'=>array(
-						1=>Yii::t('phrase', 'Yes'),
-						0=>Yii::t('phrase', 'No'),
-					),
+					'filter'=>$this->filterYesNo(),
 					'type' => 'raw',
 				);
 			}

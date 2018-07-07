@@ -45,7 +45,7 @@
 <div class="grid-form">
 <?php $this->renderPartial('_option_form', array(
 	'model'=>$model,
-	'gridColumns'=>Utility::getActiveDefaultColumns($columns),
+	'gridColumns'=>$this->activeDefaultColumns($columns),
 )); ?>
 </div>
 <?php //end.Grid Option ?>
@@ -72,21 +72,21 @@
 				'buttons' => array(
 					'view' => array(
 						'label' => Yii::t('phrase', 'Detail Article'),
-						'imageUrl' => false,
+						'imageUrl' => Yii::app()->params['grid-view']['buttonImageUrl'],
 						'options' => array(
 							'class' => 'view',
 						),
 						'url' => 'Yii::app()->controller->createUrl(\'view\', array(\'id\'=>$data->primaryKey))'),
 					'update' => array(
 						'label' => Yii::t('phrase', 'Update Article'),
-						'imageUrl' => false,
+						'imageUrl' => Yii::app()->params['grid-view']['buttonImageUrl'],
 						'options' => array(
 							'class' => 'update',
 						),
 						'url' => 'Yii::app()->controller->createUrl(\'edit\', array(\'id\'=>$data->primaryKey))'),
 					'delete' => array(
 						'label' => Yii::t('phrase', 'Delete Article'),
-						'imageUrl' => false,
+						'imageUrl' => Yii::app()->params['grid-view']['buttonImageUrl'],
 						'options' => array(
 							'class' => 'delete',
 						),
@@ -99,8 +99,9 @@
 				'id'=>'articles-grid',
 				'dataProvider'=>$model->search(),
 				'filter'=>$model,
-				'columns' => $columnData,
-				'pager' => array('header' => ''),
+				'columns'=>$columnData,
+				'template'=>Yii::app()->params['grid-view']['gridTemplate'],
+				'pager'=>array('header'=>''),
 			));
 		?>
 		<?php //end.Grid Item ?>

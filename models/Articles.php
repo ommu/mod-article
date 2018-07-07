@@ -42,6 +42,7 @@
 class Articles extends OActiveRecord
 {
 	use UtilityTrait;
+	use GridViewTrait;
 
 	public $gridForbiddenColumn = array('body','quote','comment_code','creation_search','modified_date','modified_search','headline_date','updated_date','slug','photo_search','like_search','tag_search');
 	public $media_type_i;	//0=video, 1=photo
@@ -549,10 +550,7 @@ class Articles extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>array(
-					1=>Yii::t('phrase', 'Yes'),
-					0=>Yii::t('phrase', 'No'),
-				),
+				'filter'=>$this->filterYesNo(),
 				'type' => 'raw',
 			);
 			if($setting->headline == 1) {
@@ -562,10 +560,7 @@ class Articles extends OActiveRecord
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
-					'filter'=>array(
-						1=>Yii::t('phrase', 'Yes'),
-						0=>Yii::t('phrase', 'No'),
-					),
+					'filter'=>$this->filterYesNo(),
 					'type' => 'raw',
 				);
 			}
@@ -576,10 +571,7 @@ class Articles extends OActiveRecord
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
-					'filter'=>array(
-						1=>Yii::t('phrase', 'Yes'),
-						0=>Yii::t('phrase', 'No'),
-					),
+					'filter'=>$this->filterYesNo(),
 					'type' => 'raw',
 				);
 			}
