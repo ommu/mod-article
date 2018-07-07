@@ -205,7 +205,7 @@ class ArticleSetting extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>$this->filterYesNo(),
+				'filter' => $this->filterYesNo(),
 				'type' => 'raw',
 			);
 			$this->templateColumns['meta_keyword'] = array(
@@ -222,7 +222,7 @@ class ArticleSetting extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>$this->filterYesNo(),
+				'filter' => $this->filterYesNo(),
 				'type' => 'raw',
 			);
 			$this->templateColumns['headline_limit'] = array(
@@ -259,7 +259,7 @@ class ArticleSetting extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>$this->filterYesNo(),
+				'filter' => $this->filterYesNo(),
 				'type' => 'raw',
 			);
 			$this->templateColumns['media_file_type'] = array(

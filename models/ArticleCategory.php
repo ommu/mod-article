@@ -386,7 +386,7 @@ class ArticleCategory extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>$this->filterYesNo(),
+				'filter' => $this->filterYesNo(),
 				'type' => 'raw',
 			);
 			$this->templateColumns['single_file'] = array(
@@ -395,7 +395,7 @@ class ArticleCategory extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>$this->filterYesNo(),
+				'filter' => $this->filterYesNo(),
 				'type' => 'raw',
 			);
 			if(!Yii::app()->getRequest()->getParam('type')) {
@@ -405,7 +405,7 @@ class ArticleCategory extends OActiveRecord
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
-					'filter'=>$this->filterYesNo(),
+					'filter' => $this->filterYesNo(),
 					'type' => 'raw',
 				);
 			}

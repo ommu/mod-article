@@ -400,7 +400,7 @@ class ArticleMedia extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>$this->filterYesNo(),
+				'filter' => $this->filterYesNo(),
 				'type' => 'raw',
 			);
 			$this->templateColumns['description_search'] = array(
@@ -409,7 +409,7 @@ class ArticleMedia extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>$this->filterYesNo(),
+				'filter' => $this->filterYesNo(),
 				'type' => 'raw',
 			);
 			$this->templateColumns['cover'] = array(
@@ -418,7 +418,7 @@ class ArticleMedia extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>$this->filterYesNo(),
+				'filter' => $this->filterYesNo(),
 				'type' => 'raw',
 			);
 			if(!Yii::app()->getRequest()->getParam('type')) {
@@ -428,7 +428,7 @@ class ArticleMedia extends OActiveRecord
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
-					'filter'=>$this->filterYesNo(),
+					'filter' => $this->filterYesNo(),
 					'type' => 'raw',
 				);
 			}

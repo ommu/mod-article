@@ -550,7 +550,7 @@ class Articles extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>$this->filterYesNo(),
+				'filter' => $this->filterYesNo(),
 				'type' => 'raw',
 			);
 			if($setting->headline == 1) {
@@ -560,7 +560,7 @@ class Articles extends OActiveRecord
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
-					'filter'=>$this->filterYesNo(),
+					'filter' => $this->filterYesNo(),
 					'type' => 'raw',
 				);
 			}
@@ -571,7 +571,7 @@ class Articles extends OActiveRecord
 					'htmlOptions' => array(
 						'class' => 'center',
 					),
-					'filter'=>$this->filterYesNo(),
+					'filter' => $this->filterYesNo(),
 					'type' => 'raw',
 				);
 			}
