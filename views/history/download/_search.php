@@ -41,18 +41,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('download_date'); ?>
-			<?php /* $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-				'model'=>$model,
-				'attribute'=>'download_date',
-				//'mode'=>'datetime',
-				'options'=>array(
-					'dateFormat' => 'yy-mm-dd',
-				),
-				'htmlOptions'=>array(
-					'class' => 'form-control',
-				 ),
-			)); */
-			echo $form->dateField($model, 'download_date', array('class'=>'form-control')); ?>
+			<?php echo $this->filterDatepicker($model, 'download_date', false); ?>
 		</li>
 
 		<li>

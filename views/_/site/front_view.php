@@ -43,7 +43,7 @@
 <?php if($random != null) {
 	foreach($random as $key => $val) { ?>
 		<a href="<?php echo Yii::app()->controller->createUrl('view', array('id'=>$val->article_id,'slug'=>$this->urlTitle($val->title)));?>" title="<?php echo $val->title;?>"><?php echo $val->title;?></a>
-		<br/><?php echo Utility::dateFormat($val->published_date);?>
+		<br/><?php echo $this->dateFormat($val->published_date);?>
 		<br/><?php echo $val->view->views;?>
 		<p><?php echo Utility::shortText(Utility::hardDecode($val->body),150);?></p>
 <?php }

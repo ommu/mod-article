@@ -23,7 +23,7 @@ if($model != null) {?>
 
 			<a class="img" href="<?php echo Yii::app()->createUrl('article/'.$controller.'/view', array('id'=>$val->article_id, 'slug'=>$this->urlTitle($val->title)));?>" title="<?php echo $val->title;?>"><img src="<?php echo Utility::getTimThumb($article_cover, 400, 270, 1);?>"></a> 
 			<div class="date">
-				<?php echo Utility::dateFormat($val->creation_date, true);?>
+				<?php echo $this->dateFormat($val->creation_date, true);?>
 				<?php //begin.Tools ?>
 				<div class="tools">
 					<?php /* if(Yii::app()->params['article_mod_comment'] == 1) {?><span class="comment"><?php echo $val->comment;?></span><?php } */?>

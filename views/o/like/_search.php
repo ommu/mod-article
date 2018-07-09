@@ -40,18 +40,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('likes_date'); ?>
-			<?php /* $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-				'model'=>$model,
-				'attribute'=>'likes_date',
-				//'mode'=>'datetime',
-				'options'=>array(
-					'dateFormat' => 'yy-mm-dd',
-				),
-				'htmlOptions'=>array(
-					'class' => 'form-control',
-				 ),
-			)); */
-			echo $form->dateField($model, 'likes_date', array('class'=>'form-control')); ?>
+			<?php echo $this->filterDatepicker($model, 'likes_date', false); ?>
 		</li>
 
 		<li>
@@ -61,18 +50,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('updated_date'); ?>
-			<?php /* $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-				'model'=>$model,
-				'attribute'=>'updated_date',
-				//'mode'=>'datetime',
-				'options'=>array(
-					'dateFormat' => 'yy-mm-dd',
-				),
-				'htmlOptions'=>array(
-					'class' => 'form-control',
-				 ),
-			)); */
-			echo $form->dateField($model, 'updated_date', array('class'=>'form-control')); ?>
+			<?php echo $this->filterDatepicker($model, 'updated_date', false); ?>
 		</li>
 
 		<li>

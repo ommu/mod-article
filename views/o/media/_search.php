@@ -55,18 +55,8 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('creation_date'); ?>
-			<?php /* $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-				'model'=>$model,
-				'attribute'=>'creation_date',
-				//'mode'=>'datetime',
-				'options'=>array(
-					'dateFormat' => 'yy-mm-dd',
-				),
-				'htmlOptions'=>array(
-					'class' => 'form-control',
-				 ),
-			)); */
-			echo $form->dateField($model, 'creation_date', array('class'=>'form-control')); ?>
+			
+			<?php echo $this->filterDatepicker($model, 'creation_date', false); ?>
 		</li>
 
 		<li>
@@ -76,18 +66,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('modified_date'); ?>
-			<?php /* $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-				'model'=>$model,
-				'attribute'=>'modified_date',
-				//'mode'=>'datetime',
-				'options'=>array(
-					'dateFormat' => 'yy-mm-dd',
-				),
-				'htmlOptions'=>array(
-					'class' => 'form-control',
-				 ),
-			)); */
-			echo $form->dateField($model, 'modified_date', array('class'=>'form-control')); ?>
+			<?php echo $this->filterDatepicker($model, 'modified_date', false); ?>
 		</li>
 
 		<li>
@@ -97,18 +76,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('updated_date'); ?>
-			<?php /* $this->widget('zii.widgets.jui.CJuiDatePicker', array(
-				'model'=>$model,
-				'attribute'=>'updated_date',
-				//'mode'=>'datetime',
-				'options'=>array(
-					'dateFormat' => 'yy-mm-dd',
-				),
-				'htmlOptions'=>array(
-					'class' => 'form-control',
-				 ),
-			)); */
-			echo $form->dateField($model, 'updated_date', array('class'=>'form-control')); ?>
+			<?php echo $this->filterDatepicker($model, 'updated_date', false); ?>
 		</li>
 
 		<li>
@@ -123,7 +91,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('publish'); ?>
-			<?php echo $form->dropDownList($model, 'publish', array('0'=>Yii::t('phrase', 'No'), '1'=>Yii::t('phrase', 'Yes')), array('class'=>'form-control')); ?>
+			<?php echo $form->dropDownList($model, 'publish', $this->filterYesNo(), array('prompt'=>'', 'class'=>'form-control')); ?>
 		</li>
 
 		<li class="submit">
