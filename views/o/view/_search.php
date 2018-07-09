@@ -46,7 +46,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('view_date'); ?>
-			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker', array(
+			<?php /* $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				'model'=>$model,
 				'attribute'=>'view_date',
 				//'mode'=>'datetime',
@@ -67,7 +67,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('deleted_date'); ?>
-			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker', array(
+			<?php /* $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				'model'=>$model,
 				'attribute'=>'deleted_date',
 				//'mode'=>'datetime',

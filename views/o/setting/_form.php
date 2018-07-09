@@ -36,7 +36,7 @@ EOP;
 	$cs->registerScript('js', $js, CClientScript::POS_END);
 ?>
 
-<?php $form=$this->beginWidget('application.libraries.core.components.system.OActiveForm', array(
+<?php $form=$this->beginWidget('application.libraries.yii-traits.system.OActiveForm', array(
 	'id'=>'article-setting-form',
 	'enableAjaxValidation'=>true,
 	/*

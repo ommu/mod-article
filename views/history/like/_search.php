@@ -46,7 +46,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('likes_date'); ?>
-			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker', array(
+			<?php /* $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				'model'=>$model,
 				'attribute'=>'likes_date',
 				//'mode'=>'datetime',

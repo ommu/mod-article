@@ -41,7 +41,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('view_date'); ?>
-			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker', array(
+			<?php /* $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				'model'=>$model,
 				'attribute'=>'view_date',
 				//'mode'=>'datetime',

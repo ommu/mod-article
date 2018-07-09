@@ -51,7 +51,7 @@
 
 		<li>
 			<?php echo $model->getAttributeLabel('download_date'); ?>
-			<?php /* $this->widget('application.libraries.core.components.system.CJuiDatePicker', array(
+			<?php /* $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 				'model'=>$model,
 				'attribute'=>'download_date',
 				//'mode'=>'datetime',

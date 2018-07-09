@@ -32,7 +32,7 @@ EOP;
 	$cs->registerScript('media-type', $js, CClientScript::POS_END);
 ?>
 
-<?php $form=$this->beginWidget('application.libraries.core.components.system.OActiveForm', array(
+<?php $form=$this->beginWidget('application.libraries.yii-traits.system.OActiveForm', array(
 	'id'=>'articles-form',
 	'enableAjaxValidation'=>$validation,
 	/*
@@ -238,7 +238,7 @@ EOP;
 					<?php echo $form->labelEx($model, 'published_date', array('class'=>'col-form-label col-lg-12 col-md-3 col-sm-12')); ?>
 					<div class="col-lg-12 col-md-9 col-sm-12">
 						<?php $model->published_date = !$model->isNewRecord ? (!in_array($model->published_date, array('0000-00-00','1970-01-01','0002-12-02','-0001-11-30')) ? date('Y-m-d', strtotime($model->published_date)) : '') : '';
-						/* $this->widget('application.libraries.core.components.system.CJuiDatePicker', array(
+						/* $this->widget('zii.widgets.jui.CJuiDatePicker', array(
 							'model'=>$model,
 							'attribute'=>'published_date',
 							//'mode'=>'datetime',
