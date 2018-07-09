@@ -275,30 +275,7 @@ class ArticleCategory extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter' => 'native-datepicker',
-				/*
-				'filter' => Yii::app()->controller->widget('application.libraries.core.components.system.CJuiDatePicker', array(
-					'model'=>$this,
-					'attribute'=>'creation_date',
-					'language' => 'en',
-					'i18nScriptFile' => 'jquery-ui-i18n.min.js',
-					//'mode'=>'datetime',
-					'htmlOptions' => array(
-						'id' => 'creation_date_filter',
-						'on_datepicker' => 'on',
-						'placeholder' => Yii::t('phrase', 'filter'),
-					),
-					'options'=>array(
-						'showOn' => 'focus',
-						'dateFormat' => 'yy-mm-dd',
-						'showOtherMonths' => true,
-						'selectOtherMonths' => true,
-						'changeMonth' => true,
-						'changeYear' => true,
-						'showButtonPanel' => true,
-					),
-				), true),
-				*/
+				'filter' => $this->filterDatepicker($this, 'creation_date'),
 			);
 			if(!Yii::app()->getRequest()->getParam('modified')) {
 				$this->templateColumns['modified_search'] = array(
@@ -312,30 +289,7 @@ class ArticleCategory extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter' => 'native-datepicker',
-				/*
-				'filter' => Yii::app()->controller->widget('application.libraries.core.components.system.CJuiDatePicker', array(
-					'model'=>$this,
-					'attribute'=>'modified_date',
-					'language' => 'en',
-					'i18nScriptFile' => 'jquery-ui-i18n.min.js',
-					//'mode'=>'datetime',
-					'htmlOptions' => array(
-						'id' => 'modified_date_filter',
-						'on_datepicker' => 'on',
-						'placeholder' => Yii::t('phrase', 'filter'),
-					),
-					'options'=>array(
-						'showOn' => 'focus',
-						'dateFormat' => 'yy-mm-dd',
-						'showOtherMonths' => true,
-						'selectOtherMonths' => true,
-						'changeMonth' => true,
-						'changeYear' => true,
-						'showButtonPanel' => true,
-					),
-				), true),
-				*/
+				'filter' => $this->filterDatepicker($this, 'modified_date'),
 			);
 			$this->templateColumns['updated_date'] = array(
 				'name' => 'updated_date',
@@ -343,30 +297,7 @@ class ArticleCategory extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter' => 'native-datepicker',
-				/*
-				'filter' => Yii::app()->controller->widget('application.libraries.core.components.system.CJuiDatePicker', array(
-					'model'=>$this,
-					'attribute'=>'updated_date',
-					'language' => 'en',
-					'i18nScriptFile' => 'jquery-ui-i18n.min.js',
-					//'mode'=>'datetime',
-					'htmlOptions' => array(
-						'id' => 'updated_date_filter',
-						'on_datepicker' => 'on',
-						'placeholder' => Yii::t('phrase', 'filter'),
-					),
-					'options'=>array(
-						'showOn' => 'focus',
-						'dateFormat' => 'yy-mm-dd',
-						'showOtherMonths' => true,
-						'selectOtherMonths' => true,
-						'changeMonth' => true,
-						'changeYear' => true,
-						'showButtonPanel' => true,
-					),
-				), true),
-				*/
+				'filter' => $this->filterDatepicker($this, 'updated_date'),
 			);
 			$this->templateColumns['slug'] = array(
 				'name' => 'slug',
