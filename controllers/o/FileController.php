@@ -100,15 +100,7 @@ class FileController extends Controller
 			$model->attributes=Yii::app()->getRequest()->getParam('ArticleFiles');
 		}
 
-		$gridColumn = Yii::app()->getRequest()->getParam('GridColumn');
-		$columnTemp = array();
-		if($gridColumn) {
-			foreach($gridColumn as $key => $val) {
-				if($gridColumn[$key] == 1)
-					$columnTemp[] = $key;
-			}
-		}
-		$columns = $model->getGridColumn($columnTemp);
+		$columns = $model->getGridColumn($this->gridColumnTemp());
 
 		$this->pageTitle = Yii::t('phrase', 'Article Files');
 		$this->pageDescription = '';

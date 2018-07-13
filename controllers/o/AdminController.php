@@ -104,15 +104,7 @@ class AdminController extends Controller
 			$model->attributes=Yii::app()->getRequest()->getParam('Articles');
 		}
 
-		$gridColumn = Yii::app()->getRequest()->getParam('GridColumn');
-		$columnTemp = array();
-		if($gridColumn) {
-			foreach($gridColumn as $key => $val) {
-				if($gridColumn[$key] == 1)
-					$columnTemp[] = $key;
-			}
-		}
-		$columns = $model->getGridColumn($columnTemp);
+		$columns = $model->getGridColumn($this->gridColumnTemp());
 
 		$pageTitle = Yii::t('phrase', 'Articles');
 		if($category != null) {

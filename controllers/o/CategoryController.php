@@ -101,15 +101,7 @@ class CategoryController extends Controller
 			$model->attributes=Yii::app()->getRequest()->getParam('ArticleCategory');
 		}
 
-		$gridColumn = Yii::app()->getRequest()->getParam('GridColumn');
-		$columnTemp = array();
-		if($gridColumn) {
-			foreach($gridColumn as $key => $val) {
-				if($gridColumn[$key] == 1)
-					$columnTemp[] = $key;
-			}
-		}
-		$columns = $model->getGridColumn($columnTemp);
+		$columns = $model->getGridColumn($this->gridColumnTemp());
 
 		$this->pageTitle = Yii::t('phrase', 'Article Categories');
 		$this->pageDescription = Yii::t('phrase', 'You may want to allow your users to categorize their articles by subject, location, etc. Categorized articles make it easier for users to find and attend articles that interest them. If you want to allow article categories, you can create them (along with subcategories) below.');
