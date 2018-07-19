@@ -93,10 +93,10 @@ class DownloadController extends Controller
 	public function actionManage($file=null) 
 	{
 		$model=new ArticleDownloads('search');
-		$model->unsetAttributes();  // clear any default values
-		if(Yii::app()->getRequest()->getParam('ArticleDownloads')) {
-			$model->attributes=Yii::app()->getRequest()->getParam('ArticleDownloads');
-		}
+		$model->unsetAttributes();	// clear any default values
+		$ArticleDownloads = Yii::app()->getRequest()->getParam('ArticleDownloads');
+		if($ArticleDownloads)
+			$model->attributes=$ArticleDownloads;
 
 		$columns = $model->getGridColumn($this->gridColumnTemp());
 

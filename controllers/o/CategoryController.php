@@ -96,10 +96,10 @@ class CategoryController extends Controller
 	public function actionManage() 
 	{
 		$model=new ArticleCategory('search');
-		$model->unsetAttributes();  // clear any default values
-		if(Yii::app()->getRequest()->getParam('ArticleCategory')) {
-			$model->attributes=Yii::app()->getRequest()->getParam('ArticleCategory');
-		}
+		$model->unsetAttributes();	// clear any default values
+		$ArticleCategory = Yii::app()->getRequest()->getParam('ArticleCategory');
+		if($ArticleCategory)
+			$model->attributes=$ArticleCategory;
 
 		$columns = $model->getGridColumn($this->gridColumnTemp());
 

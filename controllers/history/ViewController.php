@@ -93,7 +93,7 @@ class ViewController extends Controller
 	public function actionManage($view=null) 
 	{
 		$model=new ArticleViewHistory('search');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes();	// clear any default values
 		if(Yii::app()->getRequest()->getParam('ArticleViewHistory')) {
 			$model->attributes=Yii::app()->getRequest()->getParam('ArticleViewHistory');
 		}

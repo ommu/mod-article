@@ -95,10 +95,10 @@ class ViewController extends Controller
 	public function actionManage() 
 	{
 		$model=new ArticleViews('search');
-		$model->unsetAttributes();  // clear any default values
-		if(Yii::app()->getRequest()->getParam('ArticleViews')) {
-			$model->attributes=Yii::app()->getRequest()->getParam('ArticleViews');
-		}
+		$model->unsetAttributes();	// clear any default values
+		$ArticleViews = Yii::app()->getRequest()->getParam('ArticleViews');
+		if($ArticleViews)
+			$model->attributes=$ArticleViews;
 
 		$columns = $model->getGridColumn($this->gridColumnTemp());
 

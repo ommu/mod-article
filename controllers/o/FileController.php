@@ -95,10 +95,10 @@ class FileController extends Controller
 	public function actionManage() 
 	{
 		$model=new ArticleFiles('search');
-		$model->unsetAttributes();  // clear any default values
-		if(Yii::app()->getRequest()->getParam('ArticleFiles')) {
-			$model->attributes=Yii::app()->getRequest()->getParam('ArticleFiles');
-		}
+		$model->unsetAttributes();	// clear any default values
+		$ArticleFiles = Yii::app()->getRequest()->getParam('ArticleFiles');
+		if($ArticleFiles)
+			$model->attributes=$ArticleFiles;
 
 		$columns = $model->getGridColumn($this->gridColumnTemp());
 

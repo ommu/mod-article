@@ -99,10 +99,10 @@ class AdminController extends Controller
 	public function actionManage($category=null) 
 	{
 		$model=new Articles('search');
-		$model->unsetAttributes();  // clear any default values
-		if(Yii::app()->getRequest()->getParam('Articles')) {
-			$model->attributes=Yii::app()->getRequest()->getParam('Articles');
-		}
+		$model->unsetAttributes();	// clear any default values
+		$Articles = Yii::app()->getRequest()->getParam('Articles');
+		if($Articles)
+			$model->attributes=$Articles;
 
 		$columns = $model->getGridColumn($this->gridColumnTemp());
 

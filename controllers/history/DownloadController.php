@@ -93,7 +93,7 @@ class DownloadController extends Controller
 	public function actionManage($download=null) 
 	{
 		$model=new ArticleDownloadHistory('search');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes();	// clear any default values
 		if(Yii::app()->getRequest()->getParam('ArticleDownloadHistory')) {
 			$model->attributes=Yii::app()->getRequest()->getParam('ArticleDownloadHistory');
 		}

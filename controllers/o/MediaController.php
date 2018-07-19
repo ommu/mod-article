@@ -96,10 +96,10 @@ class MediaController extends Controller
 	public function actionManage($article=null) 
 	{
 		$model=new ArticleMedia('search');
-		$model->unsetAttributes();  // clear any default values
-		if(Yii::app()->getRequest()->getParam('ArticleMedia')) {
-			$model->attributes=Yii::app()->getRequest()->getParam('ArticleMedia');
-		}
+		$model->unsetAttributes();	// clear any default values
+		$ArticleMedia = Yii::app()->getRequest()->getParam('ArticleMedia');
+		if($ArticleMedia)
+			$model->attributes=$ArticleMedia;
 
 		$columns = $model->getGridColumn($this->gridColumnTemp());
 

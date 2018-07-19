@@ -95,10 +95,10 @@ class TagController extends Controller
 	public function actionManage() 
 	{
 		$model=new ArticleTag('search');
-		$model->unsetAttributes();  // clear any default values
-		if(Yii::app()->getRequest()->getParam('ArticleTag')) {
-			$model->attributes=Yii::app()->getRequest()->getParam('ArticleTag');
-		}
+		$model->unsetAttributes();	// clear any default values
+		$ArticleTag = Yii::app()->getRequest()->getParam('ArticleTag')
+		if($ArticleTag)
+			$model->attributes=$ArticleTag;
 
 		$columns = $model->getGridColumn($this->gridColumnTemp());
 

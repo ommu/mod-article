@@ -93,7 +93,7 @@ class LikeController extends Controller
 	public function actionManage($like=null) 
 	{
 		$model=new ArticleLikeHistory('search');
-		$model->unsetAttributes();  // clear any default values
+		$model->unsetAttributes();	// clear any default values
 		if(Yii::app()->getRequest()->getParam('ArticleLikeHistory')) {
 			$model->attributes=Yii::app()->getRequest()->getParam('ArticleLikeHistory');
 		}

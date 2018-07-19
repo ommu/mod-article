@@ -94,10 +94,10 @@ class LikeController extends Controller
 	public function actionManage($article=null) 
 	{
 		$model=new ArticleLikes('search');
-		$model->unsetAttributes();  // clear any default values
-		if(Yii::app()->getRequest()->getParam('ArticleLikes')) {
-			$model->attributes=Yii::app()->getRequest()->getParam('ArticleLikes');
-		}
+		$model->unsetAttributes();	// clear any default values
+		$ArticleLikes = Yii::app()->getRequest()->getParam('ArticleLikes');
+		if($ArticleLikes)
+			$model->attributes=$ArticleLikes;
 
 		$columns = $model->getGridColumn($this->gridColumnTemp());
 

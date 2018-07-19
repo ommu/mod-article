@@ -101,10 +101,10 @@ class SettingController extends Controller
 			throw new CHttpException(404, Yii::t('phrase', 'The requested page does not exist.'));
 
 		$category=new ArticleCategory('search');
-		$category->unsetAttributes();  // clear any default values
-		if(Yii::app()->getRequest()->getParam('ArticleCategory')) {
-			$category->attributes=Yii::app()->getRequest()->getParam('ArticleCategory');
-		}
+		$category->unsetAttributes();	// clear any default values
+		$ArticleCategory = Yii::app()->getRequest()->getParam('ArticleCategory');
+		if($ArticleCategory)
+			$category->attributes=$ArticleCategory;
 
 		$columns = $category->getGridColumn($this->gridColumnTemp());
 		
