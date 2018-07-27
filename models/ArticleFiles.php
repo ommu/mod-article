@@ -142,16 +142,16 @@ class ArticleFiles extends OActiveRecord
 		// Custom Search
 		$criteria->with = array(
 			'article' => array(
-				'alias'=>'article',
-				'select'=>'publish, cat_id, title',
+				'alias' => 'article',
+				'select' => 'publish, cat_id, title',
 			),
 			'creation' => array(
-				'alias'=>'creation',
-				'select'=>'displayname',
+				'alias' => 'creation',
+				'select' => 'displayname',
 			),
 			'modified' => array(
-				'alias'=>'modified',
-				'select'=>'displayname',
+				'alias' => 'modified',
+				'select' => 'displayname',
 			),
 		);
 
@@ -218,7 +218,7 @@ class ArticleFiles extends OActiveRecord
 				$this->templateColumns['category_search'] = array(
 					'name' => 'category_search',
 					'value' => '$data->article->category->title->message',
-					'filter'=> ArticleCategory::getCategory(),
+					'filter' => ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);
 				$this->templateColumns['article_search'] = array(
@@ -319,7 +319,7 @@ class ArticleFiles extends OActiveRecord
 		$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
 
 		$setting = ArticleSetting::model()->findByPk(1, array(
-			'select'=>'media_file_type',
+			'select' => 'media_file_type',
 		));
 
 		$media_file_type = unserialize($setting->media_file_type);
@@ -403,7 +403,7 @@ class ArticleFiles extends OActiveRecord
 		parent::afterSave();
 		
 		$setting = ArticleSetting::model()->findByPk(1, array(
-			'select'=>'media_file_limit',
+			'select' => 'media_file_limit',
 		));
 		$article_path = "public/article/".$this->article_id;
 

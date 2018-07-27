@@ -161,19 +161,19 @@ class ArticleMedia extends OActiveRecord
 		// Custom Search
 		$criteria->with = array(
 			'view' => array(
-				'alias'=>'view',
+				'alias' => 'view',
 			),
 			'article' => array(
-				'alias'=>'article',
-				'select'=>'publish, cat_id, title',
+				'alias' => 'article',
+				'select' => 'publish, cat_id, title',
 			),
 			'creation' => array(
-				'alias'=>'creation',
-				'select'=>'displayname',
+				'alias' => 'creation',
+				'select' => 'displayname',
 			),
 			'modified' => array(
-				'alias'=>'modified',
-				'select'=>'displayname',
+				'alias' => 'modified',
+				'select' => 'displayname',
 			),
 		);
 
@@ -247,7 +247,7 @@ class ArticleMedia extends OActiveRecord
 				$this->templateColumns['category_search'] = array(
 					'name' => 'category_search',
 					'value' => '$data->article->category->title->message',
-					'filter'=> ArticleCategory::getCategory(),
+					'filter' => ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);
 				$this->templateColumns['article_search'] = array(
@@ -261,7 +261,7 @@ class ArticleMedia extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>array(
+				'filter' =>array(
 					'video'=>Yii::t('phrase', 'Video'),
 					'photo'=>Yii::t('phrase', 'Photo'),
 				),
@@ -413,7 +413,7 @@ class ArticleMedia extends OActiveRecord
 		$currentAction = strtolower(Yii::app()->controller->id.'/'.Yii::app()->controller->action->id);
 		
 		$setting = ArticleSetting::model()->findByPk(1, array(
-			'select'=>'media_image_type',
+			'select' => 'media_image_type',
 		));
 
 		$media_image_type = unserialize($setting->media_image_type);
@@ -500,7 +500,7 @@ class ArticleMedia extends OActiveRecord
 		parent::afterSave();
 		
 		$setting = ArticleSetting::model()->findByPk(1, array(
-			'select'=>'media_image_limit, media_image_resize, media_image_resize_size',
+			'select' => 'media_image_limit, media_image_resize, media_image_resize_size',
 		));
 		$media_image_resize_size = unserialize($setting->media_image_resize_size);
 		$article_path = "public/article/".$this->article_id;

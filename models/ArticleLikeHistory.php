@@ -123,16 +123,16 @@ class ArticleLikeHistory extends OActiveRecord
 		// Custom Search
 		$criteria->with = array(
 			'like' => array(
-				'alias'=>'like',
-				'select'=>'article_id, user_id'
+				'alias' => 'like',
+				'select' => 'article_id, user_id'
 			),
 			'like.article' => array(
-				'alias'=>'like_article',
-				'select'=>'cat_id, title'
+				'alias' => 'like_article',
+				'select' => 'cat_id, title'
 			),
 			'like.user' => array(
-				'alias'=>'like_user',
-				'select'=>'displayname'
+				'alias' => 'like_user',
+				'select' => 'displayname'
 			),
 		);
 
@@ -179,7 +179,7 @@ class ArticleLikeHistory extends OActiveRecord
 				$this->templateColumns['category_search'] = array(
 					'name' => 'category_search',
 					'value' => '$data->like->article->category->title->message',
-					'filter'=> ArticleCategory::getCategory(),
+					'filter' => ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);
 				$this->templateColumns['article_search'] = array(
@@ -212,7 +212,7 @@ class ArticleLikeHistory extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>array(
+				'filter' =>array(
 					1=>Yii::t('phrase', 'Like'),
 					0=>Yii::t('phrase', 'Unlike'),
 				),

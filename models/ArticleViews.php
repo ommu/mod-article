@@ -133,12 +133,12 @@ class ArticleViews extends OActiveRecord
 		// Custom Search
 		$criteria->with = array(
 			'article' => array(
-				'alias'=>'article',
-				'select'=>'publish, cat_id, title'
+				'alias' => 'article',
+				'select' => 'publish, cat_id, title'
 			),
 			'user' => array(
-				'alias'=>'user',
-				'select'=>'displayname',
+				'alias' => 'user',
+				'select' => 'displayname',
 			),
 		);
 
@@ -201,7 +201,7 @@ class ArticleViews extends OActiveRecord
 				$this->templateColumns['category_search'] = array(
 					'name' => 'category_search',
 					'value' => '$data->article->category->title->message',
-					'filter'=> ArticleCategory::getCategory(),
+					'filter' => ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);
 				$this->templateColumns['article_search'] = array(

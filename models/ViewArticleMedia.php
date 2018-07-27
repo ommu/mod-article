@@ -150,7 +150,7 @@ class ViewArticleMedia extends OActiveRecord
 				'htmlOptions' => array(
 					'class' => 'center',
 				),
-				'filter'=>array(
+				'filter' =>array(
 					'video'=>Yii::t('phrase', 'Video'),
 					'photo'=>Yii::t('phrase', 'Photo'),
 				),

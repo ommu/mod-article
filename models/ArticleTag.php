@@ -141,20 +141,20 @@ class ArticleTag extends OActiveRecord
 		// Custom Search
 		$criteria->with = array(
 			'article' => array(
-				'alias'=>'article',
-				'select'=>'publish, cat_id, title',
+				'alias' => 'article',
+				'select' => 'publish, cat_id, title',
 			),
 			'tag' => array(
-				'alias'=>'tag',
-				'select'=>'body',
+				'alias' => 'tag',
+				'select' => 'body',
 			),
 			'creation' => array(
-				'alias'=>'creation',
-				'select'=>'displayname',
+				'alias' => 'creation',
+				'select' => 'displayname',
 			),
 			'modified' => array(
-				'alias'=>'modified',
-				'select'=>'displayname',
+				'alias' => 'modified',
+				'select' => 'displayname',
 			),
 		);
 
@@ -228,7 +228,7 @@ class ArticleTag extends OActiveRecord
 				$this->templateColumns['category_search'] = array(
 					'name' => 'category_search',
 					'value' => '$data->article->category->title->message',
-					'filter'=> ArticleCategory::getCategory(),
+					'filter' => ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);
 				$this->templateColumns['article_search'] = array(

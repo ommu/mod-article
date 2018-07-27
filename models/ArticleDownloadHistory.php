@@ -122,20 +122,20 @@ class ArticleDownloadHistory extends OActiveRecord
 		// Custom Search
 		$criteria->with = array(
 			'download' => array(
-				'alias'=>'download',
-				'select'=>'file_id, user_id'
+				'alias' => 'download',
+				'select' => 'file_id, user_id'
 			),
 			'download.file' => array(
-				'alias'=>'download_file',
-				'select'=>'article_id, file_filename'
+				'alias' => 'download_file',
+				'select' => 'article_id, file_filename'
 			),
 			'download.file.article' => array(
-				'alias'=>'download_article',
-				'select'=>'cat_id, title'
+				'alias' => 'download_article',
+				'select' => 'cat_id, title'
 			),
 			'download.user' => array(
-				'alias'=>'download_user',
-				'select'=>'displayname'
+				'alias' => 'download_user',
+				'select' => 'displayname'
 			),
 		);
 
@@ -187,7 +187,7 @@ class ArticleDownloadHistory extends OActiveRecord
 				$this->templateColumns['category_search'] = array(
 					'name' => 'category_search',
 					'value' => '$data->download->file->article->category->title->message',
-					'filter'=> ArticleCategory::getCategory(),
+					'filter' => ArticleCategory::getCategory(),
 					'type' => 'raw',
 				);
 				$this->templateColumns['article_search'] = array(
