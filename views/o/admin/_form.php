@@ -64,8 +64,8 @@ EOP;
 			<div class="col-lg-8 col-md-12">
 
 				<div class="form-group row">
-					<?php echo $form->labelEx($model, 'cat_id', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-					<div class="col-lg-8 col-md-9 col-sm-12">
+					<?php echo $form->labelEx($model, 'cat_id', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+					<div class="col-lg-6 col-md-9 col-sm-12">
 						<?php
 						$parent = null;
 						$category = ArticleCategory::getCategory(null, $parent);
@@ -79,8 +79,8 @@ EOP;
 				</div>
 	
 				<div class="form-group row">
-					<?php echo $form->labelEx($model, 'title', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-					<div class="col-lg-8 col-md-9 col-sm-12">
+					<?php echo $form->labelEx($model, 'title', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+					<div class="col-lg-6 col-md-9 col-sm-12">
 						<?php echo $form->textField($model, 'title', array('maxlength'=>128, 'class'=>'form-control')); ?>
 						<?php echo $form->error($model, 'title'); ?>
 					</div>
@@ -88,8 +88,8 @@ EOP;
 
 				<?php if($model->isNewRecord || (!$model->isNewRecord && $photoCondition == 0)) {?>
 					<div class="form-group row">
-						<?php echo $form->labelEx($model, 'media_type_i', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-						<div class="col-lg-8 col-md-9 col-sm-12">
+						<?php echo $form->labelEx($model, 'media_type_i', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+						<div class="col-lg-6 col-md-9 col-sm-12">
 							<?php $media_type_i = array(
 								'0'=>Yii::t('phrase', 'Video'),
 								'1'=>Yii::t('phrase', 'Photo'),
@@ -108,8 +108,8 @@ EOP;
 					</div>
 
 					<div class="form-group row filter">
-						<?php echo $form->labelEx($model, 'media_photo_i', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-						<div class="col-lg-8 col-md-9 col-sm-12">
+						<?php echo $form->labelEx($model, 'media_photo_i', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+						<div class="col-lg-6 col-md-9 col-sm-12">
 							<?php if(!$model->isNewRecord) {
 								$medias = $model->medias;
 								if(!empty($medias)) {
@@ -130,8 +130,8 @@ EOP;
 					</div>
 
 					<div id="video" class="form-group row <?php echo $model->media_type_i == 1 ? 'hide' : '';?>">
-						<?php echo $form->labelEx($model, 'media_video_i', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-						<div class="col-lg-8 col-md-9 col-sm-12">
+						<?php echo $form->labelEx($model, 'media_video_i', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+						<div class="col-lg-6 col-md-9 col-sm-12">
 							<?php if(!$model->isNewRecord) {
 								$medias = $model->medias;
 								if(!empty($medias))
@@ -147,8 +147,8 @@ EOP;
 				<?php }?>
 				
 				<div class="form-group row">
-					<?php echo $form->labelEx($model, 'keyword_i', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-					<div class="col-lg-8 col-md-9 col-sm-12">
+					<?php echo $form->labelEx($model, 'keyword_i', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+					<div class="col-lg-6 col-md-9 col-sm-12">
 						<?php 
 						if($model->isNewRecord) {
 							echo $form->textArea($model, 'keyword_i', array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));
@@ -298,8 +298,8 @@ EOP;
 	<fieldset>
 	
 		<div class="form-group row">
-			<?php echo $form->labelEx($model, 'quote', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-			<div class="col-lg-8 col-md-9 col-sm-12">
+			<?php echo $form->labelEx($model, 'quote', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-6 col-md-9 col-sm-12">
 				<?php //echo $form->textArea($model, 'quote', array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));
 				$this->widget('yiiext.imperavi-redactor-widget.ImperaviRedactorWidget', array(
 					'model'=>$model,
@@ -325,8 +325,8 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model, 'body', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-			<div class="col-lg-8 col-md-9 col-sm-12">
+			<?php echo $form->labelEx($model, 'body', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-6 col-md-9 col-sm-12">
 				<?php //echo $form->textArea($model, 'body', array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));
 				$this->widget('yiiext.imperavi-redactor-widget.ImperaviRedactorWidget', array(
 					'model'=>$model,
@@ -353,8 +353,8 @@ EOP;
 		</div>
 
 		<div class="form-group row submit">
-			<label class="col-form-label col-lg-4 col-md-3 col-sm-12">&nbsp;</label>
-			<div class="col-lg-8 col-md-9 col-sm-12">
+			<label class="col-form-label col-lg-3 col-md-3 col-sm-12">&nbsp;</label>
+			<div class="col-lg-6 col-md-9 col-sm-12">
 				<?php echo CHtml::submitButton($model->isNewRecord ? Yii::t('phrase', 'Create') : Yii::t('phrase', 'Save'), array('onclick' => 'setEnableSave()')); ?>
 			</div>
 		</div>

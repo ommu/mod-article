@@ -60,11 +60,11 @@ EOP;
 <fieldset>
 
 	<div class="form-group row">
-		<label class="col-form-label col-lg-4 col-md-3 col-sm-12">
+		<label class="col-form-label col-lg-3 col-md-3 col-sm-12">
 			<?php echo $model->getAttributeLabel('license');?> <span class="required">*</span><br/>
 			<span><?php echo Yii::t('phrase', 'Enter the your license key that is provided to you when you purchased this plugin. If you do not know your license key, please contact support team.');?></span>
 		</label>
-		<div class="col-lg-8 col-md-9 col-sm-12">
+		<div class="col-lg-6 col-md-9 col-sm-12">
 			<?php 
 			if($model->isNewRecord || (!$model->isNewRecord && $model->license == '')) {
 				$model->license = $this->licenseCode();
@@ -77,8 +77,8 @@ EOP;
 	</div>
 
 	<div class="form-group row">
-		<?php echo $form->labelEx($model, 'permission', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-		<div class="col-lg-8 col-md-9 col-sm-12">
+		<?php echo $form->labelEx($model, 'permission', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+		<div class="col-lg-6 col-md-9 col-sm-12">
 			<span class="small-px"><?php echo Yii::t('phrase', 'Select whether or not you want to let the public (visitors that are not logged-in) to view the following sections of your social network. In some cases (such as Profiles, Blogs, and Albums), if you have given them the option, your users will be able to make their pages private even though you have made them publically viewable here. For more permissions settings, please visit the General Settings page.');?></span>
 			<?php 
 			if($model->isNewRecord && !$model->getErrors())
@@ -92,24 +92,24 @@ EOP;
 	</div>
 
 	<div class="form-group row">
-		<?php echo $form->labelEx($model, 'meta_keyword', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-		<div class="col-lg-8 col-md-9 col-sm-12">
+		<?php echo $form->labelEx($model, 'meta_keyword', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+		<div class="col-lg-6 col-md-9 col-sm-12">
 			<?php echo $form->textArea($model, 'meta_keyword', array('rows'=>6, 'cols'=>50, 'class'=>'form-control smaller')); ?>
 			<?php echo $form->error($model, 'meta_keyword'); ?>
 		</div>
 	</div>
 
 	<div class="form-group row">
-		<?php echo $form->labelEx($model, 'meta_description', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-		<div class="col-lg-8 col-md-9 col-sm-12">
+		<?php echo $form->labelEx($model, 'meta_description', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+		<div class="col-lg-6 col-md-9 col-sm-12">
 			<?php echo $form->textArea($model, 'meta_description', array('rows'=>6, 'cols'=>50, 'class'=>'form-control small')); ?>
 			<?php echo $form->error($model, 'meta_description'); ?>
 		</div>
 	</div>
 
 	<div class="form-group row">
-		<?php echo $form->labelEx($model, 'headline', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-		<div class="col-lg-8 col-md-9 col-sm-12">
+		<?php echo $form->labelEx($model, 'headline', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+		<div class="col-lg-6 col-md-9 col-sm-12">
 			<?php 
 			if($model->isNewRecord && !$model->getErrors())
 				$model->headline = 1;
@@ -123,8 +123,8 @@ EOP;
 
 	<div id="headline" class="<?php echo $model->headline == 0 ? 'hide' : '';?>">
 		<div class="form-group row">
-			<?php echo $form->labelEx($model, 'headline_limit', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-			<div class="col-lg-8 col-md-9 col-sm-12">
+			<?php echo $form->labelEx($model, 'headline_limit', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-6 col-md-9 col-sm-12">
 				<?php 
 				if($model->isNewRecord && !$model->getErrors())
 					$model->headline_limit = 0;
@@ -134,8 +134,8 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model, 'headline_category', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-			<div class="col-lg-8 col-md-9 col-sm-12">
+			<?php echo $form->labelEx($model, 'headline_category', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-6 col-md-9 col-sm-12">
 				<?php 
 				$parent = null;
 				$category = ArticleCategory::getCategory(1, $parent);
@@ -151,16 +151,16 @@ EOP;
 	</div>
 
 	<div class="form-group row">
-		<?php echo $form->labelEx($model, 'media_image_limit', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-		<div class="col-lg-8 col-md-9 col-sm-12">
+		<?php echo $form->labelEx($model, 'media_image_limit', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+		<div class="col-lg-6 col-md-9 col-sm-12">
 			<?php echo $form->textField($model, 'media_image_limit', array('maxlength'=>5, 'class'=>'form-control')); ?>
 			<?php echo $form->error($model, 'media_image_limit'); ?>
 		</div>
 	</div>
 
 	<div class="form-group row">
-		<label class="col-form-label col-lg-4 col-md-3 col-sm-12"><?php echo Yii::t('phrase', 'Image Setting');?> <span class="required">*</span></label>
-		<div class="col-lg-8 col-md-9 col-sm-12">
+		<label class="col-form-label col-lg-3 col-md-3 col-sm-12"><?php echo Yii::t('phrase', 'Image Setting');?> <span class="required">*</span></label>
+		<div class="col-lg-6 col-md-9 col-sm-12">
 			<p><?php echo $model->getAttributeLabel('media_image_resize');?></p>
 			<?php 
 			if($model->isNewRecord && !$model->getErrors())
@@ -213,8 +213,8 @@ EOP;
 	</div>
 
 	<div class="form-group row">
-		<?php echo $form->labelEx($model, 'media_image_type', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-		<div class="col-lg-8 col-md-9 col-sm-12">
+		<?php echo $form->labelEx($model, 'media_image_type', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+		<div class="col-lg-6 col-md-9 col-sm-12">
 			<?php 
 			if(!$model->getErrors()) {
 				$media_image_type = unserialize($model->media_image_type);
@@ -230,16 +230,16 @@ EOP;
 	</div>
 
 	<div class="form-group row">
-		<?php echo $form->labelEx($model, 'media_file_limit', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-		<div class="col-lg-8 col-md-9 col-sm-12">
+		<?php echo $form->labelEx($model, 'media_file_limit', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+		<div class="col-lg-6 col-md-9 col-sm-12">
 			<?php echo $form->textField($model, 'media_file_limit', array('maxlength'=>5, 'class'=>'form-control')); ?>
 			<?php echo $form->error($model, 'media_file_limit'); ?>
 		</div>
 	</div>
 
 	<div class="form-group row">
-		<?php echo $form->labelEx($model, 'media_file_type', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-		<div class="col-lg-8 col-md-9 col-sm-12">
+		<?php echo $form->labelEx($model, 'media_file_type', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+		<div class="col-lg-6 col-md-9 col-sm-12">
 			<?php
 			if(!$model->getErrors()) {
 				$media_file_type = unserialize($model->media_file_type);
@@ -255,8 +255,8 @@ EOP;
 	</div>
 
 	<div class="form-group row submit">
-		<label class="col-form-label col-lg-4 col-md-3 col-sm-12">&nbsp;</label>
-		<div class="col-lg-8 col-md-9 col-sm-12">
+		<label class="col-form-label col-lg-3 col-md-3 col-sm-12">&nbsp;</label>
+		<div class="col-lg-6 col-md-9 col-sm-12">
 			<?php echo CHtml::submitButton($model->isNewRecord ? Yii::t('phrase', 'Create') : Yii::t('phrase', 'Save'), array('onclick' => 'setEnableSave()')); ?>
 		</div>
 	</div>

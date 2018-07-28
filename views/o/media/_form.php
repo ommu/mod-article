@@ -54,8 +54,8 @@ EOP;
 	<fieldset>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model, 'media_type_i', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-			<div class="col-lg-8 col-md-9 col-sm-12">
+			<?php echo $form->labelEx($model, 'media_type_i', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-6 col-md-9 col-sm-12">
 				<?php $media_type_i = array(
 					'0'=>Yii::t('phrase', 'Video'),
 					'1'=>Yii::t('phrase', 'Photo'),
@@ -71,8 +71,8 @@ EOP;
 		</div>
 		
 		<div id="video" class="form-group row <?php echo $model->media_type_i == 1 ? 'hide' : '';?>">
-			<?php echo $form->labelEx($model, 'media_filename', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-			<div class="col-lg-8 col-md-9 col-sm-12">
+			<?php echo $form->labelEx($model, 'media_filename', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-6 col-md-9 col-sm-12">
 				<?php echo $form->textArea($model, 'media_filename', array('maxlength'=>32, 'class'=>'form-control smaller')); ?>
 				<?php echo $form->error($model, 'media_filename'); ?>
 				<span class="small-px">http://www.youtube.com/watch?v=<strong>HOAqSoDZSho</strong></span>
@@ -80,8 +80,8 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model, 'cover_filename', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-			<div class="col-lg-8 col-md-9 col-sm-12">
+			<?php echo $form->labelEx($model, 'cover_filename', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-6 col-md-9 col-sm-12">
 				<?php if(!$model->isNewRecord) {
 					if(!$model->getErrors())
 						$model->old_cover_filename_i = $model->cover_filename;
@@ -98,16 +98,16 @@ EOP;
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model, 'caption', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-			<div class="col-lg-8 col-md-9 col-sm-12">
+			<?php echo $form->labelEx($model, 'caption', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-6 col-md-9 col-sm-12">
 				<?php echo $form->textField($model, 'caption', array('maxlength'=>150, 'class'=>'form-control')); ?>
 				<?php echo $form->error($model, 'caption'); ?>
 			</div>
 		</div>
 
 		<div class="form-group row">
-			<?php echo $form->labelEx($model, 'description', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-			<div class="col-lg-8 col-md-9 col-sm-12">
+			<?php echo $form->labelEx($model, 'description', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-6 col-md-9 col-sm-12">
 				<?php //echo $form->textArea($model, 'description', array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));
 				$this->widget('yiiext.imperavi-redactor-widget.ImperaviRedactorWidget', array(
 					'model'=>$model,
@@ -134,8 +134,8 @@ EOP;
 		</div>
 
 		<div class="form-group row publish">
-			<?php echo $form->labelEx($model, 'cover', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-			<div class="col-lg-8 col-md-9 col-sm-12">
+			<?php echo $form->labelEx($model, 'cover', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-6 col-md-9 col-sm-12">
 				<?php echo $form->checkBox($model, 'cover', array('class'=>'form-control')); ?>
 				<?php echo $form->labelEx($model, 'cover'); ?>
 				<?php echo $form->error($model, 'cover'); ?>
@@ -143,8 +143,8 @@ EOP;
 		</div>
 
 		<div class="form-group row publish">
-			<?php echo $form->labelEx($model, 'publish', array('class'=>'col-form-label col-lg-4 col-md-3 col-sm-12')); ?>
-			<div class="col-lg-8 col-md-9 col-sm-12">
+			<?php echo $form->labelEx($model, 'publish', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
+			<div class="col-lg-6 col-md-9 col-sm-12">
 				<?php echo $form->checkBox($model, 'publish', array('class'=>'form-control')); ?>
 				<?php echo $form->labelEx($model, 'publish'); ?>
 				<?php echo $form->error($model, 'publish'); ?>
@@ -152,8 +152,8 @@ EOP;
 		</div>
 
 		<div class="form-group row submit">
-			<label class="col-form-label col-lg-4 col-md-3 col-sm-12">&nbsp;</label>
-			<div class="col-lg-8 col-md-9 col-sm-12">
+			<label class="col-form-label col-lg-3 col-md-3 col-sm-12">&nbsp;</label>
+			<div class="col-lg-6 col-md-9 col-sm-12">
 				<?php echo CHtml::submitButton($model->isNewRecord ? Yii::t('phrase', 'Create') : Yii::t('phrase', 'Save'), array('onclick' => 'setEnableSave()')); ?>
 			</div>
 		</div>
