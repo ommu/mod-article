@@ -41,7 +41,7 @@
 			),
 			array(
 				'name'=>'user_id',
-				'value'=>$model->user_id ? $model->user->displayname : '-',
+				'value'=>$model->user->displayname ? $model->user->displayname : '-',
 			),
 			array(
 				'name'=>'likes_date',

@@ -34,7 +34,7 @@ class WidgetArticleKeyword extends CWidget
 			'action'=>$action,
 			'currentAction'=>$currentAction,
 			'currentModule'=>$currentModule,
-			'currentModuleAction'=>$currentModuleAction,		
+			'currentModuleAction'=>$currentModuleAction,
 		));	
 	}
 }

@@ -15,7 +15,7 @@
 
 	$this->breadcrumbs=array(
 		'Article Downloads'=>array('manage'),
-		'Manage',
+		Yii::t('phrase', 'Manage'),
 	);
 	$this->menu=array(
 		array(

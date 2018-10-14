@@ -15,10 +15,8 @@
 
 	$this->breadcrumbs=array(
 		'Article Categories'=>array('manage'),
-		'Create',
+		Yii::t('phrase', 'Create'),
 	);
 ?>
 
-<?php echo $this->renderPartial('_form', array(
-	'model'=>$model,
-)); ?>
+<?php echo $this->renderPartial('_form', array('model'=>$model)); ?>

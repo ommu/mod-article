@@ -75,7 +75,7 @@ EOP;
 			<div class="col-lg-6 col-md-9 col-sm-12">
 				<?php echo $form->textArea($model, 'media_filename', array('maxlength'=>32, 'class'=>'form-control smaller')); ?>
 				<?php echo $form->error($model, 'media_filename'); ?>
-				<span class="small-px">http://www.youtube.com/watch?v=<strong>HOAqSoDZSho</strong></span>
+				<div class="small-px">http://www.youtube.com/watch?v=<strong>HOAqSoDZSho</strong></div>
 			</div>
 		</div>
 
@@ -93,7 +93,7 @@ EOP;
 				<?php }?>
 				<?php echo $form->fileField($model, 'cover_filename', array('maxlength'=>64, 'class'=>'form-control')); ?>
 				<?php echo $form->error($model, 'cover_filename'); ?>
-				<span class="small-px">extensions are allowed: <?php echo Utility::formatFileType($media_image_type, false);?></span>
+				<div class="small-px">extensions are allowed: <?php echo Utility::formatFileType($media_image_type, false);?></div>
 			</div>
 		</div>
 
@@ -108,8 +108,7 @@ EOP;
 		<div class="form-group row">
 			<?php echo $form->labelEx($model, 'description', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-6 col-md-9 col-sm-12">
-				<?php //echo $form->textArea($model, 'description', array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));
-				$this->widget('yiiext.imperavi-redactor-widget.ImperaviRedactorWidget', array(
+				<?php $this->widget('yiiext.imperavi-redactor-widget.ImperaviRedactorWidget', array(
 					'model'=>$model,
 					'attribute'=>'description',
 					'options'=>array(

@@ -16,7 +16,7 @@
 	$this->breadcrumbs=array(
 		'Article Files'=>array('manage'),
 		$model->file_filename=>array('view','id'=>$model->file_id),
-		'Update',
+		Yii::t('phrase', 'Update'),
 	);
 ?>
 

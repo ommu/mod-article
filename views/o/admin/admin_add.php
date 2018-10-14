@@ -15,13 +15,13 @@
 
 	$this->breadcrumbs=array(
 		'Articles'=>array('manage'),
-		'Create',
+		Yii::t('phrase', 'Create'),
 	);
 ?>
 
 <div class="form">
 	<?php echo $this->renderPartial('_form', array(
-		'model'=>$model,		
+		'model'=>$model,
 		'setting'=>$setting,
 		'media_image_type'=>$media_image_type,
 		'media_file_type'=>$media_file_type,

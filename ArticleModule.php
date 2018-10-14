@@ -18,7 +18,7 @@ class ArticleModule extends CWebModule
 	private $_module = 'article';
 
 	public $defaultController = 'site';
-	
+
 	// getAssetsUrl()
 	//	return the URL for this module's assets, performing the publish operation
 	//	the first time, and caching the result for subsequent use.
@@ -37,24 +37,16 @@ class ArticleModule extends CWebModule
 		// this method is called before any module controller action is performed
 		// you may place customized code here
 		// list public controller in this module
-		$publicControllers = array();
 		$controllerMap = array();
 
-		$controllerPath = Yii::getPathOfAlias('application.modules.'.$this->_module.'.controllers');
-		foreach (new DirectoryIterator($controllerPath) as $fileInfo) {
-			if($fileInfo->isDot())
-				continue;
+		$controllerPath = 'application.modules.'.$this->_module.'.controllers';
+		if(!empty($controllerMap))
+			$controllerMap = array_merge($controllerMap, $this->getController($controllerPath));
+		else
+			$controllerMap = $this->getController($controllerPath);
 			
-			if($fileInfo->isFile() && !in_array($fileInfo->getFilename(), array('index.php'))) {
-				$getFilename = $fileInfo->getFilename();
-				$publicControllers[] = $controller = strtolower(preg_replace('(Controller.php)', '', $getFilename));
-				$controllerMap[$controller] = array(
-					'class'=>'application.modules.'.$this->_module.'.controllers.'.preg_replace('(.php)', '', $getFilename),
-				);
-			}
-		}
 		$this->controllerMap = $controllerMap;
-		$this->publicControllers = $publicControllers;
+		$this->publicControllers = array_keys($this->controllerMap);
 	}
 
 	public function beforeControllerAction($controller, $action) 
@@ -63,7 +55,7 @@ class ArticleModule extends CWebModule
 		{
 			// pake ini untuk set theme per action di controller..
 			// $currentAction = Yii::app()->controller->id.'/'.$action->id;
-			if(!in_array(strtolower(Yii::app()->controller->id), $this->publicControllers) && !Yii::app()->user->isGuest) {
+			if(!in_array(Yii::app()->controller->id, $this->publicControllers) && !Yii::app()->user->isGuest) {
 				$arrThemes = $this->currentTemplate('admin');
 				Yii::app()->theme = $arrThemes['folder'];
 				$this->layout = $arrThemes['layout'];
@@ -82,5 +74,37 @@ class ArticleModule extends CWebModule
 			$this->_assetsUrl = Yii::app()->getAssetManager()->publish(Yii::getPathOfAlias('article.assets'));
 		
 		return $this->_assetsUrl;
+	}
+
+	public function getController($path, $sub=null)
+	{
+		$controllerMap = array();
+		$controllerPath = Yii::getPathOfAlias($path);
+		$pathArray = explode('.', $path);
+		$lastPath = end($pathArray);
+
+		foreach (new DirectoryIterator($controllerPath) as $fileInfo) {
+			if($fileInfo->isDot() && $fileInfo->isDir())
+				continue;
+			
+			if($fileInfo->isFile() && !in_array($fileInfo->getFilename(), array('index.php','.DS_Store'))) {
+				$getFilename = $fileInfo->getFilename();
+				$controller = strtolower(preg_replace('(Controller.php)', '', $getFilename));
+				if($lastPath != 'controllers')
+					$controller = join('', array($lastPath, preg_replace('(Controller.php)', '', $getFilename)));
+				$controllerClass = preg_replace('(.php)', '', $getFilename);
+
+				$controllerMap[$controller] = array(
+					'class'=>join('.', array($path, $controllerClass)),
+				);
+
+			} else if($fileInfo->isDir()) {
+				$sub = $fileInfo->getFilename();
+				$subPath = join('.', array($path, $sub));
+				$controllerMap = array_merge($controllerMap, $this->getController($subPath, $sub));
+			}
+		}
+		
+		return $controllerMap;
 	}
 }

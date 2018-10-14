@@ -16,7 +16,7 @@
 	$this->breadcrumbs=array(
 		'Articles'=>array('manage'),
 		$model->title=>array('view','id'=>$model->article_id),
-		'Update',
+		Yii::t('phrase', 'Update'),
 	);
 
 	$medias = $model->medias;

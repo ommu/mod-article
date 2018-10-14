@@ -16,7 +16,7 @@
 	$this->breadcrumbs=array(
 		'Article Media'=>array('manage'),
 		$model->cover_filename=>array('view','id'=>$model->media_id),
-		'Update',
+		Yii::t('phrase', 'Update'),
 	);
 ?>
 

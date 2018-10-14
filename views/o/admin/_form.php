@@ -300,8 +300,7 @@ EOP;
 		<div class="form-group row">
 			<?php echo $form->labelEx($model, 'quote', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-6 col-md-9 col-sm-12">
-				<?php //echo $form->textArea($model, 'quote', array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));
-				$this->widget('yiiext.imperavi-redactor-widget.ImperaviRedactorWidget', array(
+				<?php $this->widget('yiiext.imperavi-redactor-widget.ImperaviRedactorWidget', array(
 					'model'=>$model,
 					'attribute'=>'quote',
 					'options'=>array(
@@ -327,8 +326,7 @@ EOP;
 		<div class="form-group row">
 			<?php echo $form->labelEx($model, 'body', array('class'=>'col-form-label col-lg-3 col-md-3 col-sm-12')); ?>
 			<div class="col-lg-6 col-md-9 col-sm-12">
-				<?php //echo $form->textArea($model, 'body', array('rows'=>6, 'cols'=>50, 'class'=>'form-control'));
-				$this->widget('yiiext.imperavi-redactor-widget.ImperaviRedactorWidget', array(
+				<?php $this->widget('yiiext.imperavi-redactor-widget.ImperaviRedactorWidget', array(
 					'model'=>$model,
 					'attribute'=>'body',
 					'options'=>array(
