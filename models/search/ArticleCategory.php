@@ -8,6 +8,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 09:35 WIB
+ * @modified date 11 May 2019, 21:29 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -27,8 +28,8 @@ class ArticleCategory extends ArticleCategoryModel
 	public function rules()
 	{
 		return [
-			[['cat_id', 'publish', 'parent_id', 'name', 'desc', 'single_photo', 'single_file', 'creation_id', 'modified_id'], 'integer'],
-			[['creation_date', 'modified_date', 'updated_date', 'creationDisplayname', 'modifiedDisplayname','name_i', 'desc_i'], 'safe'],
+			[['id', 'publish', 'parent_id', 'name', 'desc', 'single_photo', 'single_file', 'creation_id', 'modified_id'], 'integer'],
+			[['creation_date', 'modified_date', 'updated_date', 'name_i', 'desc_i', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
 
@@ -64,7 +65,12 @@ class ArticleCategory extends ArticleCategoryModel
 			$query = ArticleCategoryModel::find()->alias('t');
 		else
 			$query = ArticleCategoryModel::find()->alias('t')->select($column);
-		$query->joinWith(['creation creation', 'modified modified','title title', 'description description']);
+		$query->joinWith([
+			'title title', 
+			'description description', 
+			'creation creation', 
+			'modified modified'
+		]);
 
 		// add conditions that should always apply here
 		$dataParams = [
@@ -76,14 +82,6 @@ class ArticleCategory extends ArticleCategoryModel
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
-		$attributes['creationDisplayname'] = [
-			'asc' => ['creation.displayname' => SORT_ASC],
-			'desc' => ['creation.displayname' => SORT_DESC],
-		];
-		$attributes['modifiedDisplayname'] = [
-			'asc' => ['modified.displayname' => SORT_ASC],
-			'desc' => ['modified.displayname' => SORT_DESC],
-		];
 		$attributes['name_i'] = [
 			'asc' => ['title.message' => SORT_ASC],
 			'desc' => ['title.message' => SORT_DESC],
@@ -92,9 +90,17 @@ class ArticleCategory extends ArticleCategoryModel
 			'asc' => ['description.message' => SORT_ASC],
 			'desc' => ['description.message' => SORT_DESC],
 		];
+		$attributes['creationDisplayname'] = [
+			'asc' => ['creation.displayname' => SORT_ASC],
+			'desc' => ['creation.displayname' => SORT_DESC],
+		];
+		$attributes['modifiedDisplayname'] = [
+			'asc' => ['modified.displayname' => SORT_ASC],
+			'desc' => ['modified.displayname' => SORT_DESC],
+		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
-			'defaultOrder' => ['cat_id' => SORT_DESC],
+			'defaultOrder' => ['id' => SORT_DESC],
 		]);
 
 		$this->load($params);
@@ -107,7 +113,7 @@ class ArticleCategory extends ArticleCategoryModel
 
 		// grid filtering conditions
 		$query->andFilterWhere([
-			't.cat_id' => isset($params['id']) ? $params['id'] : $this->cat_id,
+			't.id' => $this->id,
 			't.parent_id' => $this->parent_id,
 			't.name' => $this->name,
 			't.desc' => $this->desc,
@@ -129,10 +135,10 @@ class ArticleCategory extends ArticleCategoryModel
 				$query->andFilterWhere(['t.publish' => $this->publish]);
 		}
 
-		$query->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
-			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname])
-			->andFilterWhere(['like', 'title.message', $this->name_i])
-			->andFilterWhere(['like', 'description.message', $this->desc_i]);
+		$query->andFilterWhere(['like', 'title.message', $this->name_i])
+			->andFilterWhere(['like', 'description.message', $this->desc_i])
+			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
+			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname]);
 
 		return $dataProvider;
 	}

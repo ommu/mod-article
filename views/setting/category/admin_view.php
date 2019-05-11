@@ -9,6 +9,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 09:35 WIB
+ * @modified date 11 May 2019, 21:30 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -17,52 +18,76 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Article Categories'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Categories'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = $model->title->message;
 
 $this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Update'), 'url' => Url::to(['update', 'id'=>$model->cat_id]), 'icon' => 'pencil', 'htmlOptions' => ['class'=>'btn btn-primary']],
-	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->cat_id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
+	['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
+	['label' => Yii::t('app', 'Update'), 'url' => Url::to(['update', 'id'=>$model->id]), 'icon' => 'pencil', 'htmlOptions' => ['class'=>'btn btn-primary']],
+	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
 ];
 ?>
 
+<div class="article-category-view">
+
 <?php
 $attributes = [
-	'cat_id',
+	'id',
 	[
 		'attribute' => 'publish',
-		'value' => $model->publish == 1 ? Yii::t('app', 'Yes') : Yii::t('app', 'No'),
+		'value' => $model->quickAction(Url::to(['publish', 'id'=>$model->primaryKey]), $model->publish, 'Enable,Disable'),
+		'format' => 'raw',
 	],
 	'parent_id',
-	'name',
-	'desc',
+	[
+		'attribute' => 'name_i',
+		'value' => $model->name_i,
+	],
+	[
+		'attribute' => 'desc_i',
+		'value' => $model->desc_i,
+	],
 	[
 		'attribute' => 'single_photo',
-		'value' => $model->single_photo == 1 ? Yii::t('app', 'Yes') : Yii::t('app', 'No'),
+		'value' => $model->filterYesNo($model->single_photo),
 	],
 	[
 		'attribute' => 'single_file',
-		'value' => $model->single_file == 1 ? Yii::t('app', 'Yes') : Yii::t('app', 'No'),
+		'value' => $model->filterYesNo($model->single_file),
 	],
 	[
 		'attribute' => 'creation_date',
-		'value' => !in_array($model->creation_date, ['0000-00-00 00:00:00','1970-01-01 00:00:00']) ? Yii::$app->formatter->format($model->creation_date, 'datetime') : '-',
+		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
 	],
 	[
 		'attribute' => 'creationDisplayname',
-		'value' => $model->creation_id ? $model->creation->displayname : '-',
+		'value' => isset($model->creation) ? $model->creation->displayname : '-',
 	],
 	[
 		'attribute' => 'modified_date',
-		'value' => !in_array($model->modified_date, ['0000-00-00 00:00:00','1970-01-01 00:00:00']) ? Yii::$app->formatter->format($model->modified_date, 'datetime') : '-',
+		'value' => Yii::$app->formatter->asDatetime($model->modified_date, 'medium'),
 	],
 	[
 		'attribute' => 'modifiedDisplayname',
-		'value' => $model->modified_id ? $model->modified->displayname : '-',
+		'value' => isset($model->modified) ? $model->modified->displayname : '-',
 	],
 	[
 		'attribute' => 'updated_date',
-		'value' => !in_array($model->updated_date, ['0000-00-00 00:00:00','1970-01-01 00:00:00']) ? Yii::$app->formatter->format($model->updated_date, 'datetime') : '-',
+		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
+	],
+	[
+		'attribute' => 'articles',
+		'value' => function ($model) {
+			$articles = $model->getArticles(true);
+			return Html::a($articles, ['admin/manage', 'category'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} articles', ['count'=>$articles])]);
+		},
+		'format' => 'html',
+	],
+	[
+		'attribute' => '',
+		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary']),
+		'format' => 'html',
+		'visible' => Yii::$app->request->isAjax ? true : false,
 	],
 ];
 
@@ -73,3 +98,5 @@ echo DetailView::widget([
 	],
 	'attributes' => $attributes,
 ]); ?>
+
+</div>

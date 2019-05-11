@@ -44,7 +44,7 @@ $this->params['menu']['content'] = [
 $this->params['breadcrumbs'][] = $this->title;
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Back To Manage Articles' ), 'url' => Url::to(['/article/admin']), 'icon' => 'table'],
-	['label' => Yii::t('app', 'Add Media'), 'url' => !Yii::$app->request->get('article') ? Url::to(['/article/media/create']) : Url::to(['/article/media/create', 'article' => Yii::$app->request->get('article')]), 'icon' => 'plus-square'],
+	['label' => Yii::t('app', 'Add Media'), 'url' => !Yii::$app->request->get('article') ? Url::to(['/article/media/create']) : Url::to(['/article/media/create', 'article' => Yii::$app->request->get('article')]), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
 ];
 $this->params['menu']['option'] = [
 	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],
@@ -123,7 +123,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Back To Manage Articles' ), 'url' => Url::to(['/article/admin']), 'icon' => 'table'],
-	['label' => Yii::t('app', 'Add File'), 'url' => !Yii::$app->request->get('article') ? Url::to(['/article/file/create']) : Url::to(['/article/file/create', 'article' => Yii::$app->request->get('article')]), 'icon' => 'plus-square'],
+	['label' => Yii::t('app', 'Add File'), 'url' => !Yii::$app->request->get('article') ? Url::to(['/article/file/create']) : Url::to(['/article/file/create', 'article' => Yii::$app->request->get('article')]), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
 ];
 $this->params['menu']['option'] = [
 	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],

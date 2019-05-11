@@ -22,10 +22,11 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 09:35 WIB
+ * @modified date 11 May 2019, 21:30 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
- 
+
 namespace ommu\article\controllers\setting;
 
 use Yii;
@@ -83,7 +84,7 @@ class CategoryController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		$this->view->title = Yii::t('app', 'Article Categories');
+		$this->view->title = Yii::t('app', 'Categories');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
@@ -108,9 +109,9 @@ class CategoryController extends Controller
 			// $model->load($postData);
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Article Category success created.'));
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Article category success created.'));
 				return $this->redirect(['manage']);
-				//return $this->redirect(['view', 'id'=>$model->cat_id]);
+				//return $this->redirect(['view', 'id'=>$model->id]);
 
 			} else {
 				if(Yii::$app->request->isAjax)
@@ -118,7 +119,7 @@ class CategoryController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Create Article Category');
+		$this->view->title = Yii::t('app', 'Create Category');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
@@ -135,16 +136,14 @@ class CategoryController extends Controller
 	public function actionUpdate($id)
 	{
 		$model = $this->findModel($id);
-
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Article Category success updated.'));
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Article category success updated.'));
 				return $this->redirect(['manage']);
-				//return $this->redirect(['view', 'id'=>$model->cat_id]);
 
 			} else {
 				if(Yii::$app->request->isAjax)
@@ -152,7 +151,7 @@ class CategoryController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Update Article Category: {name}', ['name' => $model->name]);
+		$this->view->title = Yii::t('app', 'Update Category: {name}', ['name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -169,10 +168,10 @@ class CategoryController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'View Article Category: {name}', ['name' => $model->name]);
+		$this->view->title = Yii::t('app', 'Detail Category: {name}', ['name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_view', [
+		return $this->oRender('admin_view', [
 			'model' => $model,
 		]);
 	}
@@ -189,8 +188,7 @@ class CategoryController extends Controller
 		$model->publish = 2;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			//return $this->redirect(['view', 'id' => $model->cat_id]);
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Article Category success deleted.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Article category success deleted.'));
 			return $this->redirect(['manage']);
 		}
 	}
@@ -208,7 +206,7 @@ class CategoryController extends Controller
 		$model->publish = $replace;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Article Category success updated.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Article category success updated.'));
 			return $this->redirect(['manage']);
 		}
 	}

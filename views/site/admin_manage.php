@@ -20,7 +20,7 @@ use yii\widgets\ListView;
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->params['menu']['content'] = [
-	//['label' => Yii::t('app', 'Add Articles'), 'url' => Url::to(['create']), 'icon' => 'plus-square'],
+	//['label' => Yii::t('app', 'Add Articles'), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
 ];
 $this->params['menu']['option'] = [
 	['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],

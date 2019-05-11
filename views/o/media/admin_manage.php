@@ -21,7 +21,7 @@ use yii\widgets\Pjax;
 $this->params['breadcrumbs'][] = $this->title;
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Back To Manage Articles' ), 'url' => Url::to(['/article/admin']), 'icon' => 'table'],
-	['label' => Yii::t('app', 'Add Media'), 'url' => !Yii::$app->request->get('article') ? Url::to(['create']) : Url::to(['create', 'article' => Yii::$app->request->get('article')]), 'icon' => 'plus-square'],
+	['label' => Yii::t('app', 'Add Media'), 'url' => !Yii::$app->request->get('article') ? Url::to(['create']) : Url::to(['create', 'article' => Yii::$app->request->get('article')]), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
 ];
 $this->params['menu']['option'] = [
 	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],

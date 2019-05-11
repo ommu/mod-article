@@ -10,6 +10,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 09:35 WIB
+ * @modified date 11 May 2019, 21:30 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -17,6 +18,8 @@
 use yii\helpers\Html;
 use app\components\widgets\ActiveForm;
 ?>
+
+<div class="article-category-form">
 
 <?php $form = ActiveForm::begin([
 	'options' => ['class'=>'form-horizontal form-label-left'],
@@ -28,32 +31,14 @@ use app\components\widgets\ActiveForm;
 <?php //echo $form->errorSummary($model);?>
 
 <?php echo $form->field($model, 'parent_id')
-	->textInput(['type' => 'number'])
+	->textInput(['type'=>'number', 'min'=>'1'])
 	->label($model->getAttributeLabel('parent_id')); ?>
 
-<!-- <?php echo $form->field($model, 'name')
-	->textInput(['maxlength'=>true])
-	->label($model->getAttributeLabel('name')); ?>
-
-<?php echo $form->field($model, 'desc')
-	->textInput(['maxlength'=>true])
-	->label($model->getAttributeLabel('desc')); ?> -->
-
-<?php 
-if (!$model->isNewRecord){
-	if(!$model->getErrors())
-		$model->name_i = $model->title->message;
-}
-echo $form->field($model, 'name_i')
+<?php echo $form->field($model, 'name_i')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('name_i')); ?>
 
-<?php 
-if (!$model->isNewRecord){
-	if(!$model->getErrors())
-		$model->desc_i = $model->description->message;
-}
-echo $form->field($model, 'desc_i')
+<?php echo $form->field($model, 'desc_i')
 	->textarea(['rows'=>6, 'cols'=>50, 'maxlength'=>true])
 	->label($model->getAttributeLabel('desc_i')); ?>
 
@@ -75,3 +60,5 @@ echo $form->field($model, 'desc_i')
 	->submitButton(); ?>
 
 <?php ActiveForm::end(); ?>
+
+</div>
