@@ -60,11 +60,6 @@ echo $form->field($model,'cat_id')
 	->widget(Redactor::className(), ['id' => time().'_redactor', 'clientOptions' => $redactorOptions])
 	->label($model->getAttributeLabel('body')); ?>
 
-<?php echo $form->field($model, 'quote')
-	->textarea(['rows'=>2,'rows'=>6])
-	->widget(Redactor::className(), ['clientOptions' => $redactorOptions])
-	->label($model->getAttributeLabel('quote')); ?>
-
 <?php echo $form->field($model, 'tag_2')->hiddenInput()
 	->label(false);
 ?>

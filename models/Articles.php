@@ -16,7 +16,6 @@
  * @property integer $cat_id
  * @property string $title
  * @property string $body
- * @property string $quote
  * @property string $published_date
  * @property integer $headline
  * @property integer $comment_code
@@ -26,7 +25,6 @@
  * @property integer $modified_id
  * @property string $updated_date
  * @property string $headline_date
- * @property string $slug
  *
  * The followings are the available model relations:
  * @property ArticleFiles[] $files
@@ -43,7 +41,6 @@ namespace ommu\article\models;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\behaviors\SluggableBehavior;
 use ommu\users\models\Users;
 use app\models\SourceMessage;
 use app\models\CoreTags;
@@ -53,7 +50,7 @@ class Articles extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['comment_code','creation_id', 'modified_id','slug','creationDisplayname','creation_date','modifiedDisplayname','modified_date','headline_date','updated_date','quote','body'];
+	public $gridForbiddenColumn = ['comment_code','creation_id', 'modified_id','creationDisplayname','creation_date','modifiedDisplayname','modified_date','headline_date','updated_date','body'];
 
 	public $category_search;
 	public $creationDisplayname;
@@ -74,28 +71,14 @@ class Articles extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * behaviors model class.
-	 */
-	public function behaviors() {
-		return [
-			[
-				'class' => SluggableBehavior::className(),
-				'attribute' => 'title',
-				'immutable' => true,
-				'ensureUnique' => true,
-			],
-		];
-	}
-
-	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules()
 	{
 		return [
 			[['publish', 'cat_id', 'headline', 'comment_code', 'creation_id', 'modified_id'], 'integer'],
-			[['cat_id', 'title', 'body', 'quote', 'published_date'], 'required'],
-			[['body', 'quote', 'slug'], 'string'],
+			[['cat_id', 'title', 'body', 'published_date'], 'required'],
+			[['body'], 'string'],
 			[['published_date', 'creation_date','tags','modified_date', 'updated_date', 'headline_date', 'creation_id', 'modified_id','tag_2'], 'safe'],
 			[['title'], 'string', 'max' => 128],
 			[['cat_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArticleCategory::className(), 'targetAttribute' => ['cat_id' => 'cat_id']],
@@ -113,7 +96,6 @@ class Articles extends \app\components\ActiveRecord
 			'cat_id' => Yii::t('app', 'Category'),
 			'title' => Yii::t('app', 'Title'),
 			'body' => Yii::t('app', 'Body'),
-			'quote' => Yii::t('app', 'Quote'),
 			'published_date' => Yii::t('app', 'Published Date'),
 			'headline' => Yii::t('app', 'Headline'),
 			'comment_code' => Yii::t('app', 'Comment Code'),
@@ -123,7 +105,6 @@ class Articles extends \app\components\ActiveRecord
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
 			'headline_date' => Yii::t('app', 'Headline Date'),
-			'slug' => Yii::t('app', 'Slug'),
 			'category_search' => Yii::t('app', 'Category'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
@@ -251,7 +232,6 @@ class Articles extends \app\components\ActiveRecord
 		}
 		$this->templateColumns['title'] = 'title';
 		$this->templateColumns['body'] = 'body';
-		$this->templateColumns['quote'] = 'quote';
 		$this->templateColumns['published_date'] = [
 			'attribute' => 'published_date',
 			'value' => function($model, $key, $index, $column) {
@@ -303,7 +283,6 @@ class Articles extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'headline_date'),
 		];
-		$this->templateColumns['slug'] = 'slug';
 		$this->templateColumns['comment_code'] = [
 			'attribute' => 'comment_code',
 			'value' => function($model, $key, $index, $column) {

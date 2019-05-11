@@ -37,8 +37,6 @@ use yii\widgets\ActiveForm;
 
 		<?php echo $form->field($model, 'body'); ?>
 
-		<?php echo $form->field($model, 'quote'); ?>
-
 		<?php echo $form->field($model, 'published_date')
 			->input('date');?>
 
@@ -61,8 +59,6 @@ use yii\widgets\ActiveForm;
 
 		<?php echo $form->field($model, 'headline_date')
 			->input('date');?>
-
-		<?php echo $form->field($model, 'slug'); ?>
 
 		<div class="form-group">
 			<?php echo Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']); ?>

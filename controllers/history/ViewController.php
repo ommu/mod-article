@@ -1,10 +1,10 @@
 <?php
 /**
- * ViewHistoryController
+ * ViewController
  * @var $this ommu\article\controllers\history\ViewController
  * @var $model ommu\article\models\ArticleViewHistory
  *
- * ViewHistoryController implements the CRUD actions for ArticleViewHistory model.
+ * ViewController implements the CRUD actions for ArticleViewHistory model.
  * Reference start
  * TOC :
  *	Index
@@ -33,7 +33,7 @@ use mdm\admin\components\AccessControl;
 use ommu\article\models\ArticleViewHistory;
 use ommu\article\models\search\ArticleViewHistory as ArticleViewHistorySearch;
 
-class ViewHistoryController extends Controller
+class ViewController extends Controller
 {
 	/**
 	 * {@inheritdoc}

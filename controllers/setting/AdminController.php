@@ -1,10 +1,10 @@
 <?php
 /**
- * SettingController
+ * AdminController
  * @var $this ommu\article\controllers\setting\AdminController
  * @var $model ommu\article\models\ArticleSetting
  *
- * SettingController implements the CRUD actions for ArticleSetting model.
+ * AdminController implements the CRUD actions for ArticleSetting model.
  * Reference start
  * TOC :
  *	Index
@@ -35,7 +35,7 @@ use ommu\article\models\ArticleSetting;
 use ommu\article\models\search\ArticleCategory as ArticleCategorySearch;
 use ommu\article\models\search\ArticleSetting as ArticleSettingSearch;
 
-class SettingController extends Controller
+class AdminController extends Controller
 {
 	/**
 	 * {@inheritdoc}

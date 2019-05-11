@@ -33,7 +33,7 @@ $attributes = [
 		'attribute' => 'publish',
 		'value' => $model->publish == 1 ? Yii::t('app', 'Yes') : Yii::t('app', 'No'),
 	],
-	'parent',
+	'parent_id',
 	'name',
 	'desc',
 	[
@@ -64,7 +64,6 @@ $attributes = [
 		'attribute' => 'updated_date',
 		'value' => !in_array($model->updated_date, ['0000-00-00 00:00:00','1970-01-01 00:00:00']) ? Yii::$app->formatter->format($model->updated_date, 'datetime') : '-',
 	],
-	'slug',
 ];
 
 echo DetailView::widget([

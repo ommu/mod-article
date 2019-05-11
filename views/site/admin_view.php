@@ -63,11 +63,6 @@ $attributes = [
 		'format' => 'html',
 	],
 	[
-		'attribute' => 'quote',
-		'value' => $model->quote ? $model->quote : '-',
-		'format' => 'html',
-	],
-	[
 		'attribute' => 'published_date',
 		'value' => !in_array($model->published_date, ['0000-00-00 00:00:00','1970-01-01 00:00:00']) ? Yii::$app->formatter->format($model->published_date, 'datetime') : '-',
 	],
@@ -102,11 +97,6 @@ $attributes = [
 	[
 		'attribute' => 'headline_date',
 		'value' => !in_array($model->headline_date, ['0000-00-00 00:00:00','1970-01-01 00:00:00']) ? Yii::$app->formatter->format($model->headline_date, 'datetime') : '-',
-	],
-	[
-		'attribute' => 'slug',
-		'value' => $model->slug ? $model->slug : '-',
-		'format' => 'html',
 	],
 ];
 

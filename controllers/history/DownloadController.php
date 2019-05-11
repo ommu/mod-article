@@ -1,10 +1,10 @@
 <?php
 /**
- * DownloadHistoryController
+ * DownloadController
  * @var $this ommu\article\controllers\history\DownloadController
  * @var $model ommu\article\models\ArticleDownloadHistory
  *
- * DownloadHistoryController implements the CRUD actions for ArticleDownloadHistory model.
+ * DownloadController implements the CRUD actions for ArticleDownloadHistory model.
  * Reference start
  * TOC :
  *	Index
@@ -33,7 +33,7 @@ use mdm\admin\components\AccessControl;
 use ommu\article\models\ArticleDownloadHistory;
 use ommu\article\models\search\ArticleDownloadHistory as ArticleDownloadHistorySearch;
 
-class DownloadHistoryController extends Controller
+class DownloadController extends Controller
 {
 	/**
 	 * {@inheritdoc}

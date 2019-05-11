@@ -27,8 +27,8 @@ class ArticleCategory extends ArticleCategoryModel
 	public function rules()
 	{
 		return [
-			[['cat_id', 'publish', 'parent', 'name', 'desc', 'single_photo', 'single_file', 'creation_id', 'modified_id'], 'integer'],
-			[['creation_date', 'modified_date', 'updated_date', 'slug', 'creationDisplayname', 'modifiedDisplayname','name_i', 'desc_i'], 'safe'],
+			[['cat_id', 'publish', 'parent_id', 'name', 'desc', 'single_photo', 'single_file', 'creation_id', 'modified_id'], 'integer'],
+			[['creation_date', 'modified_date', 'updated_date', 'creationDisplayname', 'modifiedDisplayname','name_i', 'desc_i'], 'safe'],
 		];
 	}
 
@@ -108,7 +108,7 @@ class ArticleCategory extends ArticleCategoryModel
 		// grid filtering conditions
 		$query->andFilterWhere([
 			't.cat_id' => isset($params['id']) ? $params['id'] : $this->cat_id,
-			't.parent' => $this->parent,
+			't.parent_id' => $this->parent_id,
 			't.name' => $this->name,
 			't.desc' => $this->desc,
 			't.single_photo' => $this->single_photo,
@@ -129,8 +129,7 @@ class ArticleCategory extends ArticleCategoryModel
 				$query->andFilterWhere(['t.publish' => $this->publish]);
 		}
 
-		$query->andFilterWhere(['like', 't.slug', $this->slug])
-			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
+		$query->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
 			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname])
 			->andFilterWhere(['like', 'title.message', $this->name_i])
 			->andFilterWhere(['like', 'description.message', $this->desc_i]);

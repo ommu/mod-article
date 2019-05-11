@@ -1,10 +1,10 @@
 <?php
 /**
- * LikeHistoryController
+ * LikeController
  * @var $this ommu\article\controllers\history\LikeController
  * @var $model ommu\article\models\ArticleLikeHistory
  *
- * LikeHistoryController implements the CRUD actions for ArticleLikeHistory model.
+ * LikeController implements the CRUD actions for ArticleLikeHistory model.
  * Reference start
  * TOC :
  *	Index
@@ -35,7 +35,7 @@ use mdm\admin\components\AccessControl;
 use ommu\article\models\ArticleLikeHistory;
 use ommu\article\models\search\ArticleLikeHistory as ArticleLikeHistorySearch;
 
-class LikeHistoryController extends Controller
+class LikeController extends Controller
 {
 	/**
 	 * {@inheritdoc}

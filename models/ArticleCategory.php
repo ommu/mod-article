@@ -13,7 +13,7 @@
  * The followings are the available columns in table "ommu_article_category":
  * @property integer $cat_id
  * @property integer $publish
- * @property integer $parent
+ * @property integer $parent_id
  * @property string $name
  * @property string $desc
  * @property integer $single_photo
@@ -23,7 +23,6 @@
  * @property string $modified_date
  * @property integer $modified_id
  * @property string $updated_date
- * @property string $slug
  *
  * The followings are the available model relations:
  * @property Articles[] $articles
@@ -36,7 +35,6 @@ use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\Inflector;
-use yii\behaviors\SluggableBehavior;
 use ommu\users\models\Users;
 use app\models\SourceMessage;
 
@@ -44,7 +42,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['modified_date','modifiedDisplayname','slug','updated_date','creation_date','creationDisplayname'];
+	public $gridForbiddenColumn = ['modified_date','modifiedDisplayname','updated_date','creation_date','creationDisplayname'];
 
 	public $name_i;
 	public $desc_i;
@@ -60,26 +58,12 @@ class ArticleCategory extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * behaviors model class.
-	 */
-	public function behaviors() {
-		return [
-			[
-				'class' => SluggableBehavior::className(),
-				'attribute' => 'name',
-				'immutable' => true,
-				'ensureUnique' => true,
-			],
-		];
-	}
-
-	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules()
 	{
 		return [
-			[['publish', 'parent', 'name', 'desc', 'single_photo', 'single_file', 'creation_id', 'modified_id'], 'integer'],
+			[['publish', 'parent_id', 'name', 'desc', 'single_photo', 'single_file', 'creation_id', 'modified_id'], 'integer'],
 			[['name_i', 'desc_i','single_photo','single_file'], 'required'],
 			[['creation_date', 'modified_date', 'updated_date'], 'safe'],
 			[['name_i'], 'string', 'max' => 32],
@@ -95,7 +79,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 		return [
 			'cat_id' => Yii::t('app', 'Category'),
 			'publish' => Yii::t('app', 'Publish'),
-			'parent' => Yii::t('app', 'Parent'),
+			'parent_id' => Yii::t('app', 'Parent'),
 			'name' => Yii::t('app', 'Name'),
 			'desc' => Yii::t('app', 'Desc'),
 			'single_photo' => Yii::t('app', 'Single Photo'),
@@ -105,7 +89,6 @@ class ArticleCategory extends \app\components\ActiveRecord
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
-			'slug' => Yii::t('app', 'Slug'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 			'name_i' => Yii::t('app', 'Name'),
@@ -160,7 +143,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		$this->templateColumns['parent'] = 'parent';
+		$this->templateColumns['parent_id'] = 'parent_id';
 		$this->templateColumns['name_i'] = [
 			'attribute' => 'name_i',
 			'value' => function($model, $key, $index, $column) {
@@ -210,7 +193,6 @@ class ArticleCategory extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
 		];
-		$this->templateColumns['slug'] = 'slug';
 		$this->templateColumns['single_photo'] = [
 			'attribute' => 'single_photo',
 			'value' => function($model, $key, $index, $column) {

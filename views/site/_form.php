@@ -49,11 +49,6 @@ $redactorOptions = [
 	->widget(Redactor::className(), ['clientOptions' => $redactorOptions])
 	->label($model->getAttributeLabel('body')); ?>
 
-<?php echo $form->field($model, 'quote')
-	->textarea(['rows'=>2,'rows'=>6])
-	->widget(Redactor::className(), ['clientOptions' => $redactorOptions])
-	->label($model->getAttributeLabel('quote')); ?>
-
 <?php echo $form->field($model, 'published_date')
 	->widget(DatePicker::classname(), ['dateFormat' => Yii::$app->formatter->dateFormat, 'options' => ['class' => 'form-control']])
 	->label($model->getAttributeLabel('published_date')); ?>

@@ -27,9 +27,9 @@ use app\components\widgets\ActiveForm;
 
 <?php //echo $form->errorSummary($model);?>
 
-<?php echo $form->field($model, 'parent')
+<?php echo $form->field($model, 'parent_id')
 	->textInput(['type' => 'number'])
-	->label($model->getAttributeLabel('parent')); ?>
+	->label($model->getAttributeLabel('parent_id')); ?>
 
 <!-- <?php echo $form->field($model, 'name')
 	->textInput(['maxlength'=>true])

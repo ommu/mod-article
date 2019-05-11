@@ -36,8 +36,6 @@ use yii\widgets\ActiveForm;
 
 		<?= $form->field($model, 'body') ?>
 
-		<?= $form->field($model, 'quote') ?>
-
 		<?= $form->field($model, 'published_date') ?>
 
 		<?= $form->field($model, 'headline') ?>
@@ -55,8 +53,6 @@ use yii\widgets\ActiveForm;
 		<?= $form->field($model, 'updated_date') ?>
 
 		<?= $form->field($model, 'headline_date') ?>
-
-		<?= $form->field($model, 'slug') ?>
 
 		<div class="form-group">
 			<?php echo Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']); ?>
