@@ -1,0 +1,41 @@
+{
+	"name": "ommu/article",
+	"description": "Article Module from Ommu Platform",
+	"keywords": [
+		"module",
+		"article",
+		"news",
+		"ommu",
+		"ommu-platform",
+		"yii2"
+	],
+	"homepage": "https://github.com/ommu/mod-article",
+	"type": "ommu-module",
+	"license": "Apache-2.0",
+	"support": {
+		"issues": "https://github.com/ommu/mod-article/issues",
+		"wiki": "https://github.com/ommu/mod-article/wiki",
+		"source": "https://github.com/ommu/mod-article"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/ommu/mod-article.git"
+	},
+	"authors": [
+		{
+			"name": "Putra Sudaryanto",
+			"email": "putra@sudaryanto.id",
+			"homepage": "https://sudaryanto.id",
+			"role": "Creator"
+		}
+	],
+	"require": {
+		"php": "~7.0",
+		"yiisoft/yii2": "~2.0.13"
+	},
+	"autoload": {
+		"psr-4": {
+			"ommu\\article\\": ""
+		}
+	}
+}
