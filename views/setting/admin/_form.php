@@ -37,9 +37,8 @@ $redactorOptions = [
 
 <?php //echo $form->errorSummary($model);?>
 
-<?php 
-if($model->isNewRecord || (!$model->isNewRecord && $model->license == ''))
-	$model->license = ArticleSetting::getLicense();
+<?php if($model->isNewRecord && !$model->getErrors())
+	$model->license = $model->licenseCode();
 echo $form->field($model, 'license')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('license')); ?>
@@ -83,117 +82,117 @@ echo $form->field($model, 'headline_category')
 	->label($model->getAttributeLabel('headline_category')); ?>
 
 
-<?php echo $form->field($model, 'media_limit')
+<?php echo $form->field($model, 'media_image_limit')
 	->textInput(['type' => 'number'])
-	->label($model->getAttributeLabel('media_limit')); ?>
+	->label($model->getAttributeLabel('media_image_limit')); ?>
 
 
 <?php 
-$media_resize = [
+$media_image_resize = [
 	1 => Yii::t('app', 'Yes, resize media after upload.'),
 	0 => Yii::t('app', 'No, not resize media after upload.'),
 ];
-echo $form->field($model, 'media_resize')
-	->radioList($media_resize)
-	->label($model->getAttributeLabel('media_resize')); ?>
+echo $form->field($model, 'media_image_resize')
+	->radioList($media_image_resize)
+	->label($model->getAttributeLabel('media_image_resize')); ?>
 
-<div class="form-group field-articlesetting-media_resize_size-width field-articlesetting-media_resize_size-height required">
-	<?php echo $form->field($model, 'media_resize_size', ['template' => '{label}', 'options' => ['tag' => null]])
-		->label($model->getAttributeLabel('media_resize_size')); ?>
+<div class="form-group field-articlesetting-media_image_resize_size-width field-articlesetting-media_image_resize_size-height required">
+	<?php echo $form->field($model, 'media_image_resize_size', ['template' => '{label}', 'options' => ['tag' => null]])
+		->label($model->getAttributeLabel('media_image_resize_size')); ?>
 	<div class="col-md-3 col-sm-3 col-xs-12">
 		<?php 
 		if(!$model->getErrors()) {
 			try {
-				$model->media_resize_size = unserialize($model->media_resize_size);
+				$model->media_image_resize_size = unserialize($model->media_image_resize_size);
 			}catch(\Exception $e) {
-				$model->media_resize_size = [];
+				$model->media_image_resize_size = [];
 			}
 		}
-		echo $form->field($model, 'media_resize_size[width]', ['template' => '{input}{error}'])
+		echo $form->field($model, 'media_image_resize_size[width]', ['template' => '{input}{error}'])
 			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Width')])
-			->label($model->getAttributeLabel('media_resize_size')); ?>
+			->label($model->getAttributeLabel('media_image_resize_size')); ?>
 	</div>
 	<div class="col-md-3 col-sm-3 col-xs-12">
-		<?php echo $form->field($model, 'media_resize_size[height]', ['template' => '{input}{error}'])
+		<?php echo $form->field($model, 'media_image_resize_size[height]', ['template' => '{input}{error}'])
 			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Height')])
-			->label($model->getAttributeLabel('media_resize_size')); ?>
+			->label($model->getAttributeLabel('media_image_resize_size')); ?>
 	</div>
 </div>
 
 
-<div class="form-group field-articlesetting-media_view_size-width field-articlesetting-media_view_size-height required">
-	<?php echo $form->field($model, 'media_view_size', ['template' => '{label}', 'options' => ['tag' => null]])
-		->label($model->getAttributeLabel('media_view_size')); ?>
+<div class="form-group field-articlesetting-media_image_view_size-width field-articlesetting-media_image_view_size-height required">
+	<?php echo $form->field($model, 'media_image_view_size', ['template' => '{label}', 'options' => ['tag' => null]])
+		->label($model->getAttributeLabel('media_image_view_size')); ?>
 	<div class="col-md-9 col-sm-9 col-xs-12">
 		<?php 
 		if(!$model->getErrors()) {
 			try {
-				$model->media_view_size = unserialize($model->media_view_size);
+				$model->media_image_view_size = unserialize($model->media_image_view_size);
 			}catch(\Exception $e) {
-				$model->media_view_size = [];
+				$model->media_image_view_size = [];
 			}
 		}
 
-		if(empty($model->media_view_size))			
-			$model->media_view_size = [];
+		if(empty($model->media_image_view_size))			
+			$model->media_image_view_size = [];
 
-		echo Html::label($model->getAttributeLabel('media_view_size[small]'), null, ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']); ?>
+		echo Html::label($model->getAttributeLabel('media_image_view_size[small]'), null, ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']); ?>
 		<?php 
-		echo $form->field($model, 'media_view_size[small][width]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
+		echo $form->field($model, 'media_image_view_size[small][width]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
 			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Width')])
-			->label($model->getAttributeLabel('media_view_size')); ?>
-		<?php echo $form->field($model, 'media_view_size[small][height]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
+			->label($model->getAttributeLabel('media_image_view_size')); ?>
+		<?php echo $form->field($model, 'media_image_view_size[small][height]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
 			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Height')])
-			->label($model->getAttributeLabel('media_view_size')); ?>
+			->label($model->getAttributeLabel('media_image_view_size')); ?>
 
-		<?php echo Html::label($model->getAttributeLabel('media_view_size[medium]'), null, ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']); ?>
+		<?php echo Html::label($model->getAttributeLabel('media_image_view_size[medium]'), null, ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']); ?>
 		<?php 
-		echo $form->field($model, 'media_view_size[medium][width]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
+		echo $form->field($model, 'media_image_view_size[medium][width]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
 			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Width')])
-			->label($model->getAttributeLabel('media_view_size')); ?>
-		<?php echo $form->field($model, 'media_view_size[medium][height]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
+			->label($model->getAttributeLabel('media_image_view_size')); ?>
+		<?php echo $form->field($model, 'media_image_view_size[medium][height]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
 			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Height')])
-			->label($model->getAttributeLabel('media_view_size')); ?>
+			->label($model->getAttributeLabel('media_image_view_size')); ?>
 
-		<?php echo Html::label($model->getAttributeLabel('media_view_size[large]'), null, ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']); ?>
+		<?php echo Html::label($model->getAttributeLabel('media_image_view_size[large]'), null, ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']); ?>
 		<?php 
-		echo $form->field($model, 'media_view_size[large][width]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
+		echo $form->field($model, 'media_image_view_size[large][width]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
 			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Width')])
-			->label($model->getAttributeLabel('media_view_size')); ?>
-		<?php echo $form->field($model, 'media_view_size[large][height]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
+			->label($model->getAttributeLabel('media_image_view_size')); ?>
+		<?php echo $form->field($model, 'media_image_view_size[large][height]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
 			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Height')])
-			->label($model->getAttributeLabel('media_view_size')); ?>
+			->label($model->getAttributeLabel('media_image_view_size')); ?>
 	</div>
 </div>
+
+<?php 
+if(!$model->getErrors()) {
+	try {
+		$media_image_type = unserialize($model->media_image_type);
+	}catch(\Exception $e) {
+		$media_image_type = '';
+	}
+	if(!empty($media_image_type))
+		$model->media_image_type = $this->formatFileType($media_image_type, false);
+}
+echo $form->field($model, 'media_image_type', ['template' => '{label}<div class="col-md-9 col-sm-9 col-xs-12">{input}{error}<span class="small-px">'.Yii::t('app', 'pisahkan jenis file dengan koma (,). example: "jpg, png, bmp, jpeg"').'</span></div>'])
+	->textInput()
+	->label($model->getAttributeLabel('media_image_type')); ?>
+
+
 
 <?php 
 if(!$model->getErrors()) {
 	try {
 		$media_file_type = unserialize($model->media_file_type);
 	}catch(\Exception $e) {
-		$media_file_type = '';
 	}
 	if(!empty($media_file_type))
 		$model->media_file_type = $this->formatFileType($media_file_type, false);
 }
-echo $form->field($model, 'media_file_type', ['template' => '{label}<div class="col-md-9 col-sm-9 col-xs-12">{input}{error}<span class="small-px">'.Yii::t('app', 'pisahkan jenis file dengan koma (,). example: "jpg, png, bmp, jpeg"').'</span></div>'])
+echo $form->field($model, 'media_file_type', ['template' => '{label}<div class="col-md-9 col-sm-9 col-xs-12">{input}{error}<span class="small-px">'.Yii::t('app', 'pisahkan jenis file dengan koma (,). example: "pdf, doc, docx"').'</span></div>'])
 	->textInput()
 	->label($model->getAttributeLabel('media_file_type')); ?>
-
-
-
-<?php 
-if(!$model->getErrors()) {
-	try {
-		$upload_file_type = unserialize($model->upload_file_type);
-	}catch(\Exception $e) {
-	}
-	if(!empty($upload_file_type))
-		$model->upload_file_type = $this->formatFileType($upload_file_type, false);
-}
-echo $form->field($model, 'upload_file_type', ['template' => '{label}<div class="col-md-9 col-sm-9 col-xs-12">{input}{error}<span class="small-px">'.Yii::t('app', 'pisahkan jenis file dengan koma (,). example: "pdf, doc, docx"').'</span></div>'])
-	->textInput()
-	->label($model->getAttributeLabel('upload_file_type')); ?>
 
 <?php echo $form->field($model, 'headline')
 	->checkbox()

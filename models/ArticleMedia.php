@@ -231,7 +231,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 	public static function getSettingMediaLimit()
 	{
 		$setting = ArticleSetting::find()->limit(1)->one();
-		return $setting->media_limit;
+		return $setting->media_image_limit;
 	}
 
 	public static function getCategorySinglePhoto()

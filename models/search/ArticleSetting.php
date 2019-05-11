@@ -27,8 +27,8 @@ class ArticleSetting extends ArticleSettingModel
 	public function rules()
 	{
 		return [
-			[['id', 'permission', 'headline', 'headline_limit', 'media_limit', 'media_resize', 'modified_id'], 'integer'],
-			[['license', 'meta_keyword', 'meta_description', 'headline_category', 'media_resize_size', 'media_view_size', 'media_file_type', 'upload_file_type', 'modified_date', 'modifiedDisplayname'], 'safe'],
+			[['id', 'permission', 'headline', 'headline_limit', 'media_image_limit', 'media_image_resize', 'modified_id'], 'integer'],
+			[['license', 'meta_keyword', 'meta_description', 'headline_category', 'media_image_resize_size', 'media_image_view_size', 'media_image_type', 'media_file_type', 'modified_date', 'modifiedDisplayname'], 'safe'],
 		];
 	}
 
@@ -99,8 +99,8 @@ class ArticleSetting extends ArticleSettingModel
 			't.permission' => $this->permission,
 			't.headline' => $this->headline,
 			't.headline_limit' => $this->headline_limit,
-			't.media_limit' => $this->media_limit,
-			't.media_resize' => $this->media_resize,
+			't.media_image_limit' => $this->media_image_limit,
+			't.media_image_resize' => $this->media_image_resize,
 			'cast(t.modified_date as date)' => $this->modified_date,
 			't.modified_id' => isset($params['modified']) ? $params['modified'] : $this->modified_id,
 		]);
@@ -109,10 +109,10 @@ class ArticleSetting extends ArticleSettingModel
 			->andFilterWhere(['like', 't.meta_keyword', $this->meta_keyword])
 			->andFilterWhere(['like', 't.meta_description', $this->meta_description])
 			->andFilterWhere(['like', 't.headline_category', $this->headline_category])
-			->andFilterWhere(['like', 't.media_resize_size', $this->media_resize_size])
-			->andFilterWhere(['like', 't.media_view_size', $this->media_view_size])
+			->andFilterWhere(['like', 't.media_image_resize_size', $this->media_image_resize_size])
+			->andFilterWhere(['like', 't.media_image_view_size', $this->media_image_view_size])
+			->andFilterWhere(['like', 't.media_image_type', $this->media_image_type])
 			->andFilterWhere(['like', 't.media_file_type', $this->media_file_type])
-			->andFilterWhere(['like', 't.upload_file_type', $this->upload_file_type])
 			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname]);
 
 		return $dataProvider;

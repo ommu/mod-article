@@ -1,11 +1,12 @@
 <?php
 /**
  * ArticleSetting
-
+ * 
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 09:25 WIB
+ * @modified date 11 May 2019, 22:46 WIB
  * @link https://github.com/ommu/mod-article
  *
  * This is the model class for table "ommu_article_setting".
@@ -14,19 +15,23 @@
  * @property integer $id
  * @property string $license
  * @property integer $permission
- * @property string $meta_keyword
  * @property string $meta_description
+ * @property string $meta_keyword
  * @property integer $headline
  * @property integer $headline_limit
  * @property string $headline_category
- * @property integer $media_limit
- * @property integer $media_resize
- * @property string $media_resize_size
- * @property string $media_view_size
+ * @property integer $media_image_limit
+ * @property integer $media_image_resize
+ * @property string $media_image_resize_size
+ * @property string $media_image_view_size
+ * @property string $media_image_type
+ * @property integer $media_file_limit
  * @property string $media_file_type
- * @property string $upload_file_type
  * @property string $modified_date
  * @property integer $modified_id
+ *
+ * The followings are the available model relations:
+ * @property Users $modified
  *
  */
 
@@ -59,10 +64,10 @@ class ArticleSetting extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['license', 'permission', 'meta_keyword', 'meta_description', 'headline', 'headline_limit', 'headline_category', 'media_limit', 'media_resize', 'media_resize_size', 'media_view_size', 'media_file_type', 'upload_file_type'], 'required'],
-			[['permission', 'headline', 'headline_limit', 'media_limit', 'media_resize', 'modified_id'], 'integer'],
-			[['meta_keyword', 'meta_description'], 'string'],
-			[['modified_date'], 'safe'],
+			[['license', 'permission', 'meta_description', 'meta_keyword', 'headline', 'headline_limit', 'headline_category', 'media_image_limit', 'media_image_resize', 'media_image_resize_size', 'media_image_view_size', 'media_image_type', 'media_file_limit', 'media_file_type'], 'required'],
+			[['permission', 'headline', 'headline_limit', 'media_image_limit', 'media_image_resize', 'media_file_limit', 'modified_id'], 'integer'],
+			[['meta_description', 'meta_keyword'], 'string'],
+			//[['headline_category', 'media_image_resize_size', 'media_image_view_size', 'media_image_type', 'media_file_type'], 'serialize'],
 			[['license'], 'string', 'max' => 32],
 		];
 	}
@@ -76,23 +81,24 @@ class ArticleSetting extends \app\components\ActiveRecord
 			'id' => Yii::t('app', 'ID'),
 			'license' => Yii::t('app', 'License'),
 			'permission' => Yii::t('app', 'Permission'),
-			'meta_keyword' => Yii::t('app', 'Meta Keyword'),
 			'meta_description' => Yii::t('app', 'Meta Description'),
+			'meta_keyword' => Yii::t('app', 'Meta Keyword'),
 			'headline' => Yii::t('app', 'Headline'),
 			'headline_limit' => Yii::t('app', 'Headline Limit'),
 			'headline_category' => Yii::t('app', 'Headline Category'),
-			'media_limit' => Yii::t('app', 'Media Limit'),
-			'media_resize' => Yii::t('app', 'Media Resize'),
-			'media_resize_size' => Yii::t('app', 'Media Resize Size'),
-			'media_view_size' => Yii::t('app', 'Media View Size'),
-			'media_file_type' => Yii::t('app', 'Media File Type'),
-			'upload_file_type' => Yii::t('app', 'Upload File Type'),
+			'media_image_limit' => Yii::t('app', 'Image Limit'),
+			'media_image_resize' => Yii::t('app', 'Image Resize'),
+			'media_image_resize_size' => Yii::t('app', 'Image Resize Size'),
+			'media_image_view_size' => Yii::t('app', 'Image View Size'),
+			'media_image_view_size[small]' => Yii::t('app', 'Small'),
+			'media_image_view_size[medium]' => Yii::t('app', 'Medium'),
+			'media_image_view_size[large]' => Yii::t('app', 'Large'),
+			'media_image_type' => Yii::t('app', 'Image File Type'),
+			'media_file_limit' => Yii::t('app', 'Document Limit'),
+			'media_file_type' => Yii::t('app', 'Document File Type'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
-			'media_view_size[small]' => Yii::t('app', 'Small'),
-			'media_view_size[medium]' => Yii::t('app', 'Medium'),
-			'media_view_size[large]' => Yii::t('app', 'Large'),
 		];
 	}
 
@@ -103,7 +109,16 @@ class ArticleSetting extends \app\components\ActiveRecord
 	{
 		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
 	}
-	
+
+	/**
+	 * {@inheritdoc}
+	 * @return \ommu\article\models\query\ArticleSetting the active query used by this AR class.
+	 */
+	public static function find()
+	{
+		return new \ommu\article\models\query\ArticleSetting(get_called_class());
+	}
+
 	/**
 	 * Set default columns to display
 	 */
@@ -116,16 +131,78 @@ class ArticleSetting extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		$this->templateColumns['license'] = 'license';
-		$this->templateColumns['meta_keyword'] = 'meta_keyword';
-		$this->templateColumns['meta_description'] = 'meta_description';
-		$this->templateColumns['headline_limit'] = 'headline_limit';
-		$this->templateColumns['headline_category'] = 'headline_category';
-		$this->templateColumns['media_limit'] = 'media_limit';
-		$this->templateColumns['media_resize_size'] = 'media_resize_size';
-		$this->templateColumns['media_view_size'] = 'media_view_size';
-		$this->templateColumns['media_file_type'] = 'media_file_type';
-		$this->templateColumns['upload_file_type'] = 'upload_file_type';
+		$this->templateColumns['license'] = [
+			'attribute' => 'license',
+			'value' => function($model, $key, $index, $column) {
+				return $model->license;
+			},
+		];
+		$this->templateColumns['permission'] = [
+			'attribute' => 'permission',
+			'value' => function($model, $key, $index, $column) {
+				return self::getPermission($model->permission);
+			},
+		];
+		$this->templateColumns['meta_description'] = [
+			'attribute' => 'meta_description',
+			'value' => function($model, $key, $index, $column) {
+				return $model->meta_description;
+			},
+		];
+		$this->templateColumns['meta_keyword'] = [
+			'attribute' => 'meta_keyword',
+			'value' => function($model, $key, $index, $column) {
+				return $model->meta_keyword;
+			},
+		];
+		$this->templateColumns['headline_limit'] = [
+			'attribute' => 'headline_limit',
+			'value' => function($model, $key, $index, $column) {
+				return $model->headline_limit;
+			},
+		];
+		$this->templateColumns['headline_category'] = [
+			'attribute' => 'headline_category',
+			'value' => function($model, $key, $index, $column) {
+				return serialize($model->headline_category);
+			},
+		];
+		$this->templateColumns['media_image_limit'] = [
+			'attribute' => 'media_image_limit',
+			'value' => function($model, $key, $index, $column) {
+				return $model->media_image_limit;
+			},
+		];
+		$this->templateColumns['media_image_resize_size'] = [
+			'attribute' => 'media_image_resize_size',
+			'value' => function($model, $key, $index, $column) {
+				return serialize($model->media_image_resize_size);
+			},
+		];
+		$this->templateColumns['media_image_view_size'] = [
+			'attribute' => 'media_image_view_size',
+			'value' => function($model, $key, $index, $column) {
+				return serialize($model->media_image_view_size);
+			},
+		];
+		$this->templateColumns['media_image_type'] = [
+			'attribute' => 'media_image_type',
+			'value' => function($model, $key, $index, $column) {
+				return serialize($model->media_image_type);
+			},
+		];
+		$this->templateColumns['media_file_limit'] = [
+			'attribute' => 'media_file_limit',
+			'value' => function($model, $key, $index, $column) {
+				return $model->media_file_limit;
+			},
+		];
+		$this->templateColumns['media_file_type'] = [
+			'attribute' => 'media_file_type',
+			'value' => function($model, $key, $index, $column) {
+				return serialize($model->media_file_type);
+			},
+		];
 		$this->templateColumns['modified_date'] = [
 			'attribute' => 'modified_date',
 			'value' => function($model, $key, $index, $column) {
@@ -138,28 +215,23 @@ class ArticleSetting extends \app\components\ActiveRecord
 				'attribute' => 'modifiedDisplayname',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->modified) ? $model->modified->displayname : '-';
+					// return $model->modifiedDisplayname;
 				},
 			];
 		}
-		$this->templateColumns['permission'] = [
-			'attribute' => 'permission',
+		$this->templateColumns['media_image_resize'] = [
+			'attribute' => 'media_image_resize',
 			'value' => function($model, $key, $index, $column) {
-				return $model->permission;
+				return $this->filterYesNo($model->media_image_resize);
 			},
-			'contentOptions' => ['class'=>'center'],
-		];
-		$this->templateColumns['media_resize'] = [
-			'attribute' => 'media_resize',
-			'value' => function($model, $key, $index, $column) {
-				return $model->media_resize;
-			},
+			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class'=>'center'],
 		];
 		$this->templateColumns['headline'] = [
 			'attribute' => 'headline',
 			'value' => function($model, $key, $index, $column) {
 				$url = Url::to(['headline', 'id'=>$model->primaryKey]);
-				return $this->quickAction($url, $model->headline, 'Headline,Unheadline', true);
+				return $this->quickAction($url, $model->headline, 'Enable,Disable', true);
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class'=>'center'],
@@ -185,43 +257,41 @@ class ArticleSetting extends \app\components\ActiveRecord
 		}
 	}
 
-	public static function getLicense($source='1234567890', $length=16, $char=4)
+	/**
+	 * function getPermission
+	 */
+	public static function getPermission($value=null)
 	{
-		$mod = $length%$char;
-		if($mod == 0)
-			$sep = ($length/$char);
+		$items = array(
+			1 => Yii::t('app', 'Yes, the public can view "module name" unless they are made private.'),
+			0 => Yii::t('app', 'No, the public cannot view "module name".'),
+		);
+
+		if($value !== null)
+			return $items[$value];
 		else
-			$sep = (int)($length/$char)+1;
-		
-		$sourceLength = strlen($source);
-		$random = '';
-		for ($i = 0; $i < $length; $i++)
-			$random .= $source[rand(0, $sourceLength - 1)];
-		
-		$license = '';
-		for ($i = 0; $i < $sep; $i++) {
-			if($i != $sep-1)
-				$license .= substr($random,($i*$char),$char).'-';
-			else
-				$license .= substr($random,($i*$char),$char);
-		}
-
-		return $license;
+			return $items;
 	}
 
-	public function getSize($media_resize_size)
+	/**
+	 * after find attributes
+	 */
+	public function afterFind()
 	{
-		$mediaSize = unserialize($media_resize_size);
-		return $mediaSize['width'].' x '.$mediaSize['height'];
+		parent::afterFind();
+
+		$this->headline_category = unserialize($this->headline_category);
+		$this->media_image_resize_size = unserialize($this->media_image_resize_size);
+		$this->media_image_view_size = unserialize($this->media_image_view_size);
+		$this->media_image_type = unserialize($this->media_image_type);
+		if(!empty($media_image_type))
+			$this->media_image_type = $this->formatFileType($media_image_type, false);
+		$this->media_file_type = unserialize($this->media_file_type);
+		if(!empty($media_file_type))
+			$this->media_file_type = $this->formatFileType($media_file_type, false);
+		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
 	}
 
-	public function getHeadlineCategory($headline_category)
-	{
-		$headline_category = unserialize($headline_category);
-		return $headline_category;
-	}
-
-	
 	/**
 	 * before validate attributes
 	 */
@@ -242,13 +312,24 @@ class ArticleSetting extends \app\components\ActiveRecord
 	public function beforeSave($insert)
 	{
 		if(parent::beforeSave($insert)) {
-			$this->media_resize_size = serialize($this->media_resize_size);
-			$this->media_view_size = serialize($this->media_view_size);
 			$this->headline_category = serialize($this->headline_category);
-			$this->upload_file_type = serialize($this->formatFileType($this->upload_file_type));
+			$this->media_image_resize_size = serialize($this->media_image_resize_size);
+			$this->media_image_view_size = serialize($this->media_image_view_size);
+			$this->media_image_type = serialize($this->formatFileType($this->media_image_type));
 			$this->media_file_type = serialize($this->formatFileType($this->media_file_type));
 		}
-		return true;	
+		return true;
 	}
 
+	public function getSize($media_image_resize_size)
+	{
+		$mediaSize = unserialize($media_image_resize_size);
+		return $mediaSize['width'].' x '.$mediaSize['height'];
+	}
+
+	public function getHeadlineCategory($headline_category)
+	{
+		$headline_category = unserialize($headline_category);
+		return $headline_category;
+	}
 }

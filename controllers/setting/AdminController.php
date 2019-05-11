@@ -8,12 +8,8 @@
  * Reference start
  * TOC :
  *	Index
- *	Manage
- *	Create
  *	Update
- *	View
  *	Delete
- *	Headline
  *
  *	findModel
  *
@@ -21,10 +17,11 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 09:34 WIB
+ * @modified date 11 May 2019, 23:45 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
- 
+
 namespace ommu\article\controllers\setting;
 
 use Yii;
@@ -33,7 +30,6 @@ use app\components\Controller;
 use mdm\admin\components\AccessControl;
 use ommu\article\models\ArticleSetting;
 use ommu\article\models\search\ArticleCategory as ArticleCategorySearch;
-use ommu\article\models\search\ArticleSetting as ArticleSettingSearch;
 
 class AdminController extends Controller
 {
@@ -50,7 +46,6 @@ class AdminController extends Controller
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['POST'],
-					'headline' => ['POST'],
 				],
 			],
 		];
@@ -61,11 +56,27 @@ class AdminController extends Controller
 	 */
 	public function actionIndex()
 	{
-		return $this->redirect(['update']);
-	}
+		$this->layout = 'admin_default';
 
-	public function actionUpdate()
-	{
+		$model = ArticleSetting::findOne(1);
+		if($model === null) 
+			$model = new ArticleSetting();
+
+		if(Yii::$app->request->isPost) {
+			$model->load(Yii::$app->request->post());
+			// $postData = Yii::$app->request->post();
+			// $model->load($postData);
+
+			if($model->save()) {
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Article setting success updated.'));
+				return $this->redirect(['index']);
+
+			} else {
+				if(Yii::$app->request->isAjax)
+					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+			}
+		}
+
 		$searchModel = new ArticleCategorySearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -79,19 +90,10 @@ class AdminController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		$model = ArticleSetting::findOne(1);
-		if ($model === null)
-			$model = new ArticleSetting();
-
-		if($model->load(Yii::$app->request->post()) && $model->save()) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Article Setting success updated.'));
-			return $this->redirect(['update']);
-		}
-
-		$this->view->title = Yii::t('app', 'Article Setting');
+		$this->view->title = Yii::t('app', 'Article Settings');
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_update', [
+		return $this->render('admin_index', [
 			'model' => $model,
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
@@ -99,6 +101,62 @@ class AdminController extends Controller
 		]);
 	}
 
+	/**
+	 * Updates an existing ArticleSetting model.
+	 * If update is successful, the browser will be redirected to the 'view' page.
+	 * @param integer $id
+	 * @return mixed
+	 */
+	public function actionUpdate()
+	{
+		$model = ArticleSetting::findOne(1);
+		if ($model === null) 
+			$model = new ArticleSetting();
+
+		if(Yii::$app->request->isPost) {
+			$model->load(Yii::$app->request->post());
+			// $postData = Yii::$app->request->post();
+			// $model->load($postData);
+
+			if($model->save()) {
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Article setting success updated.'));
+				return $this->redirect(['index']);
+
+			} else {
+				if(Yii::$app->request->isAjax)
+					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+			}
+		}
+
+		$this->view->title = Yii::t('app', 'Article Settings');
+		$this->view->description = '';
+		$this->view->keywords = '';
+		return $this->render('admin_update', [
+			'model' => $model,
+		]);
+	}
+
+	/**
+	 * Deletes an existing ArticleSetting model.
+	 * If deletion is successful, the browser will be redirected to the 'index' page.
+	 * @param integer $id
+	 * @return mixed
+	 */
+	public function actionDelete()
+	{
+		$this->findModel(1)->delete();
+		
+		Yii::$app->session->setFlash('success', Yii::t('app', 'Article setting success deleted.'));
+		return $this->redirect(['manage']);
+	}
+
+	/**
+	 * Finds the ArticleSetting model based on its primary key value.
+	 * If the model is not found, a 404 HTTP exception will be thrown.
+	 * @param integer $id
+	 * @return ArticleSetting the loaded model
+	 * @throws NotFoundHttpException if the model cannot be found
+	 */
 	protected function findModel($id)
 	{
 		if(($model = ArticleSetting::findOne($id)) !== null)
