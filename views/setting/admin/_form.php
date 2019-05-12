@@ -10,23 +10,18 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 09:34 WIB
+ * @modified date 11 May 2019, 23:45 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
 
 use yii\helpers\Html;
 use app\components\widgets\ActiveForm;
-use yii\redactor\widgets\Redactor;
 use ommu\article\models\ArticleSetting;
 use ommu\article\models\ArticleCategory;
-
-$redactorOptions = [
-	'imageManagerJson' => ['/redactor/upload/image-json'],
-	'imageUpload' => ['/redactor/upload/image'],
-	'fileUpload' => ['/redactor/upload/file'],
-	'plugins' => ['clips', 'fontcolor','imagemanager']
-];
 ?>
+
+<div class="article-setting-form">
 
 <?php $form = ActiveForm::begin([
 	'options' => ['class'=>'form-horizontal form-label-left'],
@@ -41,162 +36,98 @@ $redactorOptions = [
 	$model->license = $model->licenseCode();
 echo $form->field($model, 'license')
 	->textInput(['maxlength'=>true])
-	->label($model->getAttributeLabel('license')); ?>
+	->label($model->getAttributeLabel('license'))
+	->hint(Yii::t('app', 'Enter the your license key that is provided to you when you purchased this plugin. If you do not know your license key, please contact support team.').'<br/>'.Yii::t('app', 'Format: XXXX-XXXX-XXXX-XXXX')); ?>
 
-<?php 
-$permission = [
-	1 => Yii::t('app', 'Yes, the public can view article unless they are made private.'),
-	0 => Yii::t('app', 'No, the public cannot view article.'),
-];
-echo $form->field($model, 'permission', ['template' => '{label}<div class="col-md-9 col-sm-9 col-xs-12"><span class="small-px">'.Yii::t('app', 'Select whether or not you want to let the public (visitors that are not logged-in) to view the following sections of your social network. In some cases (such as Profiles, Blogs, and Albums), if you have given them the option, your users will be able to make their pages private even though you have made them publically viewable here. For more permissions settings, please visit the General Settings page.').'</span>{input}{error}</div>'])
+<?php $permission = ArticleSetting::getPermission();
+echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hint}{input}{error}{endWrapper}'])
 	->radioList($permission)
-	->label($model->getAttributeLabel('permission')); ?>
-
-<?php echo $form->field($model, 'meta_keyword')
-	->textarea(['rows'=>2,'rows'=>6])
-	->widget(Redactor::className(), ['clientOptions' => $redactorOptions])
-	->label($model->getAttributeLabel('meta_keyword')); ?>
+	->label($model->getAttributeLabel('permission'))
+	->hint(Yii::t('app', 'Select whether or not you want to let the public (visitors that are not logged-in) to view the following sections of your social network. In some cases (such as Profiles, Blogs, and Albums), if you have given them the option, your users will be able to make their pages private even though you have made them publically viewable here. For more permissions settings, please visit the General Settings page.')); ?>
 
 <?php echo $form->field($model, 'meta_description')
-	->textarea(['rows'=>2,'rows'=>6])
-	->widget(Redactor::className(), ['clientOptions' => $redactorOptions])
+	->textarea(['rows'=>6, 'cols'=>50])
 	->label($model->getAttributeLabel('meta_description')); ?>
 
+<?php echo $form->field($model, 'meta_keyword')
+	->textarea(['rows'=>6, 'cols'=>50])
+	->label($model->getAttributeLabel('meta_keyword')); ?>
+
+<div class="ln_solid"></div>
+
+<?php $headline = ArticleSetting::getHeadline();
+echo $form->field($model, 'headline')
+	->dropDownList($headline)
+	->label($model->getAttributeLabel('headline')); ?>
+
 <?php echo $form->field($model, 'headline_limit')
-	->textInput(['type' => 'number'])
+	->textInput(['type'=>'number'])
 	->label($model->getAttributeLabel('headline_limit')); ?>
 
-<?php 
-
-$headline_category = ArticleCategory::getCategory(1);
-if(!$model->getErrors()) {
-	try {
-		$model->headline_category = unserialize($model->headline_category);
-	}catch(\Exception $e) {
-		$model->headline_category = '';
-	}
-}
-
+<?php $category = ArticleCategory::getCategory(1);
 echo $form->field($model, 'headline_category')
-	->checkboxList($headline_category)
+	->checkboxList($category)
 	->label($model->getAttributeLabel('headline_category')); ?>
 
+<div class="ln_solid"></div>
 
 <?php echo $form->field($model, 'media_image_limit')
-	->textInput(['type' => 'number'])
+	->textInput(['type'=>'number'])
 	->label($model->getAttributeLabel('media_image_limit')); ?>
 
-
-<?php 
-$media_image_resize = [
-	1 => Yii::t('app', 'Yes, resize media after upload.'),
-	0 => Yii::t('app', 'No, not resize media after upload.'),
-];
+<?php $mediaImageResize = ArticleSetting::getMediaImageResize();
 echo $form->field($model, 'media_image_resize')
-	->radioList($media_image_resize)
+	->radioList($mediaImageResize)
 	->label($model->getAttributeLabel('media_image_resize')); ?>
 
-<div class="form-group field-articlesetting-media_image_resize_size-width field-articlesetting-media_image_resize_size-height required">
-	<?php echo $form->field($model, 'media_image_resize_size', ['template' => '{label}', 'options' => ['tag' => null]])
-		->label($model->getAttributeLabel('media_image_resize_size')); ?>
-	<div class="col-md-3 col-sm-3 col-xs-12">
-		<?php 
-		if(!$model->getErrors()) {
-			try {
-				$model->media_image_resize_size = unserialize($model->media_image_resize_size);
-			}catch(\Exception $e) {
-				$model->media_image_resize_size = [];
-			}
-		}
-		echo $form->field($model, 'media_image_resize_size[width]', ['template' => '{input}{error}'])
-			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Width')])
-			->label($model->getAttributeLabel('media_image_resize_size')); ?>
-	</div>
-	<div class="col-md-3 col-sm-3 col-xs-12">
-		<?php echo $form->field($model, 'media_image_resize_size[height]', ['template' => '{input}{error}'])
-			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Height')])
-			->label($model->getAttributeLabel('media_image_resize_size')); ?>
-	</div>
-</div>
+<?php $media_image_resize_size_height = $form->field($model, 'media_image_resize_size[height]', ['template' => '{beginWrapper}{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper'=>'col-md-3 col-sm-5 col-xs-6 col-6'], 'options' => ['tag' => null]])
+	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('height')])
+	->label($model->getAttributeLabel('media_image_resize_size[height]')); ?>
 
+<?php echo $form->field($model, 'media_image_resize_size[width]', ['template' => '{hint}{beginWrapper}{input}{endWrapper}'.$media_image_resize_size_height.'{error}', 'horizontalCssClasses' => ['wrapper'=>'col-md-3 col-sm-4 col-xs-6 col-6 col-sm-offset-3', 'error'=>'col-md-6 col-sm-9 col-xs-12 col-sm-offset-3', 'hint'=>'col-md-6 col-sm-9 col-xs-12 col-sm-offset-3']])
+	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('width')])
+	->label($model->getAttributeLabel('media_image_resize_size'))
+	->hint(Yii::t('app', 'If you have selected "Yes" above, please input the maximum dimensions for the project image. If your users upload a image that is larger than these dimensions, the server will attempt to scale them down automatically. This feature requires that your PHP server is compiled with support for the GD Libraries.')); ?>
 
-<div class="form-group field-articlesetting-media_image_view_size-width field-articlesetting-media_image_view_size-height required">
-	<?php echo $form->field($model, 'media_image_view_size', ['template' => '{label}', 'options' => ['tag' => null]])
-		->label($model->getAttributeLabel('media_image_view_size')); ?>
-	<div class="col-md-9 col-sm-9 col-xs-12">
-		<?php 
-		if(!$model->getErrors()) {
-			try {
-				$model->media_image_view_size = unserialize($model->media_image_view_size);
-			}catch(\Exception $e) {
-				$model->media_image_view_size = [];
-			}
-		}
+<?php $media_image_view_size_small_height = $form->field($model, 'media_image_view_size[small][height]', ['template' => '{beginWrapper}{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper'=>'col-md-3 col-sm-5 col-xs-6 col-6'], 'options' => ['tag' => null]])
+	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('height')])
+	->label($model->getAttributeLabel('media_image_view_size[small][height]')); ?>
 
-		if(empty($model->media_image_view_size))			
-			$model->media_image_view_size = [];
+<?php echo $form->field($model, 'media_image_view_size[small][width]', ['template' => '{label}<div class="h5 col-md-6 col-sm-9 col-xs-12">'.$model->getAttributeLabel('media_image_view_size[small]').'</div>{beginWrapper}{input}{endWrapper}'.$media_image_view_size_small_height.'{error}', 'horizontalCssClasses' => ['wrapper'=>'col-md-3 col-sm-4 col-xs-6 col-6 col-sm-offset-3', 'error'=>'col-md-6 col-sm-9 col-xs-12 col-sm-offset-3', 'hint'=>'col-md-6 col-sm-9 col-xs-12 col-sm-offset-3']])
+	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('width')])
+	->label($model->getAttributeLabel('media_image_view_size')); ?>
 
-		echo Html::label($model->getAttributeLabel('media_image_view_size[small]'), null, ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']); ?>
-		<?php 
-		echo $form->field($model, 'media_image_view_size[small][width]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
-			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Width')])
-			->label($model->getAttributeLabel('media_image_view_size')); ?>
-		<?php echo $form->field($model, 'media_image_view_size[small][height]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
-			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Height')])
-			->label($model->getAttributeLabel('media_image_view_size')); ?>
+<?php $media_image_view_size_medium_height = $form->field($model, 'media_image_view_size[medium][height]', ['template' => '{beginWrapper}{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper'=>'col-md-3 col-sm-5 col-xs-6 col-6'], 'options' => ['tag' => null]])
+	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('height')])
+	->label($model->getAttributeLabel('media_image_view_size[medium][height]')); ?>
 
-		<?php echo Html::label($model->getAttributeLabel('media_image_view_size[medium]'), null, ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']); ?>
-		<?php 
-		echo $form->field($model, 'media_image_view_size[medium][width]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
-			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Width')])
-			->label($model->getAttributeLabel('media_image_view_size')); ?>
-		<?php echo $form->field($model, 'media_image_view_size[medium][height]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
-			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Height')])
-			->label($model->getAttributeLabel('media_image_view_size')); ?>
+<?php echo $form->field($model, 'media_image_view_size[medium][width]', ['template' => '<div class="h5 col-md-6 col-sm-9 col-xs-12 col-sm-offset-3 mt-0">'.$model->getAttributeLabel('media_image_view_size[medium]').'</div>{beginWrapper}{input}{endWrapper}'.$media_image_view_size_medium_height.'{error}', 'horizontalCssClasses' => ['wrapper'=>'col-md-3 col-sm-4 col-xs-6 col-6 col-sm-offset-3', 'error'=>'col-md-6 col-sm-9 col-xs-12 col-sm-offset-3', 'hint'=>'col-md-6 col-sm-9 col-xs-12 col-sm-offset-3']])
+	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('width')])
+	->label($model->getAttributeLabel('media_image_view_size[medium][width]')); ?>
 
-		<?php echo Html::label($model->getAttributeLabel('media_image_view_size[large]'), null, ['class'=>'control-label col-md-4 col-sm-4 col-xs-12']); ?>
-		<?php 
-		echo $form->field($model, 'media_image_view_size[large][width]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
-			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Width')])
-			->label($model->getAttributeLabel('media_image_view_size')); ?>
-		<?php echo $form->field($model, 'media_image_view_size[large][height]', ['template' => '<div class="col-md-4 col-sm-4 col-xs-12">{input}{error}</div>', 'options' => ['tag' => null]])
-			->textInput(['type' => 'number', 'placeholder' => Yii::t('app', 'Height')])
-			->label($model->getAttributeLabel('media_image_view_size')); ?>
-	</div>
-</div>
+<?php $media_image_view_size_large_height = $form->field($model, 'media_image_view_size[large][height]', ['template' => '{beginWrapper}{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper'=>'col-md-3 col-sm-5 col-xs-6 col-6'], 'options' => ['tag' => null]])
+	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('height')])
+	->label($model->getAttributeLabel('media_image_view_size[large][height]')); ?>
 
-<?php 
-if(!$model->getErrors()) {
-	try {
-		$media_image_type = unserialize($model->media_image_type);
-	}catch(\Exception $e) {
-		$media_image_type = '';
-	}
-	if(!empty($media_image_type))
-		$model->media_image_type = $this->formatFileType($media_image_type, false);
-}
-echo $form->field($model, 'media_image_type', ['template' => '{label}<div class="col-md-9 col-sm-9 col-xs-12">{input}{error}<span class="small-px">'.Yii::t('app', 'pisahkan jenis file dengan koma (,). example: "jpg, png, bmp, jpeg"').'</span></div>'])
+<?php echo $form->field($model, 'media_image_view_size[large][width]', ['template' => '<div class="h5 col-md-6 col-sm-9 col-xs-12 col-sm-offset-3 mt-0">'.$model->getAttributeLabel('media_image_view_size[large]').'</div>{beginWrapper}{input}{endWrapper}'.$media_image_view_size_large_height.'{error}', 'horizontalCssClasses' => ['wrapper'=>'col-md-3 col-sm-4 col-xs-6 col-6 col-sm-offset-3', 'error'=>'col-md-6 col-sm-9 col-xs-12 col-sm-offset-3', 'hint'=>'col-md-6 col-sm-9 col-xs-12 col-sm-offset-3']])
+	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('width')])
+	->label($model->getAttributeLabel('media_image_view_size[large][width]')); ?>
+
+<?php echo $form->field($model, 'media_image_type')
 	->textInput()
-	->label($model->getAttributeLabel('media_image_type')); ?>
+	->label($model->getAttributeLabel('media_image_type'))
+	->hint(Yii::t('app', 'pisahkan jenis file dengan koma (,). example: "jpg, png, bmp, jpeg"')); ?>
 
+<div class="ln_solid"></div>
 
+<?php echo $form->field($model, 'media_file_limit')
+	->textInput(['type'=>'number'])
+	->label($model->getAttributeLabel('media_file_limit')); ?>
 
-<?php 
-if(!$model->getErrors()) {
-	try {
-		$media_file_type = unserialize($model->media_file_type);
-	}catch(\Exception $e) {
-	}
-	if(!empty($media_file_type))
-		$model->media_file_type = $this->formatFileType($media_file_type, false);
-}
-echo $form->field($model, 'media_file_type', ['template' => '{label}<div class="col-md-9 col-sm-9 col-xs-12">{input}{error}<span class="small-px">'.Yii::t('app', 'pisahkan jenis file dengan koma (,). example: "pdf, doc, docx"').'</span></div>'])
+<?php echo $form->field($model, 'media_file_type')
 	->textInput()
-	->label($model->getAttributeLabel('media_file_type')); ?>
-
-<?php echo $form->field($model, 'headline')
-	->checkbox()
-	->label($model->getAttributeLabel('headline')); ?>
+	->label($model->getAttributeLabel('media_file_type'))
+	->hint(Yii::t('app', 'pisahkan jenis file dengan koma (,). example: "pdf, doc, docx"')); ?>
 
 <div class="ln_solid"></div>
 
@@ -204,3 +135,5 @@ echo $form->field($model, 'media_file_type', ['template' => '{label}<div class="
 	->submitButton(); ?>
 
 <?php ActiveForm::end(); ?>
+
+</div>

@@ -69,7 +69,7 @@ class AdminController extends Controller
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article setting success updated.'));
-				return $this->redirect(['index']);
+				return $this->redirect(['update']);
 
 			} else {
 				if(Yii::$app->request->isAjax)
@@ -120,7 +120,7 @@ class AdminController extends Controller
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article setting success updated.'));
-				return $this->redirect(['index']);
+				return $this->redirect(['update']);
 
 			} else {
 				if(Yii::$app->request->isAjax)

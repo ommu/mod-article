@@ -124,8 +124,7 @@ echo GridView::widget([
 			],
 			[
 				'attribute' => 'headline',
-				'value' => $model->quickAction(Url::to(['headline', 'id'=>$model->primaryKey]), $model->headline, 'Enable,Disable'),
-				'format' => 'raw',
+				'value' => ArticleSetting::getHeadline($model->headline),
 			],
 			'headline_limit',
 			[
@@ -135,15 +134,16 @@ echo GridView::widget([
 			'media_image_limit',
 			[
 				'attribute' => 'media_image_resize',
-				'value' => $model->filterYesNo($model->media_image_resize),
+				'value' => ArticleSetting::getMediaImageResize($model->media_image_resize),
 			],
 			[
 				'attribute' => 'media_image_resize_size',
-				'value' => serialize($model->media_image_resize_size),
+				'value' => ArticleSetting::getSize($model->media_image_resize_size),
 			],
 			[
 				'attribute' => 'media_image_view_size',
-				'value' => serialize($model->media_image_view_size),
+				'value' => ArticleSetting::parseImageViewSize($model->media_image_view_size),
+				'format' => 'html',
 			],
 			[
 				'attribute' => 'media_image_type',
@@ -167,7 +167,7 @@ echo GridView::widget([
 				'value' => Html::a(Yii::t('app', 'Update'), Url::to(['update']), [
 					'class' => 'btn btn-primary',
 				]),
-				'format' => 'raw',
+				'format' => 'html',
 			],
 		],
 	]);

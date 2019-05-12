@@ -39,6 +39,7 @@ namespace ommu\article\models;
 
 use Yii;
 use yii\helpers\Url;
+use yii\helpers\Html;
 use ommu\users\models\Users;
 
 class ArticleSetting extends \app\components\ActiveRecord
@@ -64,9 +65,10 @@ class ArticleSetting extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['license', 'permission', 'meta_description', 'meta_keyword', 'headline', 'headline_limit', 'headline_category', 'media_image_limit', 'media_image_resize', 'media_image_resize_size', 'media_image_view_size', 'media_image_type', 'media_file_limit', 'media_file_type'], 'required'],
+			[['license', 'permission', 'meta_description', 'meta_keyword', 'media_image_type', 'media_file_type'], 'required'],
 			[['permission', 'headline', 'headline_limit', 'media_image_limit', 'media_image_resize', 'media_file_limit', 'modified_id'], 'integer'],
 			[['meta_description', 'meta_keyword'], 'string'],
+			[['headline', 'headline_limit', 'headline_category', 'media_image_limit', 'media_image_resize', 'media_image_resize_size', 'media_image_view_size', 'media_file_limit'], 'safe'],
 			//[['headline_category', 'media_image_resize_size', 'media_image_view_size', 'media_image_type', 'media_file_type'], 'serialize'],
 			[['license'], 'string', 'max' => 32],
 		];
@@ -99,6 +101,8 @@ class ArticleSetting extends \app\components\ActiveRecord
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
+			'width' => Yii::t('app', 'Width'),
+			'height' => Yii::t('app', 'Height'),
 		];
 	}
 
@@ -176,19 +180,20 @@ class ArticleSetting extends \app\components\ActiveRecord
 		$this->templateColumns['media_image_resize_size'] = [
 			'attribute' => 'media_image_resize_size',
 			'value' => function($model, $key, $index, $column) {
-				return serialize($model->media_image_resize_size);
+				return self::getSize($model->media_image_resize_size);
 			},
 		];
 		$this->templateColumns['media_image_view_size'] = [
 			'attribute' => 'media_image_view_size',
 			'value' => function($model, $key, $index, $column) {
-				return serialize($model->media_image_view_size);
+				return self::parseImageViewSize($model->media_image_view_size);
 			},
+			'format' => 'html',
 		];
 		$this->templateColumns['media_image_type'] = [
 			'attribute' => 'media_image_type',
 			'value' => function($model, $key, $index, $column) {
-				return serialize($model->media_image_type);
+				return $model->media_image_type;
 			},
 		];
 		$this->templateColumns['media_file_limit'] = [
@@ -200,7 +205,7 @@ class ArticleSetting extends \app\components\ActiveRecord
 		$this->templateColumns['media_file_type'] = [
 			'attribute' => 'media_file_type',
 			'value' => function($model, $key, $index, $column) {
-				return serialize($model->media_file_type);
+				return $model->media_file_type;
 			},
 		];
 		$this->templateColumns['modified_date'] = [
@@ -230,12 +235,10 @@ class ArticleSetting extends \app\components\ActiveRecord
 		$this->templateColumns['headline'] = [
 			'attribute' => 'headline',
 			'value' => function($model, $key, $index, $column) {
-				$url = Url::to(['headline', 'id'=>$model->primaryKey]);
-				return $this->quickAction($url, $model->headline, 'Enable,Disable', true);
+				return self::getHeadline($model->headline);
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class'=>'center'],
-			'format' => 'raw',
 		];
 	}
 
@@ -274,6 +277,66 @@ class ArticleSetting extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * function getHeadline
+	 */
+	public static function getHeadline($value=null)
+	{
+		$items = array(
+			1 => Yii::t('app', 'Enable'),
+			0 => Yii::t('app', 'Disable'),
+		);
+
+		if($value !== null)
+			return $items[$value];
+		else
+			return $items;
+	}
+
+	/**
+	 * function getMediaImageResize
+	 */
+	public static function getMediaImageResize($value=null)
+	{
+		$items = array(
+			1 => Yii::t('app', 'Yes, resize media after upload.'),
+			0 => Yii::t('app', 'No, not resize media after upload.'),
+		);
+
+		if($value !== null)
+			return $items[$value];
+		else
+			return $items;
+	}
+
+	/**
+	 * function getSize
+	 */
+	public function getSize($size)
+	{
+		if(empty($size))
+			return '-';
+
+		$width = $size['width'] ? $size['width'] : '~';
+		$height = $size['height'] ? $size['height'] : '~';
+		return $width.' x '.$height;
+	}
+
+	/**
+	 * function getSize
+	 */
+	public function parseImageViewSize($view_size)
+	{
+		if(empty($view_size))
+			return '-';
+
+		$views = [];
+		foreach ($view_size as $key => $value) {
+			$views[] = ucfirst($key).": ".self::getSize($value);
+		}
+		return Html::ul($views, ['encode'=>false, 'class'=>'list-boxed']);
+	}
+
+	/**
 	 * after find attributes
 	 */
 	public function afterFind()
@@ -283,10 +346,10 @@ class ArticleSetting extends \app\components\ActiveRecord
 		$this->headline_category = unserialize($this->headline_category);
 		$this->media_image_resize_size = unserialize($this->media_image_resize_size);
 		$this->media_image_view_size = unserialize($this->media_image_view_size);
-		$this->media_image_type = unserialize($this->media_image_type);
+		$media_image_type = unserialize($this->media_image_type);
 		if(!empty($media_image_type))
 			$this->media_image_type = $this->formatFileType($media_image_type, false);
-		$this->media_file_type = unserialize($this->media_file_type);
+		$media_file_type = unserialize($this->media_file_type);
 		if(!empty($media_file_type))
 			$this->media_file_type = $this->formatFileType($media_file_type, false);
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
@@ -319,12 +382,6 @@ class ArticleSetting extends \app\components\ActiveRecord
 			$this->media_file_type = serialize($this->formatFileType($this->media_file_type));
 		}
 		return true;
-	}
-
-	public function getSize($media_image_resize_size)
-	{
-		$mediaSize = unserialize($media_image_resize_size);
-		return $mediaSize['width'].' x '.$mediaSize['height'];
 	}
 
 	public function getHeadlineCategory($headline_category)
