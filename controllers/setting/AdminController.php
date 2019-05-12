@@ -128,6 +128,7 @@ class AdminController extends Controller
 			}
 		}
 
+		$this->subMenu = $this->module->params['setting_submenu'];
 		$this->view->title = Yii::t('app', 'Article Settings');
 		$this->view->description = '';
 		$this->view->keywords = '';
