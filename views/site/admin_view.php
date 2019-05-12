@@ -167,7 +167,7 @@ $this->params['menu']['option'] = [
 		//'filterModel' => $searchModel,
 		'columns' => [
 			['class' => 'yii\grid\SerialColumn'],
-			'image_filename',
+			'media_filename',
 			'caption',
 		],
 	]); ?>

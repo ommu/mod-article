@@ -17,7 +17,7 @@
 use yii\helpers\Url;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Article Media'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->image_filename, 'url' => ['view', 'id'=>$model->media_id]];
+$this->params['breadcrumbs'][] = ['label' => $model->media_filename, 'url' => ['view', 'id'=>$model->media_id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
 $this->params['menu']['content'] = [

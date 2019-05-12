@@ -71,18 +71,18 @@ $redactorOptions = [
 </div>
 
 
-<div class="form-group field-articles-image_filename required">
-	<?php echo $form->field($model, 'image_filename', ['template' => '{label}', 'options' => ['tag' => null]])
-		->label($model->getAttributeLabel('image_filename')); ?>
+<div class="form-group field-articles-media_filename required">
+	<?php echo $form->field($model, 'media_filename', ['template' => '{label}', 'options' => ['tag' => null]])
+		->label($model->getAttributeLabel('media_filename')); ?>
 	<div class="col-md-9 col-sm-9 col-xs-12">
 		<?php if (!$model->isNewRecord) {
-			if($model->old_image_filename_i != '')
-				echo Html::img(join('/', [Url::Base(), ArticleMedia::getMediaPath(false), $model->old_image_filename_i]), ['class'=>'mb-15', 'width'=>'100%']);
+			if($model->old_media_filename_i != '')
+				echo Html::img(join('/', [Url::Base(), ArticleMedia::getMediaPath(false), $model->old_media_filename_i]), ['class'=>'mb-15', 'width'=>'100%']);
 		} ?>
 
-		<?php echo $form->field($model, 'image_filename', ['template' => '{input}{error}'])
+		<?php echo $form->field($model, 'media_filename', ['template' => '{input}{error}'])
 			->fileInput() 
-			->label($model->getAttributeLabel('image_filename')); ?>
+			->label($model->getAttributeLabel('media_filename')); ?>
 	</div>
 </div>
 

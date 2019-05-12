@@ -107,7 +107,7 @@ class MediaController extends Controller
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
-			$model->image_filename = UploadedFile::getInstance($model, 'image_filename');
+			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Media success created.'));
@@ -139,9 +139,9 @@ class MediaController extends Controller
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
-			$model->image_filename = UploadedFile::getInstance($model, 'image_filename');
-			if(!($model->image_filename instanceof UploadedFile)) {
-				$model->image_filename = $model->old_image_filename_i;
+			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
+			if(!($model->media_filename instanceof UploadedFile)) {
+				$model->media_filename = $model->old_media_filename_i;
 			}
 
 			if($model->save()) {
@@ -151,7 +151,7 @@ class MediaController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Update Article Media: {image_filename}', ['image_filename' => $model->image_filename]);
+		$this->view->title = Yii::t('app', 'Update Article Media: {media_filename}', ['media_filename' => $model->media_filename]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -169,7 +169,7 @@ class MediaController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'View Article Media: {image_filename}', ['image_filename' => $model->image_filename]);
+		$this->view->title = Yii::t('app', 'View Article Media: {media_filename}', ['media_filename' => $model->media_filename]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_view', [

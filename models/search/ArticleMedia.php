@@ -29,7 +29,7 @@ class ArticleMedia extends ArticleMediaModel
 	{
 		return [
 			[['media_id', 'publish', 'cover', 'article_id', 'creation_id', 'modified_id'], 'integer'],
-			[['image_filename', 'caption', 'creation_date', 'modified_date', 'updated_date', 'articleTitle', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
+			[['media_filename', 'caption', 'creation_date', 'modified_date', 'updated_date', 'articleTitle', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
 
@@ -123,7 +123,7 @@ class ArticleMedia extends ArticleMediaModel
 				$query->andFilterWhere(['t.publish' => $this->publish]);
 		}
 
-		$query->andFilterWhere(['like', 't.image_filename', $this->image_filename])
+		$query->andFilterWhere(['like', 't.media_filename', $this->media_filename])
 			->andFilterWhere(['like', 't.caption', $this->caption])
 			->andFilterWhere(['like', 'article.title', $this->articleTitle])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])

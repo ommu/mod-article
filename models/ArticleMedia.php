@@ -15,7 +15,7 @@
  * @property integer $publish
  * @property integer $cover
  * @property integer $article_id
- * @property string $image_filename
+ * @property string $media_filename
  * @property string $caption
  * @property string $creation_date
  * @property integer $creation_id
@@ -45,7 +45,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 	public $articleTitle;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
-	public $old_image_filename_i;
+	public $old_media_filename_i;
 
 	/**
 	 * @return string the associated database table name
@@ -63,11 +63,11 @@ class ArticleMedia extends \app\components\ActiveRecord
 		return [
 			[['publish', 'cover', 'article_id', 'creation_id', 'modified_id'], 'integer'],
 			[['caption'], 'required'],
-			[['image_filename'], 'required', 'on' => 'formCreate'],
-			[['creation_date', 'modified_date', 'updated_date','image_filename','old_image_filename_i'], 'safe'],
+			[['media_filename'], 'required', 'on' => 'formCreate'],
+			[['creation_date', 'modified_date', 'updated_date','media_filename','old_media_filename_i'], 'safe'],
 			[['caption'], 'string', 'max' => 150],
 			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'article_id']],
-			[['image_filename'], 'file', 'extensions' => 'jpeg, jpg, png, bmp, gif'],
+			[['media_filename'], 'file', 'extensions' => 'jpeg, jpg, png, bmp, gif'],
 
 		];
 	}
@@ -82,7 +82,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 			'publish' => Yii::t('app', 'Publish'),
 			'cover' => Yii::t('app', 'Cover'),
 			'article_id' => Yii::t('app', 'Article'),
-			'image_filename' => Yii::t('app', 'Media Filename'),
+			'media_filename' => Yii::t('app', 'Media Filename'),
 			'caption' => Yii::t('app', 'Caption'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
@@ -144,7 +144,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 				},
 			];
 		}
-		$this->templateColumns['image_filename'] = 'image_filename';
+		$this->templateColumns['media_filename'] = 'media_filename';
 		$this->templateColumns['caption'] = 'caption';
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
@@ -248,7 +248,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 	 */
 	public function afterFind()
 	{
-		$this->old_image_filename_i = $this->image_filename;
+		$this->old_media_filename_i = $this->media_filename;
 	}
 	/**
 	 * before validate attributes
@@ -335,11 +335,11 @@ class ArticleMedia extends \app\components\ActiveRecord
 			}else {
 				@chmod($bannerPath, 0755,true);
 			}
-			if($this->image_filename instanceof \yii\web\UploadedFile) {
+			if($this->media_filename instanceof \yii\web\UploadedFile) {
 				$article = Articles::findOne($this->article_id);
-				$imageName = time().'_'.$this->sanitizeFileName($article->title).'.'. $this->image_filename->extension; 
-				if($this->image_filename->saveAs($mediaPath.'/'.$imageName)) {
-					$this->image_filename = $imageName;
+				$imageName = time().'_'.$this->sanitizeFileName($article->title).'.'. $this->media_filename->extension; 
+				if($this->media_filename->saveAs($mediaPath.'/'.$imageName)) {
+					$this->media_filename = $imageName;
 					@chmod($imageName, 0777);
 				}
 			}
@@ -353,8 +353,8 @@ class ArticleMedia extends \app\components\ActiveRecord
 	public function afterSave($insert, $changedAttributes)
 	{
 		parent::afterSave($insert, $changedAttributes);
-		if(!$insert && $this->image_filename != $this->old_image_filename_i) {
-			$fname = join('/', [self::getMediaPath(), $this->old_image_filename_i]);
+		if(!$insert && $this->media_filename != $this->old_media_filename_i) {
+			$fname = join('/', [self::getMediaPath(), $this->old_media_filename_i]);
 			if(file_exists($fname)) {
 				@unlink($fname);
 			}
@@ -368,7 +368,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 	{
 		parent::afterDelete();
 
-		$fname = join('/', [self::getMediaPath(), $this->image_filename]);
+		$fname = join('/', [self::getMediaPath(), $this->media_filename]);
 		if(file_exists($fname)) {
 			@unlink($fname);
 		}
