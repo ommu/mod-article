@@ -35,7 +35,7 @@ use yii\widgets\ActiveForm;
 
 		<?php echo $form->field($model, 'article_id'); ?>
 
-		<?php echo $form->field($model, 'media_filename'); ?>
+		<?php echo $form->field($model, 'image_filename'); ?>
 
 		<?php echo $form->field($model, 'caption'); ?>
 

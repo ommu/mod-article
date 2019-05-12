@@ -42,10 +42,10 @@ $attributes = [
 		'value' => $model->article->title,
 	],
 	[
-		'attribute' => 'media_filename',
+		'attribute' => 'image_filename',
 		'format' => 'raw',
 		'value' => function ($model) {
-			return Html::img(url::Base().'/public/article/media/'.$model->media_filename, ['width' => '400', 'height' => '300']);
+			return Html::img(url::Base().'/public/article/media/'.$model->image_filename, ['width' => '400', 'height' => '300']);
 		},
 	],	
 	'caption',
