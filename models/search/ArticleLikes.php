@@ -8,6 +8,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 11:11 WIB
+ * @modified date 13 May 2019, 17:13 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -18,7 +19,6 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use ommu\article\models\ArticleLikes as ArticleLikesModel;
-//use ommu\article\models\Articles;
 
 class ArticleLikes extends ArticleLikesModel
 {
@@ -28,7 +28,7 @@ class ArticleLikes extends ArticleLikesModel
 	public function rules()
 	{
 		return [
-			[['like_id', 'publish', 'article_id', 'user_id'], 'integer'],
+			[['id', 'publish', 'article_id', 'user_id'], 'integer'],
 			[['likes_date', 'likes_ip', 'updated_date', 'articleTitle', 'userDisplayname'], 'safe'],
 		];
 	}
@@ -65,7 +65,10 @@ class ArticleLikes extends ArticleLikesModel
 			$query = ArticleLikesModel::find()->alias('t');
 		else
 			$query = ArticleLikesModel::find()->alias('t')->select($column);
-		$query->joinWith(['article article', 'user user']);
+		$query->joinWith([
+			'article article', 
+			'user user'
+		]);
 
 		// add conditions that should always apply here
 		$dataParams = [
@@ -87,7 +90,7 @@ class ArticleLikes extends ArticleLikesModel
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
-			'defaultOrder' => ['like_id' => SORT_DESC],
+			'defaultOrder' => ['id' => SORT_DESC],
 		]);
 
 		$this->load($params);
@@ -100,7 +103,7 @@ class ArticleLikes extends ArticleLikesModel
 
 		// grid filtering conditions
 		$query->andFilterWhere([
-			't.like_id' => isset($params['id']) ? $params['id'] : $this->like_id,
+			't.id' => $this->id,
 			't.article_id' => isset($params['article']) ? $params['article'] : $this->article_id,
 			't.user_id' => isset($params['user']) ? $params['user'] : $this->user_id,
 			'cast(t.likes_date as date)' => $this->likes_date,

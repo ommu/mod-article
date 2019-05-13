@@ -65,7 +65,7 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 	{
 		return [
 			'id' => Yii::t('app', 'ID'),
-			'publish' => Yii::t('app', 'Publish'),
+			'publish' => Yii::t('app', 'Like'),
 			'like_id' => Yii::t('app', 'Like'),
 			'likes_date' => Yii::t('app', 'Likes Date'),
 			'likes_ip' => Yii::t('app', 'Likes Ip'),
@@ -124,18 +124,14 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 				return $model->likes_ip;
 			},
 		];
-		if(!Yii::$app->request->get('trash')) {
-			$this->templateColumns['publish'] = [
-				'attribute' => 'publish',
-				'value' => function($model, $key, $index, $column) {
-					$url = Url::to(['publish', 'id'=>$model->primaryKey]);
-					return $this->quickAction($url, $model->publish);
-				},
-				'filter' => $this->filterYesNo(),
-				'contentOptions' => ['class'=>'center'],
-				'format' => 'raw',
-			];
-		}
+		$this->templateColumns['publish'] = [
+			'attribute' => 'publish',
+			'value' => function($model, $key, $index, $column) {
+				return $this->filterYesNo($model->publish);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class'=>'center'],
+		];
 	}
 
 	/**

@@ -9,12 +9,8 @@
  * TOC :
  *	Index
  *	Manage
- *	Create
- *	Update
  *	View
  *	Delete
- *	RunAction
- *	Publish
  *
  *	findModel
  *
@@ -22,10 +18,11 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:59 WIB
+ * @modified date 13 May 2019, 17:13 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
- 
+
 namespace ommu\article\controllers\history;
 
 use Yii;
@@ -50,7 +47,6 @@ class LikeController extends Controller
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['POST'],
-					'publish' => ['POST'],
 				],
 			],
 		];
@@ -83,51 +79,49 @@ class LikeController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		$this->view->title = Yii::t('app', 'Article Like Histories');
+		if(($like = Yii::$app->request->get('like')) != null)
+			$like = \ommu\article\models\ArticleLikes::findOne($like);
+
+		$this->view->title = Yii::t('app', 'Like Histories');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
+			'like' => $like,
 		]);
 	}
 
 	/**
-	 * Creates a new ArticleLikeHistory model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
-	 * @return mixed
-	 */
-	
-	
-	public function actionDelete($id)
-	{
-		$model = $this->findModel($id);
-		$model->publish = 2;
-
-		if($model->save(false, ['publish'])) {
-			//return $this->redirect(['view', 'id' => $model->id]);
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Article Like History success deleted.'));
-			return $this->redirect(['manage']);
-		}
-	}
-
-	/**
-	 * actionPublish an existing ArticleLikeHistory model.
-	 * If publish/unpublish is successful, the browser will be redirected to the 'index' page.
+	 * Displays a single ArticleLikeHistory model.
 	 * @param integer $id
 	 * @return mixed
 	 */
-	public function actionPublish($id)
+	public function actionView($id)
 	{
 		$model = $this->findModel($id);
-		$replace = $model->publish == 1 ? 0 : 1;
-		$model->publish = $replace;
 
-		if($model->save(false, ['publish'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Article Like History success updated.'));
-			return $this->redirect(['manage']);
-		}
+		$this->view->title = Yii::t('app', 'Detail Like History: {like-id}', ['like-id' => $model->like->article->title]);
+		$this->view->description = '';
+		$this->view->keywords = '';
+		return $this->oRender('admin_view', [
+			'model' => $model,
+		]);
+	}
+
+	/**
+	 * Deletes an existing ArticleLikeHistory model.
+	 * If deletion is successful, the browser will be redirected to the 'index' page.
+	 * @param integer $id
+	 * @return mixed
+	 */
+	public function actionDelete($id)
+	{
+		$this->findModel($id)->delete();
+
+		Yii::$app->session->setFlash('success', Yii::t('app', 'Article like history success deleted.'));
+		return $this->redirect(['manage']);
 	}
 
 	/**

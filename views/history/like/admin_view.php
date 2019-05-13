@@ -1,14 +1,14 @@
 <?php
 /**
- * Article Download Histories (article-download-history)
+ * Article Like Histories (article-like-history)
  * @var $this app\components\View
- * @var $this ommu\article\controllers\history\DownloadController
- * @var $model ommu\article\models\ArticleDownloadHistory
+ * @var $this ommu\article\controllers\history\LikeController
+ * @var $model ommu\article\models\ArticleLikeHistory
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2019 OMMU (www.ommu.co)
- * @created date 13 May 2019, 09:42 WIB
+ * @created date 13 May 2019, 17:13 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -17,8 +17,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Download Histories'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $model->download->file->file_filename;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Like Histories'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = $model->like->article->title;
 
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
@@ -26,26 +26,30 @@ $this->params['menu']['content'] = [
 ];
 ?>
 
-<div class="article-download-history-view">
+<div class="article-like-history-view">
 
 <?php
 $attributes = [
 	'id',
 	[
-		'attribute' => 'downloadFileId',
+		'attribute' => 'publish',
+		'value' => $model->filterYesNo($model->publish),
+	],
+	[
+		'attribute' => 'likeArticleId',
 		'value' => function ($model) {
-			$downloadFileId = isset($model->download) ? $model->download->file->file_filename : '-';
-			if($downloadFileId != '-')
-				return Html::a($downloadFileId, ['o/download/view', 'id'=>$model->download_id], ['title'=>$downloadFileId, 'class'=>'modal-btn']);
-			return $downloadFileId;
+			$likeArticleId = isset($model->like) ? $model->like->article->title : '-';
+			if($likeArticleId != '-')
+				return Html::a($likeArticleId, ['o/like/view', 'id'=>$model->like_id], ['title'=>$likeArticleId, 'class'=>'modal-btn']);
+			return $likeArticleId;
 		},
 		'format' => 'html',
 	],
 	[
-		'attribute' => 'download_date',
-		'value' => Yii::$app->formatter->asDatetime($model->download_date, 'medium'),
+		'attribute' => 'likes_date',
+		'value' => Yii::$app->formatter->asDatetime($model->likes_date, 'medium'),
 	],
-	'download_ip',
+	'likes_ip',
 	[
 		'attribute' => '',
 		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary']),

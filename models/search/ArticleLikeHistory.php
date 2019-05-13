@@ -8,6 +8,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:59 WIB
+ * @modified date 13 May 2019, 17:13 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -18,7 +19,6 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use ommu\article\models\ArticleLikeHistory as ArticleLikeHistoryModel;
-//use ommu\article\models\ArticleLikes;
 
 class ArticleLikeHistory extends ArticleLikeHistoryModel
 {
@@ -65,7 +65,9 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 			$query = ArticleLikeHistoryModel::find()->alias('t');
 		else
 			$query = ArticleLikeHistoryModel::find()->alias('t')->select($column);
-		$query->joinWith(['like like']);
+		$query->joinWith([
+			'like.article like'
+		]);
 
 		// add conditions that should always apply here
 		$dataParams = [
@@ -78,8 +80,8 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 
 		$attributes = array_keys($this->getTableSchema()->columns);
 		$attributes['likeArticleId'] = [
-			'asc' => ['like.like_id' => SORT_ASC],
-			'desc' => ['like.like_id' => SORT_DESC],
+			'asc' => ['like.title' => SORT_ASC],
+			'desc' => ['like.title' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
@@ -96,7 +98,7 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 
 		// grid filtering conditions
 		$query->andFilterWhere([
-			't.id' => isset($params['id']) ? $params['id'] : $this->id,
+			't.id' => $this->id,
 			't.like_id' => isset($params['like']) ? $params['like'] : $this->like_id,
 			'cast(t.likes_date as date)' => $this->likes_date,
 		]);
@@ -111,7 +113,7 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 		}
 
 		$query->andFilterWhere(['like', 't.likes_ip', $this->likes_ip])
-			->andFilterWhere(['like', 'like.like_id', $this->likeArticleId]);
+			->andFilterWhere(['like', 'like.title', $this->likeArticleId]);
 
 		return $dataProvider;
 	}

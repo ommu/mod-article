@@ -73,7 +73,7 @@ class ArticleLikes extends \app\components\ActiveRecord
 	{
 		return [
 			'id' => Yii::t('app', 'ID'),
-			'publish' => Yii::t('app', 'Publish'),
+			'publish' => Yii::t('app', 'Like'),
 			'article_id' => Yii::t('app', 'Article'),
 			'user_id' => Yii::t('app', 'User'),
 			'likes_date' => Yii::t('app', 'Likes Date'),

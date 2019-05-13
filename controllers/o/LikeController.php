@@ -9,8 +9,6 @@
  * TOC :
  *	Index
  *	Manage
- *	Create
- *	Update
  *	View
  *	Delete
  *	RunAction
@@ -22,10 +20,11 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 11:11 WIB
+ * @modified date 13 May 2019, 17:13 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
- 
+
 namespace ommu\article\controllers\o;
 
 use Yii;
@@ -83,30 +82,33 @@ class LikeController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		$this->view->title = Yii::t('app', 'Article Likes');
+		if(($user = Yii::$app->request->get('user')) != null)
+			$user = \ommu\users\models\Users::findOne($user);
+
+		$this->view->title = Yii::t('app', 'Likes');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
+			'user' => $user,
 		]);
 	}
 
 	/**
-	 * Creates a new ArticleLikes model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 * Displays a single ArticleLikes model.
+	 * @param integer $id
 	 * @return mixed
 	 */
-	
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'View Article Likes: {like_id}', ['like_id' => $model->like_id]);
+		$this->view->title = Yii::t('app', 'Detail Like: {article-id}', ['article-id' => $model->article->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_view', [
+		return $this->oRender('admin_view', [
 			'model' => $model,
 		]);
 	}
@@ -123,8 +125,7 @@ class LikeController extends Controller
 		$model->publish = 2;
 
 		if($model->save(false, ['publish'])) {
-			//return $this->redirect(['view', 'id' => $model->like_id]);
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Article Likes success deleted.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Article like success deleted.'));
 			return $this->redirect(['manage']);
 		}
 	}
@@ -142,7 +143,7 @@ class LikeController extends Controller
 		$model->publish = $replace;
 
 		if($model->save(false, ['publish'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Article Likes success updated.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Article like success updated.'));
 			return $this->redirect(['manage']);
 		}
 	}
