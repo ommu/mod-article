@@ -8,6 +8,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 11:00 WIB
+ * @modified date 13 May 2019, 21:01 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -18,7 +19,6 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use ommu\article\models\ArticleTag as ArticleTagModel;
-//use ommu\article\models\Articles;
 
 class ArticleTag extends ArticleTagModel
 {
@@ -28,8 +28,8 @@ class ArticleTag extends ArticleTagModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'article_id', 'tag_id', 'creation_id', 'modified_id'], 'integer'],
-			[['creation_date', 'modified_date', 'updated_date', 'articleTitle', 'creationDisplayname', 'modifiedDisplayname','tag_id_i'], 'safe'],
+			[['id', 'article_id', 'tag_id', 'creation_id'], 'integer'],
+			[['creation_date', 'tagBody', 'articleTitle', 'creationDisplayname'], 'safe'],
 		];
 	}
 
@@ -65,7 +65,11 @@ class ArticleTag extends ArticleTagModel
 			$query = ArticleTagModel::find()->alias('t');
 		else
 			$query = ArticleTagModel::find()->alias('t')->select($column);
-		$query->joinWith(['article article', 'creation creation','title title','modified modified',]);
+		$query->joinWith([
+			'tag tag', 
+			'article article', 
+			'creation creation'
+		]);
 
 		// add conditions that should always apply here
 		$dataParams = [
@@ -77,21 +81,17 @@ class ArticleTag extends ArticleTagModel
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
+		$attributes['tagBody'] = [
+			'asc' => ['tag.body' => SORT_ASC],
+			'desc' => ['tag.body' => SORT_DESC],
+		];
 		$attributes['articleTitle'] = [
 			'asc' => ['article.title' => SORT_ASC],
 			'desc' => ['article.title' => SORT_DESC],
 		];
-		$attributes['tag_id_i'] = [
-			'asc' => ['title.message' => SORT_ASC],
-			'desc' => ['title.message' => SORT_DESC],
-		];
 		$attributes['creationDisplayname'] = [
 			'asc' => ['creation.displayname' => SORT_ASC],
 			'desc' => ['creation.displayname' => SORT_DESC],
-		];
-		$attributes['modifiedDisplayname'] = [
-			'asc' => ['modified.displayname' => SORT_ASC],
-			'desc' => ['modified.displayname' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
@@ -108,30 +108,16 @@ class ArticleTag extends ArticleTagModel
 
 		// grid filtering conditions
 		$query->andFilterWhere([
-			't.id' => isset($params['id']) ? $params['id'] : $this->id,
+			't.id' => $this->id,
 			't.article_id' => isset($params['article']) ? $params['article'] : $this->article_id,
-			't.tag_id' => $this->tag_id,
+			't.tag_id' => isset($params['tag']) ? $params['tag'] : $this->tag_id,
 			'cast(t.creation_date as date)' => $this->creation_date,
 			't.creation_id' => isset($params['creation']) ? $params['creation'] : $this->creation_id,
-			'cast(t.modified_date as date)' => $this->modified_date,
-			't.modified_id' => isset($params['modified']) ? $params['modified'] : $this->modified_id,
-			'cast(t.updated_date as date)' => $this->updated_date,
 		]);
 
-		if(isset($params['trash']))
-			$query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
-		else {
-			if(!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == ''))
-				$query->andFilterWhere(['IN', 't.publish', [0,1]]);
-			else
-				$query->andFilterWhere(['t.publish' => $this->publish]);
-		}
-
-		$query->andFilterWhere(['like', 'article.title', $this->articleTitle])
-			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
-			->andFilterWhere(['like', 'title.message', $this->tag_id_i])
-			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname]);
-
+		$query->andFilterWhere(['like', 'tag.body', $this->tagBody])
+			->andFilterWhere(['like', 'article.title', $this->articleTitle])
+			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname]);
 
 		return $dataProvider;
 	}
