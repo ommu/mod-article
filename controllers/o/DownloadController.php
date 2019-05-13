@@ -9,8 +9,6 @@
  * TOC :
  *	Index
  *	Manage
- *	Create
- *	Update
  *	View
  *	Delete
  *
@@ -20,10 +18,11 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 11:14 WIB
+ * @modified date 13 May 2019, 09:43 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
- 
+
 namespace ommu\article\controllers\o;
 
 use Yii;
@@ -80,22 +79,19 @@ class DownloadController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		$this->view->title = Yii::t('app', 'Article Downloads');
+		if(($user = Yii::$app->request->get('user')) != null)
+			$user = \ommu\users\models\Users::findOne($user);
+
+		$this->view->title = Yii::t('app', 'Downloads');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
+			'user' => $user,
 		]);
 	}
-
-	/**
-	 * Creates a new ArticleDownloads model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
-	 * @return mixed
-	 */
-	
 
 	/**
 	 * Displays a single ArticleDownloads model.
@@ -106,10 +102,10 @@ class DownloadController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'View Article Downloads: {download_id}', ['download_id' => $model->download_id]);
+		$this->view->title = Yii::t('app', 'Detail Download: {file-id}', ['file-id' => $model->file->file_filename]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_view', [
+		return $this->oRender('admin_view', [
 			'model' => $model,
 		]);
 	}
@@ -124,7 +120,7 @@ class DownloadController extends Controller
 	{
 		$this->findModel($id)->delete();
 		
-		Yii::$app->session->setFlash('success', Yii::t('app', 'Article Downloads success deleted.'));
+		Yii::$app->session->setFlash('success', Yii::t('app', 'Article download success deleted.'));
 		return $this->redirect(['manage']);
 	}
 

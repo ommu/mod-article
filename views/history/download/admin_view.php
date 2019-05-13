@@ -1,15 +1,14 @@
 <?php
 /**
- * Article Downloads (article-downloads)
+ * Article Download Histories (article-download-history)
  * @var $this app\components\View
- * @var $this ommu\article\controllers\o\DownloadController
- * @var $model ommu\article\models\ArticleDownloads
+ * @var $this ommu\article\controllers\history\DownloadController
+ * @var $model ommu\article\models\ArticleDownloadHistory
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
- * @created date 20 October 2017, 11:14 WIB
- * @modified date 13 May 2019, 09:43 WIB
+ * @copyright Copyright (c) 2019 OMMU (www.ommu.co)
+ * @created date 13 May 2019, 09:42 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -18,8 +17,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Downloads'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $model->file->file_filename;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Download Histories'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = $model->download->file->file_filename;
 
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
@@ -28,38 +27,26 @@ $this->params['menu']['content'] = [
 ];
 ?>
 
-<div class="article-downloads-view">
+<div class="article-download-history-view">
 
 <?php
 $attributes = [
 	'id',
 	[
-		'attribute' => 'fileFilename',
+		'attribute' => 'downloadFileId',
 		'value' => function ($model) {
-			$fileFilename = isset($model->file) ? $model->file->file_filename : '-';
-			if($fileFilename != '-')
-				return Html::a($fileFilename, ['o/file/view', 'id'=>$model->file_id], ['title'=>$fileFilename, 'class'=>'modal-btn']);
-			return $fileFilename;
+			$downloadFileId = isset($model->download) ? $model->download->file->file_filename : '-';
+			if($downloadFileId != '-')
+				return Html::a($downloadFileId, ['o/download/view', 'id'=>$model->download_id], ['title'=>$downloadFileId, 'class'=>'modal-btn']);
+			return $downloadFileId;
 		},
 		'format' => 'html',
-	],
-	[
-		'attribute' => 'userDisplayname',
-		'value' => isset($model->user) ? $model->user->displayname : '-',
 	],
 	[
 		'attribute' => 'download_date',
 		'value' => Yii::$app->formatter->asDatetime($model->download_date, 'medium'),
 	],
 	'download_ip',
-	[
-		'attribute' => 'downloads',
-		'value' => function ($model) {
-			$downloads = $model->downloads;
-			return Html::a($downloads, ['history/download/manage', 'download'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$downloads])]);
-		},
-		'format' => 'html',
-	],
 	[
 		'attribute' => '',
 		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary']),

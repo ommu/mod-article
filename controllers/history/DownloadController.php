@@ -9,8 +9,6 @@
  * TOC :
  *	Index
  *	Manage
- *	Create
- *	Update
  *	View
  *	Delete
  *
@@ -20,10 +18,11 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:38 WIB
+ * @modified date 13 May 2019, 09:42 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
- 
+
 namespace ommu\article\controllers\history;
 
 use Yii;
@@ -80,80 +79,17 @@ class DownloadController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		$this->view->title = Yii::t('app', 'Article Download Histories');
+		if(($download = Yii::$app->request->get('download')) != null)
+			$download = \ommu\article\models\ArticleDownloads::findOne($download);
+
+		$this->view->title = Yii::t('app', 'Download Histories');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
-		]);
-	}
-
-	/**
-	 * Creates a new ArticleDownloadHistory model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
-	 * @return mixed
-	 */
-	public function actionCreate()
-	{
-		$model = new ArticleDownloadHistory();
-
-		if(Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-
-			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Article Download History success created.'));
-				return $this->redirect(['manage']);
-				//return $this->redirect(['view', 'id'=>$model->id]);
-
-			} else {
-				if(Yii::$app->request->isAjax)
-					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
-			}
-		}
-
-		$this->view->title = Yii::t('app', 'Create Article Download History');
-		$this->view->description = '';
-		$this->view->keywords = '';
-		return $this->render('admin_create', [
-			'model' => $model,
-		]);
-	}
-
-	/**
-	 * Updates an existing ArticleDownloadHistory model.
-	 * If update is successful, the browser will be redirected to the 'view' page.
-	 * @param integer $id
-	 * @return mixed
-	 */
-	public function actionUpdate($id)
-	{
-		$model = $this->findModel($id);
-
-		if(Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-
-			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Article Download History success updated.'));
-				return $this->redirect(['manage']);
-				//return $this->redirect(['view', 'id'=>$model->id]);
-
-			} else {
-				if(Yii::$app->request->isAjax)
-					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
-			}
-		}
-
-		$this->view->title = Yii::t('app', 'Update Article Download History: {id}', ['id' => $model->id]);
-		$this->view->description = '';
-		$this->view->keywords = '';
-		return $this->render('admin_update', [
-			'model' => $model,
+			'download' => $download,
 		]);
 	}
 
@@ -166,10 +102,10 @@ class DownloadController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'View Article Download History: {id}', ['id' => $model->id]);
+		$this->view->title = Yii::t('app', 'Detail Download History: {download-id}', ['download-id' => $model->download->file->file_filename]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_view', [
+		return $this->oRender('admin_view', [
 			'model' => $model,
 		]);
 	}
@@ -184,7 +120,7 @@ class DownloadController extends Controller
 	{
 		$this->findModel($id)->delete();
 		
-		Yii::$app->session->setFlash('success', Yii::t('app', 'Article Download History success deleted.'));
+		Yii::$app->session->setFlash('success', Yii::t('app', 'Article download history success deleted.'));
 		return $this->redirect(['manage']);
 	}
 

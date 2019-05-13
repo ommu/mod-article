@@ -8,6 +8,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:38 WIB
+ * @modified date 13 May 2019, 09:42 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -18,7 +19,6 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use ommu\article\models\ArticleDownloadHistory as ArticleDownloadHistoryModel;
-//use ommu\article\models\ArticleDownloads;
 
 class ArticleDownloadHistory extends ArticleDownloadHistoryModel
 {
@@ -29,7 +29,7 @@ class ArticleDownloadHistory extends ArticleDownloadHistoryModel
 	{
 		return [
 			[['id', 'download_id'], 'integer'],
-			[['download_date', 'download_ip', 'download_search'], 'safe'],
+			[['download_date', 'download_ip', 'downloadFileId'], 'safe'],
 		];
 	}
 
@@ -65,7 +65,9 @@ class ArticleDownloadHistory extends ArticleDownloadHistoryModel
 			$query = ArticleDownloadHistoryModel::find()->alias('t');
 		else
 			$query = ArticleDownloadHistoryModel::find()->alias('t')->select($column);
-		$query->joinWith(['download download']);
+		$query->joinWith([
+			'download.file download'
+		]);
 
 		// add conditions that should always apply here
 		$dataParams = [
@@ -77,9 +79,9 @@ class ArticleDownloadHistory extends ArticleDownloadHistoryModel
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
-		$attributes['download_search'] = [
-			'asc' => ['download.download_id' => SORT_ASC],
-			'desc' => ['download.download_id' => SORT_DESC],
+		$attributes['downloadFileId'] = [
+			'asc' => ['download.file_filename' => SORT_ASC],
+			'desc' => ['download.file_filename' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
@@ -96,13 +98,13 @@ class ArticleDownloadHistory extends ArticleDownloadHistoryModel
 
 		// grid filtering conditions
 		$query->andFilterWhere([
-			't.id' => isset($params['id']) ? $params['id'] : $this->id,
+			't.id' => $this->id,
 			't.download_id' => isset($params['download']) ? $params['download'] : $this->download_id,
 			'cast(t.download_date as date)' => $this->download_date,
 		]);
 
 		$query->andFilterWhere(['like', 't.download_ip', $this->download_ip])
-			->andFilterWhere(['like', 'download.download_id', $this->download_search]);
+			->andFilterWhere(['like', 'download.file_filename', $this->downloadFileId]);
 
 		return $dataProvider;
 	}

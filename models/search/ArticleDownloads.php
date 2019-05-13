@@ -8,6 +8,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 11:14 WIB
+ * @modified date 13 May 2019, 09:43 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -18,7 +19,6 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use ommu\article\models\ArticleDownloads as ArticleDownloadsModel;
-//use ommu\article\models\ArticleFiles;
 
 class ArticleDownloads extends ArticleDownloadsModel
 {
@@ -28,7 +28,7 @@ class ArticleDownloads extends ArticleDownloadsModel
 	public function rules()
 	{
 		return [
-			[['download_id', 'file_id', 'user_id', 'downloads'], 'integer'],
+			[['id', 'file_id', 'user_id', 'downloads'], 'integer'],
 			[['download_date', 'download_ip', 'fileFilename', 'userDisplayname'], 'safe'],
 		];
 	}
@@ -65,7 +65,10 @@ class ArticleDownloads extends ArticleDownloadsModel
 			$query = ArticleDownloadsModel::find()->alias('t');
 		else
 			$query = ArticleDownloadsModel::find()->alias('t')->select($column);
-		$query->joinWith(['file file', 'user user']);
+		$query->joinWith([
+			'file file', 
+			'user user'
+		]);
 
 		// add conditions that should always apply here
 		$dataParams = [
@@ -87,7 +90,7 @@ class ArticleDownloads extends ArticleDownloadsModel
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
-			'defaultOrder' => ['download_id' => SORT_DESC],
+			'defaultOrder' => ['id' => SORT_DESC],
 		]);
 
 		$this->load($params);
@@ -100,7 +103,7 @@ class ArticleDownloads extends ArticleDownloadsModel
 
 		// grid filtering conditions
 		$query->andFilterWhere([
-			't.download_id' => isset($params['id']) ? $params['id'] : $this->download_id,
+			't.id' => $this->id,
 			't.file_id' => isset($params['file']) ? $params['file'] : $this->file_id,
 			't.user_id' => isset($params['user']) ? $params['user'] : $this->user_id,
 			't.downloads' => $this->downloads,
