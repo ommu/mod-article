@@ -82,6 +82,8 @@ class LikeController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
+		if(($article = Yii::$app->request->get('article')) != null)
+			$article = \ommu\article\models\Articles::findOne($article);
 		if(($user = Yii::$app->request->get('user')) != null)
 			$user = \ommu\users\models\Users::findOne($user);
 

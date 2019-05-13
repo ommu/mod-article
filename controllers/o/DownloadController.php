@@ -79,6 +79,8 @@ class DownloadController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
+		if(($file = Yii::$app->request->get('file')) != null)
+			$file = \ommu\article\models\ArticleFiles::findOne($file);
 		if(($user = Yii::$app->request->get('user')) != null)
 			$user = \ommu\users\models\Users::findOne($user);
 
