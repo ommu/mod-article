@@ -8,6 +8,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 11:02 WIB
+ * @modified date 13 May 2019, 18:27 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -18,7 +19,6 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use ommu\article\models\ArticleViewHistory as ArticleViewHistoryModel;
-//use ommu\article\models\ArticleViews;
 
 class ArticleViewHistory extends ArticleViewHistoryModel
 {
@@ -65,7 +65,9 @@ class ArticleViewHistory extends ArticleViewHistoryModel
 			$query = ArticleViewHistoryModel::find()->alias('t');
 		else
 			$query = ArticleViewHistoryModel::find()->alias('t')->select($column);
-		$query->joinWith(['view view']);
+		$query->joinWith([
+			'view.article view'
+		]);
 
 		// add conditions that should always apply here
 		$dataParams = [
@@ -78,8 +80,8 @@ class ArticleViewHistory extends ArticleViewHistoryModel
 
 		$attributes = array_keys($this->getTableSchema()->columns);
 		$attributes['viewArticleId'] = [
-			'asc' => ['view.view_id' => SORT_ASC],
-			'desc' => ['view.view_id' => SORT_DESC],
+			'asc' => ['view.title' => SORT_ASC],
+			'desc' => ['view.title' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
@@ -96,13 +98,13 @@ class ArticleViewHistory extends ArticleViewHistoryModel
 
 		// grid filtering conditions
 		$query->andFilterWhere([
-			't.id' => isset($params['id']) ? $params['id'] : $this->id,
+			't.id' => $this->id,
 			't.view_id' => isset($params['view']) ? $params['view'] : $this->view_id,
 			'cast(t.view_date as date)' => $this->view_date,
 		]);
 
 		$query->andFilterWhere(['like', 't.view_ip', $this->view_ip])
-			->andFilterWhere(['like', 'view.view_id', $this->viewArticleId]);
+			->andFilterWhere(['like', 'view.title', $this->viewArticleId]);
 
 		return $dataProvider;
 	}

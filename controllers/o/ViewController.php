@@ -9,8 +9,6 @@
  * TOC :
  *	Index
  *	Manage
- *	Create
- *	Update
  *	View
  *	Delete
  *	RunAction
@@ -22,10 +20,11 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 23 October 2017, 15:56 WIB
+ * @modified date 13 May 2019, 18:28 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
- 
+
 namespace ommu\article\controllers\o;
 
 use Yii;
@@ -83,80 +82,19 @@ class ViewController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		$this->view->title = Yii::t('app', 'Article Views');
+		if(($article = Yii::$app->request->get('article')) != null)
+			$article = \ommu\article\models\Articles::findOne($article);
+		if(($user = Yii::$app->request->get('user')) != null)
+			$user = \ommu\users\models\Users::findOne($user);
+
+		$this->view->title = Yii::t('app', 'Views');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
-		]);
-	}
-
-	/**
-	 * Creates a new ArticleViews model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
-	 * @return mixed
-	 */
-	public function actionCreate()
-	{
-		$model = new ArticleViews();
-
-		if(Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-
-			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Article Views success created.'));
-				return $this->redirect(['manage']);
-				//return $this->redirect(['view', 'id'=>$model->view_id]);
-
-			} else {
-				if(Yii::$app->request->isAjax)
-					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
-			}
-		}
-
-		$this->view->title = Yii::t('app', 'Create Article Views');
-		$this->view->description = '';
-		$this->view->keywords = '';
-		return $this->render('admin_create', [
-			'model' => $model,
-		]);
-	}
-
-	/**
-	 * Updates an existing ArticleViews model.
-	 * If update is successful, the browser will be redirected to the 'view' page.
-	 * @param integer $id
-	 * @return mixed
-	 */
-	public function actionUpdate($id)
-	{
-		$model = $this->findModel($id);
-
-		if(Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-
-			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Article Views success updated.'));
-				return $this->redirect(['manage']);
-				//return $this->redirect(['view', 'id'=>$model->view_id]);
-
-			} else {
-				if(Yii::$app->request->isAjax)
-					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
-			}
-		}
-
-		$this->view->title = Yii::t('app', 'Update Article Views: {view_id}', ['view_id' => $model->view_id]);
-		$this->view->description = '';
-		$this->view->keywords = '';
-		return $this->render('admin_update', [
-			'model' => $model,
+			'user' => $user,
 		]);
 	}
 
@@ -169,10 +107,10 @@ class ViewController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'View Article Views: {view_id}', ['view_id' => $model->view_id]);
+		$this->view->title = Yii::t('app', 'Detail View: {article-id}', ['article-id' => $model->article->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_view', [
+		return $this->oRender('admin_view', [
 			'model' => $model,
 		]);
 	}
@@ -189,8 +127,7 @@ class ViewController extends Controller
 		$model->publish = 2;
 
 		if($model->save(false, ['publish'])) {
-			//return $this->redirect(['view', 'id' => $model->view_id]);
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Article Views success deleted.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Article view success deleted.'));
 			return $this->redirect(['manage']);
 		}
 	}
@@ -208,7 +145,7 @@ class ViewController extends Controller
 		$model->publish = $replace;
 
 		if($model->save(false, ['publish'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Article Views success updated.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Article view success updated.'));
 			return $this->redirect(['manage']);
 		}
 	}

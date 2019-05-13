@@ -8,6 +8,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 23 October 2017, 15:56 WIB
+ * @modified date 13 May 2019, 18:28 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -18,7 +19,6 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use ommu\article\models\ArticleViews as ArticleViewsModel;
-//use ommu\article\models\Articles;
 
 class ArticleViews extends ArticleViewsModel
 {
@@ -28,7 +28,7 @@ class ArticleViews extends ArticleViewsModel
 	public function rules()
 	{
 		return [
-			[['view_id', 'publish', 'article_id', 'user_id', 'views'], 'integer'],
+			[['id', 'publish', 'article_id', 'user_id', 'views'], 'integer'],
 			[['view_date', 'view_ip', 'updated_date', 'articleTitle', 'userDisplayname'], 'safe'],
 		];
 	}
@@ -65,7 +65,10 @@ class ArticleViews extends ArticleViewsModel
 			$query = ArticleViewsModel::find()->alias('t');
 		else
 			$query = ArticleViewsModel::find()->alias('t')->select($column);
-		$query->joinWith(['article article', 'user user']);
+		$query->joinWith([
+			'article article', 
+			'user user'
+		]);
 
 		// add conditions that should always apply here
 		$dataParams = [
@@ -87,7 +90,7 @@ class ArticleViews extends ArticleViewsModel
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
-			'defaultOrder' => ['view_id' => SORT_DESC],
+			'defaultOrder' => ['id' => SORT_DESC],
 		]);
 
 		$this->load($params);
@@ -100,7 +103,7 @@ class ArticleViews extends ArticleViewsModel
 
 		// grid filtering conditions
 		$query->andFilterWhere([
-			't.view_id' => isset($params['id']) ? $params['id'] : $this->view_id,
+			't.id' => $this->id,
 			't.article_id' => isset($params['article']) ? $params['article'] : $this->article_id,
 			't.user_id' => isset($params['user']) ? $params['user'] : $this->user_id,
 			't.views' => $this->views,
