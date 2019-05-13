@@ -29,7 +29,7 @@ class ArticleViewHistory extends ArticleViewHistoryModel
 	{
 		return [
 			[['id', 'view_id'], 'integer'],
-			[['view_date', 'view_ip', 'view_search'], 'safe'],
+			[['view_date', 'view_ip', 'viewArticleId'], 'safe'],
 		];
 	}
 
@@ -77,7 +77,7 @@ class ArticleViewHistory extends ArticleViewHistoryModel
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
-		$attributes['view_search'] = [
+		$attributes['viewArticleId'] = [
 			'asc' => ['view.view_id' => SORT_ASC],
 			'desc' => ['view.view_id' => SORT_DESC],
 		];
@@ -102,7 +102,7 @@ class ArticleViewHistory extends ArticleViewHistoryModel
 		]);
 
 		$query->andFilterWhere(['like', 't.view_ip', $this->view_ip])
-			->andFilterWhere(['like', 'view.view_id', $this->view_search]);
+			->andFilterWhere(['like', 'view.view_id', $this->viewArticleId]);
 
 		return $dataProvider;
 	}

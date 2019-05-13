@@ -53,7 +53,7 @@ $attributes = [
 		'value' => $model->publish == 1 ? Yii::t('app', 'Yes') : Yii::t('app', 'No'),
 	],
 	[
-		'attribute' => 'category_search',
+		'attribute' => 'categoryName',
 		'value' => $model->category->title->message,
 	],
 	'title',

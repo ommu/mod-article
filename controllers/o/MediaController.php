@@ -141,7 +141,7 @@ class MediaController extends Controller
 			$model->load(Yii::$app->request->post());
 			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
 			if(!($model->media_filename instanceof UploadedFile)) {
-				$model->media_filename = $model->old_media_filename_i;
+				$model->media_filename = $model->old_media_filename;
 			}
 
 			if($model->save()) {

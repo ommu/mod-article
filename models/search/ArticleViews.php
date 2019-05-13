@@ -29,7 +29,7 @@ class ArticleViews extends ArticleViewsModel
 	{
 		return [
 			[['view_id', 'publish', 'article_id', 'user_id', 'views'], 'integer'],
-			[['view_date', 'view_ip', 'deleted_date', 'articleTitle', 'userDisplayname'], 'safe'],
+			[['view_date', 'view_ip', 'updated_date', 'articleTitle', 'userDisplayname'], 'safe'],
 		];
 	}
 
@@ -105,7 +105,7 @@ class ArticleViews extends ArticleViewsModel
 			't.user_id' => isset($params['user']) ? $params['user'] : $this->user_id,
 			't.views' => $this->views,
 			'cast(t.view_date as date)' => $this->view_date,
-			'cast(t.deleted_date as date)' => $this->deleted_date,
+			'cast(t.updated_date as date)' => $this->updated_date,
 		]);
 
 		if(isset($params['trash']))

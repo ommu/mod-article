@@ -142,7 +142,7 @@ class FileController extends Controller
 			$model->load(Yii::$app->request->post());
 			$model->file_filename = UploadedFile::getInstance($model, 'file_filename');
 			if(!($model->file_filename instanceof UploadedFile)) {
-				$model->file_filename = $model->old_file_filename_i;
+				$model->file_filename = $model->old_file_filename;
 			}
 
 			if($model->save()) {

@@ -1,28 +1,30 @@
 <?php
 /**
  * ArticleViews
-
+ * 
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:11 WIB
+ * @modified date 12 May 2019, 18:51 WIB
  * @link https://github.com/ommu/mod-article
  *
  * This is the model class for table "ommu_article_views".
  *
  * The followings are the available columns in table "ommu_article_views":
- * @property string $view_id
+ * @property integer $id
  * @property integer $publish
  * @property integer $article_id
- * @property string $user_id
+ * @property integer $user_id
  * @property integer $views
  * @property string $view_date
  * @property string $view_ip
- * @property string $deleted_date
+ * @property string $updated_date
  *
  * The followings are the available model relations:
  * @property ArticleViewHistory[] $histories
  * @property Articles $article
+ * @property Users $user
  *
  */
 
@@ -37,7 +39,7 @@ class ArticleViews extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = [];
+	public $gridForbiddenColumn = ['view_ip', 'updated_date'];
 
 	public $articleTitle;
 	public $userDisplayname;
@@ -56,11 +58,12 @@ class ArticleViews extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
+			[['article_id'], 'required'],
 			[['publish', 'article_id', 'user_id', 'views'], 'integer'],
-			[['article_id', 'user_id'], 'required'],
-			[['view_date', 'view_ip'], 'safe'],
+			[['user_id', 'view_ip'], 'safe'],
 			[['view_ip'], 'string', 'max' => 20],
-			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'article_id']],
+			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'id']],
+			[['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
 		];
 	}
 
@@ -70,14 +73,15 @@ class ArticleViews extends \app\components\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'view_id' => Yii::t('app', 'View'),
+			'id' => Yii::t('app', 'ID'),
 			'publish' => Yii::t('app', 'Publish'),
 			'article_id' => Yii::t('app', 'Article'),
 			'user_id' => Yii::t('app', 'User'),
 			'views' => Yii::t('app', 'Views'),
 			'view_date' => Yii::t('app', 'View Date'),
 			'view_ip' => Yii::t('app', 'View Ip'),
-			'deleted_date' => Yii::t('app', 'Deleted Date'),
+			'updated_date' => Yii::t('app', 'Deleted Date'),
+			'histories' => Yii::t('app', 'Histories'),
 			'articleTitle' => Yii::t('app', 'Article'),
 			'userDisplayname' => Yii::t('app', 'User'),
 		];
@@ -86,9 +90,16 @@ class ArticleViews extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getHistories()
+	public function getHistories($count=false)
 	{
-		return $this->hasMany(ArticleViewHistory::className(), ['view_id' => 'view_id']);
+		if($count == false)
+			return $this->hasMany(ArticleViewHistory::className(), ['view_id' => 'id']);
+
+		$model = ArticleViewHistory::find()
+			->where(['view_id' => $this->id]);
+		$histories = $model->count();
+
+		return $histories ? $histories : 0;
 	}
 
 	/**
@@ -96,7 +107,7 @@ class ArticleViews extends \app\components\ActiveRecord
 	 */
 	public function getArticle()
 	{
-		return $this->hasOne(Articles::className(), ['article_id' => 'article_id']);
+		return $this->hasOne(Articles::className(), ['id' => 'article_id']);
 	}
 
 	/**
@@ -106,7 +117,16 @@ class ArticleViews extends \app\components\ActiveRecord
 	{
 		return $this->hasOne(Users::className(), ['user_id' => 'user_id']);
 	}
-	
+
+	/**
+	 * {@inheritdoc}
+	 * @return \ommu\article\models\query\ArticleViews the active query used by this AR class.
+	 */
+	public static function find()
+	{
+		return new \ommu\article\models\query\ArticleViews(get_called_class());
+	}
+
 	/**
 	 * Set default columns to display
 	 */
@@ -123,7 +143,8 @@ class ArticleViews extends \app\components\ActiveRecord
 			$this->templateColumns['articleTitle'] = [
 				'attribute' => 'articleTitle',
 				'value' => function($model, $key, $index, $column) {
-					return $model->article->title;
+					return isset($model->article) ? $model->article->title : '-';
+					// return $model->articleTitle;
 				},
 			];
 		}
@@ -132,20 +153,10 @@ class ArticleViews extends \app\components\ActiveRecord
 				'attribute' => 'userDisplayname',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->user) ? $model->user->displayname : '-';
+					// return $model->userDisplayname;
 				},
 			];
 		}
-
-		$this->templateColumns['views'] = [
-			'attribute' => 'views',
-			'value' => function($model, $key, $index, $column) {
-				$url = Url::to(['history/view/index', 'view'=>$model->primaryKey]);
-				return Html::a($model->views ? $model->views : 0, $url);
-			},
-			'contentOptions' => ['class'=>'center'],
-			'format' => 'raw',
-		];
-
 		$this->templateColumns['view_date'] = [
 			'attribute' => 'view_date',
 			'value' => function($model, $key, $index, $column) {
@@ -153,13 +164,28 @@ class ArticleViews extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'view_date'),
 		];
-		$this->templateColumns['view_ip'] = 'view_ip';
-		$this->templateColumns['deleted_date'] = [
-			'attribute' => 'deleted_date',
+		$this->templateColumns['view_ip'] = [
+			'attribute' => 'view_ip',
 			'value' => function($model, $key, $index, $column) {
-				return Yii::$app->formatter->asDatetime($model->deleted_date, 'medium');
+				return $model->view_ip;
 			},
-			'filter' => $this->filterDatepicker($this, 'deleted_date'),
+		];
+		$this->templateColumns['updated_date'] = [
+			'attribute' => 'updated_date',
+			'value' => function($model, $key, $index, $column) {
+				return Yii::$app->formatter->asDatetime($model->updated_date, 'medium');
+			},
+			'filter' => $this->filterDatepicker($this, 'updated_date'),
+		];
+		$this->templateColumns['views'] = [
+			'attribute' => 'views',
+			'value' => function($model, $key, $index, $column) {
+				$views = $model->views;
+				return Html::a($views, ['history/view/manage', 'view'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$histories])]);
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'center'],
+			'format' => 'html',
 		];
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
@@ -183,7 +209,7 @@ class ArticleViews extends \app\components\ActiveRecord
 		if($column != null) {
 			$model = self::find()
 				->select([$column])
-				->where(['view_id' => $id])
+				->where(['id' => $id])
 				->one();
 			return $model->$column;
 			
@@ -194,20 +220,43 @@ class ArticleViews extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * before validate attributes
+	 * function insertView
 	 */
-	public function insertView($article_id)
+	public function insertView($article_id, $user_id=null)
 	{
-		$user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : '0';
-		$view = ArticleViews::find()->where(['article_id' => $article_id, 'user_id' => $user_id])->one();
-		if($view == null) {
-			$view = new ArticleViews;
+		if($user_id == null)
+			$user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+
+		$findView = self::find()
+			->select(['id', 'views'])
+			->where(['publish' => 1])
+			->andWhere(['article_id' => $article_id]);
+		if($user_id != null)
+			$findView->andWhere(['user_id' => $user_id]);
+		else
+			$findView->andWhere(['is', 'user_id', null]);
+		$findView = $findView->one();
+
+		if($findView !== null)
+			$findView->updateAttributes(['views'=>$findView->views+1, 'view_ip'=>$_SERVER['REMOTE_ADDR']]);
+
+		else {
+			$view = new ArticleViews();
 			$view->article_id = $article_id;
-		} else {
-			$view->views = $view->views+1;
+			$view->user_id = $user_id;
+			$view->save();
 		}
-			
-		$view->save();
+	}
+
+	/**
+	 * after find attributes
+	 */
+	public function afterFind()
+	{
+		parent::afterFind();
+
+		// $this->articleTitle = isset($this->article) ? $this->article->title : '-';
+		// $this->userDisplayname = isset($this->user) ? $this->user->displayname : '-';
 	}
 
 	/**
@@ -220,8 +269,7 @@ class ArticleViews extends \app\components\ActiveRecord
 				if($this->user_id == null)
 					$this->user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
 			}
-
-			$this->view_ip = Yii::$app->request->userIP;
+			$this->view_ip = $_SERVER['REMOTE_ADDR'];
 		}
 		return true;
 	}

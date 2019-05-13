@@ -1,19 +1,20 @@
 <?php
 /**
  * ArticleLikeHistory
-
+ * 
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:05 WIB
+ * @modified date 12 May 2019, 18:27 WIB
  * @link https://github.com/ommu/mod-article
  *
  * This is the model class for table "ommu_article_like_history".
  *
  * The followings are the available columns in table "ommu_article_like_history":
- * @property string $id
+ * @property integer $id
  * @property integer $publish
- * @property string $like_id
+ * @property integer $like_id
  * @property string $likes_date
  * @property string $likes_ip
  *
@@ -33,7 +34,7 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 
 	public $gridForbiddenColumn = [];
 
-	public $like_search;
+	public $likeArticleId;
 
 	/**
 	 * @return string the associated database table name
@@ -53,7 +54,7 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 			[['publish', 'like_id'], 'integer'],
 			[['likes_date'], 'safe'],
 			[['likes_ip'], 'string', 'max' => 20],
-			[['like_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArticleLikes::className(), 'targetAttribute' => ['like_id' => 'like_id']],
+			[['like_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArticleLikes::className(), 'targetAttribute' => ['like_id' => 'id']],
 		];
 	}
 
@@ -68,7 +69,7 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 			'like_id' => Yii::t('app', 'Like'),
 			'likes_date' => Yii::t('app', 'Likes Date'),
 			'likes_ip' => Yii::t('app', 'Likes Ip'),
-			'like_search' => Yii::t('app', 'Like'),
+			'likeArticleId' => Yii::t('app', 'Like'),
 		];
 	}
 
@@ -77,9 +78,18 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 	 */
 	public function getLike()
 	{
-		return $this->hasOne(ArticleLikes::className(), ['like_id' => 'like_id']);
+		return $this->hasOne(ArticleLikes::className(), ['id' => 'like_id']);
 	}
-	
+
+	/**
+	 * {@inheritdoc}
+	 * @return \ommu\article\models\query\ArticleLikeHistory the active query used by this AR class.
+	 */
+	public static function find()
+	{
+		return new \ommu\article\models\query\ArticleLikeHistory(get_called_class());
+	}
+
 	/**
 	 * Set default columns to display
 	 */
@@ -93,10 +103,11 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 		];
 		if(!Yii::$app->request->get('like')) {
-			$this->templateColumns['like_search'] = [
-				'attribute' => 'like_search',
+			$this->templateColumns['likeArticleId'] = [
+				'attribute' => 'likeArticleId',
 				'value' => function($model, $key, $index, $column) {
-					return $model->like->like_id;
+					return isset($model->like) ? $model->like->article->title : '-';
+					// return $model->likeArticleId;
 				},
 			];
 		}
@@ -107,7 +118,12 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'likes_date'),
 		];
-		$this->templateColumns['likes_ip'] = 'likes_ip';
+		$this->templateColumns['likes_ip'] = [
+			'attribute' => 'likes_ip',
+			'value' => function($model, $key, $index, $column) {
+				return $model->likes_ip;
+			},
+		];
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
 				'attribute' => 'publish',
@@ -140,4 +156,13 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 		}
 	}
 
+	/**
+	 * after find attributes
+	 */
+	public function afterFind()
+	{
+		parent::afterFind();
+
+		// $this->likeArticleId = isset($this->like) ? $this->like->article->title : '-';
+	}
 }

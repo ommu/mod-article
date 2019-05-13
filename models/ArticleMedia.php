@@ -1,22 +1,25 @@
 <?php
 /**
  * ArticleMedia
-
+ * 
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:06 WIB
+ * @modified date 12 May 2019, 18:50 WIB
  * @link https://github.com/ommu/mod-article
  *
  * This is the model class for table "ommu_article_media".
  *
  * The followings are the available columns in table "ommu_article_media":
- * @property string $media_id
+ * @property integer $id
  * @property integer $publish
  * @property integer $cover
+ * @property integer $orders
  * @property integer $article_id
  * @property string $media_filename
  * @property string $caption
+ * @property string $description
  * @property string $creation_date
  * @property integer $creation_id
  * @property string $modified_date
@@ -25,27 +28,31 @@
  *
  * The followings are the available model relations:
  * @property Articles $article
+ * @property Users $creation
+ * @property Users $modified
  *
  */
 
 namespace ommu\article\models;
 
 use Yii;
+use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\web\UploadedFile;
+use thamtech\uuid\helpers\UuidHelper;
 use ommu\users\models\Users;
 
 class ArticleMedia extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
+	use \ommu\traits\FileTrait;
 
-	use \app\components\traits\FileSystem;
+	public $gridForbiddenColumn = ['creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
-	public $gridForbiddenColumn = ['updated_date','creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname'];
-
+	public $old_media_filename;
 	public $articleTitle;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
-	public $old_media_filename_i;
 
 	/**
 	 * @return string the associated database table name
@@ -61,14 +68,13 @@ class ArticleMedia extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['publish', 'cover', 'article_id', 'creation_id', 'modified_id'], 'integer'],
 			[['caption'], 'required'],
 			[['media_filename'], 'required', 'on' => 'formCreate'],
-			[['creation_date', 'modified_date', 'updated_date','media_filename','old_media_filename_i'], 'safe'],
+			[['publish', 'cover', 'orders', 'article_id', 'creation_id', 'modified_id'], 'integer'],
+			[['creation_date', 'modified_date', 'updated_date','media_filename','old_media_filename'], 'safe'],
 			[['caption'], 'string', 'max' => 150],
-			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'article_id']],
 			[['media_filename'], 'file', 'extensions' => 'jpeg, jpg, png, bmp, gif'],
-
+			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'id']],
 		];
 	}
 
@@ -78,17 +84,20 @@ class ArticleMedia extends \app\components\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'media_id' => Yii::t('app', 'Media'),
+			'id' => Yii::t('app', 'ID'),
 			'publish' => Yii::t('app', 'Publish'),
 			'cover' => Yii::t('app', 'Cover'),
+			'orders' => Yii::t('app', 'Orders'),
 			'article_id' => Yii::t('app', 'Article'),
 			'media_filename' => Yii::t('app', 'Media Filename'),
 			'caption' => Yii::t('app', 'Caption'),
+			'description' => Yii::t('app', 'Description'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
+			'old_media_filename' => Yii::t('app', 'Old Media Filename'),
 			'articleTitle' => Yii::t('app', 'Article'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
@@ -100,7 +109,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 	 */
 	public function getArticle()
 	{
-		return $this->hasOne(Articles::className(), ['article_id' => 'article_id']);
+		return $this->hasOne(Articles::className(), ['id' => 'article_id']);
 	}
 
 	public function getCategory()
@@ -123,7 +132,16 @@ class ArticleMedia extends \app\components\ActiveRecord
 	{
 		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
 	}
-	
+
+	/**
+	 * {@inheritdoc}
+	 * @return \ommu\article\models\query\ArticleMedia the active query used by this AR class.
+	 */
+	public static function find()
+	{
+		return new \ommu\article\models\query\ArticleMedia(get_called_class());
+	}
+
 	/**
 	 * Set default columns to display
 	 */
@@ -136,16 +154,42 @@ class ArticleMedia extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
+		$this->templateColumns['orders'] = [
+			'attribute' => 'orders',
+			'value' => function($model, $key, $index, $column) {
+				return $model->orders;
+			},
+		];
 		if(!Yii::$app->request->get('article')) {
 			$this->templateColumns['articleTitle'] = [
 				'attribute' => 'articleTitle',
 				'value' => function($model, $key, $index, $column) {
-					return $model->article->title;
+					return isset($model->article) ? $model->article->title : '-';
+					// return $model->articleTitle;
 				},
 			];
 		}
-		$this->templateColumns['media_filename'] = 'media_filename';
-		$this->templateColumns['caption'] = 'caption';
+		$this->templateColumns['media_filename'] = [
+			'attribute' => 'media_filename',
+			'value' => function($model, $key, $index, $column) {
+				$uploadPath = join('/', [self::getUploadPath(false), $model->id]);
+				return $model->media_filename ? Html::img(join('/', [Url::Base(), $uploadPath, $model->media_filename]), ['alt' => $model->media_filename]) : '-';
+			},
+			'format' => 'html',
+		];
+		$this->templateColumns['caption'] = [
+			'attribute' => 'caption',
+			'value' => function($model, $key, $index, $column) {
+				return $model->caption;
+			},
+		];
+		$this->templateColumns['description'] = [
+			'attribute' => 'description',
+			'value' => function($model, $key, $index, $column) {
+				return $model->description;
+			},
+			'format' => 'html',
+		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
 			'value' => function($model, $key, $index, $column) {
@@ -158,6 +202,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 				'attribute' => 'creationDisplayname',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->creation) ? $model->creation->displayname : '-';
+					// return $model->creationDisplayname;
 				},
 			];
 		}
@@ -173,6 +218,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 				'attribute' => 'modifiedDisplayname',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->modified) ? $model->modified->displayname : '-';
+					// return $model->modifiedDisplayname;
 				},
 			];
 		}
@@ -186,10 +232,10 @@ class ArticleMedia extends \app\components\ActiveRecord
 		$this->templateColumns['cover'] = [
 			'attribute' => 'cover',
 			'value' => function($model, $key, $index, $column) {
-				return $model->cover;
+				return $this->filterYesNo($model->cover);
 			},
+			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class'=>'center'],
-			
 		];
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
@@ -213,7 +259,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 		if($column != null) {
 			$model = self::find()
 				->select([$column])
-				->where(['media_id' => $id])
+				->where(['id' => $id])
 				->one();
 			return $model->$column;
 			
@@ -223,9 +269,13 @@ class ArticleMedia extends \app\components\ActiveRecord
 		}
 	}
 
-	public static function getMediaPath($returnAlias=true)
+	/**
+	 * @param returnAlias set true jika ingin kembaliannya path alias atau false jika ingin string
+	 * relative path. default true.
+	 */
+	public static function getUploadPath($returnAlias=true) 
 	{
-		return ($returnAlias ? Yii::getAlias('@webroot/public/article/media') : 'public/article/media');
+		return ($returnAlias ? Yii::getAlias('@public/article') : 'article');
 	}
 
 	public static function getSettingMediaLimit()
@@ -240,16 +290,19 @@ class ArticleMedia extends \app\components\ActiveRecord
 		return $category->single_photo;
 	}
 
-
 	/**
-	 * afterFind
-	 *
-	 * Simpan nama banner lama untuk keperluan jikalau kondisi update tp bannernya tidak diupdate.
+	 * after find attributes
 	 */
 	public function afterFind()
 	{
-		$this->old_media_filename_i = $this->media_filename;
+		parent::afterFind();
+
+		$this->old_media_filename = $this->media_filename;
+		// $this->articleTitle = isset($this->article) ? $this->article->title : '-';
+		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
+		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
 	}
+
 	/**
 	 * before validate attributes
 	 */
@@ -300,51 +353,26 @@ class ArticleMedia extends \app\components\ActiveRecord
 	public function beforeSave($insert)
 	{
 		if(parent::beforeSave($insert)) {
-			
-			$cover=ArticleMedia::find()->where(['cover'=>1,'publish'=>1])->one();
-			if (!empty($cover)) {
-				if ($this->cover==1)
-				{
-						$cover->cover = 0;
-						$cover->save();					
-				}
-			}
-			
-			
+			if(!$insert) {
+				$uploadPath = join('/', [self::getUploadPath(), $this->article_id]);
+				$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+				$this->createUploadDirectory(self::getUploadPath(), $this->article_id);
 
-			if($this->isNewRecord) {
-					if (Yii::$app->request->get('article')){
-
-					$article = Yii::$app->request->get('article');
-					$this->article_id = $article;
-				}
-			}
-
-			$mediaPath = Yii::getAlias('@webroot/public/article/media');
-			
-			// Add directory
-			if(!file_exists($mediaPath)) {
-				@mkdir($mediaPath, 0755,true);
-
-				// Add file in directory (index.php)
-				$indexFile = join('/', [$mediaPath, 'index.php']);
-				if(!file_exists($indexFile)) {
-					file_put_contents($indexFile, "<?php\n");
-				}
-
-			}else {
-				@chmod($bannerPath, 0755,true);
-			}
-			if($this->media_filename instanceof \yii\web\UploadedFile) {
-				$article = Articles::findOne($this->article_id);
-				$imageName = time().'_'.$this->sanitizeFileName($article->title).'.'. $this->media_filename->extension; 
-				if($this->media_filename->saveAs($mediaPath.'/'.$imageName)) {
-					$this->media_filename = $imageName;
-					@chmod($imageName, 0777);
+				$this->media_filename = UploadedFile::getInstance($this, 'media_filename');
+				if($this->media_filename instanceof UploadedFile && !$this->media_filename->getHasError()) {
+					$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->media_filename->getExtension()); 
+					if($this->media_filename->saveAs(join('/', [$uploadPath, $fileName]))) {
+						if($this->old_media_filename != '' && file_exists(join('/', [$uploadPath, $this->old_media_filename])))
+							rename(join('/', [$uploadPath, $this->old_media_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_change_'.$this->old_media_filename]));
+						$this->media_filename = $fileName;
+					}
+				} else {
+					if($this->media_filename == '')
+						$this->media_filename = $this->old_media_filename;
 				}
 			}
 		}
-		return true;	
+		return true;
 	}
 
 	/**
@@ -353,10 +381,17 @@ class ArticleMedia extends \app\components\ActiveRecord
 	public function afterSave($insert, $changedAttributes)
 	{
 		parent::afterSave($insert, $changedAttributes);
-		if(!$insert && $this->media_filename != $this->old_media_filename_i) {
-			$fname = join('/', [self::getMediaPath(), $this->old_media_filename_i]);
-			if(file_exists($fname)) {
-				@unlink($fname);
+
+		$uploadPath = join('/', [self::getUploadPath(), $this->article_id]);
+		$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+		$this->createUploadDirectory(self::getUploadPath(), $this->article_id);
+
+		if($insert) {
+			$this->media_filename = UploadedFile::getInstance($this, 'media_filename');
+			if($this->media_filename instanceof UploadedFile && !$this->media_filename->getHasError()) {
+				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->media_filename->getExtension()); 
+				if($this->media_filename->saveAs(join('/', [$uploadPath, $fileName])))
+					self::updateAll(['media_filename' => $fileName], ['id' => $this->id]);
 			}
 		}
 	}
@@ -368,9 +403,11 @@ class ArticleMedia extends \app\components\ActiveRecord
 	{
 		parent::afterDelete();
 
-		$fname = join('/', [self::getMediaPath(), $this->media_filename]);
-		if(file_exists($fname)) {
-			@unlink($fname);
-		}
+		$uploadPath = join('/', [self::getUploadPath(), $this->article_id]);
+		$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+
+		if($this->media_filename != '' && file_exists(join('/', [$uploadPath, $this->media_filename])))
+			rename(join('/', [$uploadPath, $this->media_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_deleted_'.$this->media_filename]));
+
 	}
 }

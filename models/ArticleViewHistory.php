@@ -1,18 +1,19 @@
 <?php
 /**
  * ArticleViewHistory
-
+ * 
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:11 WIB
+ * @modified date 12 May 2019, 18:51 WIB
  * @link https://github.com/ommu/mod-article
  *
  * This is the model class for table "ommu_article_view_history".
  *
  * The followings are the available columns in table "ommu_article_view_history":
- * @property string $id
- * @property string $view_id
+ * @property integer $id
+ * @property integer $view_id
  * @property string $view_date
  * @property string $view_ip
  *
@@ -24,15 +25,12 @@
 namespace ommu\article\models;
 
 use Yii;
-use yii\helpers\Url;
 
 class ArticleViewHistory extends \app\components\ActiveRecord
 {
-	use \ommu\traits\UtilityTrait;
-
 	public $gridForbiddenColumn = [];
 
-	public $view_search;
+	public $viewArticleId;
 
 	/**
 	 * @return string the associated database table name
@@ -52,7 +50,7 @@ class ArticleViewHistory extends \app\components\ActiveRecord
 			[['view_id'], 'integer'],
 			[['view_date'], 'safe'],
 			[['view_ip'], 'string', 'max' => 20],
-			[['view_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArticleViews::className(), 'targetAttribute' => ['view_id' => 'view_id']],
+			[['view_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArticleViews::className(), 'targetAttribute' => ['view_id' => 'id']],
 		];
 	}
 
@@ -66,7 +64,7 @@ class ArticleViewHistory extends \app\components\ActiveRecord
 			'view_id' => Yii::t('app', 'View'),
 			'view_date' => Yii::t('app', 'View Date'),
 			'view_ip' => Yii::t('app', 'View Ip'),
-			'view_search' => Yii::t('app', 'View'),
+			'viewArticleId' => Yii::t('app', 'View'),
 		];
 	}
 
@@ -75,9 +73,18 @@ class ArticleViewHistory extends \app\components\ActiveRecord
 	 */
 	public function getView()
 	{
-		return $this->hasOne(ArticleViews::className(), ['view_id' => 'view_id']);
+		return $this->hasOne(ArticleViews::className(), ['id' => 'view_id']);
 	}
-	
+
+	/**
+	 * {@inheritdoc}
+	 * @return \ommu\article\models\query\ArticleViewHistory the active query used by this AR class.
+	 */
+	public static function find()
+	{
+		return new \ommu\article\models\query\ArticleViewHistory(get_called_class());
+	}
+
 	/**
 	 * Set default columns to display
 	 */
@@ -91,10 +98,11 @@ class ArticleViewHistory extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 		];
 		if(!Yii::$app->request->get('view')) {
-			$this->templateColumns['view_search'] = [
-				'attribute' => 'view_search',
+			$this->templateColumns['viewArticleId'] = [
+				'attribute' => 'viewArticleId',
 				'value' => function($model, $key, $index, $column) {
-					return $model->view->view_id;
+					return isset($model->view) ? $model->view->article->title : '-';
+					// return $model->viewArticleId;
 				},
 			];
 		}
@@ -105,7 +113,12 @@ class ArticleViewHistory extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'view_date'),
 		];
-		$this->templateColumns['view_ip'] = 'view_ip';
+		$this->templateColumns['view_ip'] = [
+			'attribute' => 'view_ip',
+			'value' => function($model, $key, $index, $column) {
+				return $model->view_ip;
+			},
+		];
 	}
 
 	/**
@@ -126,4 +139,13 @@ class ArticleViewHistory extends \app\components\ActiveRecord
 		}
 	}
 
+	/**
+	 * after find attributes
+	 */
+	public function afterFind()
+	{
+		parent::afterFind();
+
+		// $this->viewArticleId = isset($this->view) ? $this->view->article->title : '-';
+	}
 }

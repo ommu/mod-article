@@ -127,6 +127,14 @@ class ArticleCategory extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
+	public function getParent()
+	{
+		return $this->hasOne(ArticleCategory::className(), ['id' => 'parent_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
 	public function getTitle()
 	{
 		return $this->hasOne(SourceMessage::className(), ['id' => 'name']);
@@ -180,8 +188,9 @@ class ArticleCategory extends \app\components\ActiveRecord
 		$this->templateColumns['parent_id'] = [
 			'attribute' => 'parent_id',
 			'value' => function($model, $key, $index, $column) {
-				return $model->parent_id;
+				return isset($model->parent) ? $model->parent->name_i : '-';
 			},
+			// 'filter' => ArticleCategory::getCategory(),
 		];
 		$this->templateColumns['name_i'] = [
 			'attribute' => 'name_i',
@@ -297,7 +306,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 	 */
 	public static function getCategory($publish=null, $array=true) 
 	{
-		$model = self::find()->alias('t');
+		$model = self::find()->alias('t')->select(['t.id', 't.name']);
 		$model->leftJoin(sprintf('%s title', SourceMessage::tableName()), 't.name=title.id');
 		if($publish != null)
 			$model->andWhere(['t.publish' => $publish]);

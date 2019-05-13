@@ -1,49 +1,44 @@
 <?php
 /**
  * ArticleTag
-
+ * 
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:10 WIB
+ * @modified date 12 May 2019, 18:50 WIB
  * @link https://github.com/ommu/mod-article
  *
  * This is the model class for table "ommu_article_tag".
  *
  * The followings are the available columns in table "ommu_article_tag":
- * @property string $id
- * @property integer $publish
+ * @property integer $id
  * @property integer $article_id
- * @property string $tag_id
+ * @property integer $tag_id
  * @property string $creation_date
  * @property integer $creation_id
- * @property string $modified_date
- * @property integer $modified_id
- * @property string $updated_date
  *
  * The followings are the available model relations:
  * @property Articles $article
+ * @property CoreTags $tag
+ * @property Users $creation
  *
  */
 
 namespace ommu\article\models;
 
 use Yii;
-use yii\helpers\Url;
-use ommu\users\models\Users;
-use app\models\SourceMessage;
+use yii\helpers\Inflector;
 use app\models\CoreTags;
+use ommu\users\models\Users;
 
 class ArticleTag extends \app\components\ActiveRecord
 {
-	use \ommu\traits\UtilityTrait;
+	public $gridForbiddenColumn = ['creation_date', 'creationDisplayname'];
 
-	public $gridForbiddenColumn = ['creationDisplayname','updated_date','modifiedDisplayname','creation_date','modified_date'];
-
+	public $tagBody;
 	public $articleTitle;
-	public $tag_id_i;
 	public $creationDisplayname;
-	public $modifiedDisplayname;
 
 	/**
 	 * @return string the associated database table name
@@ -59,11 +54,10 @@ class ArticleTag extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['publish', 'article_id','tag_id','creation_id', 'modified_id'], 'integer'],
-			[['article_id'], 'required'],
-			[['creation_date', 'modified_date', 'updated_date', 'creation_id', 'modified_id'], 'safe'],
-			[['tag_id_i'], 'string', 'max' => 32],
-			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'article_id']],
+			[['article_id', 'tagBody'], 'required'],
+			[['article_id', 'tag_id', 'creation_id'], 'integer'],
+			[['tagBody'], 'string'],
+			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'id']],
 		];
 	}
 
@@ -74,36 +68,30 @@ class ArticleTag extends \app\components\ActiveRecord
 	{
 		return [
 			'id' => Yii::t('app', 'ID'),
-			'publish' => Yii::t('app', 'Publish'),
 			'article_id' => Yii::t('app', 'Article'),
 			'tag_id' => Yii::t('app', 'Tag'),
-			'tag_id_i' => Yii::t('app', 'Tag'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
-			'modified_date' => Yii::t('app', 'Modified Date'),
-			'modified_id' => Yii::t('app', 'Modified'),
-			'updated_date' => Yii::t('app', 'Updated Date'),
+			'tagBody' => Yii::t('app', 'Tag'),
 			'articleTitle' => Yii::t('app', 'Article'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
-			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 		];
 	}
 
-	public function getTag()
-	{
-		return $this->hasOne(CoreTags::className(), ['tag_id' => 'tag_id']);
-	}
-
-	public function getTitle()
-	{
-		return $this->hasOne(SourceMessage::className(), ['id' => 'tag_id']);
-	}
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
 	public function getArticle()
 	{
-		return $this->hasOne(Articles::className(), ['article_id' => 'article_id']);
+		return $this->hasOne(Articles::className(), ['id' => 'article_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getTag()
+	{
+		return $this->hasOne(CoreTags::className(), ['tag_id' => 'tag_id']);
 	}
 
 	/**
@@ -115,13 +103,14 @@ class ArticleTag extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * @return \yii\db\ActiveQuery
+	 * {@inheritdoc}
+	 * @return \ommu\article\models\query\ArticleTag the active query used by this AR class.
 	 */
-	public function getModified()
+	public static function find()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
+		return new \ommu\article\models\query\ArticleTag(get_called_class());
 	}
-	
+
 	/**
 	 * Set default columns to display
 	 */
@@ -138,18 +127,20 @@ class ArticleTag extends \app\components\ActiveRecord
 			$this->templateColumns['articleTitle'] = [
 				'attribute' => 'articleTitle',
 				'value' => function($model, $key, $index, $column) {
-					return $model->article->title;
+					return isset($model->article) ? $model->article->title : '-';
+					// return $model->articleTitle;
 				},
 			];
 		}
-		//$this->templateColumns['tag_id'] = 'tag_id';
-		$this->templateColumns['tag_id_i'] = [
-			'attribute' => 'tag_id_i',
-			'value' => function($model, $key, $index, $column) {
-				return $model->tag->body;
-				//return $model->tag_id_i ? $model->tag->body : '-';
-			},
-		];
+		if(!Yii::$app->request->get('tag')) {
+			$this->templateColumns['tagBody'] = [
+				'attribute' => 'tagBody',
+				'value' => function($model, $key, $index, $column) {
+					return isset($model->tag) ? $model->tag->body : '-';
+					// return $model->tagBody;
+				},
+			];
+		}
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
 			'value' => function($model, $key, $index, $column) {
@@ -162,41 +153,8 @@ class ArticleTag extends \app\components\ActiveRecord
 				'attribute' => 'creationDisplayname',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->creation) ? $model->creation->displayname : '-';
+					// return $model->creationDisplayname;
 				},
-			];
-		}
-		$this->templateColumns['modified_date'] = [
-			'attribute' => 'modified_date',
-			'value' => function($model, $key, $index, $column) {
-				return Yii::$app->formatter->asDatetime($model->modified_date, 'medium');
-			},
-			'filter' => $this->filterDatepicker($this, 'modified_date'),
-		];
-		if(!Yii::$app->request->get('modified')) {
-			$this->templateColumns['modifiedDisplayname'] = [
-				'attribute' => 'modifiedDisplayname',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->modified) ? $model->modified->displayname : '-';
-				},
-			];
-		}
-		$this->templateColumns['updated_date'] = [
-			'attribute' => 'updated_date',
-			'value' => function($model, $key, $index, $column) {
-				return Yii::$app->formatter->asDatetime($model->updated_date, 'medium');
-			},
-			'filter' => $this->filterDatepicker($this, 'updated_date'),
-		];
-		if(!Yii::$app->request->get('trash')) {
-			$this->templateColumns['publish'] = [
-				'attribute' => 'publish',
-				'value' => function($model, $key, $index, $column) {
-					$url = Url::to(['publish', 'id'=>$model->primaryKey]);
-					return $this->quickAction($url, $model->publish);
-				},
-				'filter' => $this->filterYesNo(),
-				'contentOptions' => ['class'=>'center'],
-				'format' => 'raw',
 			];
 		}
 	}
@@ -220,6 +178,18 @@ class ArticleTag extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * after find attributes
+	 */
+	public function afterFind()
+	{
+		parent::afterFind();
+
+		$this->tagBody = isset($this->tag) ? $this->tag->body : '';
+		// $this->articleTitle = isset($this->article) ? $this->article->title : '-';
+		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
+	}
+
+	/**
 	 * before validate attributes
 	 */
 	public function beforeValidate()
@@ -228,15 +198,36 @@ class ArticleTag extends \app\components\ActiveRecord
 			if($this->isNewRecord) {
 				if($this->creation_id == null)
 					$this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			} else {
-				if($this->modified_id == null)
-					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
 			}
 		}
 		return true;
 	}
 
-	
-	
-
+	/**
+	 * before save attributes
+	 */
+	public function beforeSave($insert)
+	{
+		if(parent::beforeSave($insert)) {
+			if($insert) {
+				$tagBody = Inflector::slug($this->tagBody);
+				if($this->tag_id == 0) {
+					$tag = CoreTags::find()
+						->select(['tag_id'])
+						->andWhere(['body' => $tagBody])
+						->one();
+						
+					if($tag != null)
+						$this->tag_id = $tag->tag_id;
+					else {
+						$data = new CoreTags();
+						$data->body = $this->tagBody;
+						if($data->save())
+							$this->tag_id = $data->tag_id;
+					}
+				}
+			}
+		}
+		return true;
+	}
 }

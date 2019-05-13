@@ -1,19 +1,20 @@
 <?php
 /**
  * ArticleDownloads
-
+ * 
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:02 WIB
+ * @modified date 12 May 2019, 18:26 WIB
  * @link https://github.com/ommu/mod-article
  *
  * This is the model class for table "ommu_article_downloads".
  *
  * The followings are the available columns in table "ommu_article_downloads":
- * @property string $download_id
- * @property string $file_id
- * @property string $user_id
+ * @property integer $id
+ * @property integer $file_id
+ * @property integer $user_id
  * @property integer $downloads
  * @property string $download_date
  * @property string $download_ip
@@ -21,6 +22,7 @@
  * The followings are the available model relations:
  * @property ArticleDownloadHistory[] $histories
  * @property ArticleFiles $file
+ * @property Users $user
  *
  */
 
@@ -28,16 +30,13 @@ namespace ommu\article\models;
 
 use Yii;
 use yii\helpers\Html;
-use yii\helpers\Url;
 use ommu\users\models\Users;
 
 class ArticleDownloads extends \app\components\ActiveRecord
 {
-	use \ommu\traits\UtilityTrait;
-
 	public $gridForbiddenColumn = [];
 
-	public $file_search;
+	public $fileFilename;
 	public $userDisplayname;
 
 	/**
@@ -54,11 +53,12 @@ class ArticleDownloads extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['file_id', 'user_id', 'download_ip'], 'required'],
+			[['file_id'], 'required'],
 			[['file_id', 'user_id', 'downloads'], 'integer'],
-			[['download_date'], 'safe'],
+			[['user_id', 'download_ip'], 'safe'],
 			[['download_ip'], 'string', 'max' => 20],
-			[['file_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArticleFiles::className(), 'targetAttribute' => ['file_id' => 'file_id']],
+			[['file_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArticleFiles::className(), 'targetAttribute' => ['file_id' => 'id']],
+			[['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
 		];
 	}
 
@@ -68,13 +68,14 @@ class ArticleDownloads extends \app\components\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'download_id' => Yii::t('app', 'Download'),
+			'id' => Yii::t('app', 'ID'),
 			'file_id' => Yii::t('app', 'File'),
 			'user_id' => Yii::t('app', 'User'),
 			'downloads' => Yii::t('app', 'Downloads'),
 			'download_date' => Yii::t('app', 'Download Date'),
 			'download_ip' => Yii::t('app', 'Download Ip'),
-			'file_search' => Yii::t('app', 'File'),
+			'histories' => Yii::t('app', 'Histories'),
+			'fileFilename' => Yii::t('app', 'File'),
 			'userDisplayname' => Yii::t('app', 'User'),
 		];
 	}
@@ -82,9 +83,16 @@ class ArticleDownloads extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getHistories()
+	public function getHistories($count=false)
 	{
-		return $this->hasMany(ArticleDownloadHistory::className(), ['download_id' => 'download_id']);
+		if($count == false)
+			return $this->hasMany(ArticleDownloadHistory::className(), ['download_id' => 'id']);
+
+		$model = ArticleDownloadHistory::find()
+			->where(['download_id' => $this->id]);
+		$histories = $model->count();
+
+		return $histories ? $histories : 0;
 	}
 
 	/**
@@ -92,7 +100,7 @@ class ArticleDownloads extends \app\components\ActiveRecord
 	 */
 	public function getFile()
 	{
-		return $this->hasOne(ArticleFiles::className(), ['file_id' => 'file_id']);
+		return $this->hasOne(ArticleFiles::className(), ['id' => 'file_id']);
 	}
 
 	/**
@@ -102,7 +110,16 @@ class ArticleDownloads extends \app\components\ActiveRecord
 	{
 		return $this->hasOne(Users::className(), ['user_id' => 'user_id']);
 	}
-	
+
+	/**
+	 * {@inheritdoc}
+	 * @return \ommu\article\models\query\ArticleDownloads the active query used by this AR class.
+	 */
+	public static function find()
+	{
+		return new \ommu\article\models\query\ArticleDownloads(get_called_class());
+	}
+
 	/**
 	 * Set default columns to display
 	 */
@@ -116,10 +133,11 @@ class ArticleDownloads extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 		];
 		if(!Yii::$app->request->get('file')) {
-			$this->templateColumns['file_search'] = [
-				'attribute' => 'file_search',
+			$this->templateColumns['fileFilename'] = [
+				'attribute' => 'fileFilename',
 				'value' => function($model, $key, $index, $column) {
-					return $model->file->file_filename;
+					return isset($model->file) ? $model->file->file_filename : '-';
+					// return $model->fileFilename;
 				},
 			];
 		}
@@ -128,19 +146,10 @@ class ArticleDownloads extends \app\components\ActiveRecord
 				'attribute' => 'userDisplayname',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->user) ? $model->user->displayname : '-';
+					// return $model->userDisplayname;
 				},
 			];
 		}
-		
-		$this->templateColumns['downloads'] = [
-			'attribute' => 'downloads',
-			'value' => function($model, $key, $index, $column) {
-				$url = Url::to(['history/download/index', 'download'=>$model->primaryKey]);
-				return Html::a($model->downloads ? $model->downloads : 0, $url);
-			},
-			'contentOptions' => ['class'=>'center'],
-			'format' => 'raw',
-		];
 		$this->templateColumns['download_date'] = [
 			'attribute' => 'download_date',
 			'value' => function($model, $key, $index, $column) {
@@ -148,7 +157,22 @@ class ArticleDownloads extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'download_date'),
 		];
-		$this->templateColumns['download_ip'] = 'download_ip';
+		$this->templateColumns['download_ip'] = [
+			'attribute' => 'download_ip',
+			'value' => function($model, $key, $index, $column) {
+				return $model->download_ip;
+			},
+		];
+		$this->templateColumns['downloads'] = [
+			'attribute' => 'downloads',
+			'value' => function($model, $key, $index, $column) {
+				$downloads = $model->downloads;
+				return Html::a($downloads, ['history/download/manage', 'download'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$downloads])]);
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'center'],
+			'format' => 'html',
+		];
 	}
 
 	/**
@@ -159,7 +183,7 @@ class ArticleDownloads extends \app\components\ActiveRecord
 		if($column != null) {
 			$model = self::find()
 				->select([$column])
-				->where(['download_id' => $id])
+				->where(['id' => $id])
 				->one();
 			return $model->$column;
 			
@@ -170,19 +194,42 @@ class ArticleDownloads extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * before validate attributes
+	 * function insertDownload
 	 */
-	public function insertDownload($file_id)
+	public function insertDownload($file_id, $user_id=null)
 	{
-		$user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : '0';
-		$download = ArticleDownloads::find()->where(['file_id' => $file_id, 'user_id' => $user_id])->one();
-		if($download == null) {
-			$download = new ArticleDownloads;
+		if($user_id == null)
+			$user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+
+		$findDownload = self::find()
+			->select(['id', 'downloads'])
+			->where(['file_id' => $file_id]);
+		if($user_id != null)
+			$findDownload->andWhere(['user_id' => $user_id]);
+		else
+			$findDownload->andWhere(['is', 'user_id', null]);
+		$findDownload = $findDownload->one();
+
+		if($findDownload !== null)
+			$findDownload->updateAttributes(['downloads'=>$findDownload->downloads+1, 'download_ip'=>$_SERVER['REMOTE_ADDR']]);
+
+		else {
+			$download = new ArticleDownloads();
 			$download->file_id = $file_id;
-		} else
-			$download->downloads = $download->downloads+1;
-			
-		$download->save();
+			$download->user_id = $user_id;
+			$download->save();
+		}
+	}
+
+	/**
+	 * after find attributes
+	 */
+	public function afterFind()
+	{
+		parent::afterFind();
+
+		// $this->fileFilename = isset($this->file) ? $this->file->file_filename : '-';
+		// $this->userDisplayname = isset($this->user) ? $this->user->displayname : '-';
 	}
 
 	/**
@@ -195,8 +242,7 @@ class ArticleDownloads extends \app\components\ActiveRecord
 				if($this->user_id == null)
 					$this->user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
 			}
-
-			$this->download_ip = Yii::$app->request->userIP;
+			$this->download_ip = $_SERVER['REMOTE_ADDR'];
 		}
 		return true;
 	}

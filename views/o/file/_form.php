@@ -70,8 +70,8 @@ $redactorOptions = [
 		->label($model->getAttributeLabel('file_filename')); ?>
 	<div class="col-md-9 col-sm-9 col-xs-12">
 		<?php if (!$model->isNewRecord) {
-			if($model->old_file_filename_i != '')
-				echo $model->old_file_filename_i;
+			if($model->old_file_filename != '')
+				echo $model->old_file_filename;
 		} ?>
 
 		<?php echo $form->field($model, 'file_filename', ['template' => '{input}{error}'])

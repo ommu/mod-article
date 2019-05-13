@@ -17,6 +17,7 @@
 
 use yii\helpers\Html;
 use app\components\widgets\ActiveForm;
+use ommu\article\models\ArticleCategory;
 ?>
 
 <div class="article-category-form">
@@ -30,8 +31,9 @@ use app\components\widgets\ActiveForm;
 
 <?php //echo $form->errorSummary($model);?>
 
-<?php echo $form->field($model, 'parent_id')
-	->textInput(['type'=>'number', 'min'=>'1'])
+<?php $category = ArticleCategory::getCategory();
+echo $form->field($model,'parent_id')
+	->dropDownList($category, ['prompt'=>''])
 	->label($model->getAttributeLabel('parent_id')); ?>
 
 <?php echo $form->field($model, 'name_i')

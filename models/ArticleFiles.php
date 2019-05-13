@@ -1,17 +1,18 @@
 <?php
 /**
  * ArticleFiles
-
+ * 
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:04 WIB
+ * @modified date 12 May 2019, 18:26 WIB
  * @link https://github.com/ommu/mod-article
  *
  * This is the model class for table "ommu_article_files".
  *
  * The followings are the available columns in table "ommu_article_files":
- * @property string $file_id
+ * @property integer $id
  * @property integer $publish
  * @property integer $article_id
  * @property string $file_filename
@@ -24,6 +25,8 @@
  * The followings are the available model relations:
  * @property ArticleDownloads[] $downloads
  * @property Articles $article
+ * @property Users $creation
+ * @property Users $modified
  *
  */
 
@@ -32,21 +35,23 @@ namespace ommu\article\models;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\web\UploadedFile;
+use thamtech\uuid\helpers\UuidHelper;
 use ommu\users\models\Users;
 use ommu\article\models\view\Articles as ArticlesView;
 
 class ArticleFiles extends \app\components\ActiveRecord
 {
-	use \app\components\traits\FileSystem;
 	use \ommu\traits\UtilityTrait;
+	use \ommu\traits\FileTrait;
 
 	public $gridForbiddenColumn = ['creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname','updated_date'];
 
+
+	public $old_file_filename;
 	public $articleTitle;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
-	public $old_file_filename_i;
-	public $download_search;
 
 	/**
 	 * @return string the associated database table name
@@ -62,11 +67,12 @@ class ArticleFiles extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['publish', 'article_id', 'creation_id', 'modified_id'], 'integer'],
 			[['file_filename'], 'required', 'on' => 'formCreate'],
+			[['publish', 'article_id', 'creation_id', 'modified_id'], 'integer'],
+			[['file_filename'], 'string'],
 			[['creation_date', 'modified_date', 'updated_date','file_filename_i','article_id'], 'safe'],
-			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'article_id']],
 			[['file_filename'], 'file', 'extensions' => 'pdf, doc, docx'],
+			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'id']],
 		];
 	}
 
@@ -76,7 +82,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'file_id' => Yii::t('app', 'File'),
+			'id' => Yii::t('app', 'ID'),
 			'publish' => Yii::t('app', 'Publish'),
 			'article_id' => Yii::t('app', 'Article'),
 			'file_filename' => Yii::t('app', 'File Filename'),
@@ -85,12 +91,27 @@ class ArticleFiles extends \app\components\ActiveRecord
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
+			'old_file_filename' => Yii::t('app', 'Old File Filename'),
+			'downloads' => Yii::t('app', 'Downloads'),
 			'articleTitle' => Yii::t('app', 'Article'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
-			'download_search' => Yii::t('app', 'Downloads'),
-			'old_article_filename_i' => Yii::t('app', 'Old Filename'),
 		];
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getDownloads($count=false)
+	{
+		if($count == false)
+			return $this->hasMany(ArticleDownloads::className(), ['file_id' => 'id']);
+
+		$model = ArticleDownloads::find()
+			->where(['file_id' => $this->id]);
+		$downloads = $model->count();
+
+		return $downloads ? $downloads : 0;
 	}
 
 	/**
@@ -101,17 +122,13 @@ class ArticleFiles extends \app\components\ActiveRecord
 		return $this->hasOne(ArticlesView::className(), ['article_id' => 'article_id']);
 	}
 
-	public function getDownloads()
-	{
-		return $this->hasMany(ArticleDownloads::className(), ['file_id' => 'file_id']);
-	}
 
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
 	public function getArticle()
 	{
-		return $this->hasOne(Articles::className(), ['article_id' => 'article_id']);
+		return $this->hasOne(Articles::className(), ['id' => 'article_id']);
 	}
 
 	/**
@@ -129,7 +146,16 @@ class ArticleFiles extends \app\components\ActiveRecord
 	{
 		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
 	}
-	
+
+	/**
+	 * {@inheritdoc}
+	 * @return \ommu\article\models\query\ArticleFiles the active query used by this AR class.
+	 */
+	public static function find()
+	{
+		return new \ommu\article\models\query\ArticleFiles(get_called_class());
+	}
+
 	/**
 	 * Set default columns to display
 	 */
@@ -146,11 +172,19 @@ class ArticleFiles extends \app\components\ActiveRecord
 			$this->templateColumns['articleTitle'] = [
 				'attribute' => 'articleTitle',
 				'value' => function($model, $key, $index, $column) {
-					return $model->article->title;
+					return isset($model->article) ? $model->article->title : '-';
+					// return $model->articleTitle;
 				},
 			];
 		}
-		$this->templateColumns['file_filename'] = 'file_filename';
+		$this->templateColumns['file_filename'] = [
+			'attribute' => 'file_filename',
+			'value' => function($model, $key, $index, $column) {
+				$uploadPath = join('/', [self::getUploadPath(false), $model->id]);
+				return $model->file_filename ? Html::img(join('/', [Url::Base(), $uploadPath, $model->file_filename]), ['alt' => $model->file_filename]) : '-';
+			},
+			'format' => 'html',
+		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
 			'value' => function($model, $key, $index, $column) {
@@ -163,6 +197,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 				'attribute' => 'creationDisplayname',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->creation) ? $model->creation->displayname : '-';
+					// return $model->creationDisplayname;
 				},
 			];
 		}
@@ -178,24 +213,26 @@ class ArticleFiles extends \app\components\ActiveRecord
 				'attribute' => 'modifiedDisplayname',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->modified) ? $model->modified->displayname : '-';
+					// return $model->modifiedDisplayname;
 				},
 			];
 		}
-		$this->templateColumns['download_search'] = [
-			'attribute' => 'download_search',
-			'value' => function($model, $key, $index, $column) {
-				$url = Url::to(['download/index', 'file'=>$model->primaryKey]);
-				return Html::a($model->view->downloads ? $model->view->downloads : 0, $url);
-			},
-			'contentOptions' => ['class'=>'center'],
-			'format' => 'raw',
-		];
 		$this->templateColumns['updated_date'] = [
 			'attribute' => 'updated_date',
 			'value' => function($model, $key, $index, $column) {
 				return Yii::$app->formatter->asDatetime($model->updated_date, 'medium');
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
+		];
+		$this->templateColumns['downloads'] = [
+			'attribute' => 'downloads',
+			'value' => function($model, $key, $index, $column) {
+				$downloads = $model->getDownloads(true);
+				return Html::a($downloads, ['o/download/manage', 'file'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} downloads', ['count'=>$downloads])]);
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'center'],
+			'format' => 'html',
 		];
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
@@ -219,7 +256,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 		if($column != null) {
 			$model = self::find()
 				->select([$column])
-				->where(['file_id' => $id])
+				->where(['id' => $id])
 				->one();
 			return $model->$column;
 			
@@ -230,21 +267,25 @@ class ArticleFiles extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * before validate attributes
+	 * @param returnAlias set true jika ingin kembaliannya path alias atau false jika ingin string
+	 * relative path. default true.
 	 */
-	public static function getArticlePath($returnAlias=true)
+	public static function getUploadPath($returnAlias=true)
 	{
-		return ($returnAlias ? Yii::getAlias('@webroot/public/article/file') : 'public/article');
+		return ($returnAlias ? Yii::getAlias('@public/article') : 'article');
 	}
 
 	/**
-	 * afterFind
-	 *
-	 * Simpan nama article lama untuk keperluan jikalau kondisi update tp articlenya tidak diupdate.
+	 * after find attributes
 	 */
 	public function afterFind()
 	{
-		$this->old_file_filename_i = $this->file_filename;
+		parent::afterFind();
+
+		$this->old_file_filename = $this->file_filename;
+		// $this->articleTitle = isset($this->article) ? $this->article->title : '-';
+		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
+		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
 	}
 
 	/**
@@ -288,42 +329,28 @@ class ArticleFiles extends \app\components\ActiveRecord
 	public function beforeSave($insert)
 	{
 		if(parent::beforeSave($insert)) {
+			if(!$insert) {
+				$uploadPath = join('/', [self::getUploadPath(), $this->article_id]);
+				$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+				$this->createUploadDirectory(self::getUploadPath(), $this->article_id);
 
-			if($this->isNewRecord) {
-					if (Yii::$app->request->get('article')){
-
-					$article = Yii::$app->request->get('article');
-					$this->article_id = $article;
-				}
-			}
-			
-			$filePath = Yii::getAlias('@webroot/public/article/file');
-			
-			// Add directory
-			if(!file_exists($filePath)) {
-				@mkdir($filePath, 0777,true);
-
-				// Add file in directory (index.php)
-				$indexFile = join('/', [$filePath, 'index.php']);
-				if(!file_exists($indexFile)) {
-					file_put_contents($indexFile, "<?php\n");
-				}
-
-			}else {
-				@chmod($filePath, 0777,true);
-			}
-			if($this->file_filename instanceof \yii\web\UploadedFile) {
-				$article = Articles::findOne($this->article_id);
-				$imageName = time().'_'.$this->sanitizeFileName($article->title).'.'. $this->file_filename->extension; 
-				if($this->file_filename->saveAs($filePath.'/'.$imageName)) {
-					$this->file_filename = $imageName;
-					@chmod($imageName, 0777);
+				$this->file_filename = UploadedFile::getInstance($this, 'file_filename');
+				if($this->file_filename instanceof UploadedFile && !$this->file_filename->getHasError()) {
+					$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->file_filename->getExtension()); 
+					if($this->file_filename->saveAs(join('/', [$uploadPath, $fileName]))) {
+						if($this->old_file_filename != '' && file_exists(join('/', [$uploadPath, $this->old_file_filename])))
+							rename(join('/', [$uploadPath, $this->old_file_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_change_'.$this->old_file_filename]));
+						$this->file_filename = $fileName;
+					}
+				} else {
+					if($this->file_filename == '')
+						$this->file_filename = $this->old_file_filename;
 				}
 			}
 		}
 		return true;
 	}
-	
+
 	/**
 	 * After save attributes
 	 */
@@ -331,11 +358,16 @@ class ArticleFiles extends \app\components\ActiveRecord
 	{
 		parent::afterSave($insert, $changedAttributes);
 
-		// jika article file diperbarui, hapus article yg lama.
-		if(!$insert && $this->file_filename != $this->old_file_filename_i) {
-			$fname = join('/', [self::getArticlePath(), $this->old_file_filename_i]);
-			if(file_exists($fname)) {
-				@unlink($fname);
+		$uploadPath = join('/', [self::getUploadPath(), $this->article_id]);
+		$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+		$this->createUploadDirectory(self::getUploadPath(), $this->article_id);
+
+		if($insert) {
+			$this->file_filename = UploadedFile::getInstance($this, 'file_filename');
+			if($this->file_filename instanceof UploadedFile && !$this->file_filename->getHasError()) {
+				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->file_filename->getExtension()); 
+				if($this->file_filename->saveAs(join('/', [$uploadPath, $fileName])))
+					self::updateAll(['file_filename' => $fileName], ['id' => $this->id]);
 			}
 		}
 	}
@@ -347,9 +379,11 @@ class ArticleFiles extends \app\components\ActiveRecord
 	{
 		parent::afterDelete();
 
-		$fname = join('/', [self::getArticlePath(), $this->file_filename]);
-		if(file_exists($fname)) {
-			@unlink($fname);
-		}
+		$uploadPath = join('/', [self::getUploadPath(), $this->article_id]);
+		$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+
+		if($this->file_filename != '' && file_exists(join('/', [$uploadPath, $this->file_filename])))
+			rename(join('/', [$uploadPath, $this->file_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_deleted_'.$this->file_filename]));
+
 	}
 }

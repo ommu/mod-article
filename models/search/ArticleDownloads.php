@@ -29,7 +29,7 @@ class ArticleDownloads extends ArticleDownloadsModel
 	{
 		return [
 			[['download_id', 'file_id', 'user_id', 'downloads'], 'integer'],
-			[['download_date', 'download_ip', 'file_search', 'userDisplayname'], 'safe'],
+			[['download_date', 'download_ip', 'fileFilename', 'userDisplayname'], 'safe'],
 		];
 	}
 
@@ -77,7 +77,7 @@ class ArticleDownloads extends ArticleDownloadsModel
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
-		$attributes['file_search'] = [
+		$attributes['fileFilename'] = [
 			'asc' => ['file.file_filename' => SORT_ASC],
 			'desc' => ['file.file_filename' => SORT_DESC],
 		];
@@ -108,7 +108,7 @@ class ArticleDownloads extends ArticleDownloadsModel
 		]);
 
 		$query->andFilterWhere(['like', 't.download_ip', $this->download_ip])
-			->andFilterWhere(['like', 'file.file_filename', $this->file_search])
+			->andFilterWhere(['like', 'file.file_filename', $this->fileFilename])
 			->andFilterWhere(['like', 'user.displayname', $this->userDisplayname]);
 
 		return $dataProvider;

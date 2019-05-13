@@ -76,8 +76,8 @@ $redactorOptions = [
 		->label($model->getAttributeLabel('media_filename')); ?>
 	<div class="col-md-9 col-sm-9 col-xs-12">
 		<?php if (!$model->isNewRecord) {
-			if($model->old_media_filename_i != '')
-				echo Html::img(join('/', [Url::Base(), ArticleMedia::getMediaPath(false), $model->old_media_filename_i]), ['class'=>'mb-15', 'width'=>'100%']);
+			if($model->old_media_filename != '')
+				echo Html::img(join('/', [Url::Base(), ArticleMedia::getUploadPath(false), $model->old_media_filename]), ['class'=>'mb-15', 'width'=>'100%']);
 		} ?>
 
 		<?php echo $form->field($model, 'media_filename', ['template' => '{input}{error}'])

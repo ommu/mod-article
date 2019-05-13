@@ -1,20 +1,21 @@
 <?php
 /**
  * ArticleLikes
-
+ * 
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:04 WIB
+ * @modified date 12 May 2019, 18:27 WIB
  * @link https://github.com/ommu/mod-article
  *
  * This is the model class for table "ommu_article_likes".
  *
  * The followings are the available columns in table "ommu_article_likes":
- * @property string $like_id
+ * @property integer $id
  * @property integer $publish
  * @property integer $article_id
- * @property string $user_id
+ * @property integer $user_id
  * @property string $likes_date
  * @property string $likes_ip
  * @property string $updated_date
@@ -22,6 +23,7 @@
  * The followings are the available model relations:
  * @property ArticleLikeHistory[] $histories
  * @property Articles $article
+ * @property Users $user
  *
  */
 
@@ -36,7 +38,7 @@ class ArticleLikes extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['likes_ip','updated_date'];
+	public $gridForbiddenColumn = ['likes_ip', 'updated_date'];
 
 	public $articleTitle;
 	public $userDisplayname;
@@ -55,11 +57,12 @@ class ArticleLikes extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
+			[['article_id'], 'required'],
 			[['publish', 'article_id', 'user_id'], 'integer'],
-			[['article_id', 'user_id'], 'required'],
-			[['likes_date', 'updated_date', 'likes_ip'], 'safe'],
+			[['user_id', 'likes_ip'], 'safe'],
 			[['likes_ip'], 'string', 'max' => 20],
-			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'article_id']],
+			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'id']],
+			[['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => Users::className(), 'targetAttribute' => ['user_id' => 'user_id']],
 		];
 	}
 
@@ -69,13 +72,14 @@ class ArticleLikes extends \app\components\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'like_id' => Yii::t('app', 'Like'),
+			'id' => Yii::t('app', 'ID'),
 			'publish' => Yii::t('app', 'Publish'),
 			'article_id' => Yii::t('app', 'Article'),
 			'user_id' => Yii::t('app', 'User'),
 			'likes_date' => Yii::t('app', 'Likes Date'),
 			'likes_ip' => Yii::t('app', 'Likes Ip'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
+			'histories' => Yii::t('app', 'Histories'),
 			'articleTitle' => Yii::t('app', 'Article'),
 			'userDisplayname' => Yii::t('app', 'User'),
 		];
@@ -84,9 +88,16 @@ class ArticleLikes extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getHistories()
+	public function getHistories($count=false)
 	{
-		return $this->hasMany(ArticleLikeHistory::className(), ['like_id' => 'like_id']);
+		if($count == false)
+			return $this->hasMany(ArticleLikeHistory::className(), ['like_id' => 'id']);
+
+		$model = ArticleLikeHistory::find()
+			->where(['like_id' => $this->id]);
+		$histories = $model->count();
+
+		return $histories ? $histories : 0;
 	}
 
 	/**
@@ -94,7 +105,7 @@ class ArticleLikes extends \app\components\ActiveRecord
 	 */
 	public function getArticle()
 	{
-		return $this->hasOne(Articles::className(), ['article_id' => 'article_id']);
+		return $this->hasOne(Articles::className(), ['id' => 'article_id']);
 	}
 
 	/**
@@ -104,7 +115,16 @@ class ArticleLikes extends \app\components\ActiveRecord
 	{
 		return $this->hasOne(Users::className(), ['user_id' => 'user_id']);
 	}
-	
+
+	/**
+	 * {@inheritdoc}
+	 * @return \ommu\article\models\query\ArticleLikes the active query used by this AR class.
+	 */
+	public static function find()
+	{
+		return new \ommu\article\models\query\ArticleLikes(get_called_class());
+	}
+
 	/**
 	 * Set default columns to display
 	 */
@@ -121,7 +141,8 @@ class ArticleLikes extends \app\components\ActiveRecord
 			$this->templateColumns['articleTitle'] = [
 				'attribute' => 'articleTitle',
 				'value' => function($model, $key, $index, $column) {
-					return $model->article->title;
+					return isset($model->article) ? $model->article->title : '-';
+					// return $model->articleTitle;
 				},
 			];
 		}
@@ -130,6 +151,7 @@ class ArticleLikes extends \app\components\ActiveRecord
 				'attribute' => 'userDisplayname',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->user) ? $model->user->displayname : '-';
+					// return $model->userDisplayname;
 				},
 			];
 		}
@@ -140,13 +162,28 @@ class ArticleLikes extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'likes_date'),
 		];
-		$this->templateColumns['likes_ip'] = 'likes_ip';
+		$this->templateColumns['likes_ip'] = [
+			'attribute' => 'likes_ip',
+			'value' => function($model, $key, $index, $column) {
+				return $model->likes_ip;
+			},
+		];
 		$this->templateColumns['updated_date'] = [
 			'attribute' => 'updated_date',
 			'value' => function($model, $key, $index, $column) {
 				return Yii::$app->formatter->asDatetime($model->updated_date, 'medium');
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
+		];
+		$this->templateColumns['histories'] = [
+			'attribute' => 'histories',
+			'value' => function($model, $key, $index, $column) {
+				$histories = $model->getHistories(true);
+				return Html::a($histories, ['history/like/manage', 'like'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$histories])]);
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'center'],
+			'format' => 'html',
 		];
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
@@ -170,7 +207,7 @@ class ArticleLikes extends \app\components\ActiveRecord
 		if($column != null) {
 			$model = self::find()
 				->select([$column])
-				->where(['like_id' => $id])
+				->where(['id' => $id])
 				->one();
 			return $model->$column;
 			
@@ -181,21 +218,41 @@ class ArticleLikes extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * fungsi insert like
+	 * function insertLike
 	 */
 
-	public function insertLike($article_id)
+	public function insertLike($article_id, $user_id=null)
 	{
-		$user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : '0';
-		$like = articleLikes::find()->select(['article_id', 'likes'])->where(['article_id' => $article_id, 'user_id' => $user_id])->one();
+		if($user_id == null)
+			$user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
 
-		if($like == null) {
-			$like = new articleLikes;
+		$findLike = self::find()
+			->select(['id'])
+			->where(['publish' => 1])
+			->andWhere(['article_id' => $article_id]);
+		if($user_id != null)
+			$findLike->andWhere(['user_id' => $user_id]);
+		else
+			$findLike->andWhere(['is', 'user_id', null]);
+		$findLike = $findLike->one();
+
+		if($findLike === null) {
+			$like = new ArticleLikes();
 			$like->article_id = $article_id;
-		} else
-			$like->likes = $like->likes+1;
-			
-		$like->save();
+			$like->user_id = $user_id;
+			$like->save();
+		}
+	}
+
+	/**
+	 * after find attributes
+	 */
+	public function afterFind()
+	{
+		parent::afterFind();
+
+		// $this->articleTitle = isset($this->article) ? $this->article->title : '-';
+		// $this->userDisplayname = isset($this->user) ? $this->user->displayname : '-';
 	}
 
 	/**
@@ -208,8 +265,7 @@ class ArticleLikes extends \app\components\ActiveRecord
 				if($this->user_id == null)
 					$this->user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
 			}
-
-			$this->like_ip = Yii::$app->request->userIP;
+			$this->likes_ip = $_SERVER['REMOTE_ADDR'];
 		}
 		return true;
 	}

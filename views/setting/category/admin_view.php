@@ -38,7 +38,10 @@ $attributes = [
 		'value' => $model->quickAction(Url::to(['publish', 'id'=>$model->primaryKey]), $model->publish, 'Enable,Disable'),
 		'format' => 'raw',
 	],
-	'parent_id',
+	[
+		'attribute' => 'parent_id',
+		'value' => isset($model->parent) ? $model->parent->name_i : '-',
+	],
 	[
 		'attribute' => 'name_i',
 		'value' => $model->name_i,

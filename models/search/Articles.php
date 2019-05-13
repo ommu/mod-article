@@ -29,7 +29,7 @@ class Articles extends ArticlesModel
 	{
 		return [
 			[['article_id', 'publish', 'cat_id', 'headline', 'comment_code', 'creation_id', 'modified_id'], 'integer'],
-			[['title', 'body', 'published_date', 'creation_date', 'modified_date', 'updated_date', 'headline_date', 'category_search', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
+			[['title', 'body', 'published_date', 'creation_date', 'modified_date', 'updated_date', 'headline_date', 'categoryName', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
 
@@ -77,7 +77,7 @@ class Articles extends ArticlesModel
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
-		$attributes['category_search'] = [
+		$attributes['categoryName'] = [
 			'asc' => ['category.name' => SORT_ASC],
 			'desc' => ['category.name' => SORT_DESC],
 		];
@@ -152,7 +152,7 @@ class Articles extends ArticlesModel
 
 		$query->andFilterWhere(['like', 't.title', $this->title])
 			->andFilterWhere(['like', 't.body', $this->body])
-			->andFilterWhere(['like', 'category.name', $this->category_search])
+			->andFilterWhere(['like', 'category.name', $this->categoryName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
 			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname]);
 

@@ -30,7 +30,7 @@ $this->params['menu']['content'] = [
 $attributes = [
 	'download_id',
 	[
-		'attribute' => 'file_search',
+		'attribute' => 'fileFilename',
 		'value' => $model->file->file_filename,
 	],
 	[

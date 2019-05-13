@@ -1,18 +1,19 @@
 <?php
 /**
  * ArticleDownloadHistory
-
+ * 
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:03 WIB
+ * @modified date 12 May 2019, 18:26 WIB
  * @link https://github.com/ommu/mod-article
  *
  * This is the model class for table "ommu_article_download_history".
  *
  * The followings are the available columns in table "ommu_article_download_history":
- * @property string $id
- * @property string $download_id
+ * @property integer $id
+ * @property integer $download_id
  * @property string $download_date
  * @property string $download_ip
  *
@@ -24,15 +25,12 @@
 namespace ommu\article\models;
 
 use Yii;
-use yii\helpers\Url;
 
 class ArticleDownloadHistory extends \app\components\ActiveRecord
 {
-	use \ommu\traits\UtilityTrait;
-
 	public $gridForbiddenColumn = [];
 
-	public $download_search;
+	public $downloadFileId;
 
 	/**
 	 * @return string the associated database table name
@@ -52,7 +50,7 @@ class ArticleDownloadHistory extends \app\components\ActiveRecord
 			[['download_id'], 'integer'],
 			[['download_date'], 'safe'],
 			[['download_ip'], 'string', 'max' => 20],
-			[['download_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArticleDownloads::className(), 'targetAttribute' => ['download_id' => 'download_id']],
+			[['download_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArticleDownloads::className(), 'targetAttribute' => ['download_id' => 'id']],
 		];
 	}
 
@@ -66,7 +64,7 @@ class ArticleDownloadHistory extends \app\components\ActiveRecord
 			'download_id' => Yii::t('app', 'Download'),
 			'download_date' => Yii::t('app', 'Download Date'),
 			'download_ip' => Yii::t('app', 'Download Ip'),
-			'download_search' => Yii::t('app', 'Download'),
+			'downloadFileId' => Yii::t('app', 'Download'),
 		];
 	}
 
@@ -75,9 +73,18 @@ class ArticleDownloadHistory extends \app\components\ActiveRecord
 	 */
 	public function getDownload()
 	{
-		return $this->hasOne(ArticleDownloads::className(), ['download_id' => 'download_id']);
+		return $this->hasOne(ArticleDownloads::className(), ['id' => 'download_id']);
 	}
-	
+
+	/**
+	 * {@inheritdoc}
+	 * @return \ommu\article\models\query\ArticleDownloadHistory the active query used by this AR class.
+	 */
+	public static function find()
+	{
+		return new \ommu\article\models\query\ArticleDownloadHistory(get_called_class());
+	}
+
 	/**
 	 * Set default columns to display
 	 */
@@ -91,10 +98,11 @@ class ArticleDownloadHistory extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 		];
 		if(!Yii::$app->request->get('download')) {
-			$this->templateColumns['download_search'] = [
-				'attribute' => 'download_search',
+			$this->templateColumns['downloadFileId'] = [
+				'attribute' => 'downloadFileId',
 				'value' => function($model, $key, $index, $column) {
-					return $model->download->download_id;
+					return isset($model->download) ? $model->download->file->file_filename : '-';
+					// return $model->downloadFileId;
 				},
 			];
 		}
@@ -105,7 +113,12 @@ class ArticleDownloadHistory extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'download_date'),
 		];
-		$this->templateColumns['download_ip'] = 'download_ip';
+		$this->templateColumns['download_ip'] = [
+			'attribute' => 'download_ip',
+			'value' => function($model, $key, $index, $column) {
+				return $model->download_ip;
+			},
+		];
 	}
 
 	/**
@@ -126,4 +139,13 @@ class ArticleDownloadHistory extends \app\components\ActiveRecord
 		}
 	}
 
+	/**
+	 * after find attributes
+	 */
+	public function afterFind()
+	{
+		parent::afterFind();
+
+		// $this->downloadFileId = isset($this->download) ? $this->download->file->file_filename : '-';
+	}
 }

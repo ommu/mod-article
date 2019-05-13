@@ -29,7 +29,7 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 	{
 		return [
 			[['id', 'publish', 'like_id'], 'integer'],
-			[['likes_date', 'likes_ip', 'like_search'], 'safe'],
+			[['likes_date', 'likes_ip', 'likeArticleId'], 'safe'],
 		];
 	}
 
@@ -77,7 +77,7 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
-		$attributes['like_search'] = [
+		$attributes['likeArticleId'] = [
 			'asc' => ['like.like_id' => SORT_ASC],
 			'desc' => ['like.like_id' => SORT_DESC],
 		];
@@ -111,7 +111,7 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 		}
 
 		$query->andFilterWhere(['like', 't.likes_ip', $this->likes_ip])
-			->andFilterWhere(['like', 'like.like_id', $this->like_search]);
+			->andFilterWhere(['like', 'like.like_id', $this->likeArticleId]);
 
 		return $dataProvider;
 	}
