@@ -55,6 +55,10 @@ $attributes = [
 		'format' => 'html',
 	],
 	[
+		'attribute' => 'tag',
+		'value' => $model->tag ? $model->tag : '-',
+	],
+	[
 		'attribute' => 'published_date',
 		'value' => Yii::$app->formatter->asDatetime($model->published_date, 'medium'),
 	],

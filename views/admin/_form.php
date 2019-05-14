@@ -55,10 +55,11 @@ echo $form->field($model, 'cat_id')
 	->widget(Redactor::className(), ['clientOptions' => $redactorOptions])
 	->label($model->getAttributeLabel('body')); ?>
 
-<?php $creatorSuggestUrl = Url::to(['setting/creator/suggest']);
+<?php $tagSuggestUrl = Url::to(['/admin/tag/suggest']);
 echo $form->field($model, 'tag')
 	->widget(Selectize::className(), [
-		'url' => $creatorSuggestUrl,
+		'url' => $tagSuggestUrl,
+		'queryParam' => 'term',
 		'pluginOptions' => [
 			'valueField' => 'label',
 			'labelField' => 'label',
