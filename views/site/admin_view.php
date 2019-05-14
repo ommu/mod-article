@@ -47,7 +47,7 @@ $this->params['menu']['content'] = [
 		<div class="x_content">
 			<?php
 $attributes = [
-	'article_id',
+	'id',
 	[
 		'attribute' => 'publish',
 		'value' => $model->publish == 1 ? Yii::t('app', 'Yes') : Yii::t('app', 'No'),
@@ -69,10 +69,6 @@ $attributes = [
 	[
 		'attribute' => 'headline',
 		'value' => $model->headline == 1 ? Yii::t('app', 'Yes') : Yii::t('app', 'No'),
-	],
-	[
-		'attribute' => 'comment_code',
-		'value' => $model->comment_code == 1 ? Yii::t('app', 'Yes') : Yii::t('app', 'No'),
 	],
 	[
 		'attribute' => 'creation_date',
@@ -127,7 +123,7 @@ echo DetailView::widget([
 				'dataProvider' => $dataProvider2,
 				'itemOptions' => ['class' => 'item'],
 				'itemView' => function ($model, $key, $index, $widget) {
-					return Html::a(Html::encode($model->title), ['view', 'id'=>$model->article_id]);
+					return Html::a(Html::encode($model->title), ['view', 'id'=>$model->id]);
 				},
 			]); ?>	
 		</div>

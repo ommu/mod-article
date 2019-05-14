@@ -23,10 +23,11 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 09:33 WIB
+ * @modified date 13 May 2019, 21:24 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
- 
+
 namespace ommu\article\controllers;
 
 use Yii;
@@ -34,12 +35,7 @@ use yii\filters\VerbFilter;
 use app\components\Controller;
 use mdm\admin\components\AccessControl;
 use ommu\article\models\Articles;
-use ommu\article\models\ArticleMedia;
-use ommu\article\models\ArticleFile;
 use ommu\article\models\search\Articles as ArticlesSearch;
-use ommu\article\models\search\ArticleMedia as ArticleMediaSearch;
-use ommu\article\models\search\ArticleFile as ArticleFileSearch;
-use ommu\article\models\ArticleSetting;
 
 class AdminController extends Controller
 {
@@ -79,7 +75,7 @@ class AdminController extends Controller
 	{
 		$searchModel = new ArticlesSearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-		
+
 		$gridColumn = Yii::$app->request->get('GridColumn', null);
 		$cols = [];
 		if($gridColumn != null && count($gridColumn) > 0) {
@@ -90,6 +86,9 @@ class AdminController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
+		if(($category = Yii::$app->request->get('category')) != null)
+			$category = \ommu\article\models\ArticleCategory::findOne($category);
+
 		$this->view->title = Yii::t('app', 'Articles');
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -97,6 +96,7 @@ class AdminController extends Controller
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
+			'category' => $category,
 		]);
 	}
 
@@ -115,9 +115,9 @@ class AdminController extends Controller
 			// $model->load($postData);
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Articles success created.'));
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Article success created.'));
 				return $this->redirect(['manage']);
-				//return $this->redirect(['view', 'id'=>$model->article_id]);
+				//return $this->redirect(['view', 'id'=>$model->id]);
 
 			} else {
 				if(Yii::$app->request->isAjax)
@@ -125,7 +125,7 @@ class AdminController extends Controller
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Create Articles');
+		$this->view->title = Yii::t('app', 'Create Article');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
@@ -139,69 +139,29 @@ class AdminController extends Controller
 	 * @param integer $id
 	 * @return mixed
 	 */
-	public function actionUpdate($article)
+	public function actionUpdate($id)
 	{
-		//menampilkan data media
-		$searchModel = new ArticleMediaSearch();
-	
-		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-	
-		$gridColumn = Yii::$app->request->get('GridColumn', null);
-		$cols = [];
-		if($gridColumn != null && count($gridColumn) > 0) {
-			foreach($gridColumn as $key => $val) {
-				if($gridColumn[$key] == 1)
-					$cols[] = $key;
-			}
-		}
-		$columns = $searchModel->getGridColumn($cols);
-
-		//menampilkan data file
-		$searchModel1 = new ArticleFileSearch();
-		$dataProvider1 = $searchModel1->search(Yii::$app->request->queryParams);
-
-		$gridColumn1 = Yii::$app->request->get('GridColumn1', null);
-		$cols1 = [];
-		if($gridColumn1 != null && count($gridColumn1) > 0) {
-			foreach($gridColumn1 as $key => $val) {
-				if($gridColumn1[$key] == 1)
-					$cols1[] = $key;
-			}
-		}
-		$columns1 = $searchModel1->getGridColumn($cols1);
-		
-		//menampilkan data update article
-		$headline = Articles::find()->where(['publish'=>1,'headline'=>1])->all();
-		$headline1 = Articles::find()->where(['publish'=>1,'headline'=>1])->orderBy(['headline_date'=> SORT_ASC])->limit(1)->one();
-		$count=count($headline);
-		$model = $this->findModel($article);
+		$model = $this->findModel($id);
 		if(Yii::$app->request->isPost) {
-			//if ($model->load(Yii::$app->request->post())&&$model->save() ) {
-			if ($model->load(Yii::$app->request->post())) {	
-				if ($count>=$this->getSetting()){
-					$headline1->headline=0;
-					$headline1->save();	
-				}
-				$headline1->save();	
-				$model->save();
-				//return $this->redirect(['view', 'id' => $model->article_id]);
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Articles success updated.'));
+			$model->load(Yii::$app->request->post());
+			// $postData = Yii::$app->request->post();
+			// $model->load($postData);
+
+			if($model->save()) {
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Article success updated.'));
 				return $this->redirect(['manage']);
 
+			} else {
+				if(Yii::$app->request->isAjax)
+					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Update Articles: {title}', ['title' => $model->title]);
+		$this->view->title = Yii::t('app', 'Update Article: {title}', ['title' => $model->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
 			'model' => $model,
-			'searchModel' => $searchModel,
-			'dataProvider' => $dataProvider,
-			'columns' => $columns,
-			'searchModel1' => $searchModel1,
-			'dataProvider1' => $dataProvider1,
-			'columns1' => $columns1,
 		]);
 	}
 
@@ -214,10 +174,10 @@ class AdminController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'View Articles: {title}', ['title' => $model->title]);
+		$this->view->title = Yii::t('app', 'Detail Article: {title}', ['title' => $model->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_view', [
+		return $this->oRender('admin_view', [
 			'model' => $model,
 		]);
 	}
@@ -234,8 +194,7 @@ class AdminController extends Controller
 		$model->publish = 2;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			//return $this->redirect(['view', 'id' => $model->article_id]);
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Articles success deleted.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Article success deleted.'));
 			return $this->redirect(['manage']);
 		}
 	}
@@ -253,52 +212,37 @@ class AdminController extends Controller
 		$model->publish = $replace;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Articles success updated.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Article success updated.'));
 			return $this->redirect(['manage']);
 		}
 	}
 
-	//fungsi untuk mengambil setting headline limit
-	public static function getSetting()
-	{
-		$setting = ArticleSetting::find()->limit(1)->one();
-		return $setting->headline_limit;
-	}
-
 	/**
-	 * Headline an existing Articles model.
+	 * actionHeadline an existing Articles model.
 	 * If headline is successful, the browser will be redirected to the 'index' page.
 	 * @param integer $id
 	 * @return mixed
 	 */
-
-	
 	public function actionHeadline($id)
 	{
+		$setting = ArticleSetting::find()
+			->select(['headline_category'])
+			->where(['id' => 1])
+			->one();
+
 		$model = $this->findModel($id);
-		$headline = Articles::find()->where(['publish'=>1,'headline'=>1])->all();
-		$headline1 = Articles::find()->where(['publish'=>1,'headline'=>1])->orderBy(['headline_date'=> SORT_ASC])->limit(1)->one();
-		$count=count($headline);
-		
-		if ($count>=$this->getSetting())
-		{
-			$headline1->headline=0;
-			$headline1->save();
-			$model->headline = 1;	
-		}
-		else 
-		{
-			$model->headline = 1;
-			
-		}
-		$model->publish = 1;
-		if ($model->save(false, ['publish', 'headline'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Articles success updated.'));
+
+		if(!in_array($model->cat_id, $setting->headline_category))
+			throw new \yii\web\NotAcceptableHttpException(Yii::t('app', 'The requested page does not exist.'));
+
+		$model->headline = 1;
+		$model->publish  = 1;
+
+		if($model->save(false, ['publish','headline','modified_id'])) {
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Article success updated.'));
 			return $this->redirect(['manage']);
 		}
 	}
-
-	
 
 	/**
 	 * Finds the Articles model based on its primary key value.

@@ -53,10 +53,6 @@ $redactorOptions = [
 	->widget(DatePicker::classname(), ['dateFormat' => Yii::$app->formatter->dateFormat, 'options' => ['class' => 'form-control']])
 	->label($model->getAttributeLabel('published_date')); ?>
 
-<?php echo $form->field($model, 'comment_code')
-	->checkbox()
-	->label($model->getAttributeLabel('comment_code')); ?>
-
 <?php echo $form->field($model, 'publish')
 	->checkbox()
 	->label($model->getAttributeLabel('publish')); ?>

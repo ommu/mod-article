@@ -26,7 +26,6 @@ use yii\widgets\ActiveForm;
 			'data-pjax' => 1
 		],
 	]); ?>
-		<?= $form->field($model, 'article_id') ?>
 
 		<?= $form->field($model, 'publish') ?>
 
@@ -39,8 +38,6 @@ use yii\widgets\ActiveForm;
 		<?= $form->field($model, 'published_date') ?>
 
 		<?= $form->field($model, 'headline') ?>
-
-		<?= $form->field($model, 'comment_code') ?>
 
 		<?= $form->field($model, 'creation_date') ?>
 

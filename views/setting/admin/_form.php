@@ -64,7 +64,7 @@ echo $form->field($model, 'headline')
 	->textInput(['type'=>'number'])
 	->label($model->getAttributeLabel('headline_limit')); ?>
 
-<?php $category = ArticleCategory::getCategory(1);
+<?php $category = ArticleCategory::getCategory();
 echo $form->field($model, 'headline_category')
 	->checkboxList($category)
 	->label($model->getAttributeLabel('headline_category')); ?>

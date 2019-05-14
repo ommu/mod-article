@@ -8,6 +8,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 09:33 WIB
+ * @modified date 13 May 2019, 21:24 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -18,7 +19,6 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use ommu\article\models\Articles as ArticlesModel;
-//use ommu\article\models\ArticleCategory;
 
 class Articles extends ArticlesModel
 {
@@ -28,8 +28,8 @@ class Articles extends ArticlesModel
 	public function rules()
 	{
 		return [
-			[['article_id', 'publish', 'cat_id', 'headline', 'comment_code', 'creation_id', 'modified_id'], 'integer'],
-			[['title', 'body', 'published_date', 'creation_date', 'modified_date', 'updated_date', 'headline_date', 'categoryName', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
+			[['id', 'publish', 'cat_id', 'headline', 'creation_id', 'modified_id'], 'integer'],
+			[['title', 'body', 'published_date', 'headline_date', 'creation_date', 'modified_date', 'updated_date', 'categoryName', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
 
@@ -65,7 +65,11 @@ class Articles extends ArticlesModel
 			$query = ArticlesModel::find()->alias('t');
 		else
 			$query = ArticlesModel::find()->alias('t')->select($column);
-		$query->joinWith(['category category', 'creation creation', 'modified modified','view view','category.title category_title']);
+		$query->joinWith([
+			'category.title category', 
+			'creation creation', 
+			'modified modified'
+		]);
 
 		// add conditions that should always apply here
 		$dataParams = [
@@ -77,45 +81,45 @@ class Articles extends ArticlesModel
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
+		$attributes['cat_id'] = [
+			'asc' => ['category.message' => SORT_ASC],
+			'desc' => ['category.message' => SORT_DESC],
+		];
 		$attributes['categoryName'] = [
-			'asc' => ['category.name' => SORT_ASC],
-			'desc' => ['category.name' => SORT_DESC],
+			'asc' => ['category.message' => SORT_ASC],
+			'desc' => ['category.message' => SORT_DESC],
 		];
 		$attributes['creationDisplayname'] = [
 			'asc' => ['creation.displayname' => SORT_ASC],
 			'desc' => ['creation.displayname' => SORT_DESC],
 		];
-		$attributes['cat_id'] = [
-			'asc' => ['category_title.message' => SORT_ASC],
-			'desc' => ['category_title.message' => SORT_DESC],
-		];
-		$attributes['media_search'] = [
-			'asc' => ['view.medias' => SORT_ASC],
-			'desc' => ['view.medias' => SORT_DESC],
-		];
-		$attributes['file_search'] = [
-			'asc' => ['view.files' => SORT_ASC],
-			'desc' => ['view.files' => SORT_DESC],
-		];
-		$attributes['tag_search'] = [
-			'asc' => ['view.tags' => SORT_ASC],
-			'desc' => ['view.tags' => SORT_DESC],
-		];
-		$attributes['view_search'] = [
-			'asc' => ['view.views' => SORT_ASC],
-			'desc' => ['view.views' => SORT_DESC],
-		];
-		$attributes['like_search'] = [
-			'asc' => ['view.likes' => SORT_ASC],
-			'desc' => ['view.likes' => SORT_DESC],
-		];
 		$attributes['modifiedDisplayname'] = [
 			'asc' => ['modified.displayname' => SORT_ASC],
 			'desc' => ['modified.displayname' => SORT_DESC],
 		];
+		// $attributes['media_search'] = [
+		// 	'asc' => ['view.medias' => SORT_ASC],
+		// 	'desc' => ['view.medias' => SORT_DESC],
+		// ];
+		// $attributes['file_search'] = [
+		// 	'asc' => ['view.files' => SORT_ASC],
+		// 	'desc' => ['view.files' => SORT_DESC],
+		// ];
+		// $attributes['tag_search'] = [
+		// 	'asc' => ['view.tags' => SORT_ASC],
+		// 	'desc' => ['view.tags' => SORT_DESC],
+		// ];
+		// $attributes['view_search'] = [
+		// 	'asc' => ['view.views' => SORT_ASC],
+		// 	'desc' => ['view.views' => SORT_DESC],
+		// ];
+		// $attributes['like_search'] = [
+		// 	'asc' => ['view.likes' => SORT_ASC],
+		// 	'desc' => ['view.likes' => SORT_DESC],
+		// ];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
-			'defaultOrder' => ['article_id' => SORT_DESC],
+			'defaultOrder' => ['id' => SORT_DESC],
 		]);
 
 		$this->load($params);
@@ -128,17 +132,16 @@ class Articles extends ArticlesModel
 
 		// grid filtering conditions
 		$query->andFilterWhere([
-			't.article_id' => isset($params['id']) ? $params['id'] : $this->article_id,
+			't.id' => $this->id,
 			't.cat_id' => isset($params['category']) ? $params['category'] : $this->cat_id,
 			'cast(t.published_date as date)' => $this->published_date,
 			't.headline' => $this->headline,
-			't.comment_code' => $this->comment_code,
+			'cast(t.headline_date as date)' => $this->headline_date,
 			'cast(t.creation_date as date)' => $this->creation_date,
 			't.creation_id' => isset($params['creation']) ? $params['creation'] : $this->creation_id,
 			'cast(t.modified_date as date)' => $this->modified_date,
 			't.modified_id' => isset($params['modified']) ? $params['modified'] : $this->modified_id,
 			'cast(t.updated_date as date)' => $this->updated_date,
-			'cast(t.headline_date as date)' => $this->headline_date,
 		]);
 
 		if(isset($params['trash']))
@@ -152,7 +155,7 @@ class Articles extends ArticlesModel
 
 		$query->andFilterWhere(['like', 't.title', $this->title])
 			->andFilterWhere(['like', 't.body', $this->body])
-			->andFilterWhere(['like', 'category.name', $this->categoryName])
+			->andFilterWhere(['like', 'category.message', $this->categoryName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
 			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname]);
 

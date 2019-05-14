@@ -54,7 +54,7 @@ class ArticleTag extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['article_id', 'tagBody'], 'required'],
+			[['article_id', 'tag_id'], 'required'],
 			[['article_id', 'tag_id', 'creation_id'], 'integer'],
 			[['tagBody'], 'string'],
 			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'id']],
@@ -198,34 +198,6 @@ class ArticleTag extends \app\components\ActiveRecord
 			if($this->isNewRecord) {
 				if($this->creation_id == null)
 					$this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * before save attributes
-	 */
-	public function beforeSave($insert)
-	{
-		if(parent::beforeSave($insert)) {
-			if($insert) {
-				$tagBody = Inflector::slug($this->tagBody);
-				if($this->tag_id == 0) {
-					$tag = CoreTags::find()
-						->select(['tag_id'])
-						->andWhere(['body' => $tagBody])
-						->one();
-						
-					if($tag != null)
-						$this->tag_id = $tag->tag_id;
-					else {
-						$data = new CoreTags();
-						$data->body = $this->tagBody;
-						if($data->save())
-							$this->tag_id = $data->tag_id;
-					}
-				}
 			}
 		}
 		return true;

@@ -44,26 +44,25 @@ use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use ommu\users\models\Users;
-use app\models\SourceMessage;
-use app\models\CoreTags;
 use ommu\article\models\view\Articles as ArticlesView;
+use yii\helpers\ArrayHelper;
+use yii\base\Event;
 
 class Articles extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['comment_code','creation_id', 'modified_id','creationDisplayname','creation_date','modifiedDisplayname','modified_date','headline_date','updated_date','body'];
+	public $gridForbiddenColumn = ['body', 'headline_date', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date', 'files', 'likes', 'media', 'tags', 'views'];
 
 	public $categoryName;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
-	public $file_search;
-	public $media_search;
-	public $view_search;
-	public $like_search;
-	public $tag_id;
-	public $tag_id_i;
-	public $tag_2;
+	public $tag;
+	public $file;
+	public $image;
+
+	const EVENT_BEFORE_SAVE_ARTICLE = 'BeforeSaveArticle';
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -78,10 +77,10 @@ class Articles extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['cat_id', 'title', 'body', 'published_date'], 'required'],
-			[['publish', 'cat_id', 'headline', 'comment_code', 'creation_id', 'modified_id'], 'integer'],
+			[['cat_id', 'title', 'body'], 'required'],
+			[['publish', 'cat_id', 'headline', 'creation_id', 'modified_id'], 'integer'],
 			[['body'], 'string'],
-			[['published_date','tags', 'headline_date','tag_2'], 'safe'],
+			[['published_date', 'tag'], 'safe'],
 			[['title'], 'string', 'max' => 128],
 			[['cat_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArticleCategory::className(), 'targetAttribute' => ['cat_id' => 'id']],
 		];
@@ -111,40 +110,23 @@ class Articles extends \app\components\ActiveRecord
 			'media' => Yii::t('app', 'Media'),
 			'tags' => Yii::t('app', 'Tags'),
 			'views' => Yii::t('app', 'Views'),
-			'tag_id_i' => Yii::t('app', 'Tags'),
 			'categoryName' => Yii::t('app', 'Category'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
+			'tag' => Yii::t('app', 'Tag(s)'),
+			'file' => Yii::t('app', 'File'),
+			'image' => Yii::t('app', 'Image'),
 		];
 	}
 
-	public static function getSetting()
-	{
-		$setting = ArticleSetting::find()->limit(1)->one();
-		return $setting->headline_limit;
-	}
-
-
-	public function getTitle()
-	{
-		return $this->hasOne(SourceMessage::className(), ['id' => 'tag_id']);
-	}
-
-	public function getTag()
-	{
-		return $this->hasOne(CoreTags::className(), ['tag_id' => 'tag_id']);
-	}
-
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
 	public function getView()
 	{
 		return $this->hasOne(ArticlesView::className(), ['article_id' => 'article_id']);
 	}
 
-	public function getArticle()
-	{
-		$article = Articles::find()->one();
-		return $article;
-	}
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
@@ -214,10 +196,13 @@ class Articles extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTags($count=false)
+	public function getTags($type='relation')
 	{
-		if($count == false)
+		if($type == 'relation')
 			return $this->hasMany(ArticleTag::className(), ['article_id' => 'id']);
+
+		if($type == 'array')
+			return \yii\helpers\ArrayHelper::map($this->tags, 'tag_id', 'tag.body');
 
 		$model = ArticleTag::find()
 			->where(['article_id' => $this->id]);
@@ -402,7 +387,7 @@ class Articles extends \app\components\ActiveRecord
 		$this->templateColumns['tags'] = [
 			'attribute' => 'tags',
 			'value' => function($model, $key, $index, $column) {
-				$tags = $model->getTags(true);
+				$tags = $model->getTags('count');
 				return Html::a($tags, ['o/tag/manage', 'article'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} tags', ['count'=>$tags])]);
 			},
 			'filter' => false,
@@ -419,16 +404,18 @@ class Articles extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 			'format' => 'html',
 		];
-		$this->templateColumns['headline'] = [
-			'attribute' => 'headline',
-			'value' => function($model, $key, $index, $column) {
-				$url = Url::to(['headline', 'id'=>$model->primaryKey]);
-				return $this->quickAction($url, $model->headline, 'Headline,Unheadline', true);
-			},
-			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'center'],
-			'format' => 'raw',
-		];
+		if(ArticleSetting::getInfo('headline')) {
+			$this->templateColumns['headline'] = [
+				'attribute' => 'headline',
+				'value' => function($model, $key, $index, $column) {
+					$url = Url::to(['headline', 'id'=>$model->primaryKey]);
+					return $this->quickAction($url, $model->headline, 'Headline,Unheadline', true);
+				},
+				'filter' => $this->filterYesNo(),
+				'contentOptions' => ['class'=>'center'],
+				'format' => 'raw',
+			];
+		}
 		if(!Yii::$app->request->get('trash')) {
 			$this->templateColumns['publish'] = [
 				'attribute' => 'publish',
@@ -462,15 +449,52 @@ class Articles extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * function getHeadlines
+	 */
+	public function getHeadlines()
+	{
+		$setting = ArticleSetting::find()
+			->select(['headline_limit', 'headline_category'])
+			->where(['id' => 1])
+			->one();
+
+		$headlineCategory = $setting->headline_category;
+		if(empty($headlineCategory))
+			$headlineCategory = [];
+
+		$model = self::find()
+			->select(['id'])
+			->where(['publish' => 1])
+			->andWhere(['IN', 'cat_id', $headlineCategory])
+			->andWhere(['headline' => 1])
+			->orderBy(['headline_date' => SORT_DESC])
+			->all();
+		
+		$headline = [];
+		if(!empty($model)) {
+			$i=0;
+			foreach($model as $val) {
+				$i++;
+				if($i <= $setting->headline_limit)
+					$headline[$i] = $val->id;
+			}
+		}
+		
+		return $headline;
+	}
+
+	/**
 	 * after find attributes
 	 */
 	public function afterFind()
 	{
 		parent::afterFind();
 
+		$this->published_date = Yii::$app->formatter->asDate($this->published_date, 'php:Y-m-d');
 		// $this->categoryName = isset($this->category) ? $this->category->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
+		$this->tag = implode(',', $this->getTags('array'));
 	}
 
 	/**
@@ -495,23 +519,16 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function beforeSave($insert)
 	{
-		//fungsi mengganti headline on create
-		$headline = Articles::find()->where(['publish'=>1,'headline'=>1])->all();
-		$count=count($headline);
-		$headline1 = Articles::find()->where(['publish'=>1,'headline'=>1])->orderBy(['headline_date'=> SORT_ASC])->limit(1)->one();
-	
 		if(parent::beforeSave($insert)) {
-
-			if ($this->isNewRecord){
-				if (!empty($headline1)) {
-					if ($count>=$this->getSetting()){
-						$headline1->headline=0;
-						$headline1->save();	
-					}
-				}
+			$this->published_date = Yii::$app->formatter->asDate($this->published_date, 'php:Y-m-d');
+		
+			if(!$insert) {
+				// set tags
+				$event = new Event(['sender' => $this]);
+				Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARTICLE, $event);
 			}
 		}
-			return true;
+		return true;
 	}
 		
 
@@ -520,37 +537,23 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function afterSave($insert, $changedAttributes)
 	{
-		$action = strtolower(Yii::$app->controller->action->id);
+		$setting = ArticleSetting::find()
+			->select(['headline', 'headline_limit'])
+			->where(['id' => 1])
+			->one();
+
 		parent::afterSave($insert, $changedAttributes);
-		{
-			//menyimpan tag di table coretags dan article tag
-			if($action == 'create'&&$this->tag_2) 
-			{
-				$arrayTag = explode(',', $this->tag_2);
-				if (count($arrayTag)>0){
-					foreach ($arrayTag as $value) {
-							$tag_id = new CoreTags();
-							$tag_id->body = trim($value);
 
-							if($tag_id->save(false))
-							{
-								$model = new ArticleTag();
-								
-									$model->article_id = $this->article_id;
-									$model->tag_id = $tag_id->tag_id;
-									if (!$model->save()){
-										file_put_contents('assets/cekerror.txt', print_r($model->getErrors(),true));
-									}
-								
-							}
-						}
-				}
-
-				
-			} 
-			
-
+		// Reset headline
+		if($setting->headline && array_key_exists('headline', $changedAttributes) && ($changedAttributes['headline'] != $this->headline) && (count($this->headlines) == $setting->headline_limit) && $this->headline == 1)
+			self::updateAll(['headline' => 0], ['NOT IN', 'id', $this->headlines]);
+		
+		if($insert) {
+			// set tags
+			$event = new Event(['sender' => $this]);
+			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARTICLE, $event);
 		}
+
 		return true;
 	}
 }
