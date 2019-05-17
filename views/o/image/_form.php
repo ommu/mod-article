@@ -2,7 +2,7 @@
 /**
  * Article Media (article-media)
  * @var $this app\components\View
- * @var $this ommu\article\controllers\o\MediaController
+ * @var $this ommu\article\controllers\o\ImageController
  * @var $model ommu\article\models\ArticleMedia
  * @var $form app\components\widgets\ActiveForm
  *
@@ -20,7 +20,6 @@ use app\components\widgets\ActiveForm;
 use yii\redactor\widgets\Redactor;
 use yii\helpers\ArrayHelper;
 use ommu\article\models\Articles;
-use ommu\article\models\ArticleMedia;
 
 $redactorOptions = [
 	'imageManagerJson' => ['/redactor/upload/image-json'],
@@ -77,7 +76,7 @@ $redactorOptions = [
 	<div class="col-md-9 col-sm-9 col-xs-12">
 		<?php if (!$model->isNewRecord) {
 			if($model->old_media_filename != '')
-				echo Html::img(join('/', [Url::Base(), ArticleMedia::getUploadPath(false), $model->old_media_filename]), ['class'=>'mb-15', 'width'=>'100%']);
+				echo Html::img(join('/', [Url::Base(), Articles::getUploadPath(false), $model->old_media_filename]), ['class'=>'mb-15', 'width'=>'100%']);
 		} ?>
 
 		<?php echo $form->field($model, 'media_filename', ['template' => '{input}{error}'])

@@ -35,7 +35,7 @@ use mdm\admin\components\AccessControl;
 use yii\helpers\Url;
 use ommu\article\models\ArticleFiles;
 use ommu\article\models\ArticleDownloads;
-use ommu\article\models\search\ArticleFile;
+use ommu\article\models\search\ArticleFiles as ArticleFilesSearch;
 use yii\web\UploadedFile;
 
 class FileController extends Controller
@@ -73,7 +73,7 @@ class FileController extends Controller
 	 */
 	public function actionManage()
 	{
-		$searchModel = new ArticleFile();
+		$searchModel = new ArticleFilesSearch();
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		$gridColumn = Yii::$app->request->get('GridColumn', null);
@@ -193,7 +193,7 @@ class FileController extends Controller
 			if (Yii::$app->request->get('article')) {
 					return Yii::$app->controller->redirect(Url::to(['index', 'article' => Yii::$app->request->get('article')]));
 				}
-			//return $this->redirect(['view', 'id' => $model->file_id]);
+			//return $this->redirect(['view', 'id' => $model->id]);
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article Files success deleted.'));
 			
 			

@@ -20,12 +20,6 @@ use yii\widgets\DetailView;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Articles'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->title;
-
-$this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
-	['label' => Yii::t('app', 'Update'), 'url' => Url::to(['update', 'id'=>$model->id]), 'icon' => 'pencil', 'htmlOptions' => ['class'=>'btn btn-primary']],
-	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
-];
 ?>
 
 <div class="articles-view">
@@ -60,7 +54,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'published_date',
-		'value' => Yii::$app->formatter->asDatetime($model->published_date, 'medium'),
+		'value' => Yii::$app->formatter->asDate($model->published_date, 'medium'),
 	],
 	[
 		'attribute' => 'headline',
@@ -110,7 +104,7 @@ $attributes = [
 	[
 		'attribute' => 'media',
 		'value' => function ($model) {
-			$media = $model->getMedia(true);
+			$media = $model->getMedias('count');
 			return Html::a($media, ['o/media/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} media', ['count'=>$media])]);
 		},
 		'format' => 'html',

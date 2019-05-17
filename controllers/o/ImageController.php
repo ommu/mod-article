@@ -1,10 +1,10 @@
 <?php
 /**
- * MediaController
- * @var $this ommu\article\controllers\o\MediaController
+ * ImageController
+ * @var $this ommu\article\controllers\o\ImageController
  * @var $model ommu\article\models\ArticleMedia
  *
- * MediaController implements the CRUD actions for ArticleMedia model.
+ * ImageController implements the CRUD actions for ArticleMedia model.
  * Reference start
  * TOC :
  *	Index
@@ -37,7 +37,7 @@ use ommu\article\models\ArticleMedia;
 use ommu\article\models\search\ArticleMedia as ArticleMediaSearch;
 use yii\web\UploadedFile;
 
-class MediaController extends Controller
+class ImageController extends Controller
 {
 	/**
 	 * {@inheritdoc}
@@ -55,6 +55,16 @@ class MediaController extends Controller
 					'publish' => ['POST'],
 				],
 			],
+		];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function actions()
+	{
+		return [
+			'upload' => 'devgroup\dropzone\UploadAction',
 		];
 	}
 
@@ -189,7 +199,7 @@ class MediaController extends Controller
 		$model->publish = 2;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			//return $this->redirect(['view', 'id' => $model->media_id]);
+			//return $this->redirect(['view', 'id' => $model->id]);
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article Media success deleted.'));
 			return $this->redirect(['manage']);
 			//return $this->redirect( Url::to(['index', 'article' => Yii::$app->request->get('article')]));

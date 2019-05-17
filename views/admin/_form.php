@@ -20,7 +20,9 @@ use yii\helpers\Url;
 use app\components\widgets\ActiveForm;
 use yii\redactor\widgets\Redactor;
 use ommu\article\models\ArticleCategory;
+use ommu\article\models\Articles;
 use ommu\selectize\Selectize;
+use devgroup\dropzone\DropZone;
 
 $redactorOptions = [
 	'imageManagerJson' => ['/redactor/upload/image-json'],
@@ -50,10 +52,27 @@ echo $form->field($model, 'cat_id')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('title')); ?>
 
+<?php $uploadPath = join('/', [Articles::getUploadPath(false), $model->id]);
+if($model->isNewRecord || (!$model->isNewRecord && $model->category->single_photo || $setting->media_image_limit == 1)) {
+	$cover = !$model->isNewRecord && $model->cover ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->cover])), ['class'=>'mb-3', 'width'=>'100%']) : '';
+	echo $form->field($model, 'image', ['template' => '{label}{beginWrapper}<div>'.$cover.'</div>{input}{error}{hint}{endWrapper}'])
+		->fileInput()
+		->label($model->getAttributeLabel('image'))
+		->hint(Yii::t('app', 'extensions are allowed: {extensions}', ['extensions'=>$setting->media_image_type]));
+} ?>
+
 <?php echo $form->field($model, 'body')
 	->textarea(['rows'=>6, 'cols'=>50])
 	->widget(Redactor::className(), ['clientOptions' => $redactorOptions])
 	->label($model->getAttributeLabel('body')); ?>
+
+<?php if($model->isNewRecord || (!$model->isNewRecord && $model->category->single_file || $setting->media_file_limit == 1)) {
+$file = !$model->isNewRecord && $model->document ? Html::a($model->document, Url::to(join('/', ['@webpublic', $uploadPath, $model->document])), ['class'=>'d-inline-block mb-3']) : '';
+echo $form->field($model, 'file', ['template' => '{label}{beginWrapper}<div>'.$file.'</div>{input}{error}{hint}{endWrapper}'])
+	->fileInput()
+	->label($model->getAttributeLabel('file'))
+	->hint(Yii::t('app', 'extensions are allowed: {extensions}', ['extensions'=>$setting->media_file_type]));
+} ?>
 
 <?php $tagSuggestUrl = Url::to(['/admin/tag/suggest']);
 echo $form->field($model, 'tag')
@@ -71,13 +90,19 @@ echo $form->field($model, 'tag')
 	])
 	->label($model->getAttributeLabel('tag')); ?>
 
-<?php echo $form->field($model, 'published_date')
+<div class="ln_solid"></div>
+
+<?php if($model->isNewRecord && !$model->getErrors())
+	$model->published_date = Yii::$app->formatter->asDate('now', 'php:Y-m-d');
+echo $form->field($model, 'published_date')
 	->textInput(['type' => 'date'])
 	->label($model->getAttributeLabel('published_date')); ?>
 
-<?php echo $form->field($model, 'headline')
+<?php if($setting->headline) {
+echo $form->field($model, 'headline')
 	->checkbox()
-	->label($model->getAttributeLabel('headline')); ?>
+	->label($model->getAttributeLabel('headline'));
+} ?>
 
 <?php echo $form->field($model, 'publish')
 	->checkbox()

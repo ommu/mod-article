@@ -20,7 +20,7 @@ use yii\helpers\Url;
 use app\components\grid\GridView;
 use yii\widgets\Pjax;
 use yii\widgets\DetailView;
-use ommu\article\models\ArticleFiles;
+use ommu\article\models\Articles;
 use ommu\users\models\Users;
 
 $this->params['breadcrumbs'][] = $this->title;
@@ -55,7 +55,7 @@ echo DetailView::widget([
 		[
 			'attribute' => 'file_filename',
 			'value' => function ($model) {
-				$uploadPath = ArticleFiles::getUploadPath(false);
+				$uploadPath = Articles::getUploadPath(false);
 				return $model->file_filename ? Html::img(join('/', [Url::Base(), $uploadPath, $model->file_filename]), ['width' => '100%']).'<br/><br/>'.$model->file_filename : '-';
 			},
 			'format' => 'html',

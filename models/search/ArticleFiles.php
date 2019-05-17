@@ -28,7 +28,7 @@ class ArticleFiles extends ArticleFilesModel
 	public function rules()
 	{
 		return [
-			[['file_id', 'publish', 'article_id', 'creation_id', 'modified_id'], 'integer'],
+			[['id', 'publish', 'article_id', 'creation_id', 'modified_id'], 'integer'],
 			[['file_filename', 'creation_date', 'modified_date', 'updated_date', 'articleTitle', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
@@ -91,7 +91,7 @@ class ArticleFiles extends ArticleFilesModel
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
-			'defaultOrder' => ['file_id' => SORT_DESC],
+			'defaultOrder' => ['id' => SORT_DESC],
 		]);
 
 		$this->load($params);
@@ -104,7 +104,7 @@ class ArticleFiles extends ArticleFilesModel
 
 		// grid filtering conditions
 		$query->andFilterWhere([
-			't.file_id' => isset($params['id']) ? $params['id'] : $this->file_id,
+			't.id' => isset($params['id']) ? $params['id'] : $this->id,
 			't.article_id' => isset($params['article']) ? $params['article'] : $this->article_id,
 			'cast(t.creation_date as date)' => $this->creation_date,
 			't.creation_id' => isset($params['creation']) ? $params['creation'] : $this->creation_id,

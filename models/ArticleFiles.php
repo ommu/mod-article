@@ -67,11 +67,10 @@ class ArticleFiles extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['file_filename'], 'required', 'on' => 'formCreate'],
+			[['article_id', ], 'required'],
 			[['publish', 'article_id', 'creation_id', 'modified_id'], 'integer'],
 			[['file_filename'], 'string'],
-			[['creation_date', 'modified_date', 'updated_date','file_filename_i','article_id'], 'safe'],
-			[['file_filename'], 'file', 'extensions' => 'pdf, doc, docx'],
+			[['file_filename'], 'safe'],
 			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'id']],
 		];
 	}
@@ -180,7 +179,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 		$this->templateColumns['file_filename'] = [
 			'attribute' => 'file_filename',
 			'value' => function($model, $key, $index, $column) {
-				$uploadPath = join('/', [self::getUploadPath(false), $model->id]);
+				$uploadPath = join('/', [Articles::getUploadPath(false), $model->id]);
 				return $model->file_filename ? Html::img(join('/', [Url::Base(), $uploadPath, $model->file_filename]), ['alt' => $model->file_filename]) : '-';
 			},
 			'format' => 'html',
@@ -267,15 +266,6 @@ class ArticleFiles extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * @param returnAlias set true jika ingin kembaliannya path alias atau false jika ingin string
-	 * relative path. default true.
-	 */
-	public static function getUploadPath($returnAlias=true)
-	{
-		return ($returnAlias ? Yii::getAlias('@public/article') : 'article');
-	}
-
-	/**
 	 * after find attributes
 	 */
 	public function afterFind()
@@ -330,11 +320,11 @@ class ArticleFiles extends \app\components\ActiveRecord
 	{
 		if(parent::beforeSave($insert)) {
 			if(!$insert) {
-				$uploadPath = join('/', [self::getUploadPath(), $this->article_id]);
-				$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
-				$this->createUploadDirectory(self::getUploadPath(), $this->article_id);
+				$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
+				$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
+				$this->createUploadDirectory(Articles::getUploadPath(), $this->article_id);
 
-				$this->file_filename = UploadedFile::getInstance($this, 'file_filename');
+				// $this->file_filename = UploadedFile::getInstance($this, 'file_filename');
 				if($this->file_filename instanceof UploadedFile && !$this->file_filename->getHasError()) {
 					$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->file_filename->getExtension()); 
 					if($this->file_filename->saveAs(join('/', [$uploadPath, $fileName]))) {
@@ -358,12 +348,12 @@ class ArticleFiles extends \app\components\ActiveRecord
 	{
 		parent::afterSave($insert, $changedAttributes);
 
-		$uploadPath = join('/', [self::getUploadPath(), $this->article_id]);
-		$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
-		$this->createUploadDirectory(self::getUploadPath(), $this->article_id);
+		$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
+		$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
+		$this->createUploadDirectory(Articles::getUploadPath(), $this->article_id);
 
 		if($insert) {
-			$this->file_filename = UploadedFile::getInstance($this, 'file_filename');
+			// $this->file_filename = UploadedFile::getInstance($this, 'file_filename');
 			if($this->file_filename instanceof UploadedFile && !$this->file_filename->getHasError()) {
 				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->file_filename->getExtension()); 
 				if($this->file_filename->saveAs(join('/', [$uploadPath, $fileName])))
@@ -379,8 +369,8 @@ class ArticleFiles extends \app\components\ActiveRecord
 	{
 		parent::afterDelete();
 
-		$uploadPath = join('/', [self::getUploadPath(), $this->article_id]);
-		$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+		$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
+		$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
 
 		if($this->file_filename != '' && file_exists(join('/', [$uploadPath, $this->file_filename])))
 			rename(join('/', [$uploadPath, $this->file_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_deleted_'.$this->file_filename]));

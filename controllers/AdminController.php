@@ -36,6 +36,8 @@ use app\components\Controller;
 use mdm\admin\components\AccessControl;
 use ommu\article\models\Articles;
 use ommu\article\models\search\Articles as ArticlesSearch;
+use ommu\article\models\ArticleSetting;
+use yii\web\UploadedFile;
 
 class AdminController extends Controller
 {
@@ -108,9 +110,13 @@ class AdminController extends Controller
 	public function actionCreate()
 	{
 		$model = new Articles();
+		$model->setAttributeLabels(['image'=>Yii::t('app', 'Cover')]);
+		$setting = $model->getSetting(['headline', 'media_image_type', 'media_file_type']);
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
+			$model->image = UploadedFile::getInstance($model, 'image');
+			$model->file = UploadedFile::getInstance($model, 'file');
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
 
@@ -130,6 +136,7 @@ class AdminController extends Controller
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
 			'model' => $model,
+			'setting' => $setting,
 		]);
 	}
 
@@ -142,10 +149,18 @@ class AdminController extends Controller
 	public function actionUpdate($id)
 	{
 		$model = $this->findModel($id);
+		if($model->category->single_photo)
+			$model->setAttributeLabels(['image'=>Yii::t('app', 'Cover')]);
+		$setting = $model->getSetting(['headline', 'media_image_limit', 'media_image_type', 'media_file_limit', 'media_file_type']);
+
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
+			if($model->category->single_photo || $setting->media_image_limit == 1)
+				$model->image = UploadedFile::getInstance($model, 'image');
+			if($model->category->single_file || $setting->media_file_limit == 1)
+				$model->file = UploadedFile::getInstance($model, 'file');
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article success updated.'));
@@ -157,11 +172,18 @@ class AdminController extends Controller
 			}
 		}
 
+		$this->subMenu = $this->module->params['article_submenu'];
+		if($model->category->single_photo)
+			unset($this->subMenu['photo']);
+		if($model->category->single_file)
+			unset($this->subMenu['document']);
+
 		$this->view->title = Yii::t('app', 'Update Article: {title}', ['title' => $model->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
 			'model' => $model,
+			'setting' => $setting,
 		]);
 	}
 
@@ -173,6 +195,12 @@ class AdminController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
+
+		$this->subMenu = $this->module->params['article_submenu'];
+		if($model->category->single_photo)
+			unset($this->subMenu['photo']);
+		if($model->category->single_file)
+			unset($this->subMenu['document']);
 
 		$this->view->title = Yii::t('app', 'Detail Article: {title}', ['title' => $model->title]);
 		$this->view->description = '';

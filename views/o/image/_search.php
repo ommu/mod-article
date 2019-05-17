@@ -2,7 +2,7 @@
 /**
  * Article Media (article-media)
  * @var $this app\components\View
- * @var $this ommu\article\controllers\o\MediaController
+ * @var $this ommu\article\controllers\o\ImageController
  * @var $model ommu\article\models\search\ArticleMedia
  * @var $form yii\widgets\ActiveForm
  *
@@ -26,7 +26,7 @@ use yii\widgets\ActiveForm;
 			'data-pjax' => 1
 		],
 	]); ?>
-		<?php echo $form->field($model, 'media_id'); ?>
+		<?php echo $form->field($model, 'id'); ?>
 
 		<?php echo $form->field($model, 'publish')
 			->dropDownList($model->filterYesNo(), ['prompt'=>'']);?>

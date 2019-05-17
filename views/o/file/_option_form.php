@@ -3,7 +3,7 @@
  * Article Files (article-files)
  * @var $this app\components\View
  * @var $this ommu\article\controllers\o\FileController
- * @var $model ommu\article\models\search\ArticleFile
+ * @var $model ommu\article\models\search\ArticleFiles
  * @var $form yii\widgets\ActiveForm
  *
  * @author Putra Sudaryanto <putra@sudaryanto.id>

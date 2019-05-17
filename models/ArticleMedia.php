@@ -68,12 +68,11 @@ class ArticleMedia extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['caption'], 'required'],
-			[['media_filename'], 'required', 'on' => 'formCreate'],
+			[['article_id'], 'required'],
 			[['publish', 'cover', 'orders', 'article_id', 'creation_id', 'modified_id'], 'integer'],
-			[['creation_date', 'modified_date', 'updated_date','media_filename','old_media_filename'], 'safe'],
+			[['media_filename', 'caption', 'description'], 'string'],
+			[['orders', 'media_filename', 'caption', 'description'], 'safe'],
 			[['caption'], 'string', 'max' => 150],
-			[['media_filename'], 'file', 'extensions' => 'jpeg, jpg, png, bmp, gif'],
 			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'id']],
 		];
 	}
@@ -172,7 +171,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 		$this->templateColumns['media_filename'] = [
 			'attribute' => 'media_filename',
 			'value' => function($model, $key, $index, $column) {
-				$uploadPath = join('/', [self::getUploadPath(false), $model->id]);
+				$uploadPath = join('/', [Articles::getUploadPath(false), $model->id]);
 				return $model->media_filename ? Html::img(join('/', [Url::Base(), $uploadPath, $model->media_filename]), ['alt' => $model->media_filename]) : '-';
 			},
 			'format' => 'html',
@@ -269,15 +268,6 @@ class ArticleMedia extends \app\components\ActiveRecord
 		}
 	}
 
-	/**
-	 * @param returnAlias set true jika ingin kembaliannya path alias atau false jika ingin string
-	 * relative path. default true.
-	 */
-	public static function getUploadPath($returnAlias=true) 
-	{
-		return ($returnAlias ? Yii::getAlias('@public/article') : 'article');
-	}
-
 	public static function getSettingMediaLimit()
 	{
 		$setting = ArticleSetting::find()->limit(1)->one();
@@ -354,11 +344,11 @@ class ArticleMedia extends \app\components\ActiveRecord
 	{
 		if(parent::beforeSave($insert)) {
 			if(!$insert) {
-				$uploadPath = join('/', [self::getUploadPath(), $this->article_id]);
-				$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
-				$this->createUploadDirectory(self::getUploadPath(), $this->article_id);
+				$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
+				$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
+				$this->createUploadDirectory(Articles::getUploadPath(), $this->article_id);
 
-				$this->media_filename = UploadedFile::getInstance($this, 'media_filename');
+				// $this->media_filename = UploadedFile::getInstance($this, 'media_filename');
 				if($this->media_filename instanceof UploadedFile && !$this->media_filename->getHasError()) {
 					$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->media_filename->getExtension()); 
 					if($this->media_filename->saveAs(join('/', [$uploadPath, $fileName]))) {
@@ -382,12 +372,12 @@ class ArticleMedia extends \app\components\ActiveRecord
 	{
 		parent::afterSave($insert, $changedAttributes);
 
-		$uploadPath = join('/', [self::getUploadPath(), $this->article_id]);
-		$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
-		$this->createUploadDirectory(self::getUploadPath(), $this->article_id);
+		$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
+		$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
+		$this->createUploadDirectory(Articles::getUploadPath(), $this->article_id);
 
 		if($insert) {
-			$this->media_filename = UploadedFile::getInstance($this, 'media_filename');
+			// $this->media_filename = UploadedFile::getInstance($this, 'media_filename');
 			if($this->media_filename instanceof UploadedFile && !$this->media_filename->getHasError()) {
 				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->media_filename->getExtension()); 
 				if($this->media_filename->saveAs(join('/', [$uploadPath, $fileName])))
@@ -403,8 +393,8 @@ class ArticleMedia extends \app\components\ActiveRecord
 	{
 		parent::afterDelete();
 
-		$uploadPath = join('/', [self::getUploadPath(), $this->article_id]);
-		$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+		$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
+		$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
 
 		if($this->media_filename != '' && file_exists(join('/', [$uploadPath, $this->media_filename])))
 			rename(join('/', [$uploadPath, $this->media_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_deleted_'.$this->media_filename]));

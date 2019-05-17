@@ -2,7 +2,7 @@
 /**
  * Article Media (article-media)
  * @var $this app\components\View
- * @var $this ommu\article\controllers\o\MediaController
+ * @var $this ommu\article\controllers\o\ImageController
  * @var $model ommu\article\models\ArticleMedia
  * @var $form app\components\widgets\ActiveForm
  *

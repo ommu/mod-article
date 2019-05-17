@@ -68,7 +68,7 @@ echo DetailView::widget([
 		],
 		[
 			'attribute' => 'published_date',
-			'value' => Yii::$app->formatter->asDatetime($model->published_date, 'medium'),
+			'value' => Yii::$app->formatter->asDate($model->published_date, 'medium'),
 		],
 		[
 			'attribute' => 'headline_date',

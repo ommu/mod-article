@@ -45,21 +45,26 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use ommu\users\models\Users;
 use ommu\article\models\view\Articles as ArticlesView;
+use yii\web\UploadedFile;
+use thamtech\uuid\helpers\UuidHelper;
 use yii\helpers\ArrayHelper;
 use yii\base\Event;
 
 class Articles extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
+	use \ommu\traits\FileTrait;
 
 	public $gridForbiddenColumn = ['body', 'headline_date', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date', 'files', 'likes', 'media', 'tags', 'views'];
 
 	public $categoryName;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
-	public $tag;
-	public $file;
 	public $image;
+	public $file;
+	public $tag;
+	public $old_image;
+	public $old_file;
 
 	const EVENT_BEFORE_SAVE_ARTICLE = 'BeforeSaveArticle';
 
@@ -80,7 +85,7 @@ class Articles extends \app\components\ActiveRecord
 			[['cat_id', 'title', 'body'], 'required'],
 			[['publish', 'cat_id', 'headline', 'creation_id', 'modified_id'], 'integer'],
 			[['body'], 'string'],
-			[['published_date', 'tag'], 'safe'],
+			[['published_date', 'image', 'file', 'tag'], 'safe'],
 			[['title'], 'string', 'max' => 128],
 			[['cat_id'], 'exist', 'skipOnError' => true, 'targetClass' => ArticleCategory::className(), 'targetAttribute' => ['cat_id' => 'id']],
 		];
@@ -96,7 +101,7 @@ class Articles extends \app\components\ActiveRecord
 			'publish' => Yii::t('app', 'Publish'),
 			'cat_id' => Yii::t('app', 'Category'),
 			'title' => Yii::t('app', 'Title'),
-			'body' => Yii::t('app', 'Body'),
+			'body' => Yii::t('app', 'Article'),
 			'published_date' => Yii::t('app', 'Published Date'),
 			'headline' => Yii::t('app', 'Headline'),
 			'headline_date' => Yii::t('app', 'Headline Date'),
@@ -113,9 +118,9 @@ class Articles extends \app\components\ActiveRecord
 			'categoryName' => Yii::t('app', 'Category'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
-			'tag' => Yii::t('app', 'Tag(s)'),
-			'file' => Yii::t('app', 'File'),
 			'image' => Yii::t('app', 'Image'),
+			'file' => Yii::t('app', 'File'),
+			'tag' => Yii::t('app', 'Tag(s)'),
 		];
 	}
 
@@ -134,7 +139,7 @@ class Articles extends \app\components\ActiveRecord
 	{
 		if($count == false)
 			return $this->hasMany(ArticleFiles::className(), ['article_id' => 'id'])
-			->andOnCondition([sprintf('%s.publish', ArticleFiles::tableName()) => $publish]);
+				->andOnCondition([sprintf('%s.publish', ArticleFiles::tableName()) => $publish]);
 
 		$model = ArticleFiles::find()
 			->where(['article_id' => $this->id]);
@@ -156,7 +161,7 @@ class Articles extends \app\components\ActiveRecord
 	{
 		if($count == false)
 			return $this->hasMany(ArticleLikes::className(), ['article_id' => 'id'])
-			->andOnCondition([sprintf('%s.publish', ArticleLikes::tableName()) => $publish]);
+				->andOnCondition([sprintf('%s.publish', ArticleLikes::tableName()) => $publish]);
 
 		$model = ArticleLikes::find()
 			->where(['article_id' => $this->id]);
@@ -172,13 +177,19 @@ class Articles extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * @param $type string (relation|cover|count)
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getMedia($count=false, $publish=1)
+	public function getMedias($type='relation', $publish=1)
 	{
-		if($count == false)
+		if($type == 'relation')
 			return $this->hasMany(ArticleMedia::className(), ['article_id' => 'id'])
-			->andOnCondition([sprintf('%s.publish', ArticleMedia::tableName()) => $publish]);
+				->andOnCondition([sprintf('%s.publish', ArticleMedia::tableName()) => 1]);
+
+		if($type == 'cover')
+			return $this->hasMany(ArticleMedia::className(), ['article_id' => 'id'])
+				->andOnCondition([sprintf('%s.publish', ArticleMedia::tableName()) => 1])
+				->andOnCondition([sprintf('%s.cover', ArticleMedia::tableName()) => 1]);
 
 		$model = ArticleMedia::find()
 			->where(['article_id' => $this->id]);
@@ -194,6 +205,7 @@ class Articles extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * @param $type string (relation|array|count)
 	 * @return \yii\db\ActiveQuery
 	 */
 	public function getTags($type='relation')
@@ -255,6 +267,42 @@ class Articles extends \app\components\ActiveRecord
 	public function getModified()
 	{
 		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getCoverAttribute()
+	{
+		$model = $this->getMedias('cover')->one();
+		return ['id'=>$model->id, 'cover'=>$model->media_filename];
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getCover()
+	{
+		$model = $this->getCoverAttribute();
+		return $model['cover'];
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getDocumentAttribute()
+	{
+		$model = $this->getFiles(false)->one();
+		return ['id'=>$model->id, 'file'=>$model->file_filename];
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getDocument()
+	{
+		$model = $this->getDocumentAttribute();
+		return $model['file'];
 	}
 
 	/**
@@ -377,7 +425,7 @@ class Articles extends \app\components\ActiveRecord
 		$this->templateColumns['media'] = [
 			'attribute' => 'media',
 			'value' => function($model, $key, $index, $column) {
-				$media = $model->getMedia(true);
+				$media = $model->getMedias('count');
 				return Html::a($media, ['o/media/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} media', ['count'=>$media])]);
 			},
 			'filter' => false,
@@ -449,6 +497,31 @@ class Articles extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * @param returnAlias set true jika ingin kembaliannya path alias atau false jika ingin string
+	 * relative path. default true.
+	 */
+	public static function getUploadPath($returnAlias=true) 
+	{
+		return ($returnAlias ? Yii::getAlias('@public/article') : 'article');
+	}
+
+	/**
+	 * function getHeadlines
+	 */
+	public function getSetting($field=[])
+	{
+		if(empty($field))
+			$field = ['headline', 'headline_limit', 'headline_category', 'media_image_limit', 'media_image_resize', 'media_image_resize_size', 'media_image_view_size', 'media_image_type', 'media_file_limit', 'media_file_type'];
+
+		$setting = ArticleSetting::find()
+			->select($field)
+			->where(['id' => 1])
+			->one();
+		
+		return $setting;
+	}
+
+	/**
 	 * function getHeadlines
 	 */
 	public function getHeadlines()
@@ -495,6 +568,8 @@ class Articles extends \app\components\ActiveRecord
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
 		$this->tag = implode(',', $this->getTags('array'));
+		$this->old_image = $this->cover;
+		$this->old_file = $this->document;
 	}
 
 	/**
@@ -502,7 +577,35 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function beforeValidate()
 	{
+		$setting = $this->getSetting(['media_image_type', 'media_file_type']);
+
 		if(parent::beforeValidate()) {
+			if($this->image instanceof UploadedFile && !$this->image->getHasError()) {
+				$imageFileType = $this->formatFileType($setting->media_image_type);
+				if(!in_array(strtolower($this->image->getExtension()), $imageFileType)) {
+					$this->addError('image', Yii::t('app', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
+						'name'=>$this->image->name,
+						'extensions'=>$setting->media_image_type,
+					]));
+				}
+			} else {
+				if($this->isNewRecord || (!$this->isNewRecord && $this->category->single_photo && $this->old_image == ''))
+					$this->addError('image', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('image')]));
+			}
+
+			if($this->file instanceof UploadedFile && !$this->file->getHasError()) {
+				$fileFileType = $this->formatFileType($setting->media_file_type);
+				if(!in_array(strtolower($this->file->getExtension()), $fileFileType)) {
+					$this->addError('file', Yii::t('app', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
+						'name'=>$this->file->name,
+						'extensions'=>$setting->media_file_type,
+					]));
+				}
+			}
+			
+			if($this->headline && !$this->publish)
+				$this->publish = 1;
+
 			if($this->isNewRecord) {
 				if($this->creation_id == null)
 					$this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
@@ -523,6 +626,11 @@ class Articles extends \app\components\ActiveRecord
 			$this->published_date = Yii::$app->formatter->asDate($this->published_date, 'php:Y-m-d');
 		
 			if(!$insert) {
+				// generate upload path
+				$uploadPath = join('/', [self::getUploadPath(), $this->id]);
+				$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+				$this->createUploadDirectory(self::getUploadPath(), $this->id);
+
 				// set tags
 				$event = new Event(['sender' => $this]);
 				Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARTICLE, $event);
@@ -537,23 +645,108 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function afterSave($insert, $changedAttributes)
 	{
-		$setting = ArticleSetting::find()
-			->select(['headline', 'headline_limit'])
-			->where(['id' => 1])
-			->one();
+		$setting = $this->getSetting(['headline', 'headline_limit', 'media_image_resize', 'media_image_resize_size']);
 
 		parent::afterSave($insert, $changedAttributes);
+
+		// generate upload path
+		$uploadPath = join('/', [self::getUploadPath(), $this->id]);
+		$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+		$this->createUploadDirectory(self::getUploadPath(), $this->id);
 
 		// Reset headline
 		if($setting->headline && array_key_exists('headline', $changedAttributes) && ($changedAttributes['headline'] != $this->headline) && (count($this->headlines) == $setting->headline_limit) && $this->headline == 1)
 			self::updateAll(['headline' => 0], ['NOT IN', 'id', $this->headlines]);
-		
+
 		if($insert) {
 			// set tags
 			$event = new Event(['sender' => $this]);
 			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARTICLE, $event);
 		}
 
+		// upload image
+		if($this->image instanceof UploadedFile && !$this->image->getHasError()) {
+			$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->image->getExtension()); 
+			if($this->image->saveAs(join('/', [$uploadPath, $fileName]))) {
+				$medias = $this->medias;
+				if($insert || (!$insert && empty($medias))) {
+					$model = new ArticleMedia();
+					$model->cover = 1;
+					$model->article_id = $this->id;
+					$model->media_filename = $fileName;
+					$model->save();
+				} else {
+					$coverId = $this->getCoverAttribute()['id'];
+					if(ArticleMedia::findOne($coverId)->updateAttributes(['media_filename'=>$fileName])) {
+						$imageResize = $setting->media_image_resize_size;
+						if($setting->media_image_resize)
+							$this->resizeImage(join('/', [$uploadPath, $fileName]), $imageResize['width'], $imageResize['height']);
+					}
+					if($this->old_image != '' && file_exists(join('/', [$uploadPath, $this->old_image])))
+						rename(join('/', [$uploadPath, $this->old_image]), join('/', [$verwijderenPath, $this->id.'-'.time().'_change_'.$this->old_image]));
+				}
+			}
+		}
+
+		// upload file
+		if($this->file instanceof UploadedFile && !$this->file->getHasError()) {
+			$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->file->getExtension()); 
+			if($this->file->saveAs(join('/', [$uploadPath, $fileName]))) {
+				$files = $this->files;
+				if($insert || (!$insert && empty($files))) {
+					$model = new ArticleFiles();
+					$model->article_id = $this->id;
+					$model->file_filename = $fileName;
+					$model->save();
+				} else {
+					$fileId = $this->getDocumentAttribute()['id'];
+					ArticleFiles::findOne($fileId)->updateAttributes(['file_filename'=>$fileName]);
+					if($this->old_file != '' && file_exists(join('/', [$uploadPath, $this->old_file])))
+						rename(join('/', [$uploadPath, $this->old_file]), join('/', [$verwijderenPath, $this->id.'-'.time().'_change_'.$this->old_file]));
+				}
+			}
+		}
+
 		return true;
+	}
+
+	/**
+	 * Before delete attributes
+	 */
+	public function beforeDelete()
+	{
+		if(parent::beforeDelete()) {
+			$uploadPath = join('/', [self::getUploadPath(), $this->id]);
+
+			// upload image
+			$medias = $this->medias;
+			if(!empty($medias)) {
+				foreach ($medias as $val) {
+					if($this->media_filename != '' && file_exists(join('/', [$uploadPath, $this->media_filename])))
+						rename(join('/', [$uploadPath, $this->media_filename]), join('/', [$verwijderenPath, $this->id.'-'.time().'_deleted_'.$this->media_filename]));
+				}
+			}
+
+			// upload file
+			$files = $this->files;
+			if(!empty($files)) {
+				foreach ($files as $val) {
+					if($this->file_filename != '' && file_exists(join('/', [$uploadPath, $this->file_filename])))
+						rename(join('/', [$uploadPath, $this->file_filename]), join('/', [$verwijderenPath, $this->id.'-'.time().'_deleted_'.$this->file_filename]));
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * After delete attributes
+	 */
+	public function afterDelete()
+	{
+		parent::afterDelete();
+
+		$uploadPath = join('/', [self::getUploadPath(), $this->id]);
+		$this->deleteFolder($uploadPath);
 	}
 }

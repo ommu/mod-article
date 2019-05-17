@@ -28,7 +28,7 @@ class ArticleMedia extends ArticleMediaModel
 	public function rules()
 	{
 		return [
-			[['media_id', 'publish', 'cover', 'article_id', 'creation_id', 'modified_id'], 'integer'],
+			[['id', 'publish', 'cover', 'article_id', 'creation_id', 'modified_id'], 'integer'],
 			[['media_filename', 'caption', 'creation_date', 'modified_date', 'updated_date', 'articleTitle', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
@@ -91,7 +91,7 @@ class ArticleMedia extends ArticleMediaModel
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
-			'defaultOrder' => ['media_id' => SORT_DESC],
+			'defaultOrder' => ['id' => SORT_DESC],
 		]);
 
 		$this->load($params);
@@ -104,7 +104,7 @@ class ArticleMedia extends ArticleMediaModel
 
 		// grid filtering conditions
 		$query->andFilterWhere([
-			't.media_id' => isset($params['id']) ? $params['id'] : $this->media_id,
+			't.id' => isset($params['id']) ? $params['id'] : $this->id,
 			't.cover' => $this->cover,
 			't.article_id' => isset($params['article']) ? $params['article'] : $this->article_id,
 			'cast(t.creation_date as date)' => $this->creation_date,

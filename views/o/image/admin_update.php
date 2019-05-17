@@ -2,7 +2,7 @@
 /**
  * Article Media (article-media)
  * @var $this app\components\View
- * @var $this ommu\article\controllers\o\MediaController
+ * @var $this ommu\article\controllers\o\ImageController
  * @var $model ommu\article\models\ArticleMedia
  * @var $form app\components\widgets\ActiveForm
  *
@@ -17,12 +17,12 @@
 use yii\helpers\Url;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Article Media'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->media_filename, 'url' => ['view', 'id'=>$model->media_id]];
+$this->params['breadcrumbs'][] = ['label' => $model->media_filename, 'url' => ['view', 'id'=>$model->id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
 $this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->media_id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
-	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->media_id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
+	['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
+	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
 ];
 ?>
 
