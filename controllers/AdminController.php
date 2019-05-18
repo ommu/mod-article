@@ -110,7 +110,6 @@ class AdminController extends Controller
 	public function actionCreate()
 	{
 		$model = new Articles();
-		$model->setAttributeLabels(['image'=>Yii::t('app', 'Cover')]);
 		$setting = $model->getSetting(['headline', 'media_image_type', 'media_file_type']);
 
 		if(Yii::$app->request->isPost) {
@@ -150,7 +149,6 @@ class AdminController extends Controller
 	{
 		$model = $this->findModel($id);
 		if($model->category->single_photo)
-			$model->setAttributeLabels(['image'=>Yii::t('app', 'Cover')]);
 		$setting = $model->getSetting(['headline', 'media_image_limit', 'media_image_type', 'media_file_limit', 'media_file_type']);
 
 		if(Yii::$app->request->isPost) {
@@ -195,7 +193,6 @@ class AdminController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
-		$model->setAttributeLabels(['image'=>Yii::t('app', 'Cover')]);
 		$setting = $model->getSetting(['media_image_limit', 'media_file_limit']);
 
 		$this->subMenu = $this->module->params['article_submenu'];

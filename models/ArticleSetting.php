@@ -95,7 +95,7 @@ class ArticleSetting extends \app\components\ActiveRecord
 			'media_image_view_size[small]' => Yii::t('app', 'Small'),
 			'media_image_view_size[medium]' => Yii::t('app', 'Medium'),
 			'media_image_view_size[large]' => Yii::t('app', 'Large'),
-			'media_image_type' => Yii::t('app', 'Image File Type'),
+			'media_image_type' => Yii::t('app', 'Photo File Type'),
 			'media_file_limit' => Yii::t('app', 'Document Limit'),
 			'media_file_type' => Yii::t('app', 'Document File Type'),
 			'modified_date' => Yii::t('app', 'Modified Date'),

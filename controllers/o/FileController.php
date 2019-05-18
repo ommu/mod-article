@@ -43,7 +43,8 @@ class FileController extends Controller
 	public function init()
 	{
 		parent::init();
-		$this->subMenu = $this->module->params['article_submenu'];
+		if(Yii::$app->request->get('id'))
+			$this->subMenu = $this->module->params['article_submenu'];
 	}
 
 	/**
@@ -96,7 +97,7 @@ class FileController extends Controller
 		if(($article = Yii::$app->request->get('article')) != null)
 			$article = \ommu\article\models\Articles::findOne($article);
 
-		$this->view->title = Yii::t('app', 'Files');
+		$this->view->title = Yii::t('app', 'Documents');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
@@ -127,7 +128,7 @@ class FileController extends Controller
 			$model->file_filename = UploadedFile::getInstance($model, 'file_filename');
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Article file success created.'));
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Article document success created.'));
 				if($model->redirectUpdate)
 					return $this->redirect(['update', 'id'=>$model->id]);
 				return $this->redirect(['manage', 'id'=>$model->article_id]);
@@ -143,7 +144,9 @@ class FileController extends Controller
 		if($model->article->category->single_file || $setting->media_file_limit == 1)
 			unset($this->subMenu['document']);
 
-		$this->view->title = Yii::t('app', 'Create File');
+		$this->view->title = Yii::t('app', 'Create Document');
+		if($id)
+			$this->view->title = Yii::t('app', 'Create Document Article: {title}', ['title' => $model->article->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
@@ -170,7 +173,7 @@ class FileController extends Controller
 			$model->file_filename = UploadedFile::getInstance($model, 'file_filename');
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Article file success updated.'));
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Article document success updated.'));
 				return $this->redirect(['update', 'id'=>$model->id]);
 
 			} else {
@@ -184,7 +187,7 @@ class FileController extends Controller
 		if($model->article->category->single_file || $setting->media_file_limit == 1)
 			unset($this->subMenu['document']);
 
-		$this->view->title = Yii::t('app', 'Update File: {file-filename}', ['file-filename' => $model->file_filename]);
+		$this->view->title = Yii::t('app', 'Update Document: {file-filename}', ['file-filename' => $model->file_filename]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -208,7 +211,7 @@ class FileController extends Controller
 		if($model->article->category->single_file || $setting->media_file_limit == 1)
 			unset($this->subMenu['document']);
 
-		$this->view->title = Yii::t('app', 'Detail File: {file-filename}', ['file-filename' => $model->file_filename]);
+		$this->view->title = Yii::t('app', 'Detail Document: {file-filename}', ['file-filename' => $model->file_filename]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
@@ -228,7 +231,7 @@ class FileController extends Controller
 		$model->publish = 2;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Article file success deleted.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Article document success deleted.'));
 			return $this->redirect(['manage', 'id'=>$model->article_id]);
 		}
 	}

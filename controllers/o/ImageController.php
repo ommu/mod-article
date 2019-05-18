@@ -43,7 +43,8 @@ class ImageController extends Controller
 	public function init()
 	{
 		parent::init();
-		$this->subMenu = $this->module->params['article_submenu'];
+		if(Yii::$app->request->get('id'))
+			$this->subMenu = $this->module->params['article_submenu'];
 	}
 
 	/**
@@ -96,7 +97,7 @@ class ImageController extends Controller
 		if(($article = Yii::$app->request->get('article')) != null)
 			$article = \ommu\article\models\Articles::findOne($article);
 
-		$this->view->title = Yii::t('app', 'Images');
+		$this->view->title = Yii::t('app', 'Photos');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
@@ -127,7 +128,7 @@ class ImageController extends Controller
 			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Article image success created.'));
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success created.'));
 				if($model->redirectUpdate)
 					return $this->redirect(['update', 'id'=>$model->id]);
 				return $this->redirect(['manage', 'id'=>$model->article_id]);
@@ -143,7 +144,9 @@ class ImageController extends Controller
 		if($model->article->category->single_file || $setting->media_file_limit == 1)
 			unset($this->subMenu['document']);
 
-		$this->view->title = Yii::t('app', 'Create Image');
+		$this->view->title = Yii::t('app', 'Create Photo');
+		if($id)
+			$this->view->title = Yii::t('app', 'Create Photo Article: {title}', ['title' => $model->article->title]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
@@ -170,7 +173,7 @@ class ImageController extends Controller
 			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Article image success updated.'));
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success updated.'));
 				return $this->redirect(['update', 'id'=>$model->id]);
 
 			} else {
@@ -184,7 +187,7 @@ class ImageController extends Controller
 		if($model->article->category->single_file || $setting->media_file_limit == 1)
 			unset($this->subMenu['document']);
 
-		$this->view->title = Yii::t('app', 'Update Image: {media-filename}', ['media-filename' => $model->media_filename]);
+		$this->view->title = Yii::t('app', 'Update Photo: {media-filename}', ['media-filename' => $model->media_filename]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
@@ -208,7 +211,7 @@ class ImageController extends Controller
 		if($model->article->category->single_file || $setting->media_file_limit == 1)
 			unset($this->subMenu['document']);
 
-		$this->view->title = Yii::t('app', 'Detail Image: {media-filename}', ['media-filename' => $model->media_filename]);
+		$this->view->title = Yii::t('app', 'Detail Photo: {media-filename}', ['media-filename' => $model->media_filename]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
@@ -228,7 +231,7 @@ class ImageController extends Controller
 		$model->publish = 2;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Article image success deleted.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success deleted.'));
 			return $this->redirect(['manage', 'id'=>$model->article_id]);
 		}
 	}

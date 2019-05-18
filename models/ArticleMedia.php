@@ -89,7 +89,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 			'cover' => Yii::t('app', 'Cover'),
 			'orders' => Yii::t('app', 'Orders'),
 			'article_id' => Yii::t('app', 'Article'),
-			'media_filename' => Yii::t('app', 'Image File'),
+			'media_filename' => Yii::t('app', 'Photo File'),
 			'caption' => Yii::t('app', 'Caption'),
 			'description' => Yii::t('app', 'Description'),
 			'creation_date' => Yii::t('app', 'Creation Date'),

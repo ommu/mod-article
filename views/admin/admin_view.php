@@ -111,10 +111,10 @@ $attributes = [
 		'format' => 'html',
 	],
 	[
-		'attribute' => 'media',
+		'attribute' => 'medias',
 		'value' => function ($model) {
-			$media = $model->getMedias('count');
-			return Html::a($media, ['o/image/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} media', ['count'=>$media])]);
+			$medias = $model->getMedias('count');
+			return Html::a($medias, ['o/image/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} medias', ['count'=>$media])]);
 		},
 		'format' => 'html',
 	],

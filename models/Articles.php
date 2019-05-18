@@ -110,16 +110,16 @@ class Articles extends \app\components\ActiveRecord
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
-			'files' => Yii::t('app', 'Files'),
+			'files' => Yii::t('app', 'Documents'),
 			'likes' => Yii::t('app', 'Likes'),
-			'media' => Yii::t('app', 'Media'),
+			'medias' => Yii::t('app', 'Photos'),
 			'tags' => Yii::t('app', 'Tags'),
 			'views' => Yii::t('app', 'Views'),
 			'categoryName' => Yii::t('app', 'Category'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
-			'image' => Yii::t('app', 'Image'),
-			'file' => Yii::t('app', 'File'),
+			'image' => Yii::t('app', 'Cover'),
+			'file' => Yii::t('app', 'Document'),
 			'tag' => Yii::t('app', 'Tag(s)'),
 		];
 	}
@@ -422,8 +422,8 @@ class Articles extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 			'format' => 'html',
 		];
-		$this->templateColumns['media'] = [
-			'attribute' => 'media',
+		$this->templateColumns['medias'] = [
+			'attribute' => 'medias',
 			'value' => function($model, $key, $index, $column) {
 				$media = $model->getMedias('count');
 				return Html::a($media, ['o/image/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} media', ['count'=>$media])]);

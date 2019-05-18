@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 if(($id = Yii::$app->request->get('id')) != null) {
 	$this->params['menu']['content'] = [
-		['label' => Yii::t('app', 'Add Media'), 'url' => Url::to(['create', 'id'=>$id]), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
+		['label' => Yii::t('app', 'Add Photo'), 'url' => Url::to(['create', 'id'=>$id]), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
 	];
 }
 $this->params['menu']['option'] = [
