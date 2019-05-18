@@ -8,6 +8,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 11:06 WIB
+ * @modified date 17 May 2019, 11:45 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -18,7 +19,6 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use ommu\article\models\ArticleFiles as ArticleFilesModel;
-//use ommu\article\models\Articles;
 
 class ArticleFiles extends ArticleFilesModel
 {
@@ -65,7 +65,11 @@ class ArticleFiles extends ArticleFilesModel
 			$query = ArticleFilesModel::find()->alias('t');
 		else
 			$query = ArticleFilesModel::find()->alias('t')->select($column);
-		$query->joinWith(['article article', 'creation creation', 'modified modified']);
+		$query->joinWith([
+			'article article', 
+			'creation creation', 
+			'modified modified'
+		]);
 
 		// add conditions that should always apply here
 		$dataParams = [
@@ -104,7 +108,7 @@ class ArticleFiles extends ArticleFilesModel
 
 		// grid filtering conditions
 		$query->andFilterWhere([
-			't.id' => isset($params['id']) ? $params['id'] : $this->id,
+			't.id' => $this->id,
 			't.article_id' => isset($params['article']) ? $params['article'] : $this->article_id,
 			'cast(t.creation_date as date)' => $this->creation_date,
 			't.creation_id' => isset($params['creation']) ? $params['creation'] : $this->creation_id,

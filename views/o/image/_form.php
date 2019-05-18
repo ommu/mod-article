@@ -10,6 +10,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 11:00 WIB
+ * @modified date 17 May 2019, 11:45 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -18,7 +19,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\components\widgets\ActiveForm;
 use yii\redactor\widgets\Redactor;
-use yii\helpers\ArrayHelper;
 use ommu\article\models\Articles;
 
 $redactorOptions = [
@@ -29,69 +29,41 @@ $redactorOptions = [
 ];
 ?>
 
+<div class="article-media-form">
+
 <?php $form = ActiveForm::begin([
-	'options' => ['class'=>'form-horizontal form-label-left'],
-	'enableClientValidation' => true,
+	'options' => [
+		'class' => 'form-horizontal form-label-left',
+		'enctype' => 'multipart/form-data',
+	],
+	'enableClientValidation' => false,
 	'enableAjaxValidation' => false,
 	//'enableClientScript' => true,
 ]); ?>
 
 <?php //echo $form->errorSummary($model);?>
-
-<?php echo $form->field($model, 'cover')
-	->checkbox()
-	->label($model->getAttributeLabel('cover')); ?>
-
-<div class="form-group">
-	<?php echo $form->field($model, 'article_id', ['template' => '{label}', 'options' => ['tag' => null]])
-		->label($model->getAttributeLabel('article_id')); ?>
-	<div class="col-md-9 col-sm-9 col-xs-12">
-		<?php
-		if (!Yii::$app->request->get('article')){ 
-			$articlelist = ArrayHelper::map(Articles::find()->where(['publish'=>1])->all(), 'article_id', 'title');
-			echo $form->field($model, 'article_id', ['template' => '{input}{error}'])
-			->dropdownList($articlelist)
-			->label($model->getAttributeLabel('article_id'));
-		}
-		else {
-			if ($model->isNewRecord){
-				$getArticle = Yii::$app->request->get('article');
-				$model->article_id = $getArticle;
-				}
-				else {
-					$getArticle = $model->article_id;
-				}
-				$articles = Articles::find()->where(['article_id'=>$getArticle])->one();
-				echo $articles->title;
-			} 
-		?>
-
-	</div>
-</div>
-
-
-<div class="form-group field-articles-media_filename required">
-	<?php echo $form->field($model, 'media_filename', ['template' => '{label}', 'options' => ['tag' => null]])
-		->label($model->getAttributeLabel('media_filename')); ?>
-	<div class="col-md-9 col-sm-9 col-xs-12">
-		<?php if (!$model->isNewRecord) {
-			if($model->old_media_filename != '')
-				echo Html::img(join('/', [Url::Base(), Articles::getUploadPath(false), $model->old_media_filename]), ['class'=>'mb-15', 'width'=>'100%']);
-		} ?>
-
-		<?php echo $form->field($model, 'media_filename', ['template' => '{input}{error}'])
-			->fileInput() 
-			->label($model->getAttributeLabel('media_filename')); ?>
-	</div>
-</div>
+<?php $uploadPath = join('/', [Articles::getUploadPath(false), $model->article_id]);
+$mediaFilename = !$model->isNewRecord && $model->old_media_filename != '' ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_media_filename])), ['class'=>'mb-15', 'width'=>'100%']) : '';
+echo $form->field($model, 'media_filename', ['template' => '{label}{beginWrapper}<div>'.$mediaFilename.'</div>{input}{error}{hint}{endWrapper}'])
+	->fileInput()
+	->label($model->getAttributeLabel('media_filename')); ?>
 
 <?php echo $form->field($model, 'caption')
 	->textInput(['maxlength'=>true])
 	->label($model->getAttributeLabel('caption')); ?>
 
-<?php echo $form->field($model, 'publish')
+<?php echo $form->field($model, 'description')
+	->textarea(['rows'=>6, 'cols'=>50])
+	->widget(Redactor::className(), ['clientOptions' => $redactorOptions])
+	->label($model->getAttributeLabel('description')); ?>
+
+<?php echo $form->field($model, 'orders')
+	->textInput(['type'=>'number'])
+	->label($model->getAttributeLabel('orders')); ?>
+
+<?php echo $form->field($model, 'cover')
 	->checkbox()
-	->label($model->getAttributeLabel('publish')); ?>
+	->label($model->getAttributeLabel('cover')); ?>
 
 <div class="ln_solid"></div>
 
@@ -99,3 +71,5 @@ $redactorOptions = [
 	->submitButton(); ?>
 
 <?php ActiveForm::end(); ?>
+
+</div>

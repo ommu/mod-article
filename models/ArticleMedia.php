@@ -47,7 +47,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 	use \ommu\traits\UtilityTrait;
 	use \ommu\traits\FileTrait;
 
-	public $gridForbiddenColumn = ['creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
+	public $gridForbiddenColumn = ['caption', 'description', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
 	public $old_media_filename;
 	public $articleTitle;
@@ -70,7 +70,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 		return [
 			[['article_id'], 'required'],
 			[['publish', 'cover', 'orders', 'article_id', 'creation_id', 'modified_id'], 'integer'],
-			[['media_filename', 'caption', 'description'], 'string'],
+			[['caption', 'description'], 'string'],
 			[['orders', 'media_filename', 'caption', 'description'], 'safe'],
 			[['caption'], 'string', 'max' => 150],
 			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'id']],
@@ -111,11 +111,6 @@ class ArticleMedia extends \app\components\ActiveRecord
 		return $this->hasOne(Articles::className(), ['id' => 'article_id']);
 	}
 
-	public function getCategory()
-	{
-		return $this->hasOne(ArticleCategory::className(), ['cat_id' => 'cat_id']);
-	}
-
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
@@ -153,12 +148,6 @@ class ArticleMedia extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		$this->templateColumns['orders'] = [
-			'attribute' => 'orders',
-			'value' => function($model, $key, $index, $column) {
-				return $model->orders;
-			},
-		];
 		if(!Yii::$app->request->get('article')) {
 			$this->templateColumns['articleTitle'] = [
 				'attribute' => 'articleTitle',
@@ -171,8 +160,8 @@ class ArticleMedia extends \app\components\ActiveRecord
 		$this->templateColumns['media_filename'] = [
 			'attribute' => 'media_filename',
 			'value' => function($model, $key, $index, $column) {
-				$uploadPath = join('/', [Articles::getUploadPath(false), $model->id]);
-				return $model->media_filename ? Html::img(join('/', [Url::Base(), $uploadPath, $model->media_filename]), ['alt' => $model->media_filename]) : '-';
+				$uploadPath = join('/', [Articles::getUploadPath(false), $model->article_id]);
+				return $model->media_filename ? Html::a($model->media_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->media_filename])), ['alt' => $model->media_filename]) : '-';
 			},
 			'format' => 'html',
 		];
@@ -228,6 +217,12 @@ class ArticleMedia extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
 		];
+		$this->templateColumns['orders'] = [
+			'attribute' => 'orders',
+			'value' => function($model, $key, $index, $column) {
+				return $model->orders;
+			},
+		];
 		$this->templateColumns['cover'] = [
 			'attribute' => 'cover',
 			'value' => function($model, $key, $index, $column) {
@@ -236,18 +231,6 @@ class ArticleMedia extends \app\components\ActiveRecord
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class'=>'center'],
 		];
-		if(!Yii::$app->request->get('trash')) {
-			$this->templateColumns['publish'] = [
-				'attribute' => 'publish',
-				'value' => function($model, $key, $index, $column) {
-					$url = Url::to(['publish', 'id'=>$model->primaryKey]);
-					return $this->quickAction($url, $model->publish);
-				},
-				'filter' => $this->filterYesNo(),
-				'contentOptions' => ['class'=>'center'],
-				'format' => 'raw',
-			];
-		}
 	}
 
 	/**
@@ -268,18 +251,6 @@ class ArticleMedia extends \app\components\ActiveRecord
 		}
 	}
 
-	public static function getSettingMediaLimit()
-	{
-		$setting = ArticleSetting::find()->limit(1)->one();
-		return $setting->media_image_limit;
-	}
-
-	public static function getCategorySinglePhoto()
-	{
-		$category = ArticleCategory::find()->where(['single_photo'=>1])->one()->limit(1);
-		return $category->single_photo;
-	}
-
 	/**
 	 * after find attributes
 	 */
@@ -298,40 +269,25 @@ class ArticleMedia extends \app\components\ActiveRecord
 	 */
 	public function beforeValidate()
 	{
+		$setting = $this->article->getSetting(['media_image_type']);
+
 		if(parent::beforeValidate()) {
+			if($this->media_filename instanceof UploadedFile && !$this->media_filename->getHasError()) {
+				$imageFileType = $this->formatFileType($setting->media_image_type);
+				if(!in_array(strtolower($this->media_filename->getExtension()), $imageFileType)) {
+					$this->addError('media_filename', Yii::t('app', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
+						'name'=>$this->media_filename->name,
+						'extensions'=>$this->formatFileType($imageFileType, false),
+					]));
+				}
+			}
+
 			if($this->isNewRecord) {
 				if($this->creation_id == null)
 					$this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
 			} else {
 				if($this->modified_id == null)
 					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			}
-			
-			//single foto
-			if($this->isNewRecord){
-				if (Yii::$app->request->get('article')){
-					$savearticle_id = Yii::$app->request->get('article');
-				} 
-				else {
-					$savearticle_id = $this->article_id;
-				}
-
-				$cekcategory = Articles::find()->where(['article_id'=>$savearticle_id])->one();
-					$cat_id = $cekcategory->cat_id;
-					
-					$category = ArticleCategory::find()->where(['cat_id'=>$cat_id,'publish'=>1])->one();
-					 // print_r($category->single_photo);
-						// exit();
-					 if ($category->single_photo == 1){
-					 		if (ArticleMedia::find()->where(['article_id'=>$savearticle_id,'publish'=>1])->all()!=null){
-								$this->addError('publish', 'tidak dapat menambahkan media lagi karena single photo');
-					 	}
-					 }
-			}
-			//notifikasi media limit
-			$countmedia=count(ArticleMedia::find()->where(['article_id'=>$this->article_id,'publish'=>1])->all());
-			if ($countmedia>=$this->getSettingMediaLimit()&&$this->isNewRecord){
-			 $this->addError('publish', 'article media lebih sudah mencapai limit'.'='.self::getSettingMediaLimit());
 			}
 		}
 		return true;
@@ -343,47 +299,23 @@ class ArticleMedia extends \app\components\ActiveRecord
 	public function beforeSave($insert)
 	{
 		if(parent::beforeSave($insert)) {
-			if(!$insert) {
-				$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
-				$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
-				$this->createUploadDirectory(Articles::getUploadPath(), $this->article_id);
+			$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
+			$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
+			$this->createUploadDirectory(Articles::getUploadPath(), $this->article_id);
 
-				// $this->media_filename = UploadedFile::getInstance($this, 'media_filename');
-				if($this->media_filename instanceof UploadedFile && !$this->media_filename->getHasError()) {
-					$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->media_filename->getExtension()); 
-					if($this->media_filename->saveAs(join('/', [$uploadPath, $fileName]))) {
-						if($this->old_media_filename != '' && file_exists(join('/', [$uploadPath, $this->old_media_filename])))
-							rename(join('/', [$uploadPath, $this->old_media_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_change_'.$this->old_media_filename]));
-						$this->media_filename = $fileName;
-					}
-				} else {
-					if($this->media_filename == '')
-						$this->media_filename = $this->old_media_filename;
+			if($this->media_filename instanceof UploadedFile && !$this->media_filename->getHasError()) {
+				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->media_filename->getExtension()); 
+				if($this->media_filename->saveAs(join('/', [$uploadPath, $fileName]))) {
+					if($this->old_media_filename != '' && file_exists(join('/', [$uploadPath, $this->old_media_filename])))
+						rename(join('/', [$uploadPath, $this->old_media_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_change_'.$this->old_media_filename]));
+					$this->media_filename = $fileName;
 				}
+			} else {
+				if($this->media_filename == '')
+					$this->media_filename = $this->old_media_filename;
 			}
 		}
 		return true;
-	}
-
-	/**
-	 * After save attributes
-	 */
-	public function afterSave($insert, $changedAttributes)
-	{
-		parent::afterSave($insert, $changedAttributes);
-
-		$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
-		$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
-		$this->createUploadDirectory(Articles::getUploadPath(), $this->article_id);
-
-		if($insert) {
-			// $this->media_filename = UploadedFile::getInstance($this, 'media_filename');
-			if($this->media_filename instanceof UploadedFile && !$this->media_filename->getHasError()) {
-				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->media_filename->getExtension()); 
-				if($this->media_filename->saveAs(join('/', [$uploadPath, $fileName])))
-					self::updateAll(['media_filename' => $fileName], ['id' => $this->id]);
-			}
-		}
 	}
 
 	/**

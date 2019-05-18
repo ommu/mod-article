@@ -13,8 +13,6 @@
  *	Update
  *	View
  *	Delete
- *	RunAction
- *	Publish
  *
  *	findModel
  *
@@ -22,19 +20,18 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 11:09 WIB
+ * @modified date 17 May 2019, 11:45 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
- 
+
 namespace ommu\article\controllers\o;
 
 use Yii;
 use yii\filters\VerbFilter;
 use app\components\Controller;
 use mdm\admin\components\AccessControl;
-use yii\helpers\Url;
 use ommu\article\models\ArticleFiles;
-use ommu\article\models\ArticleDownloads;
 use ommu\article\models\search\ArticleFiles as ArticleFilesSearch;
 use yii\web\UploadedFile;
 
@@ -53,7 +50,6 @@ class FileController extends Controller
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['POST'],
-					'publish' => ['POST'],
 				],
 			],
 		];
@@ -86,13 +82,17 @@ class FileController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		$this->view->title = Yii::t('app', 'Article Files');
+		if(($article = Yii::$app->request->get('article')) != null)
+			$article = \ommu\article\models\Articles::findOne($article);
+
+		$this->view->title = Yii::t('app', 'Files');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
+			'article' => $article,
 		]);
 	}
 
@@ -104,28 +104,30 @@ class FileController extends Controller
 	public function actionCreate()
 	{
 		$model = new ArticleFiles();
-		$model->scenario = 'formCreate';
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
+			// $postData = Yii::$app->request->post();
+			// $model->load($postData);
 			$model->file_filename = UploadedFile::getInstance($model, 'file_filename');
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'file success created.'));	
-				
-				if (Yii::$app->request->get('article')) {
-					return Yii::$app->response->redirect(Url::to(['index', 'article' => Yii::$app->request->get('article')]));
-				}
-
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Article file success created.'));
 				return $this->redirect(['manage']);
+				//return $this->redirect(['view', 'id'=>$model->id]);
+
+			} else {
+				if(Yii::$app->request->isAjax)
+					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
 			}
 		}
-			$this->view->title = Yii::t('app', 'Create Article Files');
-			$this->view->description = '';
-			$this->view->keywords = '';
-			return $this->render('admin_create', [
-				'model' => $model,
-			]);
+
+		$this->view->title = Yii::t('app', 'Create File');
+		$this->view->description = '';
+		$this->view->keywords = '';
+		return $this->render('admin_create', [
+			'model' => $model,
+		]);
 	}
 
 	/**
@@ -140,25 +142,26 @@ class FileController extends Controller
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
+			// $postData = Yii::$app->request->post();
+			// $model->load($postData);
 			$model->file_filename = UploadedFile::getInstance($model, 'file_filename');
-			if(!($model->file_filename instanceof UploadedFile)) {
-				$model->file_filename = $model->old_file_filename;
-			}
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'File success updated.'));
-				if (Yii::$app->request->get('article')) {
-					return Yii::$app->response->redirect(Url::to(['index', 'article' => Yii::$app->request->get('article')]));
-				}
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Article file success updated.'));
 				return $this->redirect(['manage']);
+
+			} else {
+				if(Yii::$app->request->isAjax)
+					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
 			}
 		}
-			$this->view->title = Yii::t('app', 'Update Article Files: {file_filename}', ['file_filename' => $model->file_filename]);
-			$this->view->description = '';
-			$this->view->keywords = '';
-			return $this->render('admin_update', [
-				'model' => $model,
-			]);
+
+		$this->view->title = Yii::t('app', 'Update File: {file-filename}', ['file-filename' => $model->file_filename]);
+		$this->view->description = '';
+		$this->view->keywords = '';
+		return $this->render('admin_update', [
+			'model' => $model,
+		]);
 	}
 
 	/**
@@ -170,10 +173,10 @@ class FileController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'View Article Files: {file_filename}', ['file_filename' => $model->file_filename]);
+		$this->view->title = Yii::t('app', 'Detail File: {file-filename}', ['file-filename' => $model->file_filename]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_view', [
+		return $this->oRender('admin_view', [
 			'model' => $model,
 		]);
 	}
@@ -190,33 +193,7 @@ class FileController extends Controller
 		$model->publish = 2;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			if (Yii::$app->request->get('article')) {
-					return Yii::$app->controller->redirect(Url::to(['index', 'article' => Yii::$app->request->get('article')]));
-				}
-			//return $this->redirect(['view', 'id' => $model->id]);
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Article Files success deleted.'));
-			
-			
-			return $this->redirect(['manage']);
-
-		}
-
-	}
-
-	/**
-	 * actionPublish an existing ArticleFiles model.
-	 * If publish is successful, the browser will be redirected to the 'index' page.
-	 * @param integer $id
-	 * @return mixed
-	 */
-	public function actionPublish($id)
-	{
-		$model = $this->findModel($id);
-		$replace = $model->publish == 1 ? 0 : 1;
-		$model->publish = $replace;
-
-		if($model->save(false, ['publish','modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Article Files success updated.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Article file success deleted.'));
 			return $this->redirect(['manage']);
 		}
 	}

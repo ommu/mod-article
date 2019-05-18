@@ -10,6 +10,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 11:09 WIB
+ * @modified date 17 May 2019, 11:45 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -18,7 +19,8 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 ?>
 
-<div class="search-form">
+<div class="article-files-search search-form">
+
 	<?php $form = ActiveForm::begin([
 		'action' => ['index'],
 		'method' => 'get',
@@ -26,14 +28,10 @@ use yii\widgets\ActiveForm;
 			'data-pjax' => 1
 		],
 	]); ?>
-		<?php echo $form->field($model, 'id'); ?>
 
-		<?php echo $form->field($model, 'publish')
-			->dropDownList($model->filterYesNo(), ['prompt'=>'']);?>
+		<?php echo $form->field($model, 'articleTitle');?>
 
-		<?php echo $form->field($model, 'article_id'); ?>
-
-		<?php echo $form->field($model, 'file_filename'); ?>
+		<?php echo $form->field($model, 'file_filename');?>
 
 		<?php echo $form->field($model, 'creation_date')
 			->input('date');?>

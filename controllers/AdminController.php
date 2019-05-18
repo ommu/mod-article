@@ -173,9 +173,9 @@ class AdminController extends Controller
 		}
 
 		$this->subMenu = $this->module->params['article_submenu'];
-		if($model->category->single_photo)
+		if($model->category->single_photo || $setting->media_image_limit == 1)
 			unset($this->subMenu['photo']);
-		if($model->category->single_file)
+		if($model->category->single_file || $setting->media_file_limit == 1)
 			unset($this->subMenu['document']);
 
 		$this->view->title = Yii::t('app', 'Update Article: {title}', ['title' => $model->title]);
@@ -195,6 +195,7 @@ class AdminController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
+		$model->setAttributeLabels(['image'=>Yii::t('app', 'Cover')]);
 
 		$this->subMenu = $this->module->params['article_submenu'];
 		if($model->category->single_photo)

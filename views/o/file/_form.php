@@ -10,79 +10,36 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 11:09 WIB
+ * @modified date 17 May 2019, 11:45 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
+
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\components\widgets\ActiveForm;
-use yii\redactor\widgets\Redactor;
-use yii\helpers\ArrayHelper;
 use ommu\article\models\Articles;
-use ommu\article\models\ArticleFiles;
-
-$redactorOptions = [
-	'imageManagerJson' => ['/redactor/upload/image-json'],
-	'imageUpload' => ['/redactor/upload/image'],
-	'fileUpload' => ['/redactor/upload/file'],
-	'plugins' => ['clips', 'fontcolor','imagemanager']
-];
 ?>
 
+<div class="article-files-form">
+
 <?php $form = ActiveForm::begin([
-	'options' => ['class'=>'form-horizontal form-label-left'],
-	'enableClientValidation' => true,
+	'options' => [
+		'class' => 'form-horizontal form-label-left',
+		'enctype' => 'multipart/form-data',
+	],
+	'enableClientValidation' => false,
 	'enableAjaxValidation' => false,
 	//'enableClientScript' => true,
 ]); ?>
 
 <?php //echo $form->errorSummary($model);?>
 
-<div class="form-group">
-	<?php echo $form->field($model, 'article_id', ['template' => '{label}', 'options' => ['tag' => null]])
-		->label($model->getAttributeLabel('article_id')); ?>
-	<div class="col-md-9 col-sm-9 col-xs-12">
-		<?php
-		if (!Yii::$app->request->get('article')){ 
-			$articlelist = ArrayHelper::map(Articles::find()->where(['publish'=>1])->all(), 'article_id', 'title');
-			echo $form->field($model, 'article_id', ['template' => '{input}{error}'])
-			->dropdownList($articlelist)
-			->label($model->getAttributeLabel('article_id'));
-		}
-		else {
-			if ($model->isNewRecord){
-				$getArticle = Yii::$app->request->get('article');
-				$model->article_id = $getArticle;
-				}
-				else {
-					$getArticle = $model->article_id;
-				}
-				$articles = Articles::find()->where(['article_id'=>$getArticle])->one();
-				echo $articles->title;
-			} 
-		?>
-
-	</div>
-</div>
-
-<div class="form-group field-banners-banner_filename required">
-	<?php echo $form->field($model, 'file_filename', ['template' => '{label}', 'options' => ['tag' => null]])
-		->label($model->getAttributeLabel('file_filename')); ?>
-	<div class="col-md-9 col-sm-9 col-xs-12">
-		<?php if (!$model->isNewRecord) {
-			if($model->old_file_filename != '')
-				echo $model->old_file_filename;
-		} ?>
-
-		<?php echo $form->field($model, 'file_filename', ['template' => '{input}{error}'])
-			->fileInput() 
-			->label($model->getAttributeLabel('file_filename')); ?>
-	</div>
-</div>
-
-<?php echo $form->field($model, 'publish')
-	->checkbox()
-	->label($model->getAttributeLabel('publish')); ?>
+<?php $uploadPath = join('/', [Articles::getUploadPath(false), $model->article_id]);
+$fileFilename = !$model->isNewRecord && $model->old_file_filename != '' ? Html::a($model->old_file_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->old_file_filename])), ['class'=>'d-inline-block mb-3']) : '';
+echo $form->field($model, 'file_filename', ['template' => '{label}{beginWrapper}<div>'.$fileFilename.'</div>{input}{error}{endWrapper}'])
+	->fileInput()
+	->label($model->getAttributeLabel('file_filename')); ?>
 
 <div class="ln_solid"></div>
 
@@ -90,3 +47,5 @@ $redactorOptions = [
 	->submitButton(); ?>
 
 <?php ActiveForm::end(); ?>
+
+</div>

@@ -13,8 +13,6 @@
  *	Update
  *	View
  *	Delete
- *	RunAction
- *	Publish
  *
  *	findModel
  *
@@ -22,17 +20,17 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 11:00 WIB
+ * @modified date 17 May 2019, 11:45 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
- 
+
 namespace ommu\article\controllers\o;
 
 use Yii;
 use yii\filters\VerbFilter;
 use app\components\Controller;
 use mdm\admin\components\AccessControl;
-use yii\helpers\Url;
 use ommu\article\models\ArticleMedia;
 use ommu\article\models\search\ArticleMedia as ArticleMediaSearch;
 use yii\web\UploadedFile;
@@ -52,19 +50,8 @@ class ImageController extends Controller
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['POST'],
-					'publish' => ['POST'],
 				],
 			],
-		];
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function actions()
-	{
-		return [
-			'upload' => 'devgroup\dropzone\UploadAction',
 		];
 	}
 
@@ -95,13 +82,17 @@ class ImageController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		$this->view->title = Yii::t('app', 'Article Media');
+		if(($article = Yii::$app->request->get('article')) != null)
+			$article = \ommu\article\models\Articles::findOne($article);
+
+		$this->view->title = Yii::t('app', 'Images');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
+			'article' => $article,
 		]);
 	}
 
@@ -113,23 +104,25 @@ class ImageController extends Controller
 	public function actionCreate()
 	{
 		$model = new ArticleMedia();
-		$model->scenario = 'formCreate';
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
+			// $postData = Yii::$app->request->post();
+			// $model->load($postData);
 			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Media success created.'));
-				if (Yii::$app->request->get('article')) {
-					return Yii::$app->response->redirect(Url::to(['index', 'article' => Yii::$app->request->get('article')]));
-				}
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Article image success created.'));
 				return $this->redirect(['manage']);
+				//return $this->redirect(['view', 'id'=>$model->id]);
 
+			} else {
+				if(Yii::$app->request->isAjax)
+					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Create Article Media');
+		$this->view->title = Yii::t('app', 'Create Image');
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
@@ -149,25 +142,26 @@ class ImageController extends Controller
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
+			// $postData = Yii::$app->request->post();
+			// $model->load($postData);
 			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
-			if(!($model->media_filename instanceof UploadedFile)) {
-				$model->media_filename = $model->old_media_filename;
-			}
 
 			if($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Media success updated.'));
+				Yii::$app->session->setFlash('success', Yii::t('app', 'Article image success updated.'));
 				return $this->redirect(['manage']);
-				//return $this->redirect( Url::to(['index', 'article' => Yii::$app->request->get('article')]));
+
+			} else {
+				if(Yii::$app->request->isAjax)
+					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
 			}
 		}
 
-		$this->view->title = Yii::t('app', 'Update Article Media: {media_filename}', ['media_filename' => $model->media_filename]);
+		$this->view->title = Yii::t('app', 'Update Image: {media-filename}', ['media-filename' => $model->media_filename]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_update', [
 			'model' => $model,
 		]);
-
 	}
 
 	/**
@@ -179,10 +173,10 @@ class ImageController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		$this->view->title = Yii::t('app', 'View Article Media: {media_filename}', ['media_filename' => $model->media_filename]);
+		$this->view->title = Yii::t('app', 'Detail Image: {media-filename}', ['media-filename' => $model->media_filename]);
 		$this->view->description = '';
 		$this->view->keywords = '';
-		return $this->render('admin_view', [
+		return $this->oRender('admin_view', [
 			'model' => $model,
 		]);
 	}
@@ -199,27 +193,7 @@ class ImageController extends Controller
 		$model->publish = 2;
 
 		if($model->save(false, ['publish','modified_id'])) {
-			//return $this->redirect(['view', 'id' => $model->id]);
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Article Media success deleted.'));
-			return $this->redirect(['manage']);
-			//return $this->redirect( Url::to(['index', 'article' => Yii::$app->request->get('article')]));
-		}
-	}
-
-	/**
-	 * actionPublish an existing ArticleMedia model.
-	 * If publish is successful, the browser will be redirected to the 'index' page.
-	 * @param integer $id
-	 * @return mixed
-	 */
-	public function actionPublish($id)
-	{
-		$model = $this->findModel($id);
-		$replace = $model->publish == 1 ? 0 : 1;
-		$model->publish = $replace;
-
-		if($model->save(false, ['publish','modified_id'])) {
-			Yii::$app->session->setFlash('success', Yii::t('app', 'Article Media success updated.'));
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Article image success deleted.'));
 			return $this->redirect(['manage']);
 		}
 	}

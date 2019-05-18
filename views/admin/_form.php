@@ -53,7 +53,7 @@ echo $form->field($model, 'cat_id')
 	->label($model->getAttributeLabel('title')); ?>
 
 <?php $uploadPath = join('/', [Articles::getUploadPath(false), $model->id]);
-if($model->isNewRecord || (!$model->isNewRecord && $model->category->single_photo || $setting->media_image_limit == 1)) {
+if($model->isNewRecord || (!$model->isNewRecord && ($model->category->single_photo || $setting->media_image_limit == 1))) {
 	$cover = !$model->isNewRecord && $model->cover ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->cover])), ['class'=>'mb-3', 'width'=>'100%']) : '';
 	echo $form->field($model, 'image', ['template' => '{label}{beginWrapper}<div>'.$cover.'</div>{input}{error}{hint}{endWrapper}'])
 		->fileInput()
@@ -66,7 +66,7 @@ if($model->isNewRecord || (!$model->isNewRecord && $model->category->single_phot
 	->widget(Redactor::className(), ['clientOptions' => $redactorOptions])
 	->label($model->getAttributeLabel('body')); ?>
 
-<?php if($model->isNewRecord || (!$model->isNewRecord && $model->category->single_file || $setting->media_file_limit == 1)) {
+<?php if($model->isNewRecord || (!$model->isNewRecord && ($model->category->single_file || $setting->media_file_limit == 1))) {
 $file = !$model->isNewRecord && $model->document ? Html::a($model->document, Url::to(join('/', ['@webpublic', $uploadPath, $model->document])), ['class'=>'d-inline-block mb-3']) : '';
 echo $form->field($model, 'file', ['template' => '{label}{beginWrapper}<div>'.$file.'</div>{input}{error}{hint}{endWrapper}'])
 	->fileInput()

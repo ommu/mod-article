@@ -8,6 +8,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 11:00 WIB
+ * @modified date 17 May 2019, 11:45 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -18,7 +19,6 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use ommu\article\models\ArticleMedia as ArticleMediaModel;
-//use ommu\article\models\Articles;
 
 class ArticleMedia extends ArticleMediaModel
 {
@@ -28,8 +28,8 @@ class ArticleMedia extends ArticleMediaModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'cover', 'article_id', 'creation_id', 'modified_id'], 'integer'],
-			[['media_filename', 'caption', 'creation_date', 'modified_date', 'updated_date', 'articleTitle', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
+			[['id', 'publish', 'cover', 'orders', 'article_id', 'creation_id', 'modified_id'], 'integer'],
+			[['media_filename', 'caption', 'description', 'creation_date', 'modified_date', 'updated_date', 'articleTitle', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
 
@@ -65,7 +65,11 @@ class ArticleMedia extends ArticleMediaModel
 			$query = ArticleMediaModel::find()->alias('t');
 		else
 			$query = ArticleMediaModel::find()->alias('t')->select($column);
-		$query->joinWith(['article article', 'creation creation', 'modified modified']);
+		$query->joinWith([
+			'article article', 
+			'creation creation', 
+			'modified modified'
+		]);
 
 		// add conditions that should always apply here
 		$dataParams = [
@@ -104,8 +108,9 @@ class ArticleMedia extends ArticleMediaModel
 
 		// grid filtering conditions
 		$query->andFilterWhere([
-			't.id' => isset($params['id']) ? $params['id'] : $this->id,
+			't.id' => $this->id,
 			't.cover' => $this->cover,
+			't.orders' => $this->orders,
 			't.article_id' => isset($params['article']) ? $params['article'] : $this->article_id,
 			'cast(t.creation_date as date)' => $this->creation_date,
 			't.creation_id' => isset($params['creation']) ? $params['creation'] : $this->creation_id,
@@ -125,6 +130,7 @@ class ArticleMedia extends ArticleMediaModel
 
 		$query->andFilterWhere(['like', 't.media_filename', $this->media_filename])
 			->andFilterWhere(['like', 't.caption', $this->caption])
+			->andFilterWhere(['like', 't.description', $this->description])
 			->andFilterWhere(['like', 'article.title', $this->articleTitle])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
 			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname]);

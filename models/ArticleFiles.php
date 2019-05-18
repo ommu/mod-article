@@ -38,7 +38,6 @@ use yii\helpers\Url;
 use yii\web\UploadedFile;
 use thamtech\uuid\helpers\UuidHelper;
 use ommu\users\models\Users;
-use ommu\article\models\view\Articles as ArticlesView;
 
 class ArticleFiles extends \app\components\ActiveRecord
 {
@@ -69,7 +68,6 @@ class ArticleFiles extends \app\components\ActiveRecord
 		return [
 			[['article_id', ], 'required'],
 			[['publish', 'article_id', 'creation_id', 'modified_id'], 'integer'],
-			[['file_filename'], 'string'],
 			[['file_filename'], 'safe'],
 			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'id']],
 		];
@@ -112,15 +110,6 @@ class ArticleFiles extends \app\components\ActiveRecord
 
 		return $downloads ? $downloads : 0;
 	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getView()
-	{
-		return $this->hasOne(ArticlesView::className(), ['article_id' => 'article_id']);
-	}
-
 
 	/**
 	 * @return \yii\db\ActiveQuery
@@ -179,8 +168,8 @@ class ArticleFiles extends \app\components\ActiveRecord
 		$this->templateColumns['file_filename'] = [
 			'attribute' => 'file_filename',
 			'value' => function($model, $key, $index, $column) {
-				$uploadPath = join('/', [Articles::getUploadPath(false), $model->id]);
-				return $model->file_filename ? Html::img(join('/', [Url::Base(), $uploadPath, $model->file_filename]), ['alt' => $model->file_filename]) : '-';
+				$uploadPath = join('/', [Articles::getUploadPath(false), $model->article_id]);
+				return $model->file_filename ? Html::a($model->file_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->file_filename])), ['alt' => $model->file_filename]) : '-';
 			},
 			'format' => 'html',
 		];
@@ -233,18 +222,6 @@ class ArticleFiles extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 			'format' => 'html',
 		];
-		if(!Yii::$app->request->get('trash')) {
-			$this->templateColumns['publish'] = [
-				'attribute' => 'publish',
-				'value' => function($model, $key, $index, $column) {
-					$url = Url::to(['publish', 'id'=>$model->primaryKey]);
-					return $this->quickAction($url, $model->publish);
-				},
-				'filter' => $this->filterYesNo(),
-				'contentOptions' => ['class'=>'center'],
-				'format' => 'raw',
-			];
-		}
 	}
 
 	/**
@@ -283,31 +260,25 @@ class ArticleFiles extends \app\components\ActiveRecord
 	 */
 	public function beforeValidate()
 	{
+		$setting = $this->article->getSetting(['media_file_type']);
+
 		if(parent::beforeValidate()) {
+			if($this->file_filename instanceof UploadedFile && !$this->file_filename->getHasError()) {
+				$fileFileType = $this->formatFileType($setting->media_file_type);
+				if(!in_array(strtolower($this->file_filename->getExtension()), $fileFileType)) {
+					$this->addError('file_filename', Yii::t('app', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
+						'name'=>$this->file_filename->name,
+						'extensions'=>$this->formatFileType($fileFileType, false),
+					]));
+				}
+			}
+
 			if($this->isNewRecord) {
 				if($this->creation_id == null)
 					$this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
 			} else {
 				if($this->modified_id == null)
 					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			}
-			//single file
-			if($this->isNewRecord){
-				if (Yii::$app->request->get('article')){
-					$savearticle_id = Yii::$app->request->get('article');
-				} 
-				else {
-					$savearticle_id = $this->article_id;
-				}
-
-				$cekcategory = Articles::find()->where(['article_id'=>$savearticle_id])->one();
-				$cat_id = $cekcategory->cat_id;
-				$category = ArticleCategory::find()->where(['cat_id'=>$cat_id,'publish'=>1])->one();
-				if ($category->single_file == 1){
-						if (Self::find()->where(['article_id'=>$savearticle_id,'publish'=>1])->all()!=null){
-						$this->addError('publish', 'tidak dapat menambahkan file lagi karena single file');
-					}
-				}
 			}
 		}
 		return true;
@@ -319,47 +290,23 @@ class ArticleFiles extends \app\components\ActiveRecord
 	public function beforeSave($insert)
 	{
 		if(parent::beforeSave($insert)) {
-			if(!$insert) {
-				$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
-				$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
-				$this->createUploadDirectory(Articles::getUploadPath(), $this->article_id);
+			$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
+			$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
+			$this->createUploadDirectory(Articles::getUploadPath(), $this->article_id);
 
-				// $this->file_filename = UploadedFile::getInstance($this, 'file_filename');
-				if($this->file_filename instanceof UploadedFile && !$this->file_filename->getHasError()) {
-					$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->file_filename->getExtension()); 
-					if($this->file_filename->saveAs(join('/', [$uploadPath, $fileName]))) {
-						if($this->old_file_filename != '' && file_exists(join('/', [$uploadPath, $this->old_file_filename])))
-							rename(join('/', [$uploadPath, $this->old_file_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_change_'.$this->old_file_filename]));
-						$this->file_filename = $fileName;
-					}
-				} else {
-					if($this->file_filename == '')
-						$this->file_filename = $this->old_file_filename;
+			if($this->file_filename instanceof UploadedFile && !$this->file_filename->getHasError()) {
+				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->file_filename->getExtension()); 
+				if($this->file_filename->saveAs(join('/', [$uploadPath, $fileName]))) {
+					if($this->old_file_filename != '' && file_exists(join('/', [$uploadPath, $this->old_file_filename])))
+						rename(join('/', [$uploadPath, $this->old_file_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_change_'.$this->old_file_filename]));
+					$this->file_filename = $fileName;
 				}
+			} else {
+				if($this->file_filename == '')
+					$this->file_filename = $this->old_file_filename;
 			}
 		}
 		return true;
-	}
-
-	/**
-	 * After save attributes
-	 */
-	public function afterSave($insert, $changedAttributes)
-	{
-		parent::afterSave($insert, $changedAttributes);
-
-		$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
-		$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
-		$this->createUploadDirectory(Articles::getUploadPath(), $this->article_id);
-
-		if($insert) {
-			// $this->file_filename = UploadedFile::getInstance($this, 'file_filename');
-			if($this->file_filename instanceof UploadedFile && !$this->file_filename->getHasError()) {
-				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->file_filename->getExtension()); 
-				if($this->file_filename->saveAs(join('/', [$uploadPath, $fileName])))
-					self::updateAll(['file_filename' => $fileName], ['id' => $this->id]);
-			}
-		}
 	}
 
 	/**

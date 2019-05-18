@@ -9,6 +9,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 11:09 WIB
+ * @modified date 17 May 2019, 11:45 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -16,51 +17,74 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
+use ommu\article\models\Articles;
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Article Files'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Files'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = $model->file_filename;
 
 $this->params['menu']['content'] = [
+	['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
 	['label' => Yii::t('app', 'Update'), 'url' => Url::to(['update', 'id'=>$model->id]), 'icon' => 'pencil', 'htmlOptions' => ['class'=>'btn btn-primary']],
 	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
 ];
 ?>
 
+<div class="article-files-view">
+
 <?php
 $attributes = [
 	'id',
 	[
-		'attribute' => 'publish',
-		'value' => $model->publish == 1 ? Yii::t('app', 'Yes') : Yii::t('app', 'No'),
-	],
-	[
-		'attribute' => 'article_search',
-		'value' => $model->article->title,
+		'attribute' => 'articleTitle',
+		'value' => function ($model) {
+			$articleTitle = isset($model->article) ? $model->article->title : '-';
+			if($articleTitle != '-')
+				return Html::a($articleTitle, ['admin/view', 'id'=>$model->article_id], ['title'=>$articleTitle, 'class'=>'modal-btn']);
+			return $articleTitle;
+		},
+		'format' => 'html',
 	],
 	[
 		'attribute' => 'file_filename',
-		'value' => $model->file_filename ? $model->file_filename : '-',
+		'value' => function ($model) {
+			$uploadPath = join('/', [Articles::getUploadPath(false), $model->article_id]);
+			return $model->file_filename ? Html::a($model->file_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->file_filename])), ['width' => '100%']) : '-';
+		},
 		'format' => 'html',
 	],
 	[
 		'attribute' => 'creation_date',
-		'value' => !in_array($model->creation_date, ['0000-00-00 00:00:00','1970-01-01 00:00:00']) ? Yii::$app->formatter->format($model->creation_date, 'datetime') : '-',
+		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
 	],
 	[
 		'attribute' => 'creationDisplayname',
-		'value' => $model->creation_id ? $model->creation->displayname : '-',
+		'value' => isset($model->creation) ? $model->creation->displayname : '-',
 	],
 	[
 		'attribute' => 'modified_date',
-		'value' => !in_array($model->modified_date, ['0000-00-00 00:00:00','1970-01-01 00:00:00']) ? Yii::$app->formatter->format($model->modified_date, 'datetime') : '-',
+		'value' => Yii::$app->formatter->asDatetime($model->modified_date, 'medium'),
 	],
 	[
 		'attribute' => 'modifiedDisplayname',
-		'value' => $model->modified_id ? $model->modified->displayname : '-',
+		'value' => isset($model->modified) ? $model->modified->displayname : '-',
 	],
 	[
 		'attribute' => 'updated_date',
-		'value' => !in_array($model->updated_date, ['0000-00-00 00:00:00','1970-01-01 00:00:00']) ? Yii::$app->formatter->format($model->updated_date, 'datetime') : '-',
+		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
+	],
+	[
+		'attribute' => 'downloads',
+		'value' => function ($model) {
+			$downloads = $model->getDownloads(true);
+			return Html::a($downloads, ['o/download/manage', 'file'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} downloads', ['count'=>$downloads])]);
+		},
+		'format' => 'html',
+	],
+	[
+		'attribute' => '',
+		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary']),
+		'format' => 'html',
+		'visible' => Yii::$app->request->isAjax ? true : false,
 	],
 ];
 
@@ -71,3 +95,5 @@ echo DetailView::widget([
 	],
 	'attributes' => $attributes,
 ]); ?>
+
+</div>

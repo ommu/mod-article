@@ -17,6 +17,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
+use ommu\article\models\Articles;
 
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Articles'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->title;
@@ -43,6 +44,14 @@ $attributes = [
 		'format' => 'html',
 	],
 	'title',
+	[
+		'attribute' => 'image',
+		'value' => function ($model) {
+			$uploadPath = join('/', [Articles::getUploadPath(false), $model->id]);
+			return $model->cover ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->cover])), ['width' => '100%']) : '-';
+		},
+		'format' => 'html',
+	],
 	[
 		'attribute' => 'body',
 		'value' => $model->body ? $model->body : '-',
@@ -105,7 +114,7 @@ $attributes = [
 		'attribute' => 'media',
 		'value' => function ($model) {
 			$media = $model->getMedias('count');
-			return Html::a($media, ['o/media/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} media', ['count'=>$media])]);
+			return Html::a($media, ['o/image/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} media', ['count'=>$media])]);
 		},
 		'format' => 'html',
 	],
