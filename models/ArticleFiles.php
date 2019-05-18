@@ -51,6 +51,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 	public $articleTitle;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
+	public $redirectUpdate;
 
 	/**
 	 * @return string the associated database table name
@@ -67,7 +68,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 	{
 		return [
 			[['article_id', ], 'required'],
-			[['publish', 'article_id', 'creation_id', 'modified_id'], 'integer'],
+			[['publish', 'article_id', 'creation_id', 'modified_id', 'redirectUpdate'], 'integer'],
 			[['file_filename'], 'safe'],
 			[['article_id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['article_id' => 'id']],
 		];
@@ -82,17 +83,18 @@ class ArticleFiles extends \app\components\ActiveRecord
 			'id' => Yii::t('app', 'ID'),
 			'publish' => Yii::t('app', 'Publish'),
 			'article_id' => Yii::t('app', 'Article'),
-			'file_filename' => Yii::t('app', 'File Filename'),
+			'file_filename' => Yii::t('app', 'Document File'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
 			'creation_id' => Yii::t('app', 'Creation'),
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
-			'old_file_filename' => Yii::t('app', 'Old File Filename'),
+			'old_file_filename' => Yii::t('app', 'Old Document'),
 			'downloads' => Yii::t('app', 'Downloads'),
 			'articleTitle' => Yii::t('app', 'Article'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
+			'redirectUpdate' => Yii::t('app', 'Redirect to Update'),
 		];
 	}
 
@@ -156,7 +158,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		if(!Yii::$app->request->get('article')) {
+		if(!Yii::$app->request->get('article') && !Yii::$app->request->get('id')) {
 			$this->templateColumns['articleTitle'] = [
 				'attribute' => 'articleTitle',
 				'value' => function($model, $key, $index, $column) {
@@ -271,6 +273,9 @@ class ArticleFiles extends \app\components\ActiveRecord
 						'extensions'=>$this->formatFileType($fileFileType, false),
 					]));
 				}
+			} else {
+				if($this->isNewRecord)
+					$this->addError('file_filename', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('file_filename')]));
 			}
 
 			if($this->isNewRecord) {

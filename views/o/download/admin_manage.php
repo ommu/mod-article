@@ -56,7 +56,7 @@ echo DetailView::widget([
 			'attribute' => 'file_filename',
 			'value' => function ($model) {
 				$uploadPath = Articles::getUploadPath(false);
-				return $model->file_filename ? Html::a($model->file_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->file_filename])), ['width' => '100%']).'<br/><br/>'.$model->file_filename : '-';
+				return $model->file_filename ? Html::a($model->file_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->file_filename]))) : '-';
 			},
 			'format' => 'html',
 		],

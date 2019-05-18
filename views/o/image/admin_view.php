@@ -53,7 +53,7 @@ $attributes = [
 		'attribute' => 'media_filename',
 		'value' => function ($model) {
 			$uploadPath = join('/', [Articles::getUploadPath(false), $model->article_id]);
-			return $model->media_filename ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->media_filename])), ['width' => '100%']).'<br/><br/>'.$model->media_filename : '-';
+			return $model->media_filename ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->media_filename])), ['class'=>'mb-3']).$model->media_filename : '-';
 		},
 		'format' => 'html',
 	],

@@ -53,6 +53,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 	public $articleTitle;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
+	public $redirectUpdate;
 
 	/**
 	 * @return string the associated database table name
@@ -69,7 +70,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 	{
 		return [
 			[['article_id'], 'required'],
-			[['publish', 'cover', 'orders', 'article_id', 'creation_id', 'modified_id'], 'integer'],
+			[['publish', 'cover', 'orders', 'article_id', 'creation_id', 'modified_id', 'redirectUpdate'], 'integer'],
 			[['caption', 'description'], 'string'],
 			[['orders', 'media_filename', 'caption', 'description'], 'safe'],
 			[['caption'], 'string', 'max' => 150],
@@ -88,7 +89,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 			'cover' => Yii::t('app', 'Cover'),
 			'orders' => Yii::t('app', 'Orders'),
 			'article_id' => Yii::t('app', 'Article'),
-			'media_filename' => Yii::t('app', 'Media Filename'),
+			'media_filename' => Yii::t('app', 'Image File'),
 			'caption' => Yii::t('app', 'Caption'),
 			'description' => Yii::t('app', 'Description'),
 			'creation_date' => Yii::t('app', 'Creation Date'),
@@ -96,10 +97,11 @@ class ArticleMedia extends \app\components\ActiveRecord
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
-			'old_media_filename' => Yii::t('app', 'Old Media Filename'),
+			'old_media_filename' => Yii::t('app', 'Old Image'),
 			'articleTitle' => Yii::t('app', 'Article'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
+			'redirectUpdate' => Yii::t('app', 'Redirect to Update'),
 		];
 	}
 
@@ -148,7 +150,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		if(!Yii::$app->request->get('article')) {
+		if(!Yii::$app->request->get('article') && !Yii::$app->request->get('id')) {
 			$this->templateColumns['articleTitle'] = [
 				'attribute' => 'articleTitle',
 				'value' => function($model, $key, $index, $column) {
@@ -280,6 +282,9 @@ class ArticleMedia extends \app\components\ActiveRecord
 						'extensions'=>$this->formatFileType($imageFileType, false),
 					]));
 				}
+			} else {
+				if($this->isNewRecord)
+					$this->addError('media_filename', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('media_filename')]));
 			}
 
 			if($this->isNewRecord) {

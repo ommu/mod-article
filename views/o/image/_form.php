@@ -43,7 +43,7 @@ $redactorOptions = [
 
 <?php //echo $form->errorSummary($model);?>
 <?php $uploadPath = join('/', [Articles::getUploadPath(false), $model->article_id]);
-$mediaFilename = !$model->isNewRecord && $model->old_media_filename != '' ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_media_filename])), ['class'=>'mb-15', 'width'=>'100%']) : '';
+$mediaFilename = !$model->isNewRecord && $model->old_media_filename != '' ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_media_filename])), ['class'=>'mb-3']) : '';
 echo $form->field($model, 'media_filename', ['template' => '{label}{beginWrapper}<div>'.$mediaFilename.'</div>{input}{error}{hint}{endWrapper}'])
 	->fileInput()
 	->label($model->getAttributeLabel('media_filename')); ?>
@@ -64,6 +64,12 @@ echo $form->field($model, 'media_filename', ['template' => '{label}{beginWrapper
 <?php echo $form->field($model, 'cover')
 	->checkbox()
 	->label($model->getAttributeLabel('cover')); ?>
+
+<?php if($model->isNewRecord) {
+	echo $form->field($model, 'redirectUpdate')
+		->checkbox()
+		->label($model->getAttributeLabel('redirectUpdate'));
+} ?>
 
 <div class="ln_solid"></div>
 

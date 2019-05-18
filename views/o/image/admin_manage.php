@@ -24,9 +24,11 @@ use ommu\article\models\Articles;
 
 $this->params['breadcrumbs'][] = $this->title;
 
-$this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Add Media'), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
-];
+if(($id = Yii::$app->request->get('id')) != null) {
+	$this->params['menu']['content'] = [
+		['label' => Yii::t('app', 'Add Media'), 'url' => Url::to(['create', 'id'=>$id]), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
+	];
+}
 $this->params['menu']['option'] = [
 	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],
 	['label' => Yii::t('app', 'Grid Option'), 'url' => 'javascript:void(0);'],
@@ -70,7 +72,7 @@ echo DetailView::widget([
 		],
 		[
 			'attribute' => 'published_date',
-			'value' => Yii::$app->formatter->asDatetime($model->published_date, 'medium'),
+			'value' => Yii::$app->formatter->asDate($model->published_date, 'medium'),
 		],
 		[
 			'attribute' => 'headline_date',

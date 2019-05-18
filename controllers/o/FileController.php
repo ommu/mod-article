@@ -40,6 +40,15 @@ class FileController extends Controller
 	/**
 	 * {@inheritdoc}
 	 */
+	public function init()
+	{
+		parent::init();
+		$this->subMenu = $this->module->params['article_submenu'];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function behaviors()
 	{
 		return [
@@ -70,6 +79,8 @@ class FileController extends Controller
 	public function actionManage()
 	{
 		$searchModel = new ArticleFilesSearch();
+		if(($id = Yii::$app->request->get('id')) != null)
+			$searchModel = new ArticleFilesSearch(['article_id'=>$id]);
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		$gridColumn = Yii::$app->request->get('GridColumn', null);
@@ -103,7 +114,11 @@ class FileController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model = new ArticleFiles();
+		if(($id = Yii::$app->request->get('id')) == null)
+			throw new \yii\web\NotAcceptableHttpException(Yii::t('app', 'The requested page does not exist.'));
+
+		$model = new ArticleFiles(['article_id'=>$id]);
+		$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
@@ -113,14 +128,20 @@ class FileController extends Controller
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article file success created.'));
-				return $this->redirect(['manage']);
-				//return $this->redirect(['view', 'id'=>$model->id]);
+				if($model->redirectUpdate)
+					return $this->redirect(['update', 'id'=>$model->id]);
+				return $this->redirect(['manage', 'id'=>$model->article_id]);
 
 			} else {
 				if(Yii::$app->request->isAjax)
 					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
 			}
 		}
+
+		if($model->article->category->single_photo || $setting->media_image_limit == 1)
+			unset($this->subMenu['photo']);
+		if($model->article->category->single_file || $setting->media_file_limit == 1)
+			unset($this->subMenu['document']);
 
 		$this->view->title = Yii::t('app', 'Create File');
 		$this->view->description = '';
@@ -139,6 +160,8 @@ class FileController extends Controller
 	public function actionUpdate($id)
 	{
 		$model = $this->findModel($id);
+		$this->subMenuParam = $model->article_id;
+		$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
@@ -148,13 +171,18 @@ class FileController extends Controller
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article file success updated.'));
-				return $this->redirect(['manage']);
+				return $this->redirect(['update', 'id'=>$model->id]);
 
 			} else {
 				if(Yii::$app->request->isAjax)
 					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
 			}
 		}
+
+		if($model->article->category->single_photo || $setting->media_image_limit == 1)
+			unset($this->subMenu['photo']);
+		if($model->article->category->single_file || $setting->media_file_limit == 1)
+			unset($this->subMenu['document']);
 
 		$this->view->title = Yii::t('app', 'Update File: {file-filename}', ['file-filename' => $model->file_filename]);
 		$this->view->description = '';
@@ -172,6 +200,13 @@ class FileController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
+		$this->subMenuParam = $model->article_id;
+		$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
+
+		if($model->article->category->single_photo || $setting->media_image_limit == 1)
+			unset($this->subMenu['photo']);
+		if($model->article->category->single_file || $setting->media_file_limit == 1)
+			unset($this->subMenu['document']);
 
 		$this->view->title = Yii::t('app', 'Detail File: {file-filename}', ['file-filename' => $model->file_filename]);
 		$this->view->description = '';
@@ -194,7 +229,7 @@ class FileController extends Controller
 
 		if($model->save(false, ['publish','modified_id'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article file success deleted.'));
-			return $this->redirect(['manage']);
+			return $this->redirect(['manage', 'id'=>$model->article_id]);
 		}
 	}
 

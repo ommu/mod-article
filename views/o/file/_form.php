@@ -41,6 +41,12 @@ echo $form->field($model, 'file_filename', ['template' => '{label}{beginWrapper}
 	->fileInput()
 	->label($model->getAttributeLabel('file_filename')); ?>
 
+<?php if($model->isNewRecord) {
+	echo $form->field($model, 'redirectUpdate')
+		->checkbox()
+		->label($model->getAttributeLabel('redirectUpdate'));
+} ?>
+
 <div class="ln_solid"></div>
 
 <?php echo $form->field($model, 'submitButton')

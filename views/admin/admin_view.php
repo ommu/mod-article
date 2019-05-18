@@ -48,7 +48,7 @@ $attributes = [
 		'attribute' => 'image',
 		'value' => function ($model) {
 			$uploadPath = join('/', [Articles::getUploadPath(false), $model->id]);
-			return $model->cover ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->cover])), ['width' => '100%']) : '-';
+			return $model->cover ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->cover]))) : '-';
 		},
 		'format' => 'html',
 	],
