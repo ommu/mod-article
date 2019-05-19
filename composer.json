@@ -41,7 +41,7 @@
 	},
 	"extra": {
 		"branch-alias": {
-			"v2.x-dev": "@dev2"
+			"v2.x-dev": "v2-dev"
 		}
 	}
 }
