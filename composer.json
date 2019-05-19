@@ -38,5 +38,10 @@
 		"psr-4": {
 			"ommu\\article\\": ""
 		}
+	},
+	"extra": {
+		"branch-alias": {
+			"v2.x-dev": "@dev2"
+		}
 	}
 }
