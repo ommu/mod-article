@@ -1,6 +1,7 @@
 {
 	"name": "ommu/article",
 	"description": "Article Module from Ommu Platform",
+	"type": "ommu-module",
 	"keywords": [
 		"module",
 		"article",
@@ -9,9 +10,8 @@
 		"ommu-platform",
 		"yii2"
 	],
-	"homepage": "https://github.com/ommu/mod-article",
-	"type": "ommu-module",
 	"license": "Apache-2.0",
+	"homepage": "https://github.com/ommu/mod-article",
 	"support": {
 		"issues": "https://github.com/ommu/mod-article/issues",
 		"wiki": "https://github.com/ommu/mod-article/wiki",
