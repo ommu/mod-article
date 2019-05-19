@@ -456,8 +456,11 @@ class Articles extends \app\components\ActiveRecord
 			$this->templateColumns['headline'] = [
 				'attribute' => 'headline',
 				'value' => function($model, $key, $index, $column) {
+					$setting = $model->getSetting(['headline_category']);
+					if(!in_array($model->cat_id, $setting->headline_category))
+						return '-';
 					$url = Url::to(['headline', 'id'=>$model->primaryKey]);
-					return $this->quickAction($url, $model->headline, 'Headline,Unheadline', true);
+					return $this->quickAction($url, $model->headline, 'Yes,No', true);
 				},
 				'filter' => $this->filterYesNo(),
 				'contentOptions' => ['class'=>'center'],

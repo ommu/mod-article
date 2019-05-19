@@ -13,6 +13,7 @@
  *	Update
  *	View
  *	Delete
+ *	Cover
  *
  *	findModel
  *
@@ -34,9 +35,15 @@ use mdm\admin\components\AccessControl;
 use ommu\article\models\ArticleMedia;
 use ommu\article\models\search\ArticleMedia as ArticleMediaSearch;
 use yii\web\UploadedFile;
+use ommu\article\models\Articles;
+use yii\web\HttpException;
+use thamtech\uuid\helpers\UuidHelper;
+use yii\helpers\Json;
 
 class ImageController extends Controller
 {
+	use \ommu\traits\FileTrait;
+
 	/**
 	 * {@inheritdoc}
 	 */
@@ -60,6 +67,7 @@ class ImageController extends Controller
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['POST'],
+					'upload' => ['POST'],
 				],
 			],
 		];
@@ -237,6 +245,23 @@ class ImageController extends Controller
 	}
 
 	/**
+	 * actionCover an existing Articles model.
+	 * If headline is successful, the browser will be redirected to the 'index' page.
+	 * @param integer $id
+	 * @return mixed
+	 */
+	public function actionCover($id)
+	{
+		$model = $this->findModel($id);
+		$model->cover = 1;
+
+		if($model->save(false, ['cover','modified_id'])) {
+			Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success updated.'));
+			return $this->redirect(['manage', 'id'=>$model->article_id]);
+		}
+	}
+
+	/**
 	 * Finds the ArticleMedia model based on its primary key value.
 	 * If the model is not found, a 404 HTTP exception will be thrown.
 	 * @param integer $id
@@ -249,5 +274,54 @@ class ImageController extends Controller
 			return $model;
 
 		throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function actionUpload()
+	{
+		// Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+		if(($id = Yii::$app->request->get('id')) == null)
+			throw new \yii\web\NotAcceptableHttpException(Yii::t('app', 'The requested page does not exist.'));
+
+		$model = new ArticleMedia(['article_id'=>$id]);
+		$setting = $model->article->getSetting(['media_image_resize', 'media_image_resize_size', 'media_image_type']);
+
+		$uploadPath = join('/', [Articles::getUploadPath(), $id]);
+
+		if(Yii::$app->request->isPost) {
+			$imageFilename = UploadedFile::getInstanceByName('media_filename');
+			if ($imageFilename->getHasError())
+				throw new HttpException(500, Yii::t('app', 'Upload error'));
+
+			$imageFileType = $this->formatFileType($setting->media_image_type);
+			if(!in_array(strtolower($imageFilename->getExtension()), $imageFileType)) {
+				throw new HttpException(500, Yii::t('app', 'This file cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
+					'extensions'=>$this->formatFileType($imageFileType, false),
+				]));
+			}
+
+			$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($imageFilename->getExtension());
+			if($imageFilename->saveAs(join('/', [$uploadPath, $fileName]))) {
+				$imageResize = $setting->media_image_resize_size;
+				if($setting->media_image_resize)
+					$this->resizeImage(join('/', [$uploadPath, $fileName]), $imageResize['width'], $imageResize['height']);
+				$model->media_filename = $fileName;
+			}
+
+			if($model->save()) {
+				$response = [
+					'filename' => $fileName,
+				];
+
+				return Json::encode($response);
+
+			} else {
+				if(Yii::$app->request->isAjax)
+					return Json::encode(\app\components\widgets\ActiveForm::validate($model));
+			}
+		}
 	}
 }

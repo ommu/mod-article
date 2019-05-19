@@ -228,10 +228,12 @@ class ArticleMedia extends \app\components\ActiveRecord
 		$this->templateColumns['cover'] = [
 			'attribute' => 'cover',
 			'value' => function($model, $key, $index, $column) {
-				return $this->filterYesNo($model->cover);
+				$url = Url::to(['cover', 'id'=>$model->primaryKey]);
+				return $this->quickAction($url, $model->cover, 'Yes,No', true);
 			},
 			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class'=>'center'],
+			'format' => 'raw',
 		];
 	}
 
@@ -283,7 +285,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 					]));
 				}
 			} else {
-				if($this->isNewRecord)
+				if($this->isNewRecord && $this->media_filename == '')
 					$this->addError('media_filename', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('media_filename')]));
 			}
 
@@ -303,6 +305,8 @@ class ArticleMedia extends \app\components\ActiveRecord
 	 */
 	public function beforeSave($insert)
 	{
+		$setting = $this->article->getSetting(['media_image_resize', 'media_image_resize_size']);
+
 		if(parent::beforeSave($insert)) {
 			$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
 			$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
@@ -311,6 +315,9 @@ class ArticleMedia extends \app\components\ActiveRecord
 			if($this->media_filename instanceof UploadedFile && !$this->media_filename->getHasError()) {
 				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->media_filename->getExtension()); 
 				if($this->media_filename->saveAs(join('/', [$uploadPath, $fileName]))) {
+					$imageResize = $setting->media_image_resize_size;
+					if($setting->media_image_resize)
+						$this->resizeImage(join('/', [$uploadPath, $fileName]), $imageResize['width'], $imageResize['height']);
 					if($this->old_media_filename != '' && file_exists(join('/', [$uploadPath, $this->old_media_filename])))
 						rename(join('/', [$uploadPath, $this->old_media_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_change_'.$this->old_media_filename]));
 					$this->media_filename = $fileName;
@@ -321,6 +328,21 @@ class ArticleMedia extends \app\components\ActiveRecord
 			}
 		}
 		return true;
+	}
+		
+
+	/**
+	 * After save attributes
+	 */
+	public function afterSave($insert, $changedAttributes)
+	{
+		parent::afterSave($insert, $changedAttributes);
+
+		// Reset cover
+		if(array_key_exists('cover', $changedAttributes) && ($changedAttributes['cover'] != $this->cover) && $this->cover == 1)
+			self::updateAll(['cover' => 0], 
+				'article_id = :article AND publish <> :publish AND id <> :media', 
+				[':article'=>$this->article_id, ':publish'=>2, ':media'=>$this->id]);
 	}
 
 	/**

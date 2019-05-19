@@ -36,7 +36,8 @@ $attributes = [
 	'id',
 	[
 		'attribute' => 'cover',
-		'value' => $model->filterYesNo($model->cover),
+		'value' => $model->quickAction(Url::to(['cover', 'id'=>$model->primaryKey]), $model->cover, 'Yes,No', true),
+		'format' => 'raw',
 	],
 	'orders',
 	[

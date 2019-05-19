@@ -22,7 +22,6 @@ use yii\redactor\widgets\Redactor;
 use ommu\article\models\ArticleCategory;
 use ommu\article\models\Articles;
 use ommu\selectize\Selectize;
-use devgroup\dropzone\DropZone;
 
 $redactorOptions = [
 	'imageManagerJson' => ['/redactor/upload/image-json'],

@@ -110,7 +110,7 @@ class AdminController extends Controller
 	public function actionCreate()
 	{
 		$model = new Articles();
-		$setting = $model->getSetting(['headline', 'media_image_type', 'media_file_type']);
+		$setting = $model->getSetting(['headline', 'headline_category', 'media_image_type', 'media_file_type']);
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
@@ -148,8 +148,7 @@ class AdminController extends Controller
 	public function actionUpdate($id)
 	{
 		$model = $this->findModel($id);
-		if($model->category->single_photo)
-		$setting = $model->getSetting(['headline', 'media_image_limit', 'media_image_type', 'media_file_limit', 'media_file_type']);
+		$setting = $model->getSetting(['headline', 'headline_category', 'media_image_limit', 'media_image_type', 'media_file_limit', 'media_file_type']);
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
