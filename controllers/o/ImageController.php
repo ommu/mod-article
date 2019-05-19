@@ -14,6 +14,7 @@
  *	View
  *	Delete
  *	Cover
+ *	Upload
  *
  *	findModel
  *

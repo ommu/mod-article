@@ -274,7 +274,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 					]));
 				}
 			} else {
-				if($this->isNewRecord)
+				if($this->isNewRecord && $this->file_filename == '')
 					$this->addError('file_filename', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('file_filename')]));
 			}
 

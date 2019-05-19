@@ -13,6 +13,7 @@
  *	Update
  *	View
  *	Delete
+ *	Upload
  *
  *	findModel
  *
@@ -34,9 +35,15 @@ use mdm\admin\components\AccessControl;
 use ommu\article\models\ArticleFiles;
 use ommu\article\models\search\ArticleFiles as ArticleFilesSearch;
 use yii\web\UploadedFile;
+use ommu\article\models\Articles;
+use yii\web\HttpException;
+use thamtech\uuid\helpers\UuidHelper;
+use yii\helpers\Json;
 
 class FileController extends Controller
 {
+	use \ommu\traits\FileTrait;
+
 	/**
 	 * {@inheritdoc}
 	 */
@@ -60,6 +67,7 @@ class FileController extends Controller
 				'class' => VerbFilter::className(),
 				'actions' => [
 					'delete' => ['POST'],
+					'upload' => ['POST'],
 				],
 			],
 		];
@@ -249,5 +257,50 @@ class FileController extends Controller
 			return $model;
 
 		throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function actionUpload()
+	{
+		// Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+
+		if(($id = Yii::$app->request->get('id')) == null)
+			throw new \yii\web\NotAcceptableHttpException(Yii::t('app', 'The requested page does not exist.'));
+
+		$model = new ArticleFiles(['article_id'=>$id]);
+		$setting = $model->article->getSetting(['media_file_type']);
+
+		$uploadPath = join('/', [Articles::getUploadPath(), $id]);
+
+		if(Yii::$app->request->isPost) {
+			$fileFilename = UploadedFile::getInstanceByName('file_filename');
+			if ($fileFilename->getHasError())
+				throw new HttpException(500, Yii::t('app', 'Upload error'));
+
+			$fileFileType = $this->formatFileType($setting->media_file_type);
+			if(!in_array(strtolower($fileFilename->getExtension()), $fileFileType)) {
+				throw new HttpException(500, Yii::t('app', 'This file cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
+					'extensions'=>$this->formatFileType($fileFileType, false),
+				]));
+			}
+
+			$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($fileFilename->getExtension());
+			if($fileFilename->saveAs(join('/', [$uploadPath, $fileName])))
+				$model->file_filename = $fileName;
+
+			if($model->save()) {
+				$response = [
+					'filename' => $fileName,
+				];
+
+				return Json::encode($response);
+
+			} else {
+				if(Yii::$app->request->isAjax)
+					return Json::encode(\app\components\widgets\ActiveForm::validate($model));
+			}
+		}
 	}
 }

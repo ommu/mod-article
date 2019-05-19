@@ -21,6 +21,7 @@ use app\components\grid\GridView;
 use yii\widgets\Pjax;
 use yii\widgets\DetailView;
 use ommu\article\models\Articles;
+use devgroup\dropzone\DropZone;
 
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -81,6 +82,13 @@ echo DetailView::widget([
 	],
 ]);
 }?>
+
+<?php echo DropZone::widget([
+	'name' => 'file_filename',
+	'url' => Url::to(['o/file/upload', 'id'=>$id]),
+	'htmlOptions' => ['class'=>'mb-4'],
+	'message' => Yii::t('app', 'Drop documents here to upload'),
+]); ?>
 
 <?php //echo $this->render('_search', ['model'=>$searchModel]); ?>
 
