@@ -41,6 +41,7 @@ use yii\helpers\Url;
 use yii\web\UploadedFile;
 use thamtech\uuid\helpers\UuidHelper;
 use ommu\users\models\Users;
+use yii\helpers\ArrayHelper;
 
 class ArticleMedia extends \app\components\ActiveRecord
 {
@@ -289,6 +290,12 @@ class ArticleMedia extends \app\components\ActiveRecord
 					$this->addError('media_filename', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('media_filename')]));
 			}
 
+			if($this->cover == null) {
+				$medias = $this->article->medias;
+				if(empty($medias))
+					$this->cover = 1;
+			}
+
 			if($this->isNewRecord) {
 				if($this->creation_id == null)
 					$this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
@@ -329,16 +336,28 @@ class ArticleMedia extends \app\components\ActiveRecord
 		}
 		return true;
 	}
-		
 
 	/**
 	 * After save attributes
 	 */
 	public function afterSave($insert, $changedAttributes)
 	{
-		parent::afterSave($insert, $changedAttributes);
+		$setting = $this->article->getSetting(['media_image_limit']);
 
-		// Reset cover
+		parent::afterSave($insert, $changedAttributes);
+		
+		// delete other photo (media_image_limit = 1)
+		if($setting->media_image_limit == 1) {
+			$medias = self::find()
+				->where(['article_id'=>$this->article_id])
+				->andWhere(['<>', 'publish', 2])
+				->andWhere(['<>', 'id', $this->id])
+				->all();
+			$mediaId = ArrayHelper::map($medias, 'id', 'id');
+			self::updateAll(['publish' => 2], ['IN', 'id', $mediaId]);
+		}
+
+		// update cover (new cover = 1)
 		if(array_key_exists('cover', $changedAttributes) && ($changedAttributes['cover'] != $this->cover) && $this->cover == 1)
 			self::updateAll(['cover' => 0], 
 				'article_id = :article AND publish <> :publish AND id <> :media', 
@@ -358,5 +377,9 @@ class ArticleMedia extends \app\components\ActiveRecord
 		if($this->media_filename != '' && file_exists(join('/', [$uploadPath, $this->media_filename])))
 			rename(join('/', [$uploadPath, $this->media_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_deleted_'.$this->media_filename]));
 
+		// reset cover (delete photo, cover = 1)
+		$medias = $this->article->medias;
+		if(!empty($medias) && $this->cover == 1)
+			self::findOne($medias[0]->id)->updateAttributes(['cover'=>1]);
 	}
 }

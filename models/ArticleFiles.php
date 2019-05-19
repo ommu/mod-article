@@ -38,6 +38,7 @@ use yii\helpers\Url;
 use yii\web\UploadedFile;
 use thamtech\uuid\helpers\UuidHelper;
 use ommu\users\models\Users;
+use yii\helpers\ArrayHelper;
 
 class ArticleFiles extends \app\components\ActiveRecord
 {
@@ -45,7 +46,6 @@ class ArticleFiles extends \app\components\ActiveRecord
 	use \ommu\traits\FileTrait;
 
 	public $gridForbiddenColumn = ['creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname','updated_date'];
-
 
 	public $old_file_filename;
 	public $articleTitle;
@@ -312,6 +312,27 @@ class ArticleFiles extends \app\components\ActiveRecord
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * After save attributes
+	 */
+	public function afterSave($insert, $changedAttributes)
+	{
+		$setting = $this->article->getSetting(['media_file_limit']);
+
+		parent::afterSave($insert, $changedAttributes);
+		
+		// delete other photo (media_file_limit = 1)
+		if($setting->media_file_limit == 1) {
+			$medias = self::find()
+				->where(['article_id'=>$this->article_id])
+				->andWhere(['<>', 'publish', 2])
+				->andWhere(['<>', 'id', $this->id])
+				->all();
+			$mediaId = ArrayHelper::map($medias, 'id', 'id');
+			self::updateAll(['publish' => 2], ['IN', 'id', $mediaId]);
+		}
 	}
 
 	/**
