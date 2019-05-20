@@ -108,7 +108,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 
 		$model = ArticleDownloads::find()
 			->where(['file_id' => $this->id]);
-		$downloads = $model->count();
+		$downloads = $model->sum('downloads');
 
 		return $downloads ? $downloads : 0;
 	}

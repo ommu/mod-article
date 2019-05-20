@@ -240,7 +240,7 @@ class Articles extends \app\components\ActiveRecord
 			$model->published();
 		elseif($publish == 2)
 			$model->deleted();
-		$views = $model->count();
+		$views = $model->sum('views');
 
 		return $views ? $views : 0;
 	}
