@@ -68,7 +68,8 @@ class ArticleFiles extends ArticleFilesModel
 		$query->joinWith([
 			'article article', 
 			'creation creation', 
-			'modified modified'
+			'modified modified', 
+			'view view',
 		]);
 
 		// add conditions that should always apply here
@@ -92,6 +93,10 @@ class ArticleFiles extends ArticleFilesModel
 		$attributes['modifiedDisplayname'] = [
 			'asc' => ['modified.displayname' => SORT_ASC],
 			'desc' => ['modified.displayname' => SORT_DESC],
+		];
+		$attributes['downloads'] = [
+			'asc' => ['view.downloads' => SORT_ASC],
+			'desc' => ['view.downloads' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,

@@ -37,6 +37,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
 use thamtech\uuid\helpers\UuidHelper;
+use ommu\article\models\view\ArticleFiles as ArticleFilesView;
 use ommu\users\models\Users;
 use yii\helpers\ArrayHelper;
 
@@ -96,6 +97,14 @@ class ArticleFiles extends \app\components\ActiveRecord
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 			'redirectUpdate' => Yii::t('app', 'Redirect to Update'),
 		];
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getView()
+	{
+		return $this->hasOne(ArticleFilesView::className(), ['id' => 'id']);
 	}
 
 	/**

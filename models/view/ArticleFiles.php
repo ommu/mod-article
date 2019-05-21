@@ -1,25 +1,26 @@
 <?php
 /**
  * ArticleFiles
- *
- * This is the model class for table "_article_files".
- *
- * The followings are the available columns in table "_article_files":
- * @property string $file_id
- * @property string $downloads
-
+ * 
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:23 WIB
+ * @modified date 21 May 2019, 12:55 WIB
  * @link https://github.com/ommu/mod-article
+ *
+ * This is the model class for table "_article_files".
+ *
+ * The followings are the available columns in table "_article_files":
+ * @property integer $id
+ * @property integer $article_id
+ * @property string $downloads
  *
  */
 
 namespace ommu\article\models\view;
 
 use Yii;
-use yii\helpers\Url;
 
 class ArticleFiles extends \app\components\ActiveRecord
 {
@@ -34,18 +35,23 @@ class ArticleFiles extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * @return string the primarykey column
+	 */
+	public static function primaryKey()
+	{
+		return ['id'];
+	}
+
+	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules()
 	{
 		return [
-			[['file_id'], 'integer'],
+			[['article_id'], 'required'],
+			[['id', 'article_id'], 'integer'],
 			[['downloads'], 'number'],
 		];
-	}
-
-	public static function primaryKey() {
-		return ['file_id'];
 	}
 
 	/**
@@ -54,11 +60,12 @@ class ArticleFiles extends \app\components\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'file_id' => Yii::t('app', 'File'),
+			'id' => Yii::t('app', 'ID'),
+			'article_id' => Yii::t('app', 'Article'),
 			'downloads' => Yii::t('app', 'Downloads'),
 		];
 	}
-	
+
 	/**
 	 * Set default columns to display
 	 */
@@ -71,68 +78,41 @@ class ArticleFiles extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		$this->templateColumns['file_id'] = 'file_id';
-		$this->templateColumns['downloads'] = 'downloads';
+		$this->templateColumns['id'] = [
+			'attribute' => 'id',
+			'value' => function($model, $key, $index, $column) {
+				return $model->id;
+			},
+		];
+		$this->templateColumns['article_id'] = [
+			'attribute' => 'article_id',
+			'value' => function($model, $key, $index, $column) {
+				return $model->article_id;
+			},
+		];
+		$this->templateColumns['downloads'] = [
+			'attribute' => 'downloads',
+			'value' => function($model, $key, $index, $column) {
+				return $model->downloads;
+			},
+		];
 	}
 
 	/**
-	 * before validate attributes
+	 * User get information
 	 */
-	public function beforeValidate()
+	public static function getInfo($id, $column=null)
 	{
-		if(parent::beforeValidate()) {
+		if($column != null) {
+			$model = self::find()
+				->select([$column])
+				->where(['id' => $id])
+				->one();
+			return $model->$column;
+			
+		} else {
+			$model = self::findOne($id);
+			return $model;
 		}
-		return true;
-	}
-
-	/**
-	 * before save attributes
-	 */
-	public function beforeSave($insert)
-	{
-		if(parent::beforeSave($insert)) {
-			// Create action
-		}
-		return true;	
-	}
-
-	/**
-	 * after validate attributes
-	 */
-	public function afterValidate()
-	{
-		parent::afterValidate();
-		// Create action
-		
-		return true;
-	}
-	
-	/**
-	 * After save attributes
-	 */
-	public function afterSave($insert, $changedAttributes)
-	{
-		parent::afterSave($insert, $changedAttributes);
-		// Create action
-	}
-
-	/**
-	 * Before delete attributes
-	 */
-	public function beforeDelete()
-	{
-		if(parent::beforeDelete()) {
-			// Create action
-		}
-		return true;
-	}
-
-	/**
-	 * After delete attributes
-	 */
-	public function afterDelete()
-	{
-		parent::afterDelete();
-		// Create action
 	}
 }
