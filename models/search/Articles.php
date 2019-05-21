@@ -144,13 +144,21 @@ class Articles extends ArticlesModel
 			'cast(t.updated_date as date)' => $this->updated_date,
 		]);
 
-		if(isset($params['trash']))
-			$query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
-		else {
-			if(!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == ''))
-				$query->andFilterWhere(['IN', 't.publish', [0,1]]);
-			else
-				$query->andFilterWhere(['t.publish' => $this->publish]);
+		if(isset($params['status'])) {
+			$query->andFilterCompare('t.publish', 1);
+			if($params['status'] == 'publish')
+				$query->andFilterWhere(['<=', 'cast(published_date as date)', Yii::$app->formatter->asDate('now', 'php:Y-m-d')]);
+			else if($params['status'] == 'pending')
+				$query->andFilterWhere(['>', 'cast(published_date as date)', Yii::$app->formatter->asDate('now', 'php:Y-m-d')]);
+		} else {
+			if(isset($params['trash']))
+				$query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
+			else {
+				if(!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == ''))
+					$query->andFilterWhere(['IN', 't.publish', [0,1]]);
+				else
+					$query->andFilterWhere(['t.publish' => $this->publish]);
+			}
 		}
 
 		$query->andFilterWhere(['like', 't.title', $this->title])
