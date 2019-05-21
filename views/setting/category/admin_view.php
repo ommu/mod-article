@@ -82,7 +82,23 @@ $attributes = [
 		'attribute' => 'articles',
 		'value' => function ($model) {
 			$articles = $model->getArticles(true);
-			return Html::a($articles, ['admin/manage', 'category'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} articles', ['count'=>$articles])]);
+			return Html::a($articles, ['admin/manage', 'category'=>$model->primaryKey, 'status'=>'publish'], ['title'=>Yii::t('app', '{count} articles', ['count'=>$articles])]);
+		},
+		'format' => 'html',
+	],
+	[
+		'attribute' => 'pending',
+		'value' => function ($model) {
+			$pending = $model->getPending(true);
+			return Html::a($pending, ['admin/manage', 'category'=>$model->primaryKey, 'status'=>'pending'], ['title'=>Yii::t('app', '{count} articles', ['count'=>$pending])]);
+		},
+		'format' => 'html',
+	],
+	[
+		'attribute' => 'unpublish',
+		'value' => function ($model) {
+			$unpublish = $model->getArticles(true, 0);
+			return Html::a($unpublish, ['admin/manage', 'category'=>$model->primaryKey, 'publish'=>0], ['title'=>Yii::t('app', '{count} articles', ['count'=>$unpublish])]);
 		},
 		'format' => 'html',
 	],

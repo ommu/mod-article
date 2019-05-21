@@ -68,7 +68,8 @@ class Articles extends ArticlesModel
 		$query->joinWith([
 			'category.title category', 
 			'creation creation', 
-			'modified modified'
+			'modified modified',
+			'view view',
 		]);
 
 		// add conditions that should always apply here
@@ -97,26 +98,30 @@ class Articles extends ArticlesModel
 			'asc' => ['modified.displayname' => SORT_ASC],
 			'desc' => ['modified.displayname' => SORT_DESC],
 		];
-		// $attributes['media_search'] = [
-		// 	'asc' => ['view.medias' => SORT_ASC],
-		// 	'desc' => ['view.medias' => SORT_DESC],
-		// ];
-		// $attributes['file_search'] = [
-		// 	'asc' => ['view.files' => SORT_ASC],
-		// 	'desc' => ['view.files' => SORT_DESC],
-		// ];
-		// $attributes['tag_search'] = [
-		// 	'asc' => ['view.tags' => SORT_ASC],
-		// 	'desc' => ['view.tags' => SORT_DESC],
-		// ];
-		// $attributes['view_search'] = [
-		// 	'asc' => ['view.views' => SORT_ASC],
-		// 	'desc' => ['view.views' => SORT_DESC],
-		// ];
-		// $attributes['like_search'] = [
-		// 	'asc' => ['view.likes' => SORT_ASC],
-		// 	'desc' => ['view.likes' => SORT_DESC],
-		// ];
+		$attributes['medias'] = [
+			'asc' => ['view.images' => SORT_ASC],
+			'desc' => ['view.images' => SORT_DESC],
+		];
+		$attributes['files'] = [
+			'asc' => ['view.files' => SORT_ASC],
+			'desc' => ['view.files' => SORT_DESC],
+		];
+		$attributes['views'] = [
+			'asc' => ['view.views' => SORT_ASC],
+			'desc' => ['view.views' => SORT_DESC],
+		];
+		$attributes['downloads'] = [
+			'asc' => ['view.downloads' => SORT_ASC],
+			'desc' => ['view.downloads' => SORT_DESC],
+		];
+		$attributes['tags'] = [
+			'asc' => ['view.tags' => SORT_ASC],
+			'desc' => ['view.tags' => SORT_DESC],
+		];
+		$attributes['likes'] = [
+			'asc' => ['view.likes' => SORT_ASC],
+			'desc' => ['view.likes' => SORT_DESC],
+		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
 			'defaultOrder' => ['id' => SORT_DESC],

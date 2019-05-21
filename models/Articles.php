@@ -113,6 +113,7 @@ class Articles extends \app\components\ActiveRecord
 			'medias' => Yii::t('app', 'Photos'),
 			'files' => Yii::t('app', 'Documents'),
 			'views' => Yii::t('app', 'Views'),
+			'downloads' => Yii::t('app', 'Downloads'),
 			'tags' => Yii::t('app', 'Tags'),
 			'likes' => Yii::t('app', 'Likes'),
 			'categoryName' => Yii::t('app', 'Category'),
@@ -129,7 +130,7 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function getView()
 	{
-		return $this->hasOne(ArticlesView::className(), ['article_id' => 'article_id']);
+		return $this->hasOne(ArticlesView::className(), ['id' => 'id']);
 	}
 
 	/**
