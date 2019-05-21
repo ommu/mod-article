@@ -76,7 +76,12 @@ $attributes = [
 	],
 	[
 		'attribute' => 'headline',
-		'value' => $model->quickAction(Url::to(['headline', 'id'=>$model->primaryKey]), $model->headline, 'Yes,No', true),
+		'value' => function ($model) {
+			$setting = $model->getSetting(['headline_category']);
+			if(!in_array($model->cat_id, $setting->headline_category))
+				return '-';
+			return $model->quickAction(Url::to(['headline', 'id'=>$model->primaryKey]), $model->headline, 'Yes,No', true);
+		},
 		'format' => 'raw',
 	],
 	[

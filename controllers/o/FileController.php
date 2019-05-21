@@ -270,7 +270,7 @@ class FileController extends Controller
 			throw new \yii\web\NotAcceptableHttpException(Yii::t('app', 'The requested page does not exist.'));
 
 		$model = new ArticleFiles(['article_id'=>$id]);
-		$setting = $model->article->getSetting(['media_file_type']);
+		$setting = $model->article->getSetting(['media_file_limit', 'media_file_type']);
 
 		$uploadPath = join('/', [Articles::getUploadPath(), $id]);
 
@@ -279,9 +279,12 @@ class FileController extends Controller
 			if ($fileFilename->getHasError())
 				throw new HttpException(500, Yii::t('app', 'Upload error'));
 
+			if(count($model->article->files) >= $setting->media_file_limit)
+				throw new HttpException(500, Yii::t('app', 'Document limited uploaded'));
+
 			$fileFileType = $this->formatFileType($setting->media_file_type);
 			if(!in_array(strtolower($fileFilename->getExtension()), $fileFileType)) {
-				throw new HttpException(500, Yii::t('app', 'This file cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
+				throw new HttpException(500, Yii::t('app', 'This document cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
 					'extensions'=>$this->formatFileType($fileFileType, false),
 				]));
 			}

@@ -288,7 +288,7 @@ class ImageController extends Controller
 			throw new \yii\web\NotAcceptableHttpException(Yii::t('app', 'The requested page does not exist.'));
 
 		$model = new ArticleMedia(['article_id'=>$id]);
-		$setting = $model->article->getSetting(['media_image_resize', 'media_image_resize_size', 'media_image_type']);
+		$setting = $model->article->getSetting(['media_image_limit', 'media_image_resize', 'media_image_resize_size', 'media_image_type']);
 
 		$uploadPath = join('/', [Articles::getUploadPath(), $id]);
 
@@ -297,9 +297,12 @@ class ImageController extends Controller
 			if ($imageFilename->getHasError())
 				throw new HttpException(500, Yii::t('app', 'Upload error'));
 
+			if(count($model->article->medias) >= $setting->media_image_limit)
+				throw new HttpException(500, Yii::t('app', 'Photo limited uploaded'));
+
 			$imageFileType = $this->formatFileType($setting->media_image_type);
 			if(!in_array(strtolower($imageFilename->getExtension()), $imageFileType)) {
-				throw new HttpException(500, Yii::t('app', 'This file cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
+				throw new HttpException(500, Yii::t('app', 'This photo cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
 					'extensions'=>$this->formatFileType($imageFileType, false),
 				]));
 			}

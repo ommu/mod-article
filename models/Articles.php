@@ -55,7 +55,7 @@ class Articles extends \app\components\ActiveRecord
 	use \ommu\traits\UtilityTrait;
 	use \ommu\traits\FileTrait;
 
-	public $gridForbiddenColumn = ['body', 'headline_date', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date', 'files', 'likes', 'media', 'tags', 'views'];
+	public $gridForbiddenColumn = ['body', 'headline_date', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date', 'medias', 'files', 'views', 'tags', 'likes'];
 
 	public $categoryName;
 	public $creationDisplayname;
@@ -402,6 +402,16 @@ class Articles extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
 		];
+		$this->templateColumns['medias'] = [
+			'attribute' => 'medias',
+			'value' => function($model, $key, $index, $column) {
+				$media = $model->getMedias('count');
+				return Html::a($media, ['o/image/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} media', ['count'=>$media])]);
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'center'],
+			'format' => 'html',
+		];
 		$this->templateColumns['files'] = [
 			'attribute' => 'files',
 			'value' => function($model, $key, $index, $column) {
@@ -412,21 +422,11 @@ class Articles extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 			'format' => 'html',
 		];
-		$this->templateColumns['likes'] = [
-			'attribute' => 'likes',
+		$this->templateColumns['views'] = [
+			'attribute' => 'views',
 			'value' => function($model, $key, $index, $column) {
-				$likes = $model->getLikes(true);
-				return Html::a($likes, ['o/like/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} likes', ['count'=>$likes])]);
-			},
-			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
-			'format' => 'html',
-		];
-		$this->templateColumns['medias'] = [
-			'attribute' => 'medias',
-			'value' => function($model, $key, $index, $column) {
-				$media = $model->getMedias('count');
-				return Html::a($media, ['o/image/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} media', ['count'=>$media])]);
+				$views = $model->getViews(true);
+				return Html::a($views, ['o/view/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} views', ['count'=>$views])]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
@@ -442,11 +442,11 @@ class Articles extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 			'format' => 'html',
 		];
-		$this->templateColumns['views'] = [
-			'attribute' => 'views',
+		$this->templateColumns['likes'] = [
+			'attribute' => 'likes',
 			'value' => function($model, $key, $index, $column) {
-				$views = $model->getViews(true);
-				return Html::a($views, ['o/view/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} views', ['count'=>$views])]);
+				$likes = $model->getLikes(true);
+				return Html::a($likes, ['o/like/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} likes', ['count'=>$likes])]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
