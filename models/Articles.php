@@ -432,21 +432,21 @@ class Articles extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 			'format' => 'html',
 		];
-		$this->templateColumns['tags'] = [
-			'attribute' => 'tags',
-			'value' => function($model, $key, $index, $column) {
-				$tags = $model->getTags('count');
-				return Html::a($tags, ['o/tag/manage', 'article'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} tags', ['count'=>$tags])]);
-			},
-			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
-			'format' => 'html',
-		];
 		$this->templateColumns['likes'] = [
 			'attribute' => 'likes',
 			'value' => function($model, $key, $index, $column) {
 				$likes = $model->getLikes(true);
 				return Html::a($likes, ['o/like/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} likes', ['count'=>$likes])]);
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'center'],
+			'format' => 'html',
+		];
+		$this->templateColumns['tags'] = [
+			'attribute' => 'tags',
+			'value' => function($model, $key, $index, $column) {
+				$tags = $model->getTags('count');
+				return Html::a($tags, ['o/tag/manage', 'article'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} tags', ['count'=>$tags])]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
