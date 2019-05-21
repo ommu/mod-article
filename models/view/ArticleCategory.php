@@ -1,29 +1,29 @@
 <?php
 /**
  * ArticleCategory
- *
- * This is the model class for table "_article_category".
- *
- * The followings are the available columns in table "_article_category":
- * @property integer $cat_id
- * @property string $articles
- * @property string $article_pending
- * @property string $article_unpublish
- * @property string $article_all
- * @property integer $article_id
-
+ * 
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:18 WIB
+ * @modified date 21 May 2019, 12:55 WIB
  * @link https://github.com/ommu/mod-article
+ *
+ * This is the model class for table "_article_category".
+ *
+ * The followings are the available columns in table "_article_category":
+ * @property integer $id
+ * @property string $articles
+ * @property string $article_pending
+ * @property string $article_unpublish
+ * @property integer $article_all
+ * @property string $article_id
  *
  */
 
 namespace ommu\article\models\view;
 
 use Yii;
-use yii\helpers\Url;
 
 class ArticleCategory extends \app\components\ActiveRecord
 {
@@ -38,18 +38,22 @@ class ArticleCategory extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * @return string the primarykey column
+	 */
+	public static function primaryKey()
+	{
+		return ['id'];
+	}
+
+	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules()
 	{
 		return [
-			[['cat_id', 'article_all', 'article_id'], 'integer'],
+			[['id', 'article_all', 'article_id'], 'integer'],
 			[['articles', 'article_pending', 'article_unpublish'], 'number'],
 		];
-	}
-
-	public static function primaryKey() {
-		return ['cat_id'];
 	}
 
 	/**
@@ -58,7 +62,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'cat_id' => Yii::t('app', 'Category'),
+			'id' => Yii::t('app', 'ID'),
 			'articles' => Yii::t('app', 'Articles'),
 			'article_pending' => Yii::t('app', 'Article Pending'),
 			'article_unpublish' => Yii::t('app', 'Article Unpublish'),
@@ -66,7 +70,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 			'article_id' => Yii::t('app', 'Article'),
 		];
 	}
-	
+
 	/**
 	 * Set default columns to display
 	 */
@@ -79,72 +83,59 @@ class ArticleCategory extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		$this->templateColumns['cat_id'] = 'cat_id';
-		$this->templateColumns['articles'] = 'articles';
-		$this->templateColumns['article_pending'] = 'article_pending';
-		$this->templateColumns['article_unpublish'] = 'article_unpublish';
-		$this->templateColumns['article_all'] = 'article_all';
-		$this->templateColumns['article_id'] = 'article_id';
+		$this->templateColumns['id'] = [
+			'attribute' => 'id',
+			'value' => function($model, $key, $index, $column) {
+				return $model->id;
+			},
+		];
+		$this->templateColumns['articles'] = [
+			'attribute' => 'articles',
+			'value' => function($model, $key, $index, $column) {
+				return $model->articles;
+			},
+		];
+		$this->templateColumns['article_pending'] = [
+			'attribute' => 'article_pending',
+			'value' => function($model, $key, $index, $column) {
+				return $model->article_pending;
+			},
+		];
+		$this->templateColumns['article_unpublish'] = [
+			'attribute' => 'article_unpublish',
+			'value' => function($model, $key, $index, $column) {
+				return $model->article_unpublish;
+			},
+		];
+		$this->templateColumns['article_all'] = [
+			'attribute' => 'article_all',
+			'value' => function($model, $key, $index, $column) {
+				return $model->article_all;
+			},
+		];
+		$this->templateColumns['article_id'] = [
+			'attribute' => 'article_id',
+			'value' => function($model, $key, $index, $column) {
+				return $model->article_id;
+			},
+		];
 	}
 
 	/**
-	 * before validate attributes
+	 * User get information
 	 */
-	public function beforeValidate()
+	public static function getInfo($id, $column=null)
 	{
-		if(parent::beforeValidate()) {
+		if($column != null) {
+			$model = self::find()
+				->select([$column])
+				->where(['id' => $id])
+				->one();
+			return $model->$column;
+			
+		} else {
+			$model = self::findOne($id);
+			return $model;
 		}
-		return true;
-	}
-
-	/**
-	 * before save attributes
-	 */
-	public function beforeSave($insert)
-	{
-		if(parent::beforeSave($insert)) {
-			// Create action
-		}
-		return true;	
-	}
-
-	/**
-	 * after validate attributes
-	 */
-	public function afterValidate()
-	{
-		parent::afterValidate();
-		// Create action
-		
-		return true;
-	}
-	
-	/**
-	 * After save attributes
-	 */
-	public function afterSave($insert, $changedAttributes)
-	{
-		parent::afterSave($insert, $changedAttributes);
-		// Create action
-	}
-
-	/**
-	 * Before delete attributes
-	 */
-	public function beforeDelete()
-	{
-		if(parent::beforeDelete()) {
-			// Create action
-		}
-		return true;
-	}
-
-	/**
-	 * After delete attributes
-	 */
-	public function afterDelete()
-	{
-		parent::afterDelete();
-		// Create action
 	}
 }

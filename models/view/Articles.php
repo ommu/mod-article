@@ -1,38 +1,34 @@
 <?php
 /**
  * Articles
- *
- * This is the model class for table "_articles".
- *
- * The followings are the available columns in table "_articles":
- * @property integer $article_id
- * @property string $media_id
- * @property string $media_cover
- * @property string $media_caption
- * @property string $medias
- * @property string $media_all
- * @property string $files
- * @property string $file_all
- * @property string $likes
- * @property string $like_all
- * @property string $views
- * @property string $view_all
- * @property string $downloads
- * @property string $download_all
- * @property string $tags
-
+ * 
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:17 WIB
+ * @modified date 21 May 2019, 12:55 WIB
  * @link https://github.com/ommu/mod-article
+ *
+ * This is the model class for table "_articles".
+ *
+ * The followings are the available columns in table "_articles":
+ * @property integer $id
+ * @property string $images
+ * @property integer $image_all
+ * @property string $files
+ * @property integer $file_all
+ * @property string $views
+ * @property string $view_all
+ * @property string $downloads
+ * @property integer $tags
+ * @property string $likes
+ * @property integer $like_all
  *
  */
 
 namespace ommu\article\models\view;
 
 use Yii;
-use yii\helpers\Url;
 
 class Articles extends \app\components\ActiveRecord
 {
@@ -47,20 +43,22 @@ class Articles extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * @return string the primarykey column
+	 */
+	public static function primaryKey()
+	{
+		return ['id'];
+	}
+
+	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules()
 	{
 		return [
-			[['article_id', 'media_id', 'media_all', 'file_all', 'like_all', 'tags'], 'integer'],
-			[['media_cover'], 'string'],
-			[['medias', 'files', 'likes', 'views', 'view_all', 'downloads', 'download_all'], 'number'],
-			[['media_caption'], 'string', 'max' => 150],
+			[['id', 'image_all', 'file_all', 'tags', 'like_all'], 'integer'],
+			[['images', 'files', 'views', 'view_all', 'downloads', 'likes'], 'number'],
 		];
-	}
-
-	public static function primaryKey() {
-		return ['article_id'];
 	}
 
 	/**
@@ -69,24 +67,20 @@ class Articles extends \app\components\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'article_id' => Yii::t('app', 'Article'),
-			'media_id' => Yii::t('app', 'Media'),
-			'media_cover' => Yii::t('app', 'Media Cover'),
-			'media_caption' => Yii::t('app', 'Media Caption'),
-			'medias' => Yii::t('app', 'Medias'),
-			'media_all' => Yii::t('app', 'Media All'),
+			'id' => Yii::t('app', 'ID'),
+			'images' => Yii::t('app', 'Images'),
+			'image_all' => Yii::t('app', 'Image All'),
 			'files' => Yii::t('app', 'Files'),
 			'file_all' => Yii::t('app', 'File All'),
-			'likes' => Yii::t('app', 'Likes'),
-			'like_all' => Yii::t('app', 'Like All'),
 			'views' => Yii::t('app', 'Views'),
 			'view_all' => Yii::t('app', 'View All'),
 			'downloads' => Yii::t('app', 'Downloads'),
-			'download_all' => Yii::t('app', 'Download All'),
 			'tags' => Yii::t('app', 'Tags'),
+			'likes' => Yii::t('app', 'Likes'),
+			'like_all' => Yii::t('app', 'Like All'),
 		];
 	}
-	
+
 	/**
 	 * Set default columns to display
 	 */
@@ -99,81 +93,89 @@ class Articles extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		$this->templateColumns['article_id'] = 'article_id';
-		$this->templateColumns['media_id'] = 'media_id';
-		$this->templateColumns['media_cover'] = 'media_cover';
-		$this->templateColumns['media_caption'] = 'media_caption';
-		$this->templateColumns['medias'] = 'medias';
-		$this->templateColumns['media_all'] = 'media_all';
-		$this->templateColumns['files'] = 'files';
-		$this->templateColumns['file_all'] = 'file_all';
-		$this->templateColumns['likes'] = 'likes';
-		$this->templateColumns['like_all'] = 'like_all';
-		$this->templateColumns['views'] = 'views';
-		$this->templateColumns['view_all'] = 'view_all';
-		$this->templateColumns['downloads'] = 'downloads';
-		$this->templateColumns['download_all'] = 'download_all';
-		$this->templateColumns['tags'] = 'tags';
+		$this->templateColumns['id'] = [
+			'attribute' => 'id',
+			'value' => function($model, $key, $index, $column) {
+				return $model->id;
+			},
+		];
+		$this->templateColumns['images'] = [
+			'attribute' => 'images',
+			'value' => function($model, $key, $index, $column) {
+				return $model->images;
+			},
+		];
+		$this->templateColumns['image_all'] = [
+			'attribute' => 'image_all',
+			'value' => function($model, $key, $index, $column) {
+				return $model->image_all;
+			},
+		];
+		$this->templateColumns['files'] = [
+			'attribute' => 'files',
+			'value' => function($model, $key, $index, $column) {
+				return $model->files;
+			},
+		];
+		$this->templateColumns['file_all'] = [
+			'attribute' => 'file_all',
+			'value' => function($model, $key, $index, $column) {
+				return $model->file_all;
+			},
+		];
+		$this->templateColumns['views'] = [
+			'attribute' => 'views',
+			'value' => function($model, $key, $index, $column) {
+				return $model->views;
+			},
+		];
+		$this->templateColumns['view_all'] = [
+			'attribute' => 'view_all',
+			'value' => function($model, $key, $index, $column) {
+				return $model->view_all;
+			},
+		];
+		$this->templateColumns['downloads'] = [
+			'attribute' => 'downloads',
+			'value' => function($model, $key, $index, $column) {
+				return $model->downloads;
+			},
+		];
+		$this->templateColumns['tags'] = [
+			'attribute' => 'tags',
+			'value' => function($model, $key, $index, $column) {
+				return $model->tags;
+			},
+		];
+		$this->templateColumns['likes'] = [
+			'attribute' => 'likes',
+			'value' => function($model, $key, $index, $column) {
+				return $model->likes;
+			},
+		];
+		$this->templateColumns['like_all'] = [
+			'attribute' => 'like_all',
+			'value' => function($model, $key, $index, $column) {
+				return $model->like_all;
+			},
+		];
 	}
 
 	/**
-	 * before validate attributes
+	 * User get information
 	 */
-	public function beforeValidate()
+	public static function getInfo($id, $column=null)
 	{
-		if(parent::beforeValidate()) {
+		if($column != null) {
+			$model = self::find()
+				->select([$column])
+				->where(['id' => $id])
+				->one();
+			return $model->$column;
+			
+		} else {
+			$model = self::findOne($id);
+			return $model;
 		}
-		return true;
-	}
-
-	/**
-	 * before save attributes
-	 */
-	public function beforeSave($insert)
-	{
-		if(parent::beforeSave($insert)) {
-			// Create action
-		}
-		return true;	
-	}
-
-	/**
-	 * after validate attributes
-	 */
-	public function afterValidate()
-	{
-		parent::afterValidate();
-		// Create action
-		
-		return true;
-	}
-	
-	/**
-	 * After save attributes
-	 */
-	public function afterSave($insert, $changedAttributes)
-	{
-		parent::afterSave($insert, $changedAttributes);
-		// Create action
-	}
-
-	/**
-	 * Before delete attributes
-	 */
-	public function beforeDelete()
-	{
-		if(parent::beforeDelete()) {
-			// Create action
-		}
-		return true;
-	}
-
-	/**
-	 * After delete attributes
-	 */
-	public function afterDelete()
-	{
-		parent::afterDelete();
-		// Create action
 	}
 }

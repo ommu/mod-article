@@ -69,7 +69,8 @@ class ArticleCategory extends ArticleCategoryModel
 			'title title', 
 			'description description', 
 			'creation creation', 
-			'modified modified'
+			'modified modified', 
+			'view view',
 		]);
 
 		// add conditions that should always apply here
@@ -97,6 +98,18 @@ class ArticleCategory extends ArticleCategoryModel
 		$attributes['modifiedDisplayname'] = [
 			'asc' => ['modified.displayname' => SORT_ASC],
 			'desc' => ['modified.displayname' => SORT_DESC],
+		];
+		$attributes['articles'] = [
+			'asc' => ['view.articles' => SORT_ASC],
+			'desc' => ['view.articles' => SORT_DESC],
+		];
+		$attributes['pending'] = [
+			'asc' => ['view.article_pending' => SORT_ASC],
+			'desc' => ['view.article_pending' => SORT_DESC],
+		];
+		$attributes['unpublish'] = [
+			'asc' => ['view.article_unpublish' => SORT_ASC],
+			'desc' => ['view.article_unpublish' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,

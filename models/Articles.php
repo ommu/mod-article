@@ -110,11 +110,11 @@ class Articles extends \app\components\ActiveRecord
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
-			'files' => Yii::t('app', 'Documents'),
-			'likes' => Yii::t('app', 'Likes'),
 			'medias' => Yii::t('app', 'Photos'),
-			'tags' => Yii::t('app', 'Tags'),
+			'files' => Yii::t('app', 'Documents'),
 			'views' => Yii::t('app', 'Views'),
+			'tags' => Yii::t('app', 'Tags'),
+			'likes' => Yii::t('app', 'Likes'),
 			'categoryName' => Yii::t('app', 'Category'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
@@ -432,21 +432,21 @@ class Articles extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 			'format' => 'html',
 		];
-		$this->templateColumns['likes'] = [
-			'attribute' => 'likes',
-			'value' => function($model, $key, $index, $column) {
-				$likes = $model->getLikes(true);
-				return Html::a($likes, ['o/like/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} likes', ['count'=>$likes])]);
-			},
-			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
-			'format' => 'html',
-		];
 		$this->templateColumns['tags'] = [
 			'attribute' => 'tags',
 			'value' => function($model, $key, $index, $column) {
 				$tags = $model->getTags('count');
 				return Html::a($tags, ['o/tag/manage', 'article'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} tags', ['count'=>$tags])]);
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'center'],
+			'format' => 'html',
+		];
+		$this->templateColumns['likes'] = [
+			'attribute' => 'likes',
+			'value' => function($model, $key, $index, $column) {
+				$likes = $model->getLikes(true);
+				return Html::a($likes, ['o/like/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} likes', ['count'=>$likes])]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],

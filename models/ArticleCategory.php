@@ -41,13 +41,14 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\Inflector;
 use app\models\SourceMessage;
+use ommu\article\models\view\ArticleCategory as ArticleCategoryView;
 use ommu\users\models\Users;
 
 class ArticleCategory extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
+	public $gridForbiddenColumn = ['creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'desc_i', 'updated_date', 'pending', 'unpublish'];
 
 	public $name_i;
 	public $desc_i;
@@ -97,6 +98,8 @@ class ArticleCategory extends \app\components\ActiveRecord
 			'name_i' => Yii::t('app', 'Category'),
 			'desc_i' => Yii::t('app', 'Description'),
 			'articles' => Yii::t('app', 'Articles'),
+			'pending' => Yii::t('app', 'Pending'),
+			'unpublish' => Yii::t('app', 'Unpublish'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 		];
@@ -105,11 +108,38 @@ class ArticleCategory extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getArticles($count=false, $publish=1)
+	public function getView()
+	{
+		return $this->hasOne(ArticleCategoryView::className(), ['id' => 'id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getArticlesByStatus($cat_id, $type='published')
+	{
+		$model = Articles::find()
+			->where(['cat_id' => $cat_id]);
+		if($type == 'published')
+			$model->published();
+		elseif($type == 'pending')
+			$model->pending();
+		$articles = $model->count();
+
+		return $articles ? $articles : 0;
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getArticles($count=false, $publish=null)
 	{
 		if($count == false)
 			return $this->hasMany(Articles::className(), ['cat_id' => 'id'])
-			->andOnCondition([sprintf('%s.publish', Articles::tableName()) => $publish]);
+				->andOnCondition([sprintf('%s.publish', Articles::tableName()) => $publish]);
+
+		if($publish === null)
+			return self::getArticlesByStatus($this->id, 'published');
 
 		$model = Articles::find()
 			->where(['cat_id' => $this->id]);
@@ -122,6 +152,17 @@ class ArticleCategory extends \app\components\ActiveRecord
 		$articles = $model->count();
 
 		return $articles ? $articles : 0;
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getPending($count=false)
+	{
+		if($count == false)
+			return $this->hasMany(Articles::className(), ['cat_id' => 'id']);
+
+		return self::getArticlesByStatus($this->id, 'pending');
 	}
 
 	/**
@@ -247,7 +288,27 @@ class ArticleCategory extends \app\components\ActiveRecord
 			'attribute' => 'articles',
 			'value' => function($model, $key, $index, $column) {
 				$articles = $model->getArticles(true);
-				return Html::a($articles, ['admin/manage', 'category'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} articles', ['count'=>$articles])]);
+				return Html::a($articles, ['admin/manage', 'category'=>$model->primaryKey, 'status'=>'publish'], ['title'=>Yii::t('app', '{count} articles', ['count'=>$articles])]);
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'center'],
+			'format' => 'html',
+		];
+		$this->templateColumns['pending'] = [
+			'attribute' => 'pending',
+			'value' => function($model, $key, $index, $column) {
+				$pending = $model->getPending(true);
+				return Html::a($pending, ['admin/manage', 'category'=>$model->primaryKey, 'status'=>'pending'], ['title'=>Yii::t('app', '{count} articles', ['count'=>$pending])]);
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'center'],
+			'format' => 'html',
+		];
+		$this->templateColumns['unpublish'] = [
+			'attribute' => 'unpublish',
+			'value' => function($model, $key, $index, $column) {
+				$unpublish = $model->getArticles(true, 0);
+				return Html::a($unpublish, ['admin/manage', 'category'=>$model->primaryKey, 'publish'=>0], ['title'=>Yii::t('app', '{count} articles', ['count'=>$unpublish])]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
