@@ -40,6 +40,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
 use thamtech\uuid\helpers\UuidHelper;
+use ommu\article\models\view\ArticleMedia as ArticleMediaView;
 use ommu\users\models\Users;
 use yii\helpers\ArrayHelper;
 
@@ -103,7 +104,17 @@ class ArticleMedia extends \app\components\ActiveRecord
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 			'redirectUpdate' => Yii::t('app', 'Redirect to Update'),
+			'captionStatus' => Yii::t('app', 'Caption'),
+			'descriptionStatus' => Yii::t('app', 'Description'),
 		];
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getView()
+	{
+		return $this->hasOne(ArticleMediaView::className(), ['id' => 'id']);
 	}
 
 	/**
@@ -128,6 +139,22 @@ class ArticleMedia extends \app\components\ActiveRecord
 	public function getModified()
 	{
 		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getCaptionStatus()
+	{
+		return $this->caption ? 1 : 0;
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getDescriptionStatus()
+	{
+		return $this->description ? 1 : 0;
 	}
 
 	/**
@@ -225,6 +252,22 @@ class ArticleMedia extends \app\components\ActiveRecord
 			'value' => function($model, $key, $index, $column) {
 				return $model->orders;
 			},
+		];
+		$this->templateColumns['captionStatus'] = [
+			'attribute' => 'captionStatus',
+			'value' => function($model, $key, $index, $column) {
+				return $this->filterYesNo($model->captionStatus);
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'center'],
+		];
+		$this->templateColumns['descriptionStatus'] = [
+			'attribute' => 'descriptionStatus',
+			'value' => function($model, $key, $index, $column) {
+				return $this->filterYesNo($model->descriptionStatus);
+			},
+			'filter' => false,
+			'contentOptions' => ['class'=>'center'],
 		];
 		$this->templateColumns['cover'] = [
 			'attribute' => 'cover',

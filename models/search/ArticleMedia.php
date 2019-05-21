@@ -68,7 +68,8 @@ class ArticleMedia extends ArticleMediaModel
 		$query->joinWith([
 			'article article', 
 			'creation creation', 
-			'modified modified'
+			'modified modified',
+			'view view',
 		]);
 
 		// add conditions that should always apply here
@@ -92,6 +93,14 @@ class ArticleMedia extends ArticleMediaModel
 		$attributes['modifiedDisplayname'] = [
 			'asc' => ['modified.displayname' => SORT_ASC],
 			'desc' => ['modified.displayname' => SORT_DESC],
+		];
+		$attributes['captionStatus'] = [
+			'asc' => ['view.caption' => SORT_ASC],
+			'desc' => ['view.caption' => SORT_DESC],
+		];
+		$attributes['descriptionStatus'] = [
+			'asc' => ['view.description' => SORT_ASC],
+			'desc' => ['view.description' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
