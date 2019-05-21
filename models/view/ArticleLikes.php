@@ -1,28 +1,27 @@
 <?php
 /**
  * ArticleLikes
- *
- * This is the model class for table "_article_likes".
- *
- * The followings are the available columns in table "_article_likes":
- * @property string $like_id
- * @property integer $article_id
- * @property string $likes
- * @property string $unlikes
- * @property string $like_all
-
+ * 
  * @author Putra Sudaryanto <putra@sudaryanto.id>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 10:23 WIB
+ * @modified date 21 May 2019, 12:52 WIB
  * @link https://github.com/ommu/mod-article
+ * 
+ * This is the model class for table "_article_likes".
+ *
+ * The followings are the available columns in table "_article_likes":
+ * @property integer $id
+ * @property string $likes
+ * @property string $unlikes
+ * @property integer $like_all
  *
  */
 
 namespace ommu\article\models\view;
 
 use Yii;
-use yii\helpers\Url;
 
 class ArticleLikes extends \app\components\ActiveRecord
 {
@@ -37,19 +36,22 @@ class ArticleLikes extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * @return string the primarykey column
+	 */
+	public static function primaryKey()
+	{
+		return ['id'];
+	}
+
+	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules()
 	{
 		return [
-			[['like_id', 'article_id', 'like_all'], 'integer'],
-			[['article_id'], 'required'],
+			[['id', 'like_all'], 'integer'],
 			[['likes', 'unlikes'], 'number'],
 		];
-	}
-
-	public static function primaryKey() {
-		return ['like_id'];
 	}
 
 	/**
@@ -58,14 +60,13 @@ class ArticleLikes extends \app\components\ActiveRecord
 	public function attributeLabels()
 	{
 		return [
-			'like_id' => Yii::t('app', 'Like'),
-			'article_id' => Yii::t('app', 'Article'),
+			'id' => Yii::t('app', 'ID'),
 			'likes' => Yii::t('app', 'Likes'),
 			'unlikes' => Yii::t('app', 'Unlikes'),
 			'like_all' => Yii::t('app', 'Like All'),
 		];
 	}
-	
+
 	/**
 	 * Set default columns to display
 	 */
@@ -78,71 +79,47 @@ class ArticleLikes extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		$this->templateColumns['like_id'] = 'like_id';
-		$this->templateColumns['article_id'] = 'article_id';
-		$this->templateColumns['likes'] = 'likes';
-		$this->templateColumns['unlikes'] = 'unlikes';
-		$this->templateColumns['like_all'] = 'like_all';
+		$this->templateColumns['id'] = [
+			'attribute' => 'id',
+			'value' => function($model, $key, $index, $column) {
+				return $model->id;
+			},
+		];
+		$this->templateColumns['likes'] = [
+			'attribute' => 'likes',
+			'value' => function($model, $key, $index, $column) {
+				return $model->likes;
+			},
+		];
+		$this->templateColumns['unlikes'] = [
+			'attribute' => 'unlikes',
+			'value' => function($model, $key, $index, $column) {
+				return $model->unlikes;
+			},
+		];
+		$this->templateColumns['like_all'] = [
+			'attribute' => 'like_all',
+			'value' => function($model, $key, $index, $column) {
+				return $model->like_all;
+			},
+		];
 	}
 
 	/**
-	 * before validate attributes
+	 * User get information
 	 */
-	public function beforeValidate()
+	public static function getInfo($id, $column=null)
 	{
-		if(parent::beforeValidate()) {
+		if($column != null) {
+			$model = self::find()
+				->select([$column])
+				->where(['id' => $id])
+				->one();
+			return $model->$column;
+			
+		} else {
+			$model = self::findOne($id);
+			return $model;
 		}
-		return true;
-	}
-
-	/**
-	 * before save attributes
-	 */
-	public function beforeSave($insert)
-	{
-		if(parent::beforeSave($insert)) {
-			// Create action
-		}
-		return true;	
-	}
-
-	/**
-	 * after validate attributes
-	 */
-	public function afterValidate()
-	{
-		parent::afterValidate();
-		// Create action
-		
-		return true;
-	}
-	
-	/**
-	 * After save attributes
-	 */
-	public function afterSave($insert, $changedAttributes)
-	{
-		parent::afterSave($insert, $changedAttributes);
-		// Create action
-	}
-
-	/**
-	 * Before delete attributes
-	 */
-	public function beforeDelete()
-	{
-		if(parent::beforeDelete()) {
-			// Create action
-		}
-		return true;
-	}
-
-	/**
-	 * After delete attributes
-	 */
-	public function afterDelete()
-	{
-		parent::afterDelete();
-		// Create action
 	}
 }
