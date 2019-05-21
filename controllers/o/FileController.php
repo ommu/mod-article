@@ -279,7 +279,7 @@ class FileController extends Controller
 			if ($fileFilename->getHasError())
 				throw new HttpException(500, Yii::t('app', 'Upload error'));
 
-			if(count($model->article->files) >= $setting->media_file_limit)
+			if(($model->article->category->single_file && !empty($model->article->files)) || (!$model->article->category->single_file && count($model->article->files) >= $setting->media_file_limit))
 				throw new HttpException(500, Yii::t('app', 'Document limited uploaded'));
 
 			$fileFileType = $this->formatFileType($setting->media_file_type);

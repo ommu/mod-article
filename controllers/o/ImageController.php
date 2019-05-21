@@ -297,7 +297,7 @@ class ImageController extends Controller
 			if ($imageFilename->getHasError())
 				throw new HttpException(500, Yii::t('app', 'Upload error'));
 
-			if(count($model->article->medias) >= $setting->media_image_limit)
+			if(($model->article->category->single_photo && !empty($model->article->medias)) || (!$model->article->category->single_photo && count($model->article->medias) >= $setting->media_image_limit))
 				throw new HttpException(500, Yii::t('app', 'Photo limited uploaded'));
 
 			$imageFileType = $this->formatFileType($setting->media_image_type);
