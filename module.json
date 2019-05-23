@@ -3,7 +3,9 @@
 	"name": "Article",
 	"description": "article",
 	"keywords": [
-		""
+		"article",
+		"news",
+		"blog"
 	],
 	"version": "1.0"
 }
