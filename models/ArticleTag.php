@@ -28,7 +28,6 @@
 namespace ommu\article\models;
 
 use Yii;
-use yii\helpers\Inflector;
 use app\models\CoreTags;
 use ommu\users\models\Users;
 
