@@ -66,7 +66,7 @@ echo DetailView::widget([
 
 <?php echo $this->render('_option_form', ['model'=>$searchModel, 'gridColumns'=>$searchModel->activeDefaultColumns($columns), 'route'=>$this->context->route]); ?>
 
-<?php 
+<?php
 $columnData = $columns;
 array_push($columnData, [
 	'class' => 'app\components\grid\ActionColumn',

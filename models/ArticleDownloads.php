@@ -73,7 +73,7 @@ class ArticleDownloads extends \app\components\ActiveRecord
 			'user_id' => Yii::t('app', 'User'),
 			'downloads' => Yii::t('app', 'Downloads'),
 			'download_date' => Yii::t('app', 'Download Date'),
-			'download_ip' => Yii::t('app', 'Download Ip'),
+			'download_ip' => Yii::t('app', 'Download IP'),
 			'histories' => Yii::t('app', 'Histories'),
 			'fileFilename' => Yii::t('app', 'File'),
 			'userDisplayname' => Yii::t('app', 'User'),

@@ -79,7 +79,7 @@ class ArticleViews extends \app\components\ActiveRecord
 			'user_id' => Yii::t('app', 'User'),
 			'views' => Yii::t('app', 'Views'),
 			'view_date' => Yii::t('app', 'View Date'),
-			'view_ip' => Yii::t('app', 'View Ip'),
+			'view_ip' => Yii::t('app', 'View IP'),
 			'updated_date' => Yii::t('app', 'Deleted Date'),
 			'histories' => Yii::t('app', 'Histories'),
 			'articleTitle' => Yii::t('app', 'Article'),

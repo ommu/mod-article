@@ -63,7 +63,7 @@ class ArticleDownloadHistory extends \app\components\ActiveRecord
 			'id' => Yii::t('app', 'ID'),
 			'download_id' => Yii::t('app', 'Download'),
 			'download_date' => Yii::t('app', 'Download Date'),
-			'download_ip' => Yii::t('app', 'Download Ip'),
+			'download_ip' => Yii::t('app', 'Download IP'),
 			'downloadFileId' => Yii::t('app', 'Download'),
 		];
 	}

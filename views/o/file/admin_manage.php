@@ -67,11 +67,6 @@ echo DetailView::widget([
 			'format' => 'html',
 		],
 		[
-			'attribute' => 'body',
-			'value' => $model->body ? $model->body : '-',
-			'format' => 'html',
-		],
-		[
 			'attribute' => 'published_date',
 			'value' => Yii::$app->formatter->asDate($model->published_date, 'medium'),
 		],
@@ -94,7 +89,7 @@ echo DetailView::widget([
 
 <?php echo $this->render('_option_form', ['model'=>$searchModel, 'gridColumns'=>$searchModel->activeDefaultColumns($columns), 'route'=>$this->context->route]); ?>
 
-<?php 
+<?php
 $columnData = $columns;
 array_push($columnData, [
 	'class' => 'app\components\grid\ActionColumn',

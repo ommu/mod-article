@@ -93,6 +93,8 @@ class ArticleViews extends ArticleViewsModel
 			'defaultOrder' => ['id' => SORT_DESC],
 		]);
 
+		if(Yii::$app->request->get('id'))
+			unset($params['id']);
 		$this->load($params);
 
 		if(!$this->validate()) {

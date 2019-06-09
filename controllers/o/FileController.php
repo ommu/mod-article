@@ -102,7 +102,7 @@ class FileController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		if(($article = Yii::$app->request->get('article')) != null)
+		if(($article = Yii::$app->request->get('article')) != null || ($article = $id) != null)
 			$article = \ommu\article\models\Articles::findOne($article);
 
 		$this->view->title = Yii::t('app', 'Documents');

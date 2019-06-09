@@ -59,7 +59,7 @@ $this->params['menu']['option'] = [
 
 <?php echo $this->render('/setting/category/_option_form', ['model'=>$searchModel, 'gridColumns'=>$searchModel->activeDefaultColumns($columns), 'route'=>$this->context->route]); ?>
 
-<?php 
+<?php
 $columnData = $columns;
 array_push($columnData, [
 	'class' => 'app\components\grid\ActionColumn',

@@ -26,7 +26,7 @@
  * @link https://github.com/ommu/mod-article
  *
  */
- 
+
 namespace ommu\article\controllers;
 
 use Yii;

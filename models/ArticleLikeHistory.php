@@ -68,7 +68,7 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 			'publish' => Yii::t('app', 'Like'),
 			'like_id' => Yii::t('app', 'Like'),
 			'likes_date' => Yii::t('app', 'Likes Date'),
-			'likes_ip' => Yii::t('app', 'Likes Ip'),
+			'likes_ip' => Yii::t('app', 'Likes IP'),
 			'likeArticleId' => Yii::t('app', 'Like'),
 		];
 	}
