@@ -78,12 +78,14 @@ echo DetailView::widget([
 ]);
 }?>
 
-<?php echo DropZone::widget([
-	'name' => 'media_filename',
-	'url' => Url::to(['o/image/upload', 'id'=>$id]),
-	'htmlOptions' => ['class'=>'mb-4'],
-	'message' => Yii::t('app', 'Drop photos here to upload'),
-]); ?>
+<?php if($id != null) {
+	echo DropZone::widget([
+		'name' => 'media_filename',
+		'url' => Url::to(['o/image/upload', 'id'=>$id]),
+		'htmlOptions' => ['class'=>'mb-4'],
+		'message' => Yii::t('app', 'Drop photos here to upload'),
+	]);
+} ?>
 
 <?php //echo $this->render('_search', ['model'=>$searchModel]); ?>
 
