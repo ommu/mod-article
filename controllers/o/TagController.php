@@ -67,6 +67,8 @@ class TagController extends Controller
 	public function actionManage()
 	{
 		$searchModel = new ArticleTagSearch();
+		if(($id = Yii::$app->request->get('id')) != null)
+			$searchModel = new ArticleTagSearch(['article_id'=>$id]);
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		$gridColumn = Yii::$app->request->get('GridColumn', null);
@@ -79,7 +81,7 @@ class TagController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		if(($article = Yii::$app->request->get('article')) != null)
+		if(($article = Yii::$app->request->get('article')) != null || ($article = $id) != null)
 			$article = \ommu\article\models\Articles::findOne($article);
 
 		$this->view->title = Yii::t('app', 'Tags');
@@ -101,6 +103,7 @@ class TagController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
+		$this->subMenuParam = $model->article_id;
 
 		$this->view->title = Yii::t('app', 'Detail Tag: {tag-id}', ['tag-id' => $model->tag->body]);
 		$this->view->description = '';
@@ -122,7 +125,7 @@ class TagController extends Controller
 		$model->delete();
 
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Article tag success deleted.'));
-		return $this->redirect(['manage']);
+		return $this->redirect(['manage', 'id'=>$model->article_id]);
 	}
 
 	/**

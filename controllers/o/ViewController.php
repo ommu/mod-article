@@ -70,6 +70,8 @@ class ViewController extends Controller
 	public function actionManage()
 	{
 		$searchModel = new ArticleViewsSearch();
+		if(($id = Yii::$app->request->get('id')) != null)
+			$searchModel = new ArticleViewsSearch(['article_id'=>$id]);
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		$gridColumn = Yii::$app->request->get('GridColumn', null);
@@ -82,7 +84,7 @@ class ViewController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		if(($article = Yii::$app->request->get('article')) != null)
+		if(($article = Yii::$app->request->get('article')) != null || ($article = $id) != null)
 			$article = \ommu\article\models\Articles::findOne($article);
 		if(($user = Yii::$app->request->get('user')) != null)
 			$user = \ommu\users\models\Users::findOne($user);
@@ -94,6 +96,7 @@ class ViewController extends Controller
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
+			'article' => $article,
 			'user' => $user,
 		]);
 	}
@@ -106,6 +109,7 @@ class ViewController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
+		$this->subMenuParam = $model->article_id;
 
 		$this->view->title = Yii::t('app', 'Detail View: {article-id}', ['article-id' => $model->article->title]);
 		$this->view->description = '';
@@ -128,7 +132,7 @@ class ViewController extends Controller
 
 		if($model->save(false, ['publish'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article view success deleted.'));
-			return $this->redirect(['manage']);
+			return $this->redirect(['manage', 'id'=>$model->article_id]);
 		}
 	}
 
@@ -146,7 +150,7 @@ class ViewController extends Controller
 
 		if($model->save(false, ['publish'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article view success updated.'));
-			return $this->redirect(['manage']);
+			return $this->redirect(['manage', 'id'=>$model->article_id]);
 		}
 	}
 

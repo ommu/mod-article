@@ -122,7 +122,7 @@ class ArticleTag extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		if(!Yii::$app->request->get('article')) {
+		if(!Yii::$app->request->get('article') && !Yii::$app->request->get('id')) {
 			$this->templateColumns['articleTitle'] = [
 				'attribute' => 'articleTitle',
 				'value' => function($model, $key, $index, $column) {
