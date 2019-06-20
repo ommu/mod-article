@@ -368,13 +368,15 @@ class ArticleCategory extends \app\components\ActiveRecord
 	/**
 	 * function getCategory
 	 */
-	public static function getCategory($publish=null, $array=true) 
+	public static function getCategory($publish=null, $parent=null, $array=true) 
 	{
 		$model = self::find()->alias('t')
 			->select(['t.id', 't.name']);
 		$model->leftJoin(sprintf('%s title', SourceMessage::tableName()), 't.name=title.id');
 		if($publish != null)
 			$model->andWhere(['t.publish' => $publish]);
+		if($parent != null)
+			$model->andWhere(['t.parent' => $parent]);
 
 		$model = $model->orderBy('title.message ASC')->all();
 

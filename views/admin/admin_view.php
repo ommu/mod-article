@@ -61,7 +61,7 @@ $attributes = [
 		'attribute' => 'file',
 		'value' => function ($model) {
 			$uploadPath = join('/', [Articles::getUploadPath(false), $model->id]);
-			return $model->cover ? Html::a($model->document, Url::to(join('/', ['@webpublic', $uploadPath, $model->document])), ['target'=>'_blank']) : '-';
+			return $model->document ? Html::a($model->document, Url::to(join('/', ['@webpublic', $uploadPath, $model->document])), ['target'=>'_blank']) : '-';
 		},
 		'format' => 'html',
 		'visible' => $model->category->single_file ? true : false,
