@@ -60,7 +60,7 @@ class AdminController extends Controller
 
 		$model = ArticleSetting::findOne(1);
 		if($model === null) 
-			$model = new ArticleSetting();
+			$model = new ArticleSetting(['id'=>1]);
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
@@ -111,7 +111,7 @@ class AdminController extends Controller
 	{
 		$model = ArticleSetting::findOne(1);
 		if ($model === null) 
-			$model = new ArticleSetting();
+			$model = new ArticleSetting(['id'=>1]);
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());

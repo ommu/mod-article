@@ -376,7 +376,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 		if($publish != null)
 			$model->andWhere(['t.publish' => $publish]);
 		if($parent != null)
-			$model->andWhere(['t.parent' => $parent]);
+			$model->andWhere(['t.parent_id' => $parent]);
 
 		$model = $model->orderBy('title.message ASC')->all();
 
