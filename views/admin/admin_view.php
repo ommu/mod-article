@@ -135,10 +135,8 @@ $attributes = [
 	[
 		'attribute' => 'tags',
 		'value' => function ($model) {
-			$tags = $model->getTags('count');
-			return Html::a($tags, ['o/tag/manage', 'article'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} tags', ['count'=>$tags])]);
+			return implode(', ', $model->getTags(true, 'title'));
 		},
-		'format' => 'html',
 	],
 	[
 		'attribute' => 'likes',

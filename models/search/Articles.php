@@ -29,7 +29,7 @@ class Articles extends ArticlesModel
 	{
 		return [
 			[['id', 'publish', 'cat_id', 'headline', 'creation_id', 'modified_id'], 'integer'],
-			[['title', 'body', 'published_date', 'headline_date', 'creation_date', 'modified_date', 'updated_date', 'categoryName', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
+			[['title', 'body', 'published_date', 'headline_date', 'creation_date', 'modified_date', 'updated_date', 'categoryName', 'creationDisplayname', 'modifiedDisplayname', 'tag'], 'safe'],
 		];
 	}
 
@@ -69,6 +69,8 @@ class Articles extends ArticlesModel
 			'category.title category', 
 			'creation creation', 
 			'modified modified',
+			'tags tags',
+			'tags.tag tagsRltn',
 			'view view',
 		]);
 
@@ -113,10 +115,6 @@ class Articles extends ArticlesModel
 		$attributes['downloads'] = [
 			'asc' => ['view.downloads' => SORT_ASC],
 			'desc' => ['view.downloads' => SORT_DESC],
-		];
-		$attributes['tags'] = [
-			'asc' => ['view.tags' => SORT_ASC],
-			'desc' => ['view.tags' => SORT_DESC],
 		];
 		$attributes['likes'] = [
 			'asc' => ['view.likes' => SORT_ASC],
@@ -168,11 +166,15 @@ class Articles extends ArticlesModel
 			}
 		}
 
+		if(isset($params['tagId']) && $params['tagId'])
+			$query->andFilterWhere(['tags.tag_id' => $params['tagId']]);
+
 		$query->andFilterWhere(['like', 't.title', $this->title])
 			->andFilterWhere(['like', 't.body', $this->body])
 			->andFilterWhere(['like', 'category.message', $this->categoryName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
-			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname]);
+			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname])
+			->andFilterWhere(['like', 'tagsRltn.body', $this->tag]);
 
 		return $dataProvider;
 	}

@@ -132,9 +132,9 @@ class ImageController extends Controller
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
+			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
-			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success created.'));
@@ -177,9 +177,9 @@ class ImageController extends Controller
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
+			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
-			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success updated.'));

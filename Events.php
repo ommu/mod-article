@@ -36,7 +36,7 @@ class Events extends \yii\base\BaseObject
 	 */
 	public static function setArticleTag($article)
 	{
-		$oldTag = $article->getTags('array');
+		$oldTag = $article->getTags(true, 'title');
 		if($article->tag)
 			$tag = explode(',', $article->tag);
 

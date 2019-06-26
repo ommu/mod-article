@@ -55,7 +55,7 @@ class Articles extends \app\components\ActiveRecord
 	use \ommu\traits\UtilityTrait;
 	use \ommu\traits\FileTrait;
 
-	public $gridForbiddenColumn = ['body', 'headline_date', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date', 'medias', 'files', 'views', 'tags', 'likes'];
+	public $gridForbiddenColumn = ['body', 'headline_date', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date', 'tag', 'medias', 'files', 'views', 'likes'];
 
 	public $categoryName;
 	public $creationDisplayname;
@@ -114,14 +114,13 @@ class Articles extends \app\components\ActiveRecord
 			'files' => Yii::t('app', 'Documents'),
 			'views' => Yii::t('app', 'Views'),
 			'downloads' => Yii::t('app', 'Downloads'),
-			'tags' => Yii::t('app', 'Tags'),
 			'likes' => Yii::t('app', 'Likes'),
 			'categoryName' => Yii::t('app', 'Category'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 			'image' => Yii::t('app', 'Cover'),
 			'file' => Yii::t('app', 'Document'),
-			'tag' => Yii::t('app', 'Tag(s)'),
+			'tag' => Yii::t('app', 'Tags'),
 		];
 	}
 
@@ -206,22 +205,14 @@ class Articles extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * @param $type string (relation|array|count)
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getTags($type='relation')
+	public function getTags($result=false, $val='id')
 	{
-		if($type == 'relation')
-			return $this->hasMany(ArticleTag::className(), ['article_id' => 'id']);
+		if($result == true)
+			return \yii\helpers\ArrayHelper::map($this->tags, 'tag_id', $val=='id' ? 'id' : 'tag.body');
 
-		if($type == 'array')
-			return \yii\helpers\ArrayHelper::map($this->tags, 'tag_id', 'tag.body');
-
-		$model = ArticleTag::find()
-			->where(['article_id' => $this->id]);
-		$tags = $model->count();
-
-		return $tags ? $tags : 0;
+		return $this->hasMany(ArticleTag::className(), ['article_id' => 'id']);
 	}
 
 	/**
@@ -426,21 +417,17 @@ class Articles extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 			'format' => 'html',
 		];
+		$this->templateColumns['tag'] = [
+			'attribute' => 'tag',
+			'value' => function($model, $key, $index, $column) {
+				return implode(', ', $model->getTags(true, 'title'));
+			},
+		];
 		$this->templateColumns['views'] = [
 			'attribute' => 'views',
 			'value' => function($model, $key, $index, $column) {
 				$views = $model->getViews(true);
 				return Html::a($views, ['o/view/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} views', ['count'=>$views])]);
-			},
-			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
-			'format' => 'html',
-		];
-		$this->templateColumns['tags'] = [
-			'attribute' => 'tags',
-			'value' => function($model, $key, $index, $column) {
-				$tags = $model->getTags('count');
-				return Html::a($tags, ['o/tag/manage', 'article'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} tags', ['count'=>$tags])]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
@@ -574,7 +561,7 @@ class Articles extends \app\components\ActiveRecord
 		// $this->categoryName = isset($this->category) ? $this->category->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
-		$this->tag = implode(',', $this->getTags('array'));
+		$this->tag = implode(',', $this->getTags(true, 'title'));
 		$this->old_image = $this->cover;
 		$this->old_file = $this->document;
 	}

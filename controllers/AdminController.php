@@ -152,12 +152,12 @@ class AdminController extends Controller
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
 			if($model->category->single_photo || $setting->media_image_limit == 1)
 				$model->image = UploadedFile::getInstance($model, 'image');
 			if($model->category->single_file || $setting->media_file_limit == 1)
 				$model->file = UploadedFile::getInstance($model, 'file');
+			// $postData = Yii::$app->request->post();
+			// $model->load($postData);
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article success updated.'));

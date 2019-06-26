@@ -131,9 +131,9 @@ class FileController extends Controller
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
+			$model->file_filename = UploadedFile::getInstance($model, 'file_filename');
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
-			$model->file_filename = UploadedFile::getInstance($model, 'file_filename');
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article document success created.'));
@@ -176,9 +176,9 @@ class FileController extends Controller
 
 		if(Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
+			$model->file_filename = UploadedFile::getInstance($model, 'file_filename');
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
-			$model->file_filename = UploadedFile::getInstance($model, 'file_filename');
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article document success updated.'));
