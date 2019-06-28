@@ -139,7 +139,8 @@ class Articles extends \app\components\ActiveRecord
 	{
 		if($count == false)
 			return $this->hasMany(ArticleFiles::className(), ['article_id' => 'id'])
-				->andOnCondition([sprintf('%s.publish', ArticleFiles::tableName()) => $publish]);
+				->alias('files')
+				->andOnCondition([sprintf('%s.publish', 'files') => $publish]);
 
 		$model = ArticleFiles::find()
 			->where(['article_id' => $this->id]);
@@ -161,7 +162,8 @@ class Articles extends \app\components\ActiveRecord
 	{
 		if($count == false)
 			return $this->hasMany(ArticleLikes::className(), ['article_id' => 'id'])
-				->andOnCondition([sprintf('%s.publish', ArticleLikes::tableName()) => $publish]);
+				->alias('likes')
+				->andOnCondition([sprintf('%s.publish', 'likes') => $publish]);
 
 		$model = ArticleLikes::find()
 			->where(['article_id' => $this->id]);
@@ -184,12 +186,14 @@ class Articles extends \app\components\ActiveRecord
 	{
 		if($type == 'relation')
 			return $this->hasMany(ArticleMedia::className(), ['article_id' => 'id'])
-				->andOnCondition([sprintf('%s.publish', ArticleMedia::tableName()) => 1]);
+				->alias('medias')
+				->andOnCondition([sprintf('%s.publish', 'medias') => 1]);
 
 		if($type == 'cover')
 			return $this->hasMany(ArticleMedia::className(), ['article_id' => 'id'])
-				->andOnCondition([sprintf('%s.publish', ArticleMedia::tableName()) => 1])
-				->andOnCondition([sprintf('%s.cover', ArticleMedia::tableName()) => 1]);
+				->alias('medias')
+				->andOnCondition([sprintf('%s.publish', 'medias') => 1])
+				->andOnCondition([sprintf('%s.cover', 'medias') => 1]);
 
 		$model = ArticleMedia::find()
 			->where(['article_id' => $this->id]);
@@ -222,7 +226,8 @@ class Articles extends \app\components\ActiveRecord
 	{
 		if($count == false)
 			return $this->hasMany(ArticleViews::className(), ['article_id' => 'id'])
-			->andOnCondition([sprintf('%s.publish', ArticleViews::tableName()) => $publish]);
+				->alias('views')
+				->andOnCondition([sprintf('%s.publish', 'views') => $publish]);
 
 		$model = ArticleViews::find()
 			->where(['article_id' => $this->id]);

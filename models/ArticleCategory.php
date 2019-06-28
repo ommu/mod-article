@@ -136,7 +136,8 @@ class ArticleCategory extends \app\components\ActiveRecord
 	{
 		if($count == false)
 			return $this->hasMany(Articles::className(), ['cat_id' => 'id'])
-				->andOnCondition([sprintf('%s.publish', Articles::tableName()) => $publish]);
+				->alias('articles')
+				->andOnCondition([sprintf('%s.publish', 'articles') => $publish]);
 
 		if($publish === null)
 			return self::getArticlesByStatus($this->id, 'published');
