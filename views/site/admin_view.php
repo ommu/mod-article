@@ -27,10 +27,12 @@ use yii\widgets\Pjax;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Articles'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
+if(!$small) {
 $this->params['menu']['content'] = [
-['label' => Yii::t('app', 'Back To Article List'), 'url' => Url::to(['index']), 'icon' => 'table'],
+	['label' => Yii::t('app', 'Back To Article List'), 'url' => Url::to(['index']), 'icon' => 'table'],
 ];
-?>
+} ?>
+
 <div class="col-md-8 col-sm-12 col-xs-12">
 	<div class="x_panel">
 		<div class="x_title">
@@ -47,7 +49,11 @@ $this->params['menu']['content'] = [
 		<div class="x_content">
 			<?php
 $attributes = [
-	'id',
+	[
+		'attribute' => 'id',
+		'value' => $model->id ? $model->id : '-',
+		'visible' => !$small,
+	],
 	[
 		'attribute' => 'publish',
 		'value' => $model->publish == 1 ? Yii::t('app', 'Yes') : Yii::t('app', 'No'),

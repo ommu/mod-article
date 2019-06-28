@@ -27,7 +27,7 @@ $redactorOptions = [
 	'imageManagerJson' => ['/redactor/upload/image-json'],
 	'imageUpload' => ['/redactor/upload/image'],
 	'fileUpload' => ['/redactor/upload/file'],
-	'plugins' => ['clips', 'fontcolor','imagemanager']
+	'plugins' => ['clips', 'fontcolor', 'imagemanager']
 ];
 ?>
 
@@ -94,7 +94,7 @@ echo $form->field($model, 'tag')
 <?php if($model->isNewRecord && !$model->getErrors())
 	$model->published_date = Yii::$app->formatter->asDate('now', 'php:Y-m-d');
 echo $form->field($model, 'published_date')
-	->textInput(['type' => 'date'])
+	->textInput(['type'=>'date'])
 	->label($model->getAttributeLabel('published_date')); ?>
 
 <?php if($setting->headline) {
