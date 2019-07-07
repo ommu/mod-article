@@ -68,7 +68,8 @@ class ArticleViews extends ArticleViewsModel
 		$query->joinWith([
 			'article article', 
 			'user user'
-		]);
+		])
+		->groupBy(['id']);
 
 		// add conditions that should always apply here
 		$dataParams = [

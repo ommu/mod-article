@@ -70,7 +70,8 @@ class ArticleMedia extends ArticleMediaModel
 			'creation creation', 
 			'modified modified',
 			'view view',
-		]);
+		])
+		->groupBy(['id']);
 
 		// add conditions that should always apply here
 		$dataParams = [

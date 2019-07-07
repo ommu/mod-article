@@ -68,7 +68,8 @@ class ArticleDownloads extends ArticleDownloadsModel
 		$query->joinWith([
 			'file file', 
 			'user user'
-		]);
+		])
+		->groupBy(['id']);
 
 		// add conditions that should always apply here
 		$dataParams = [

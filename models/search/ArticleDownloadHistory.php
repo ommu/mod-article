@@ -67,7 +67,8 @@ class ArticleDownloadHistory extends ArticleDownloadHistoryModel
 			$query = ArticleDownloadHistoryModel::find()->alias('t')->select($column);
 		$query->joinWith([
 			'download.file download'
-		]);
+		])
+		->groupBy(['id']);
 
 		// add conditions that should always apply here
 		$dataParams = [

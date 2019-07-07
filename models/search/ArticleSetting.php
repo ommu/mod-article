@@ -64,7 +64,10 @@ class ArticleSetting extends ArticleSettingModel
 			$query = ArticleSettingModel::find()->alias('t');
 		else
 			$query = ArticleSettingModel::find()->alias('t')->select($column);
-		$query->joinWith(['modified modified']);
+		$query->joinWith([
+			'modified modified',
+		])
+		->groupBy(['id']);
 
 		// add conditions that should always apply here
 		$dataParams = [

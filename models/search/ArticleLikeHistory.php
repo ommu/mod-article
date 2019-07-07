@@ -67,7 +67,8 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 			$query = ArticleLikeHistoryModel::find()->alias('t')->select($column);
 		$query->joinWith([
 			'like.article like'
-		]);
+		])
+		->groupBy(['id']);
 
 		// add conditions that should always apply here
 		$dataParams = [

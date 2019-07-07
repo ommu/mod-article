@@ -69,7 +69,8 @@ class ArticleTag extends ArticleTagModel
 			'tag tag', 
 			'article article', 
 			'creation creation'
-		]);
+		])
+		->groupBy(['id']);
 
 		// add conditions that should always apply here
 		$dataParams = [

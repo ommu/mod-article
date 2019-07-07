@@ -68,7 +68,8 @@ class ArticleLikes extends ArticleLikesModel
 		$query->joinWith([
 			'article article', 
 			'user user'
-		]);
+		])
+		->groupBy(['id']);
 
 		// add conditions that should always apply here
 		$dataParams = [

@@ -72,7 +72,8 @@ class Articles extends ArticlesModel
 			'tags tags',
 			'tags.tag tagsRltn',
 			'view view',
-		]);
+		])
+		->groupBy(['id']);
 
 		// add conditions that should always apply here
 		$dataParams = [

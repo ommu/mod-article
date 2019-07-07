@@ -67,7 +67,8 @@ class ArticleViewHistory extends ArticleViewHistoryModel
 			$query = ArticleViewHistoryModel::find()->alias('t')->select($column);
 		$query->joinWith([
 			'view.article view'
-		]);
+		])
+		->groupBy(['id']);
 
 		// add conditions that should always apply here
 		$dataParams = [
