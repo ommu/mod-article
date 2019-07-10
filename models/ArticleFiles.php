@@ -183,9 +183,9 @@ class ArticleFiles extends \app\components\ActiveRecord
 			'attribute' => 'file_filename',
 			'value' => function($model, $key, $index, $column) {
 				$uploadPath = join('/', [Articles::getUploadPath(false), $model->article_id]);
-				return $model->file_filename ? Html::a($model->file_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->file_filename])), ['alt' => $model->file_filename]) : '-';
+				return $model->file_filename ? Html::a($model->file_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->file_filename])), ['title'=>$model->file_filename, 'target'=>'_blank']) : '-';
 			},
-			'format' => 'html',
+			'format' => 'raw',
 		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',

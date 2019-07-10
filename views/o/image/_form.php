@@ -48,7 +48,7 @@ $redactorOptions = [
 
 <?php //echo $form->errorSummary($model);?>
 <?php $uploadPath = join('/', [Articles::getUploadPath(false), $model->article_id]);
-$mediaFilename = !$model->isNewRecord && $model->old_media_filename != '' ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_media_filename])), ['class'=>'mb-3']) : '';
+$mediaFilename = !$model->isNewRecord && $model->old_media_filename != '' ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_media_filename])), ['alt'=>$model->old_media_filename, 'class'=>'mb-3']) : '';
 echo $form->field($model, 'media_filename', ['template' => '{label}{beginWrapper}<div>'.$mediaFilename.'</div>{input}{error}{hint}{endWrapper}'])
 	->fileInput()
 	->label($model->getAttributeLabel('media_filename')); ?>

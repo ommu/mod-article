@@ -52,7 +52,7 @@ $attributes = [
 		'attribute' => 'image',
 		'value' => function ($model) {
 			$uploadPath = join('/', [Articles::getUploadPath(false), $model->id]);
-			return $model->cover ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->cover]))) : '-';
+			return $model->cover ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->cover])), ['alt'=>$model->cover, 'class'=>'mb-3']).'<br/>'.$model->cover : '-';
 		},
 		'format' => 'html',
 	],
@@ -65,9 +65,9 @@ $attributes = [
 		'attribute' => 'file',
 		'value' => function ($model) {
 			$uploadPath = join('/', [Articles::getUploadPath(false), $model->id]);
-			return $model->document ? Html::a($model->document, Url::to(join('/', ['@webpublic', $uploadPath, $model->document])), ['target'=>'_blank']) : '-';
+			return $model->document ? Html::a($model->document, Url::to(join('/', ['@webpublic', $uploadPath, $model->document])), ['title'=>$model->document, 'target'=>'_blank']) : '-';
 		},
-		'format' => 'html',
+		'format' => 'raw',
 		'visible' => $model->category->single_file ? true : false,
 	],
 	[

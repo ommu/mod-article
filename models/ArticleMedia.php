@@ -194,7 +194,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 			'attribute' => 'media_filename',
 			'value' => function($model, $key, $index, $column) {
 				$uploadPath = join('/', [Articles::getUploadPath(false), $model->article_id]);
-				return $model->media_filename ? Html::a($model->media_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->media_filename])), ['alt' => $model->media_filename]) : '-';
+				return $model->media_filename ? Html::a($model->media_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->media_filename])), ['alt'=>$model->media_filename]) : '-';
 			},
 			'format' => 'html',
 		];
