@@ -41,7 +41,7 @@ use ommu\article\models\Articles;
 <?php //echo $form->errorSummary($model);?>
 
 <?php $uploadPath = join('/', [Articles::getUploadPath(false), $model->article_id]);
-$fileFilename = !$model->isNewRecord && $model->old_file_filename != '' ? Html::a($model->old_file_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->old_file_filename])), ['class'=>'d-inline-block mb-3']) : '';
+$fileFilename = !$model->isNewRecord && $model->old_file_filename != '' ? Html::a($model->old_file_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->old_file_filename])), ['title'=>$model->old_file_filename, 'target'=>'_blank', 'class'=>'d-inline-block mb-3']) : '';
 echo $form->field($model, 'file_filename', ['template' => '{label}{beginWrapper}<div>'.$fileFilename.'</div>{input}{error}{endWrapper}'])
 	->fileInput()
 	->label($model->getAttributeLabel('file_filename')); ?>

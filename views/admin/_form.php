@@ -71,7 +71,7 @@ if($model->isNewRecord || (!$model->isNewRecord && ($model->category->single_pho
 	->label($model->getAttributeLabel('body')); ?>
 
 <?php if($model->isNewRecord || (!$model->isNewRecord && ($model->category->single_file || $setting->media_file_limit == 1))) {
-$file = !$model->isNewRecord && $model->document ? Html::a($model->document, Url::to(join('/', ['@webpublic', $uploadPath, $model->document])), ['class'=>'d-inline-block mb-3']) : '';
+$file = !$model->isNewRecord && $model->document ? Html::a($model->document, Url::to(join('/', ['@webpublic', $uploadPath, $model->document])), ['title'=>$model->document, 'target'=>'_blank', 'class'=>'d-inline-block mb-3']) : '';
 echo $form->field($model, 'file', ['template' => '{label}{beginWrapper}<div>'.$file.'</div>{input}{error}{hint}{endWrapper}'])
 	->fileInput()
 	->label($model->getAttributeLabel('file'))
