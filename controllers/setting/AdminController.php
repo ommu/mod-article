@@ -145,10 +145,11 @@ class AdminController extends Controller
 	 */
 	public function actionDelete()
 	{
-		$this->findModel(1)->delete();
-		
+		$model = $this->findModel(1);
+		$model->delete();
+
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Article setting success deleted.'));
-		return $this->redirect(['manage']);
+		return $this->redirect(Yii::$app->request->referrer ?: ['index']);
 	}
 
 	/**

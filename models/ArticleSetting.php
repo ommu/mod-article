@@ -162,6 +162,14 @@ class ArticleSetting extends \app\components\ActiveRecord
 				return $model->meta_keyword;
 			},
 		];
+		$this->templateColumns['headline'] = [
+			'attribute' => 'headline',
+			'value' => function($model, $key, $index, $column) {
+				return self::getHeadline($model->headline);
+			},
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class'=>'center'],
+		];
 		$this->templateColumns['headline_limit'] = [
 			'attribute' => 'headline_limit',
 			'value' => function($model, $key, $index, $column) {
@@ -179,6 +187,14 @@ class ArticleSetting extends \app\components\ActiveRecord
 			'value' => function($model, $key, $index, $column) {
 				return $model->media_image_limit;
 			},
+		];
+		$this->templateColumns['media_image_resize'] = [
+			'attribute' => 'media_image_resize',
+			'value' => function($model, $key, $index, $column) {
+				return self::getMediaImageResize($model->media_image_resize);
+			},
+			'filter' => self::getMediaImageResize(),
+			'contentOptions' => ['class'=>'center'],
 		];
 		$this->templateColumns['media_image_resize_size'] = [
 			'attribute' => 'media_image_resize_size',
@@ -227,22 +243,6 @@ class ArticleSetting extends \app\components\ActiveRecord
 				},
 			];
 		}
-		$this->templateColumns['media_image_resize'] = [
-			'attribute' => 'media_image_resize',
-			'value' => function($model, $key, $index, $column) {
-				return $this->filterYesNo($model->media_image_resize);
-			},
-			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'center'],
-		];
-		$this->templateColumns['headline'] = [
-			'attribute' => 'headline',
-			'value' => function($model, $key, $index, $column) {
-				return self::getHeadline($model->headline);
-			},
-			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'center'],
-		];
 	}
 
 	/**
@@ -301,8 +301,8 @@ class ArticleSetting extends \app\components\ActiveRecord
 	public static function getMediaImageResize($value=null)
 	{
 		$items = array(
-			1 => Yii::t('app', 'Yes, resize media after upload.'),
-			0 => Yii::t('app', 'No, not resize media after upload.'),
+			1 => Yii::t('app', 'Yes, resize photo after upload.'),
+			0 => Yii::t('app', 'No, not resize photo after upload.'),
 		);
 
 		if($value !== null)
@@ -325,7 +325,7 @@ class ArticleSetting extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * function getSize
+	 * function parseImageViewSize
 	 */
 	public function parseImageViewSize($view_size)
 	{
@@ -337,6 +337,15 @@ class ArticleSetting extends \app\components\ActiveRecord
 			$views[] = ucfirst($key).": ".self::getSize($value);
 		}
 		return Html::ul($views, ['encode'=>false, 'class'=>'list-boxed']);
+	}
+
+	/**
+	 * function getHeadlineCategory
+	 */
+	public function getHeadlineCategory($headline_category)
+	{
+		$headline_category = unserialize($headline_category);
+		return $headline_category;
 	}
 
 	/**
@@ -368,6 +377,12 @@ class ArticleSetting extends \app\components\ActiveRecord
 				if($this->modified_id == null)
 					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
 			}
+
+			if($this->media_image_resize_size['width'] == '')
+				$this->addError('media_image_resize_size', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('media_image_resize_size')]));
+
+			if($this->media_image_view_size['small']['width'] == '' || $this->media_image_view_size['medium']['width'] == '' || $this->media_image_view_size['large']['width'] == '')
+				$this->addError('media_image_view_size', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('media_image_view_size')]));
 		}
 		return true;
 	}
@@ -385,11 +400,5 @@ class ArticleSetting extends \app\components\ActiveRecord
 			$this->media_file_type = serialize($this->formatFileType($this->media_file_type));
 		}
 		return true;
-	}
-
-	public function getHeadlineCategory($headline_category)
-	{
-		$headline_category = unserialize($headline_category);
-		return $headline_category;
 	}
 }

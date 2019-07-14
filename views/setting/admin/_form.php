@@ -25,7 +25,7 @@ use ommu\article\models\ArticleCategory;
 
 <?php $form = ActiveForm::begin([
 	'options' => ['class'=>'form-horizontal form-label-left'],
-	'enableClientValidation' => true,
+	'enableClientValidation' => false,
 	'enableAjaxValidation' => false,
 	//'enableClientScript' => true,
 	'fieldConfig' => [
@@ -44,7 +44,7 @@ echo $form->field($model, 'license')
 	->label($model->getAttributeLabel('license'))
 	->hint(Yii::t('app', 'Enter the your license key that is provided to you when you purchased this plugin. If you do not know your license key, please contact support team.').'<br/>'.Yii::t('app', 'Format: XXXX-XXXX-XXXX-XXXX')); ?>
 
-<?php $permission = ArticleSetting::getPermission();
+<?php $permission = $model::getPermission();
 echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hint}{input}{error}{endWrapper}'])
 	->radioList($permission)
 	->label($model->getAttributeLabel('permission'))
@@ -60,7 +60,7 @@ echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hi
 
 <div class="ln_solid"></div>
 
-<?php $headline = ArticleSetting::getHeadline();
+<?php $headline = $model::getHeadline();
 echo $form->field($model, 'headline')
 	->dropDownList($headline)
 	->label($model->getAttributeLabel('headline')); ?>
@@ -80,7 +80,7 @@ echo $form->field($model, 'headline_category')
 	->textInput(['type'=>'number'])
 	->label($model->getAttributeLabel('media_image_limit')); ?>
 
-<?php $mediaImageResize = ArticleSetting::getMediaImageResize();
+<?php $mediaImageResize = $model::getMediaImageResize();
 echo $form->field($model, 'media_image_resize')
 	->radioList($mediaImageResize)
 	->label($model->getAttributeLabel('media_image_resize')); ?>
