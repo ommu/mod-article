@@ -496,16 +496,7 @@ class Articles extends \app\components\ActiveRecord
 	}
 
 	/**
-	 * @param returnAlias set true jika ingin kembaliannya path alias atau false jika ingin string
-	 * relative path. default true.
-	 */
-	public static function getUploadPath($returnAlias=true) 
-	{
-		return ($returnAlias ? Yii::getAlias('@public/article') : 'article');
-	}
-
-	/**
-	 * function getHeadlines
+	 * function getSetting
 	 */
 	public function getSetting($field=[])
 	{
@@ -518,6 +509,15 @@ class Articles extends \app\components\ActiveRecord
 			->one();
 		
 		return $setting;
+	}
+
+	/**
+	 * @param returnAlias set true jika ingin kembaliannya path alias atau false jika ingin string
+	 * relative path. default true.
+	 */
+	public static function getUploadPath($returnAlias=true) 
+	{
+		return ($returnAlias ? Yii::getAlias('@public/article') : 'article');
 	}
 
 	/**

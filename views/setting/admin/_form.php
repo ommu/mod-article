@@ -17,7 +17,6 @@
 
 use yii\helpers\Html;
 use app\components\widgets\ActiveForm;
-use ommu\article\models\ArticleSetting;
 use ommu\article\models\ArticleCategory;
 ?>
 

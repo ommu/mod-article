@@ -16,7 +16,6 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
-use ommu\article\models\ArticleSetting;
 
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -38,7 +37,7 @@ $attributes = [
 	'license',
 	[
 		'attribute' => 'permission',
-		'value' => ArticleSetting::getPermission($model->permission),
+		'value' => $model::getPermission($model->permission),
 	],
 	[
 		'attribute' => 'meta_description',
@@ -50,7 +49,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'headline',
-		'value' => ArticleSetting::getHeadline($model->headline),
+		'value' => $model::getHeadline($model->headline),
 	],
 	'headline_limit',
 	[
@@ -60,15 +59,15 @@ $attributes = [
 	'media_image_limit',
 	[
 		'attribute' => 'media_image_resize',
-		'value' => ArticleSetting::getMediaImageResize($model->media_image_resize),
+		'value' => $model::getMediaImageResize($model->media_image_resize),
 	],
 	[
 		'attribute' => 'media_image_resize_size',
-		'value' => ArticleSetting::getSize($model->media_image_resize_size),
+		'value' => $model::getSize($model->media_image_resize_size),
 	],
 	[
 		'attribute' => 'media_image_view_size',
-		'value' => ArticleSetting::parseImageViewSize($model->media_image_view_size),
+		'value' => $model::parseImageViewSize($model->media_image_view_size),
 		'format' => 'html',
 	],
 	[
