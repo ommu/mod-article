@@ -82,7 +82,9 @@ $attributes = [
 		'attribute' => 'headline',
 		'value' => function ($model) {
 			$setting = $model->getSetting(['headline_category']);
-			if(!in_array($model->cat_id, $setting->headline_category))
+			if(!is_array(($headlineCategory = $setting->headline_category)))
+				$headlineCategory = [];
+			if(!in_array($model->cat_id, $headlineCategory))
 				return '-';
 			return $model->quickAction(Url::to(['headline', 'id'=>$model->primaryKey]), $model->headline, 'Yes,No', true);
 		},

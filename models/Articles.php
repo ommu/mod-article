@@ -453,7 +453,9 @@ class Articles extends \app\components\ActiveRecord
 				'attribute' => 'headline',
 				'value' => function($model, $key, $index, $column) {
 					$setting = $model->getSetting(['headline_category']);
-					if(!in_array($model->cat_id, $setting->headline_category))
+					if(!is_array(($headlineCategory = $setting->headline_category)))
+						$headlineCategory = [];
+					if(!in_array($model->cat_id, $headlineCategory))
 						return '-';
 					$url = Url::to(['headline', 'id'=>$model->primaryKey]);
 					return $this->quickAction($url, $model->headline, 'Yes,No', true);
@@ -532,8 +534,7 @@ class Articles extends \app\components\ActiveRecord
 			->where(['id' => 1])
 			->one();
 
-		$headlineCategory = $setting->headline_category;
-		if(empty($headlineCategory))
+		if(!is_array(($headlineCategory = $setting->headline_category)))
 			$headlineCategory = [];
 
 		$model = self::find()

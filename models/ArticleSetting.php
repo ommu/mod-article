@@ -344,10 +344,10 @@ class ArticleSetting extends \app\components\ActiveRecord
 	/**
 	 * function getHeadlineCategory
 	 */
-	public function getHeadlineCategory($headline_category)
+	public function getHeadlineCategory($headlineCategory)
 	{
-		$headline_category = unserialize($headline_category);
-		return $headline_category;
+		$headlineCategory = unserialize($headlineCategory);
+		return $headlineCategory;
 	}
 
 	/**

@@ -256,9 +256,12 @@ class AdminController extends Controller
 			->where(['id' => 1])
 			->one();
 
+		if(!is_array(($headlineCategory = $setting->headline_category)))
+			$headlineCategory = [];
+
 		$model = $this->findModel($id);
 
-		if(!in_array($model->cat_id, $setting->headline_category))
+		if(!in_array($model->cat_id, $headlineCategory))
 			throw new \yii\web\NotAcceptableHttpException(Yii::t('app', 'The requested page does not exist.'));
 
 		$model->headline = 1;
