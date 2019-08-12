@@ -4,7 +4,7 @@
  *
  * ArticleViews represents the model behind the search form about `ommu\article\models\ArticleViews`.
  *
- * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @author Putra Sudaryanto <putra@ommu.co>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 23 October 2017, 15:56 WIB

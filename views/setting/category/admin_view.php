@@ -5,7 +5,7 @@
  * @var $this ommu\article\controllers\setting\CategoryController
  * @var $model ommu\article\models\ArticleCategory
  *
- * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @author Putra Sudaryanto <putra@ommu.co>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
  * @created date 20 October 2017, 09:35 WIB

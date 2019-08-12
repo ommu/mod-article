@@ -5,7 +5,7 @@
  * @var $this ommu\article\controllers\history\LikeController
  * @var $model ommu\article\models\ArticleLikeHistory
  *
- * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @author Putra Sudaryanto <putra@ommu.co>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2019 OMMU (www.ommu.co)
  * @created date 13 May 2019, 17:13 WIB

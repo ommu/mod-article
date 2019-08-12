@@ -2,7 +2,7 @@
 /**
  * m190522_042401_article_module_insert_role
  * 
- * @author Putra Sudaryanto <putra@sudaryanto.id>
+ * @author Putra Sudaryanto <putra@ommu.co>
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2019 OMMU (www.ommu.co)
  * @created date 22 May 2019, 04:25 WIB
