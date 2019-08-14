@@ -134,6 +134,7 @@ class FileController extends Controller
 			$model->file_filename = UploadedFile::getInstance($model, 'file_filename');
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
+			// $model->order = $postData['order'] ? $postData['order'] : 0;
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article document success created.'));
@@ -179,6 +180,7 @@ class FileController extends Controller
 			$model->file_filename = UploadedFile::getInstance($model, 'file_filename');
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
+			// $model->order = $postData['order'] ? $postData['order'] : 0;
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article document success updated.'));

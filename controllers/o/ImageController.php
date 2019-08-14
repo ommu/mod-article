@@ -135,6 +135,7 @@ class ImageController extends Controller
 			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
+			// $model->order = $postData['order'] ? $postData['order'] : 0;
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success created.'));
@@ -180,6 +181,7 @@ class ImageController extends Controller
 			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
+			// $model->order = $postData['order'] ? $postData['order'] : 0;
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success updated.'));

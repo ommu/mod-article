@@ -118,6 +118,7 @@ class AdminController extends Controller
 			$model->file = UploadedFile::getInstance($model, 'file');
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
+			// $model->order = $postData['order'] ? $postData['order'] : 0;
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article success created.'));
@@ -158,6 +159,7 @@ class AdminController extends Controller
 				$model->file = UploadedFile::getInstance($model, 'file');
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
+			// $model->order = $postData['order'] ? $postData['order'] : 0;
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article success updated.'));
