@@ -292,31 +292,31 @@ class ArticleCategory extends \app\components\ActiveRecord
 			'attribute' => 'articles',
 			'value' => function($model, $key, $index, $column) {
 				$articles = $model->getArticles(true);
-				return Html::a($articles, ['admin/manage', 'category'=>$model->primaryKey, 'status'=>'publish'], ['title'=>Yii::t('app', '{count} articles', ['count'=>$articles])]);
+				return Html::a($articles, ['admin/manage', 'category'=>$model->primaryKey, 'status'=>'publish'], ['title'=>Yii::t('app', '{count} articles', ['count'=>$articles]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
-			'format' => 'html',
+			'format' => 'raw',
 		];
 		$this->templateColumns['pending'] = [
 			'attribute' => 'pending',
 			'value' => function($model, $key, $index, $column) {
 				$pending = $model->getPending(true);
-				return Html::a($pending, ['admin/manage', 'category'=>$model->primaryKey, 'status'=>'pending'], ['title'=>Yii::t('app', '{count} articles', ['count'=>$pending])]);
+				return Html::a($pending, ['admin/manage', 'category'=>$model->primaryKey, 'status'=>'pending'], ['title'=>Yii::t('app', '{count} articles', ['count'=>$pending]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
-			'format' => 'html',
+			'format' => 'raw',
 		];
 		$this->templateColumns['unpublish'] = [
 			'attribute' => 'unpublish',
 			'value' => function($model, $key, $index, $column) {
 				$unpublish = $model->getArticles(true, 0);
-				return Html::a($unpublish, ['admin/manage', 'category'=>$model->primaryKey, 'publish'=>0], ['title'=>Yii::t('app', '{count} articles', ['count'=>$unpublish])]);
+				return Html::a($unpublish, ['admin/manage', 'category'=>$model->primaryKey, 'publish'=>0], ['title'=>Yii::t('app', '{count} articles', ['count'=>$unpublish]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
-			'format' => 'html',
+			'format' => 'raw',
 		];
 		$this->templateColumns['single_photo'] = [
 			'attribute' => 'single_photo',

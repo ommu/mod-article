@@ -121,6 +121,7 @@ $attributes = [
 			return Html::a($medias, ['o/image/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} medias', ['count'=>$media])]);
 		},
 		'format' => 'html',
+		'visible' => $model->category->single_file ? false : true,
 	],
 	[
 		'attribute' => 'files',
@@ -129,6 +130,7 @@ $attributes = [
 			return Html::a($files, ['o/file/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} files', ['count'=>$files])]);
 		},
 		'format' => 'html',
+		'visible' => $model->category->single_file ? false : true,
 	],
 	[
 		'attribute' => 'views',
@@ -137,12 +139,6 @@ $attributes = [
 			return Html::a($views, ['o/view/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} views', ['count'=>$views])]);
 		},
 		'format' => 'html',
-	],
-	[
-		'attribute' => 'tags',
-		'value' => function ($model) {
-			return implode(', ', $model->getTags(true, 'title'));
-		},
 	],
 	[
 		'attribute' => 'likes',

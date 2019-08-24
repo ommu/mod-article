@@ -170,11 +170,11 @@ class ArticleDownloads extends \app\components\ActiveRecord
 			'attribute' => 'downloads',
 			'value' => function($model, $key, $index, $column) {
 				$downloads = $model->downloads;
-				return Html::a($downloads, ['history/download/manage', 'download'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$downloads])]);
+				return Html::a($downloads, ['history/download/manage', 'download'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$downloads]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
-			'format' => 'html',
+			'format' => 'raw',
 		];
 	}
 
