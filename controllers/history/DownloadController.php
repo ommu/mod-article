@@ -122,7 +122,7 @@ class DownloadController extends Controller
 		$model->delete();
 
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Article download history success deleted.'));
-		return $this->redirect(['manage']);
+		return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
 	}
 
 	/**

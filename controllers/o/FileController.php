@@ -242,7 +242,7 @@ class FileController extends Controller
 
 		if($model->save(false, ['publish','modified_id'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article document success deleted.'));
-			return $this->redirect(['manage', 'id'=>$model->article_id]);
+			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'id'=>$model->article_id]);
 		}
 	}
 

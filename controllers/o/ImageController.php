@@ -131,11 +131,10 @@ class ImageController extends Controller
 		$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
 
 		if(Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
+			$postData = Yii::$app->request->post();
+			$model->load($postData);
+			$model->orders = $postData['orders'] ? $postData['orders'] : 0;
 			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-			// $model->order = $postData['order'] ? $postData['order'] : 0;
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success created.'));
@@ -177,11 +176,10 @@ class ImageController extends Controller
 		$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
 
 		if(Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
+			$postData = Yii::$app->request->post();
+			$model->load($postData);
+			$model->orders = $postData['orders'] ? $postData['orders'] : 0;
 			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-			// $model->order = $postData['order'] ? $postData['order'] : 0;
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success updated.'));
@@ -243,7 +241,7 @@ class ImageController extends Controller
 
 		if($model->save(false, ['publish','modified_id'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success deleted.'));
-			return $this->redirect(['manage', 'id'=>$model->article_id]);
+			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'id'=>$model->article_id]);
 		}
 	}
 
@@ -260,7 +258,7 @@ class ImageController extends Controller
 
 		if($model->save(false, ['cover','modified_id'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success updated.'));
-			return $this->redirect(['manage', 'id'=>$model->article_id]);
+			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'id'=>$model->article_id]);
 		}
 	}
 
