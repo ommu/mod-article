@@ -37,6 +37,16 @@ class DownloadController extends Controller
 	/**
 	 * {@inheritdoc}
 	 */
+	public function init()
+	{
+		parent::init();
+		if(Yii::$app->request->get('download') || Yii::$app->request->get('id'))
+			$this->subMenu = $this->module->params['article_submenu'];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function behaviors()
 	{
 		return [
@@ -79,8 +89,15 @@ class DownloadController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		if(($download = Yii::$app->request->get('download')) != null)
+		if(($download = Yii::$app->request->get('download')) != null) {
 			$download = \ommu\article\models\ArticleDownloads::findOne($download);
+			$this->subMenuParam = $download->file->article_id;
+			$setting = $download->file->article->getSetting(['media_image_limit', 'media_file_limit']);
+			if($download->file->article->category->single_photo || $setting->media_image_limit == 1)
+				unset($this->subMenu['photo']);
+			if($download->file->article->category->single_file || $setting->media_file_limit == 1)
+				unset($this->subMenu['document']);
+		}
 
 		$this->view->title = Yii::t('app', 'Download Histories');
 		$this->view->description = '';
@@ -101,6 +118,16 @@ class DownloadController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
+
+		if(!Yii::$app->request->isAjax) {
+			$this->subMenuParam = $model->download->file->article_id;
+			$setting = $model->download->file->article->getSetting(['media_image_limit', 'media_file_limit']);
+
+			if($model->download->file->article->category->single_photo || $setting->media_image_limit == 1)
+				unset($this->subMenu['photo']);
+			if($model->download->file->article->category->single_file || $setting->media_file_limit == 1)
+				unset($this->subMenu['document']);
+		}
 
 		$this->view->title = Yii::t('app', 'Detail Download History: {download-id}', ['download-id' => $model->download->file->file_filename]);
 		$this->view->description = '';

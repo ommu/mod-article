@@ -38,6 +38,8 @@ class ArticleDownloads extends \app\components\ActiveRecord
 
 	public $fileFilename;
 	public $userDisplayname;
+	public $articleTitle;
+	public $articleId;
 
 	/**
 	 * @return string the associated database table name
@@ -77,6 +79,7 @@ class ArticleDownloads extends \app\components\ActiveRecord
 			'histories' => Yii::t('app', 'Histories'),
 			'fileFilename' => Yii::t('app', 'File'),
 			'userDisplayname' => Yii::t('app', 'User'),
+			'articleTitle' => Yii::t('app', 'Article'),
 		];
 	}
 
@@ -136,6 +139,13 @@ class ArticleDownloads extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 		];
 		if(!Yii::$app->request->get('file')) {
+			$this->templateColumns['articleTitle'] = [
+				'attribute' => 'articleTitle',
+				'value' => function($model, $key, $index, $column) {
+					return isset($model->file->article) ? $model->file->article->title : '-';
+					// return $model->articleTitle;
+				},
+			];
 			$this->templateColumns['fileFilename'] = [
 				'attribute' => 'fileFilename',
 				'value' => function($model, $key, $index, $column) {
@@ -235,6 +245,7 @@ class ArticleDownloads extends \app\components\ActiveRecord
 
 		// $this->fileFilename = isset($this->file) ? $this->file->file_filename : '-';
 		// $this->userDisplayname = isset($this->user) ? $this->user->displayname : '-';
+		// $this->articleTitle = isset($model->file->article) ? $model->file->article->title : '-';
 	}
 
 	/**

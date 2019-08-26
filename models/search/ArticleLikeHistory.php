@@ -28,8 +28,8 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'like_id'], 'integer'],
-			[['likes_date', 'likes_ip', 'likeArticleId'], 'safe'],
+			[['id', 'publish', 'like_id', 'articleId'], 'integer'],
+			[['likes_date', 'likes_ip', 'articleTitle'], 'safe'],
 		];
 	}
 
@@ -66,7 +66,8 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 		else
 			$query = ArticleLikeHistoryModel::find()->alias('t')->select($column);
 		$query->joinWith([
-			'like.article like'
+			'like like',
+			'like.article likeRltn'
 		])
 		->groupBy(['id']);
 
@@ -80,9 +81,9 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
-		$attributes['likeArticleId'] = [
-			'asc' => ['like.title' => SORT_ASC],
-			'desc' => ['like.title' => SORT_DESC],
+		$attributes['articleTitle'] = [
+			'asc' => ['likeRltn.title' => SORT_ASC],
+			'desc' => ['likeRltn.title' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
@@ -104,6 +105,7 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 			't.id' => $this->id,
 			't.like_id' => isset($params['like']) ? $params['like'] : $this->like_id,
 			'cast(t.likes_date as date)' => $this->likes_date,
+			'like.article_id' => $this->articleId,
 		]);
 
 		if(isset($params['trash']))
@@ -116,7 +118,7 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 		}
 
 		$query->andFilterWhere(['like', 't.likes_ip', $this->likes_ip])
-			->andFilterWhere(['like', 'like.title', $this->likeArticleId]);
+			->andFilterWhere(['like', 'likeRltn.title', $this->articleTitle]);
 
 		return $dataProvider;
 	}

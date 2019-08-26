@@ -41,12 +41,12 @@ $attributes = [
 		'value' => $model->filterYesNo($model->publish),
 	],
 	[
-		'attribute' => 'likeArticleId',
+		'attribute' => 'articleTitle',
 		'value' => function ($model) {
-			$likeArticleId = isset($model->like) ? $model->like->article->title : '-';
-			if($likeArticleId != '-')
-				return Html::a($likeArticleId, ['o/like/view', 'id'=>$model->like_id], ['title'=>$likeArticleId, 'class'=>'modal-btn']);
-			return $likeArticleId;
+			$articleTitle = isset($model->like) ? $model->like->article->title : '-';
+			if($articleTitle != '-')
+				return Html::a($articleTitle, ['o/like/view', 'id'=>$model->like_id], ['title'=>$articleTitle, 'class'=>'modal-btn']);
+			return $articleTitle;
 		},
 		'format' => 'html',
 	],
@@ -55,12 +55,6 @@ $attributes = [
 		'value' => Yii::$app->formatter->asDatetime($model->likes_date, 'medium'),
 	],
 	'likes_ip',
-	[
-		'attribute' => '',
-		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary']),
-		'format' => 'html',
-		'visible' => Yii::$app->request->isAjax ? true : false,
-	],
 ];
 
 echo DetailView::widget([

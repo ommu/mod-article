@@ -29,7 +29,7 @@ class ArticleDownloadHistory extends ArticleDownloadHistoryModel
 	{
 		return [
 			[['id', 'download_id'], 'integer'],
-			[['download_date', 'download_ip', 'downloadFileId'], 'safe'],
+			[['download_date', 'download_ip', 'fileName', 'articleTitle'], 'safe'],
 		];
 	}
 
@@ -66,7 +66,8 @@ class ArticleDownloadHistory extends ArticleDownloadHistoryModel
 		else
 			$query = ArticleDownloadHistoryModel::find()->alias('t')->select($column);
 		$query->joinWith([
-			'download.file download'
+			'download.file file',
+			'download.file.article article'
 		])
 		->groupBy(['id']);
 
@@ -80,9 +81,13 @@ class ArticleDownloadHistory extends ArticleDownloadHistoryModel
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
-		$attributes['downloadFileId'] = [
-			'asc' => ['download.file_filename' => SORT_ASC],
-			'desc' => ['download.file_filename' => SORT_DESC],
+		$attributes['fileName'] = [
+			'asc' => ['file.file_filename' => SORT_ASC],
+			'desc' => ['file.file_filename' => SORT_DESC],
+		];
+		$attributes['articleTitle'] = [
+			'asc' => ['article.title' => SORT_ASC],
+			'desc' => ['article.title' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
@@ -107,7 +112,8 @@ class ArticleDownloadHistory extends ArticleDownloadHistoryModel
 		]);
 
 		$query->andFilterWhere(['like', 't.download_ip', $this->download_ip])
-			->andFilterWhere(['like', 'download.file_filename', $this->downloadFileId]);
+			->andFilterWhere(['like', 'file.file_filename', $this->fileName])
+			->andFilterWhere(['like', 'article.title', $this->articleTitle]);
 
 		return $dataProvider;
 	}

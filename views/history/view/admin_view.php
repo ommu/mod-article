@@ -37,12 +37,12 @@ $attributes = [
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'viewArticleId',
+		'attribute' => 'articleTitle',
 		'value' => function ($model) {
-			$viewArticleId = isset($model->view) ? $model->view->article->title : '-';
-			if($viewArticleId != '-')
-				return Html::a($viewArticleId, ['o/view/view', 'id'=>$model->view_id], ['title'=>$viewArticleId, 'class'=>'modal-btn']);
-			return $viewArticleId;
+			$articleTitle = isset($model->view) ? $model->view->article->title : '-';
+			if($articleTitle != '-')
+				return Html::a($articleTitle, ['o/view/view', 'id'=>$model->view_id], ['title'=>$articleTitle, 'class'=>'modal-btn']);
+			return $articleTitle;
 		},
 		'format' => 'html',
 	],
@@ -51,12 +51,6 @@ $attributes = [
 		'value' => Yii::$app->formatter->asDatetime($model->view_date, 'medium'),
 	],
 	'view_ip',
-	[
-		'attribute' => '',
-		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary']),
-		'format' => 'html',
-		'visible' => Yii::$app->request->isAjax ? true : false,
-	],
 ];
 
 echo DetailView::widget([

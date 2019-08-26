@@ -28,8 +28,8 @@ class ArticleDownloads extends ArticleDownloadsModel
 	public function rules()
 	{
 		return [
-			[['id', 'file_id', 'user_id', 'downloads'], 'integer'],
-			[['download_date', 'download_ip', 'fileFilename', 'userDisplayname'], 'safe'],
+			[['id', 'file_id', 'user_id', 'downloads', 'articleId'], 'integer'],
+			[['download_date', 'download_ip', 'fileFilename', 'userDisplayname', 'articleTitle'], 'safe'],
 		];
 	}
 
@@ -67,7 +67,8 @@ class ArticleDownloads extends ArticleDownloadsModel
 			$query = ArticleDownloadsModel::find()->alias('t')->select($column);
 		$query->joinWith([
 			'file file', 
-			'user user'
+			'user user',
+			'file.article article',
 		])
 		->groupBy(['id']);
 
@@ -88,6 +89,10 @@ class ArticleDownloads extends ArticleDownloadsModel
 		$attributes['userDisplayname'] = [
 			'asc' => ['user.displayname' => SORT_ASC],
 			'desc' => ['user.displayname' => SORT_DESC],
+		];
+		$attributes['articleTitle'] = [
+			'asc' => ['article.title' => SORT_ASC],
+			'desc' => ['article.title' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
@@ -111,11 +116,13 @@ class ArticleDownloads extends ArticleDownloadsModel
 			't.user_id' => isset($params['user']) ? $params['user'] : $this->user_id,
 			't.downloads' => $this->downloads,
 			'cast(t.download_date as date)' => $this->download_date,
+			'file.article_id' => $this->articleId,
 		]);
 
 		$query->andFilterWhere(['like', 't.download_ip', $this->download_ip])
 			->andFilterWhere(['like', 'file.file_filename', $this->fileFilename])
-			->andFilterWhere(['like', 'user.displayname', $this->userDisplayname]);
+			->andFilterWhere(['like', 'user.displayname', $this->userDisplayname])
+			->andFilterWhere(['like', 'article.title', $this->articleTitle]);
 
 		return $dataProvider;
 	}

@@ -30,7 +30,8 @@ class ArticleDownloadHistory extends \app\components\ActiveRecord
 {
 	public $gridForbiddenColumn = [];
 
-	public $downloadFileId;
+	public $fileName;
+	public $articleTitle;
 
 	/**
 	 * @return string the associated database table name
@@ -64,7 +65,8 @@ class ArticleDownloadHistory extends \app\components\ActiveRecord
 			'download_id' => Yii::t('app', 'Download'),
 			'download_date' => Yii::t('app', 'Download Date'),
 			'download_ip' => Yii::t('app', 'Download IP'),
-			'downloadFileId' => Yii::t('app', 'Download'),
+			'fileName' => Yii::t('app', 'File'),
+			'articleTitle' => Yii::t('app', 'Article'),
 		];
 	}
 
@@ -101,11 +103,18 @@ class ArticleDownloadHistory extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 		];
 		if(!Yii::$app->request->get('download')) {
-			$this->templateColumns['downloadFileId'] = [
-				'attribute' => 'downloadFileId',
+			$this->templateColumns['articleTitle'] = [
+				'attribute' => 'articleTitle',
 				'value' => function($model, $key, $index, $column) {
-					return isset($model->download) ? $model->download->file->file_filename : '-';
-					// return $model->downloadFileId;
+					return isset($model->download->file->article) ? $model->download->file->article->title : '-';
+					// return $model->articleTitle;
+				},
+			];
+			$this->templateColumns['fileName'] = [
+				'attribute' => 'fileName',
+				'value' => function($model, $key, $index, $column) {
+					return isset($model->download->file) ? $model->download->file->file_filename : '-';
+					// return $model->fileName;
 				},
 			];
 		}
@@ -151,6 +160,7 @@ class ArticleDownloadHistory extends \app\components\ActiveRecord
 	{
 		parent::afterFind();
 
-		// $this->downloadFileId = isset($this->download) ? $this->download->file->file_filename : '-';
+		// $this->fileName = isset($this->download->file) ? $this->download->file->file_filename : '-';
+		// $this->articleTitle = isset($model->download->file->article) ? $model->download->file->article->title : '-';
 	}
 }

@@ -50,7 +50,7 @@ class FileController extends Controller
 	public function init()
 	{
 		parent::init();
-		if(Yii::$app->request->get('id'))
+		if(Yii::$app->request->get('id') || Yii::$app->request->get('article'))
 			$this->subMenu = $this->module->params['article_submenu'];
 	}
 
@@ -102,8 +102,10 @@ class FileController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		if(($article = Yii::$app->request->get('article')) != null || ($article = $id) != null)
+		if(($article = Yii::$app->request->get('article')) != null || ($article = $id) != null) {
+			$this->subMenuParam = $article;
 			$article = \ommu\article\models\Articles::findOne($article);
+		}
 
 		$this->view->title = Yii::t('app', 'Documents');
 		$this->view->description = '';
@@ -213,13 +215,16 @@ class FileController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
-		$this->subMenuParam = $model->article_id;
-		$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
 
-		if($model->article->category->single_photo || $setting->media_image_limit == 1)
-			unset($this->subMenu['photo']);
-		if($model->article->category->single_file || $setting->media_file_limit == 1)
-			unset($this->subMenu['document']);
+		if(!Yii::$app->request->isAjax) {
+			$this->subMenuParam = $model->article_id;
+			$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
+
+			if($model->article->category->single_photo || $setting->media_image_limit == 1)
+				unset($this->subMenu['photo']);
+			if($model->article->category->single_file || $setting->media_file_limit == 1)
+				unset($this->subMenu['document']);
+		}
 
 		$this->view->title = Yii::t('app', 'Detail Document: {file-filename}', ['file-filename' => $model->file_filename]);
 		$this->view->description = '';

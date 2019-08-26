@@ -28,8 +28,8 @@ class ArticleViewHistory extends ArticleViewHistoryModel
 	public function rules()
 	{
 		return [
-			[['id', 'view_id'], 'integer'],
-			[['view_date', 'view_ip', 'viewArticleId'], 'safe'],
+			[['id', 'view_id', 'articleId'], 'integer'],
+			[['view_date', 'view_ip', 'articleTitle'], 'safe'],
 		];
 	}
 
@@ -66,7 +66,8 @@ class ArticleViewHistory extends ArticleViewHistoryModel
 		else
 			$query = ArticleViewHistoryModel::find()->alias('t')->select($column);
 		$query->joinWith([
-			'view.article view'
+			'view view',
+			'view.article viewRltn'
 		])
 		->groupBy(['id']);
 
@@ -80,9 +81,9 @@ class ArticleViewHistory extends ArticleViewHistoryModel
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
-		$attributes['viewArticleId'] = [
-			'asc' => ['view.title' => SORT_ASC],
-			'desc' => ['view.title' => SORT_DESC],
+		$attributes['articleTitle'] = [
+			'asc' => ['viewRltn.title' => SORT_ASC],
+			'desc' => ['viewRltn.title' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
@@ -104,10 +105,11 @@ class ArticleViewHistory extends ArticleViewHistoryModel
 			't.id' => $this->id,
 			't.view_id' => isset($params['view']) ? $params['view'] : $this->view_id,
 			'cast(t.view_date as date)' => $this->view_date,
+			'view.article_id' => $this->articleId,
 		]);
 
 		$query->andFilterWhere(['like', 't.view_ip', $this->view_ip])
-			->andFilterWhere(['like', 'view.title', $this->viewArticleId]);
+			->andFilterWhere(['like', 'viewRltn.title', $this->articleTitle]);
 
 		return $dataProvider;
 	}

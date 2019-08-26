@@ -30,7 +30,8 @@ class ArticleViewHistory extends \app\components\ActiveRecord
 {
 	public $gridForbiddenColumn = [];
 
-	public $viewArticleId;
+	public $articleTitle;
+	public $articleId;
 
 	/**
 	 * @return string the associated database table name
@@ -64,7 +65,7 @@ class ArticleViewHistory extends \app\components\ActiveRecord
 			'view_id' => Yii::t('app', 'View'),
 			'view_date' => Yii::t('app', 'View Date'),
 			'view_ip' => Yii::t('app', 'View IP'),
-			'viewArticleId' => Yii::t('app', 'View'),
+			'articleTitle' => Yii::t('app', 'Article'),
 		];
 	}
 
@@ -101,11 +102,11 @@ class ArticleViewHistory extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 		];
 		if(!Yii::$app->request->get('view')) {
-			$this->templateColumns['viewArticleId'] = [
-				'attribute' => 'viewArticleId',
+			$this->templateColumns['articleTitle'] = [
+				'attribute' => 'articleTitle',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->view) ? $model->view->article->title : '-';
-					// return $model->viewArticleId;
+					// return $model->articleTitle;
 				},
 			];
 		}
@@ -151,6 +152,6 @@ class ArticleViewHistory extends \app\components\ActiveRecord
 	{
 		parent::afterFind();
 
-		// $this->viewArticleId = isset($this->view) ? $this->view->article->title : '-';
+		// $this->articleTitle = isset($this->view) ? $this->view->article->title : '-';
 	}
 }

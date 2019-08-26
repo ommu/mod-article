@@ -37,6 +37,16 @@ class LikeController extends Controller
 	/**
 	 * {@inheritdoc}
 	 */
+	public function init()
+	{
+		parent::init();
+		if(Yii::$app->request->get('like') || Yii::$app->request->get('id'))
+			$this->subMenu = $this->module->params['article_submenu'];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function behaviors()
 	{
 		return [
@@ -67,6 +77,8 @@ class LikeController extends Controller
 	public function actionManage()
 	{
 		$searchModel = new ArticleLikeHistorySearch();
+		if(($id = Yii::$app->request->get('id')) != null)
+			$searchModel = new ArticleLikeHistorySearch(['articleId'=>$id]);
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		$gridColumn = Yii::$app->request->get('GridColumn', null);
@@ -79,8 +91,25 @@ class LikeController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		if(($like = Yii::$app->request->get('like')) != null)
+		if(($like = Yii::$app->request->get('like')) != null) {
 			$like = \ommu\article\models\ArticleLikes::findOne($like);
+			$this->subMenuParam = $like->article_id;
+			$setting = $like->article->getSetting(['media_image_limit', 'media_file_limit']);
+			if($like->article->category->single_photo || $setting->media_image_limit == 1)
+				unset($this->subMenu['photo']);
+			if($like->article->category->single_file || $setting->media_file_limit == 1)
+				unset($this->subMenu['document']);
+		}
+
+		if(($article = $id) != null) {
+			$this->subMenuParam = $article;
+			$article = \ommu\article\models\Articles::findOne($article);
+			$setting = $article->getSetting(['media_image_limit', 'media_file_limit']);
+			if($article->category->single_photo || $setting->media_image_limit == 1)
+				unset($this->subMenu['photo']);
+			if($article->category->single_file || $setting->media_file_limit == 1)
+				unset($this->subMenu['document']);
+		}
 
 		$this->view->title = Yii::t('app', 'Like Histories');
 		$this->view->description = '';
@@ -90,6 +119,7 @@ class LikeController extends Controller
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
 			'like' => $like,
+			'article' => $article,
 		]);
 	}
 
@@ -101,6 +131,16 @@ class LikeController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
+
+		if(!Yii::$app->request->isAjax) {
+			$this->subMenuParam = $model->like->article_id;
+			$setting = $model->like->article->getSetting(['media_image_limit', 'media_file_limit']);
+
+			if($model->like->article->category->single_photo || $setting->media_image_limit == 1)
+				unset($this->subMenu['photo']);
+			if($model->like->article->category->single_file || $setting->media_file_limit == 1)
+				unset($this->subMenu['document']);
+		}
 
 		$this->view->title = Yii::t('app', 'Detail Like History: {like-id}', ['like-id' => $model->like->article->title]);
 		$this->view->description = '';
@@ -122,7 +162,7 @@ class LikeController extends Controller
 		$model->delete();
 
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Article like history success deleted.'));
-		return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
+		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'id'=>$model->like->article_id]);
 	}
 
 	/**

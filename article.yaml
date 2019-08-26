@@ -23,6 +23,24 @@ article_submenu:
       0: 'o/file/manage'
       id: $_GET*id
     select: controller
+  views:
+    label: View(s)
+    url:
+      0: 'o/view/manage'
+      id: $_GET*id
+    select: controller
+  download:
+    label: Download(s)
+    url:
+      0: 'o/download/manage'
+      id: $_GET*id
+    select: controller
+  like:
+    label: Like(s)
+    url:
+      0: 'o/like/manage'
+      id: $_GET*id
+    select: controller
   delete:
     label: Delete
     url:

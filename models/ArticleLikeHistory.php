@@ -34,7 +34,8 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 
 	public $gridForbiddenColumn = [];
 
-	public $likeArticleId;
+	public $articleTitle;
+	public $articleId;
 
 	/**
 	 * @return string the associated database table name
@@ -69,7 +70,7 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 			'like_id' => Yii::t('app', 'Like'),
 			'likes_date' => Yii::t('app', 'Likes Date'),
 			'likes_ip' => Yii::t('app', 'Likes IP'),
-			'likeArticleId' => Yii::t('app', 'Like'),
+			'articleTitle' => Yii::t('app', 'Article'),
 		];
 	}
 
@@ -106,11 +107,11 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 		];
 		if(!Yii::$app->request->get('like')) {
-			$this->templateColumns['likeArticleId'] = [
-				'attribute' => 'likeArticleId',
+			$this->templateColumns['articleTitle'] = [
+				'attribute' => 'articleTitle',
 				'value' => function($model, $key, $index, $column) {
 					return isset($model->like) ? $model->like->article->title : '-';
-					// return $model->likeArticleId;
+					// return $model->articleTitle;
 				},
 			];
 		}
@@ -164,6 +165,6 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 	{
 		parent::afterFind();
 
-		// $this->likeArticleId = isset($this->like) ? $this->like->article->title : '-';
+		// $this->articleTitle = isset($this->like) ? $this->like->article->title : '-';
 	}
 }

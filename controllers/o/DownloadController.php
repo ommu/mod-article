@@ -37,6 +37,16 @@ class DownloadController extends Controller
 	/**
 	 * {@inheritdoc}
 	 */
+	public function init()
+	{
+		parent::init();
+		if(Yii::$app->request->get('id') || Yii::$app->request->get('file'))
+			$this->subMenu = $this->module->params['article_submenu'];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function behaviors()
 	{
 		return [
@@ -67,6 +77,8 @@ class DownloadController extends Controller
 	public function actionManage()
 	{
 		$searchModel = new ArticleDownloadsSearch();
+		if(($id = Yii::$app->request->get('id')) != null)
+			$searchModel = new ArticleDownloadsSearch(['articleId'=>$id]);
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		$gridColumn = Yii::$app->request->get('GridColumn', null);
@@ -79,10 +91,27 @@ class DownloadController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		if(($file = Yii::$app->request->get('file')) != null)
+		if(($file = Yii::$app->request->get('file')) != null) {
 			$file = \ommu\article\models\ArticleFiles::findOne($file);
+			$this->subMenuParam = $file->article_id;
+			$setting = $file->article->getSetting(['media_image_limit', 'media_file_limit']);
+			if($file->article->category->single_photo || $setting->media_image_limit == 1)
+				unset($this->subMenu['photo']);
+			if($file->article->category->single_file || $setting->media_file_limit == 1)
+				unset($this->subMenu['document']);
+		}
 		if(($user = Yii::$app->request->get('user')) != null)
 			$user = \ommu\users\models\Users::findOne($user);
+
+		if(($article = $id) != null) {
+			$this->subMenuParam = $article;
+			$article = \ommu\article\models\Articles::findOne($article);
+			$setting = $article->getSetting(['media_image_limit', 'media_file_limit']);
+			if($article->category->single_photo || $setting->media_image_limit == 1)
+				unset($this->subMenu['photo']);
+			if($article->category->single_file || $setting->media_file_limit == 1)
+				unset($this->subMenu['document']);
+		}
 
 		$this->view->title = Yii::t('app', 'Downloads');
 		$this->view->description = '';
@@ -91,7 +120,9 @@ class DownloadController extends Controller
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
+			'file' => $file,
 			'user' => $user,
+			'article' => $article,
 		]);
 	}
 
@@ -103,6 +134,16 @@ class DownloadController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
+
+		if(!Yii::$app->request->isAjax) {
+			$this->subMenuParam = $model->file->article_id;
+			$setting = $model->file->article->getSetting(['media_image_limit', 'media_file_limit']);
+	
+			if($model->file->article->category->single_photo || $setting->media_image_limit == 1)
+				unset($this->subMenu['photo']);
+			if($model->file->article->category->single_file || $setting->media_file_limit == 1)
+				unset($this->subMenu['document']);
+		}
 
 		$this->view->title = Yii::t('app', 'Detail Download: {file-id}', ['file-id' => $model->file->file_filename]);
 		$this->view->description = '';
@@ -124,7 +165,7 @@ class DownloadController extends Controller
 		$model->delete();
 
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Article download success deleted.'));
-		return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
+		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'id'=>$model->file->article_id]);
 	}
 
 	/**

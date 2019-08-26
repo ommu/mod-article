@@ -37,12 +37,12 @@ $attributes = [
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'downloadFileId',
+		'attribute' => 'fileName',
 		'value' => function ($model) {
-			$downloadFileId = isset($model->download) ? $model->download->file->file_filename : '-';
-			if($downloadFileId != '-')
-				return Html::a($downloadFileId, ['o/download/view', 'id'=>$model->download_id], ['title'=>$downloadFileId, 'class'=>'modal-btn']);
-			return $downloadFileId;
+			$fileName = isset($model->download) ? $model->download->file->file_filename : '-';
+			if($fileName != '-')
+				return Html::a($fileName, ['o/download/view', 'id'=>$model->download_id], ['title'=>$fileName, 'class'=>'modal-btn']);
+			return $fileName;
 		},
 		'format' => 'html',
 	],
@@ -51,12 +51,6 @@ $attributes = [
 		'value' => Yii::$app->formatter->asDatetime($model->download_date, 'medium'),
 	],
 	'download_ip',
-	[
-		'attribute' => '',
-		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary']),
-		'format' => 'html',
-		'visible' => Yii::$app->request->isAjax ? true : false,
-	],
 ];
 
 echo DetailView::widget([

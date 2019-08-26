@@ -37,6 +37,16 @@ class ViewController extends Controller
 	/**
 	 * {@inheritdoc}
 	 */
+	public function init()
+	{
+		parent::init();
+		if(Yii::$app->request->get('view') || Yii::$app->request->get('id'))
+			$this->subMenu = $this->module->params['article_submenu'];
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
 	public function behaviors()
 	{
 		return [
@@ -67,6 +77,8 @@ class ViewController extends Controller
 	public function actionManage()
 	{
 		$searchModel = new ArticleViewHistorySearch();
+		if(($id = Yii::$app->request->get('id')) != null)
+			$searchModel = new ArticleViewHistorySearch(['articleId'=>$id]);
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		$gridColumn = Yii::$app->request->get('GridColumn', null);
@@ -79,8 +91,25 @@ class ViewController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		if(($view = Yii::$app->request->get('view')) != null)
+		if(($view = Yii::$app->request->get('view')) != null) {
 			$view = \ommu\article\models\ArticleViews::findOne($view);
+			$this->subMenuParam = $view->article_id;
+			$setting = $view->article->getSetting(['media_image_limit', 'media_file_limit']);
+			if($view->article->category->single_photo || $setting->media_image_limit == 1)
+				unset($this->subMenu['photo']);
+			if($view->article->category->single_file || $setting->media_file_limit == 1)
+				unset($this->subMenu['document']);
+		}
+
+		if(($article = $id) != null) {
+			$this->subMenuParam = $article;
+			$article = \ommu\article\models\Articles::findOne($article);
+			$setting = $article->getSetting(['media_image_limit', 'media_file_limit']);
+			if($article->category->single_photo || $setting->media_image_limit == 1)
+				unset($this->subMenu['photo']);
+			if($article->category->single_file || $setting->media_file_limit == 1)
+				unset($this->subMenu['document']);
+		}
 
 		$this->view->title = Yii::t('app', 'View Histories');
 		$this->view->description = '';
@@ -90,6 +119,7 @@ class ViewController extends Controller
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
 			'view' => $view,
+			'article' => $article,
 		]);
 	}
 
@@ -101,6 +131,16 @@ class ViewController extends Controller
 	public function actionView($id)
 	{
 		$model = $this->findModel($id);
+
+		if(!Yii::$app->request->isAjax) {
+			$this->subMenuParam = $model->view->article_id;
+			$setting = $model->view->article->getSetting(['media_image_limit', 'media_file_limit']);
+
+			if($model->view->article->category->single_photo || $setting->media_image_limit == 1)
+				unset($this->subMenu['photo']);
+			if($model->view->article->category->single_file || $setting->media_file_limit == 1)
+				unset($this->subMenu['document']);
+		}
 
 		$this->view->title = Yii::t('app', 'Detail View History: {view-id}', ['view-id' => $model->view->article->title]);
 		$this->view->description = '';
@@ -122,7 +162,7 @@ class ViewController extends Controller
 		$model->delete();
 
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Article view history success deleted.'));
-		return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
+		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'id'=>$model->view->article_id]);
 	}
 
 	/**

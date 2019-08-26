@@ -73,12 +73,6 @@ $attributes = [
 		},
 		'format' => 'html',
 	],
-	[
-		'attribute' => '',
-		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary']),
-		'format' => 'html',
-		'visible' => Yii::$app->request->isAjax ? true : false,
-	],
 ];
 
 echo DetailView::widget([
