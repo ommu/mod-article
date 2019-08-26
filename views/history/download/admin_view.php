@@ -37,14 +37,28 @@ $attributes = [
 		'visible' => !$small,
 	],
 	[
+		'attribute' => 'articleTitle',
+		'value' => function ($model) {
+			$articleTitle = isset($model->download->file->article) ? $model->download->file->article->title : '-';
+			if($articleTitle != '-')
+				return Html::a($articleTitle, ['admin/view', 'id'=>$model->download->file->article_id], ['title'=>$articleTitle, 'class'=>'modal-btn']);
+			return $articleTitle;
+		},
+		'format' => 'html',
+	],
+	[
 		'attribute' => 'fileName',
 		'value' => function ($model) {
-			$fileName = isset($model->download) ? $model->download->file->file_filename : '-';
+			$fileName = isset($model->download->file) ? $model->download->file->file_filename : '-';
 			if($fileName != '-')
-				return Html::a($fileName, ['o/download/view', 'id'=>$model->download_id], ['title'=>$fileName, 'class'=>'modal-btn']);
+				return Html::a($fileName, ['o/file/view', 'id'=>$model->download->file_id], ['title'=>$fileName, 'class'=>'modal-btn']);
 			return $fileName;
 		},
 		'format' => 'html',
+	],
+	[
+		'attribute' => 'download.user_id',
+		'value' => isset($model->download->user) ? $model->download->user->displayname : '-',
 	],
 	[
 		'attribute' => 'download_date',

@@ -57,6 +57,14 @@ $attributes = [
 		'value' => isset($model->user) ? $model->user->displayname : '-',
 	],
 	[
+		'attribute' => 'views',
+		'value' => function ($model) {
+			$views = $model->views;
+			return Html::a($views, ['history/view/manage', 'view'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$views])]);
+		},
+		'format' => 'html',
+	],
+	[
 		'attribute' => 'view_date',
 		'value' => Yii::$app->formatter->asDatetime($model->view_date, 'medium'),
 	],
@@ -64,14 +72,6 @@ $attributes = [
 	[
 		'attribute' => 'updated_date',
 		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
-	],
-	[
-		'attribute' => 'views',
-		'value' => function ($model) {
-			$views = $model->views;
-			return Html::a($views, ['history/view/manage', 'view'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$views])]);
-		},
-		'format' => 'html',
 	],
 ];
 

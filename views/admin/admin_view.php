@@ -71,6 +71,24 @@ $attributes = [
 		'visible' => $model->category->single_file ? true : false,
 	],
 	[
+		'attribute' => 'medias',
+		'value' => function ($model) {
+			$medias = $model->getMedias('count');
+			return Html::a($medias, ['o/image/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} medias', ['count'=>$media])]);
+		},
+		'format' => 'html',
+		'visible' => $model->category->single_file ? false : true,
+	],
+	[
+		'attribute' => 'files',
+		'value' => function ($model) {
+			$files = $model->getFiles(true);
+			return Html::a($files, ['o/file/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} files', ['count'=>$files])]);
+		},
+		'format' => 'html',
+		'visible' => $model->category->single_file ? false : true,
+	],
+	[
 		'attribute' => 'tag',
 		'value' => $model->tag ? $model->tag : '-',
 	],
@@ -95,6 +113,22 @@ $attributes = [
 		'value' => Yii::$app->formatter->asDatetime($model->headline_date, 'medium'),
 	],
 	[
+		'attribute' => 'views',
+		'value' => function ($model) {
+			$views = $model->getViews(true);
+			return Html::a($views, ['o/view/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} views', ['count'=>$views])]);
+		},
+		'format' => 'html',
+	],
+	[
+		'attribute' => 'likes',
+		'value' => function ($model) {
+			$likes = $model->getLikes(true);
+			return Html::a($likes, ['o/like/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} likes', ['count'=>$likes])]);
+		},
+		'format' => 'html',
+	],
+	[
 		'attribute' => 'creation_date',
 		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
 	],
@@ -113,40 +147,6 @@ $attributes = [
 	[
 		'attribute' => 'updated_date',
 		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
-	],
-	[
-		'attribute' => 'medias',
-		'value' => function ($model) {
-			$medias = $model->getMedias('count');
-			return Html::a($medias, ['o/image/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} medias', ['count'=>$media])]);
-		},
-		'format' => 'html',
-		'visible' => $model->category->single_file ? false : true,
-	],
-	[
-		'attribute' => 'files',
-		'value' => function ($model) {
-			$files = $model->getFiles(true);
-			return Html::a($files, ['o/file/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} files', ['count'=>$files])]);
-		},
-		'format' => 'html',
-		'visible' => $model->category->single_file ? false : true,
-	],
-	[
-		'attribute' => 'views',
-		'value' => function ($model) {
-			$views = $model->getViews(true);
-			return Html::a($views, ['o/view/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} views', ['count'=>$views])]);
-		},
-		'format' => 'html',
-	],
-	[
-		'attribute' => 'likes',
-		'value' => function ($model) {
-			$likes = $model->getLikes(true);
-			return Html::a($likes, ['o/like/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} likes', ['count'=>$likes])]);
-		},
-		'format' => 'html',
 	],
 	[
 		'attribute' => '',

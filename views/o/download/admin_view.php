@@ -38,6 +38,16 @@ $attributes = [
 		'visible' => !$small,
 	],
 	[
+		'attribute' => 'articleTitle',
+		'value' => function ($model) {
+			$articleTitle = isset($model->file->article) ? $model->file->article->title : '-';
+			if($articleTitle != '-')
+				return Html::a($articleTitle, ['admin/view', 'id'=>$model->file->article_id], ['title'=>$articleTitle, 'class'=>'modal-btn']);
+			return $articleTitle;
+		},
+		'format' => 'html',
+	],
+	[
 		'attribute' => 'fileFilename',
 		'value' => function ($model) {
 			$fileFilename = isset($model->file) ? $model->file->file_filename : '-';
@@ -52,11 +62,6 @@ $attributes = [
 		'value' => isset($model->user) ? $model->user->displayname : '-',
 	],
 	[
-		'attribute' => 'download_date',
-		'value' => Yii::$app->formatter->asDatetime($model->download_date, 'medium'),
-	],
-	'download_ip',
-	[
 		'attribute' => 'downloads',
 		'value' => function ($model) {
 			$downloads = $model->downloads;
@@ -64,6 +69,11 @@ $attributes = [
 		},
 		'format' => 'html',
 	],
+	[
+		'attribute' => 'download_date',
+		'value' => Yii::$app->formatter->asDatetime($model->download_date, 'medium'),
+	],
+	'download_ip',
 ];
 
 echo DetailView::widget([

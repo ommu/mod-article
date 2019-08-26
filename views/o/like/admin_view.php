@@ -57,6 +57,14 @@ $attributes = [
 		'value' => isset($model->user) ? $model->user->displayname : '-',
 	],
 	[
+		'attribute' => 'histories',
+		'value' => function ($model) {
+			$histories = $model->getHistories(true);
+			return Html::a($histories, ['history/like/manage', 'like'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$histories])]);
+		},
+		'format' => 'html',
+	],
+	[
 		'attribute' => 'likes_date',
 		'value' => Yii::$app->formatter->asDatetime($model->likes_date, 'medium'),
 	],
@@ -64,14 +72,6 @@ $attributes = [
 	[
 		'attribute' => 'updated_date',
 		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
-	],
-	[
-		'attribute' => 'histories',
-		'value' => function ($model) {
-			$histories = $model->getHistories(true);
-			return Html::a($histories, ['history/like/manage', 'like'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$histories])]);
-		},
-		'format' => 'html',
 	],
 ];
 

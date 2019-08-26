@@ -64,26 +64,6 @@ $attributes = [
 		'value' => $model->filterYesNo($model->single_file),
 	],
 	[
-		'attribute' => 'creation_date',
-		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
-	],
-	[
-		'attribute' => 'creationDisplayname',
-		'value' => isset($model->creation) ? $model->creation->displayname : '-',
-	],
-	[
-		'attribute' => 'modified_date',
-		'value' => Yii::$app->formatter->asDatetime($model->modified_date, 'medium'),
-	],
-	[
-		'attribute' => 'modifiedDisplayname',
-		'value' => isset($model->modified) ? $model->modified->displayname : '-',
-	],
-	[
-		'attribute' => 'updated_date',
-		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
-	],
-	[
 		'attribute' => 'articles',
 		'value' => function ($model) {
 			$articles = $model->getArticles(true);
@@ -106,6 +86,26 @@ $attributes = [
 			return Html::a($unpublish, ['admin/manage', 'category'=>$model->primaryKey, 'publish'=>0], ['title'=>Yii::t('app', '{count} articles', ['count'=>$unpublish])]);
 		},
 		'format' => 'html',
+	],
+	[
+		'attribute' => 'creation_date',
+		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
+	],
+	[
+		'attribute' => 'creationDisplayname',
+		'value' => isset($model->creation) ? $model->creation->displayname : '-',
+	],
+	[
+		'attribute' => 'modified_date',
+		'value' => Yii::$app->formatter->asDatetime($model->modified_date, 'medium'),
+	],
+	[
+		'attribute' => 'modifiedDisplayname',
+		'value' => isset($model->modified) ? $model->modified->displayname : '-',
+	],
+	[
+		'attribute' => 'updated_date',
+		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
 	],
 	[
 		'attribute' => '',

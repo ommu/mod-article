@@ -43,12 +43,16 @@ $attributes = [
 	[
 		'attribute' => 'articleTitle',
 		'value' => function ($model) {
-			$articleTitle = isset($model->like) ? $model->like->article->title : '-';
+			$articleTitle = isset($model->like->article) ? $model->like->article->title : '-';
 			if($articleTitle != '-')
-				return Html::a($articleTitle, ['o/like/view', 'id'=>$model->like_id], ['title'=>$articleTitle, 'class'=>'modal-btn']);
+				return Html::a($articleTitle, ['admin/view', 'id'=>$model->like->article_id], ['title'=>$articleTitle, 'class'=>'modal-btn']);
 			return $articleTitle;
 		},
 		'format' => 'html',
+	],
+	[
+		'attribute' => 'view.user_id',
+		'value' => isset($model->like->user) ? $model->like->user->displayname : '-',
 	],
 	[
 		'attribute' => 'likes_date',

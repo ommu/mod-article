@@ -58,6 +58,14 @@ $attributes = [
 		'format' => 'html',
 	],
 	[
+		'attribute' => 'downloads',
+		'value' => function ($model) {
+			$downloads = $model->getDownloads(true);
+			return Html::a($downloads, ['o/download/manage', 'file'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} downloads', ['count'=>$downloads])]);
+		},
+		'format' => 'html',
+	],
+	[
 		'attribute' => 'creation_date',
 		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),
 	],
@@ -76,14 +84,6 @@ $attributes = [
 	[
 		'attribute' => 'updated_date',
 		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
-	],
-	[
-		'attribute' => 'downloads',
-		'value' => function ($model) {
-			$downloads = $model->getDownloads(true);
-			return Html::a($downloads, ['o/download/manage', 'file'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} downloads', ['count'=>$downloads])]);
-		},
-		'format' => 'html',
 	],
 	[
 		'attribute' => '',

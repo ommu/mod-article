@@ -39,12 +39,16 @@ $attributes = [
 	[
 		'attribute' => 'articleTitle',
 		'value' => function ($model) {
-			$articleTitle = isset($model->view) ? $model->view->article->title : '-';
+			$articleTitle = isset($model->view->article) ? $model->view->article->title : '-';
 			if($articleTitle != '-')
-				return Html::a($articleTitle, ['o/view/view', 'id'=>$model->view_id], ['title'=>$articleTitle, 'class'=>'modal-btn']);
+				return Html::a($articleTitle, ['admin/view', 'id'=>$model->view->article_id], ['title'=>$articleTitle, 'class'=>'modal-btn']);
 			return $articleTitle;
 		},
 		'format' => 'html',
+	],
+	[
+		'attribute' => 'view.user_id',
+		'value' => isset($model->view->user) ? $model->view->user->displayname : '-',
 	],
 	[
 		'attribute' => 'view_date',
