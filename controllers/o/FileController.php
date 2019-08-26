@@ -105,6 +105,11 @@ class FileController extends Controller
 		if(($article = Yii::$app->request->get('article')) != null || ($article = $id) != null) {
 			$this->subMenuParam = $article;
 			$article = \ommu\article\models\Articles::findOne($article);
+			$setting = $article->getSetting(['media_image_limit', 'media_file_limit']);
+			if($article->category->single_photo || $setting->media_image_limit == 1)
+				unset($this->subMenu['photo']);
+			if($article->category->single_file || $setting->media_file_limit == 1)
+				unset($this->subMenu['document']);
 		}
 
 		$this->view->title = Yii::t('app', 'Documents');
