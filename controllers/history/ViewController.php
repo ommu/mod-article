@@ -40,7 +40,7 @@ class ViewController extends Controller
 	public function init()
 	{
 		parent::init();
-		if(Yii::$app->request->get('view') || Yii::$app->request->get('id'))
+		if(Yii::$app->request->get('view') || Yii::$app->request->get('article') || Yii::$app->request->get('id'))
 			$this->subMenu = $this->module->params['article_submenu'];
 	}
 
@@ -77,8 +77,8 @@ class ViewController extends Controller
 	public function actionManage()
 	{
 		$searchModel = new ArticleViewHistorySearch();
-		if(($id = Yii::$app->request->get('id')) != null)
-			$searchModel = new ArticleViewHistorySearch(['articleId'=>$id]);
+		if(($article = Yii::$app->request->get('article')) != null)
+			$searchModel = new ArticleViewHistorySearch(['articleId'=>$article]);
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		$gridColumn = Yii::$app->request->get('GridColumn', null);
@@ -101,7 +101,7 @@ class ViewController extends Controller
 				unset($this->subMenu['document']);
 		}
 
-		if(($article = $id) != null) {
+		if($article) {
 			$this->subMenuParam = $article;
 			$article = \ommu\article\models\Articles::findOne($article);
 			$setting = $article->getSetting(['media_image_limit', 'media_file_limit']);

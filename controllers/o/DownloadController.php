@@ -40,7 +40,7 @@ class DownloadController extends Controller
 	public function init()
 	{
 		parent::init();
-		if(Yii::$app->request->get('id') || Yii::$app->request->get('file'))
+		if(Yii::$app->request->get('id') || Yii::$app->request->get('file') || Yii::$app->request->get('article'))
 			$this->subMenu = $this->module->params['article_submenu'];
 	}
 
@@ -77,8 +77,8 @@ class DownloadController extends Controller
 	public function actionManage()
 	{
 		$searchModel = new ArticleDownloadsSearch();
-		if(($id = Yii::$app->request->get('id')) != null)
-			$searchModel = new ArticleDownloadsSearch(['articleId'=>$id]);
+		if(($article = Yii::$app->request->get('article')) != null)
+			$searchModel = new ArticleDownloadsSearch(['articleId'=>$article]);
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		$gridColumn = Yii::$app->request->get('GridColumn', null);
@@ -103,7 +103,7 @@ class DownloadController extends Controller
 		if(($user = Yii::$app->request->get('user')) != null)
 			$user = \ommu\users\models\Users::findOne($user);
 
-		if(($article = $id) != null) {
+		if($article) {
 			$this->subMenuParam = $article;
 			$article = \ommu\article\models\Articles::findOne($article);
 			$setting = $article->getSetting(['media_image_limit', 'media_file_limit']);

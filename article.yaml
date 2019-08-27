@@ -15,31 +15,31 @@ article_submenu:
     label: Photo(s)
     url:
       0: 'o/image/manage'
-      id: $_GET*id
+      article: $_GET*id
     select: controller
   document:
     label: Document(s)
     url:
       0: 'o/file/manage'
-      id: $_GET*id
+      article: $_GET*id
     select: controller
   views:
     label: View(s)
     url:
       0: 'o/view/manage'
-      id: $_GET*id
+      article: $_GET*id
     select: controller
   download:
     label: Download(s)
     url:
       0: 'o/download/manage'
-      id: $_GET*id
+      article: $_GET*id
     select: controller
   like:
     label: Like(s)
     url:
       0: 'o/like/manage'
-      id: $_GET*id
+      article: $_GET*id
     select: controller
   delete:
     label: Delete

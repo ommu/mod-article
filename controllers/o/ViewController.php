@@ -80,8 +80,6 @@ class ViewController extends Controller
 	public function actionManage()
 	{
 		$searchModel = new ArticleViewsSearch();
-		if(($id = Yii::$app->request->get('id')) != null)
-			$searchModel = new ArticleViewsSearch(['article_id'=>$id]);
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
 		$gridColumn = Yii::$app->request->get('GridColumn', null);
@@ -94,7 +92,7 @@ class ViewController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
-		if(($article = Yii::$app->request->get('article')) != null || ($article = $id) != null) {
+		if(($article = Yii::$app->request->get('article')) != null) {
 			$this->subMenuParam = $article;
 			$article = \ommu\article\models\Articles::findOne($article);
 			$setting = $article->getSetting(['media_image_limit', 'media_file_limit']);

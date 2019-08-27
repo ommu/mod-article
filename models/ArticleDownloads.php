@@ -139,13 +139,15 @@ class ArticleDownloads extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'center'],
 		];
 		if(!Yii::$app->request->get('file')) {
-			$this->templateColumns['articleTitle'] = [
-				'attribute' => 'articleTitle',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->file->article) ? $model->file->article->title : '-';
-					// return $model->articleTitle;
-				},
-			];
+			if(!Yii::$app->request->get('article')) {
+				$this->templateColumns['articleTitle'] = [
+					'attribute' => 'articleTitle',
+					'value' => function($model, $key, $index, $column) {
+						return isset($model->file->article) ? $model->file->article->title : '-';
+						// return $model->articleTitle;
+					},
+				];
+			}
 			$this->templateColumns['fileFilename'] = [
 				'attribute' => 'fileFilename',
 				'value' => function($model, $key, $index, $column) {
