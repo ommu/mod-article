@@ -145,7 +145,7 @@ class FileController extends Controller
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article document success created.'));
 				if($model->redirectUpdate)
 					return $this->redirect(['update', 'id'=>$model->id]);
-				return $this->redirect(['manage', 'id'=>$model->article_id]);
+				return $this->redirect(['manage', 'article'=>$model->article_id]);
 
 			} else {
 				if(Yii::$app->request->isAjax)
@@ -250,7 +250,7 @@ class FileController extends Controller
 
 		if($model->save(false, ['publish','modified_id'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article document success deleted.'));
-			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'id'=>$model->article_id]);
+			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article'=>$model->article_id]);
 		}
 	}
 

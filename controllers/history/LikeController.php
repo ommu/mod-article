@@ -162,7 +162,7 @@ class LikeController extends Controller
 		$model->delete();
 
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Article like history success deleted.'));
-		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'id'=>$model->like->article_id]);
+		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'like'=>$model->like_id]);
 	}
 
 	/**

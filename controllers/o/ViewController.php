@@ -156,7 +156,7 @@ class ViewController extends Controller
 
 		if($model->save(false, ['publish'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article view success deleted.'));
-			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'id'=>$model->article_id]);
+			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article'=>$model->article_id]);
 		}
 	}
 
@@ -174,7 +174,7 @@ class ViewController extends Controller
 
 		if($model->save(false, ['publish'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article view success updated.'));
-			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'id'=>$model->article_id]);
+			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article'=>$model->article_id]);
 		}
 	}
 

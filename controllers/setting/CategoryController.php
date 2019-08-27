@@ -120,6 +120,8 @@ class CategoryController extends Controller
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article category success created.'));
+				if(!Yii::$app->request->isAjax)
+					return $this->redirect(['manage']);
 				return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
 				//return $this->redirect(['view', 'id'=>$model->id]);
 
@@ -155,6 +157,8 @@ class CategoryController extends Controller
 
 			if($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article category success updated.'));
+				if(!Yii::$app->request->isAjax)
+					return $this->redirect(['manage']);
 				return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
 
 			} else {

@@ -162,7 +162,7 @@ class ViewController extends Controller
 		$model->delete();
 
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Article view history success deleted.'));
-		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'id'=>$model->view->article_id]);
+		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'view'=>$model->view_id]);
 	}
 
 	/**
