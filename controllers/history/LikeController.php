@@ -40,7 +40,7 @@ class LikeController extends Controller
 	public function init()
 	{
 		parent::init();
-		if(Yii::$app->request->get('like') || Yii::$app->request->get('article') || Yii::$app->request->get('id'))
+		if(Yii::$app->request->get('like') || Yii::$app->request->get('id') || Yii::$app->request->get('article'))
 			$this->subMenu = $this->module->params['article_submenu'];
 	}
 
