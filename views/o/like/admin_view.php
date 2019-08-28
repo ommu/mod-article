@@ -41,6 +41,7 @@ $attributes = [
 		'attribute' => 'publish',
 		'value' => $model->quickAction(Url::to(['publish', 'id'=>$model->primaryKey]), $model->publish),
 		'format' => 'raw',
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'articleTitle',
@@ -63,6 +64,7 @@ $attributes = [
 			return Html::a($histories, ['history/like/manage', 'like'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$histories])]);
 		},
 		'format' => 'html',
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'likes_date',
@@ -72,6 +74,7 @@ $attributes = [
 	[
 		'attribute' => 'updated_date',
 		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
+		'visible' => !$small,
 	],
 ];
 

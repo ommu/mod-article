@@ -68,6 +68,7 @@ $attributes = [
 			return Html::a($downloads, ['history/download/manage', 'download'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$downloads])]);
 		},
 		'format' => 'html',
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'download_date',

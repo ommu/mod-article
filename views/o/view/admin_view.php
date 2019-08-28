@@ -41,6 +41,7 @@ $attributes = [
 		'attribute' => 'publish',
 		'value' => $model->quickAction(Url::to(['publish', 'id'=>$model->primaryKey]), $model->publish),
 		'format' => 'raw',
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'articleTitle',
@@ -63,6 +64,7 @@ $attributes = [
 			return Html::a($views, ['history/view/manage', 'view'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$views])]);
 		},
 		'format' => 'html',
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'view_date',
@@ -72,6 +74,7 @@ $attributes = [
 	[
 		'attribute' => 'updated_date',
 		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),
+		'visible' => !$small,
 	],
 ];
 
