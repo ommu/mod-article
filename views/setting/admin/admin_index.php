@@ -15,12 +15,6 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-use app\components\grid\GridView;
-use yii\widgets\Pjax;
-use app\components\widgets\MenuContent;
-use app\components\widgets\MenuOption;
-use yii\widgets\DetailView;
-use ommu\article\models\ArticleSetting;
 
 $this->params['breadcrumbs'][] = $this->title;
 

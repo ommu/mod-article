@@ -34,7 +34,11 @@ $attributes = [
 		'value' => $model->id ? $model->id : '-',
 		'visible' => !$small,
 	],
-	'license',
+	[
+		'attribute' => 'license',
+		'value' => $model->license,
+		'visible' => !$small,
+	],
 	[
 		'attribute' => 'permission',
 		'value' => $model::getPermission($model->permission),

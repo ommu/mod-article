@@ -1,7 +1,6 @@
 <?php
 /**
  * Article Settings (article-setting)
- *
  * @var $this app\components\View
  * @var $this ommu\article\controllers\setting\AdminController
  * @var $model ommu\article\models\ArticleSetting
