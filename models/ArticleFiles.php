@@ -230,7 +230,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 			'attribute' => 'downloads',
 			'value' => function($model, $key, $index, $column) {
 				$downloads = $model->getDownloads(true);
-				return Html::a($downloads, ['o/download/manage', 'file'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} downloads', ['count'=>$downloads]), 'data-pjax' => 0]);
+				return Html::a($downloads, ['o/download/manage', 'file'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} downloads', ['count'=>$downloads]), 'data-pjax'=>0]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],

@@ -182,7 +182,7 @@ class ArticleLikes extends \app\components\ActiveRecord
 			'attribute' => 'histories',
 			'value' => function($model, $key, $index, $column) {
 				$histories = $model->getHistories(true);
-				return Html::a($histories, ['history/like/manage', 'like'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$histories]), 'data-pjax' => 0]);
+				return Html::a($histories, ['history/like/manage', 'like'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$histories]), 'data-pjax'=>0]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class'=>'center'],
