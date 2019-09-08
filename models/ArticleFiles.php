@@ -116,7 +116,8 @@ class ArticleFiles extends \app\components\ActiveRecord
 			return $this->hasMany(ArticleDownloads::className(), ['file_id' => 'id']);
 
 		$model = ArticleDownloads::find()
-			->where(['file_id' => $this->id]);
+			->alias('t')
+			->where(['t.file_id' => $this->id]);
 		$downloads = $model->sum('downloads');
 
 		return $downloads ? $downloads : 0;

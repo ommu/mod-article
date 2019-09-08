@@ -94,7 +94,8 @@ class ArticleLikes extends \app\components\ActiveRecord
 			return $this->hasMany(ArticleLikeHistory::className(), ['like_id' => 'id']);
 
 		$model = ArticleLikeHistory::find()
-			->where(['like_id' => $this->id]);
+			->alias('t')
+			->where(['t.like_id' => $this->id]);
 		$histories = $model->count();
 
 		return $histories ? $histories : 0;

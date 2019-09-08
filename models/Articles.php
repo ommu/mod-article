@@ -143,7 +143,8 @@ class Articles extends \app\components\ActiveRecord
 				->andOnCondition([sprintf('%s.publish', 'files') => $publish]);
 
 		$model = ArticleFiles::find()
-			->where(['article_id' => $this->id]);
+			->alias('t')
+			->where(['t.article_id' => $this->id]);
 		if($publish == 0)
 			$model->unpublish();
 		elseif($publish == 1)
@@ -166,7 +167,8 @@ class Articles extends \app\components\ActiveRecord
 				->andOnCondition([sprintf('%s.publish', 'likes') => $publish]);
 
 		$model = ArticleLikes::find()
-			->where(['article_id' => $this->id]);
+			->alias('t')
+			->where(['t.article_id' => $this->id]);
 		if($publish == 0)
 			$model->unpublish();
 		elseif($publish == 1)
@@ -196,7 +198,8 @@ class Articles extends \app\components\ActiveRecord
 				->andOnCondition([sprintf('%s.cover', 'medias') => 1]);
 
 		$model = ArticleMedia::find()
-			->where(['article_id' => $this->id]);
+			->alias('t')
+			->where(['t.article_id' => $this->id]);
 		if($publish == 0)
 			$model->unpublish();
 		elseif($publish == 1)
@@ -230,7 +233,8 @@ class Articles extends \app\components\ActiveRecord
 				->andOnCondition([sprintf('%s.publish', 'views') => $publish]);
 
 		$model = ArticleViews::find()
-			->where(['article_id' => $this->id]);
+			->alias('t')
+			->where(['t.article_id' => $this->id]);
 		if($publish == 0)
 			$model->unpublish();
 		elseif($publish == 1)

@@ -43,6 +43,7 @@ $attributes = [
 		'attribute' => 'cover',
 		'value' => $model->quickAction(Url::to(['cover', 'id'=>$model->primaryKey]), $model->cover, 'Yes,No', true),
 		'format' => 'raw',
+		'visible' => !$small,
 	],
 	'orders',
 	[
@@ -96,7 +97,7 @@ $attributes = [
 	],
 	[
 		'attribute' => '',
-		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->id], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary']),
+		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-primary']),
 		'format' => 'html',
 		'visible' => !$small && Yii::$app->request->isAjax ? true : false,
 	],

@@ -96,7 +96,8 @@ class ArticleViews extends \app\components\ActiveRecord
 			return $this->hasMany(ArticleViewHistory::className(), ['view_id' => 'id']);
 
 		$model = ArticleViewHistory::find()
-			->where(['view_id' => $this->id]);
+			->alias('t')
+			->where(['t.view_id' => $this->id]);
 		$histories = $model->count();
 
 		return $histories ? $histories : 0;

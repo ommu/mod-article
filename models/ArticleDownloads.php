@@ -92,7 +92,8 @@ class ArticleDownloads extends \app\components\ActiveRecord
 			return $this->hasMany(ArticleDownloadHistory::className(), ['download_id' => 'id']);
 
 		$model = ArticleDownloadHistory::find()
-			->where(['download_id' => $this->id]);
+			->alias('t')
+			->where(['t.download_id' => $this->id]);
 		$histories = $model->count();
 
 		return $histories ? $histories : 0;

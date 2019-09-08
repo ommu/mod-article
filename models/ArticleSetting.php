@@ -323,6 +323,7 @@ class ArticleSetting extends \app\components\ActiveRecord
 
 		$width = $size['width'] ? $size['width'] : '~';
 		$height = $size['height'] ? $size['height'] : '~';
+
 		return $width.' x '.$height;
 	}
 

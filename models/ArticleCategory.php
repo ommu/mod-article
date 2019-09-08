@@ -119,7 +119,8 @@ class ArticleCategory extends \app\components\ActiveRecord
 	public function getArticlesByStatus($cat_id, $type='published')
 	{
 		$model = Articles::find()
-			->where(['cat_id' => $cat_id]);
+			->alias('t')
+			->where(['t.cat_id' => $cat_id]);
 		if($type == 'published')
 			$model->published();
 		elseif($type == 'pending')
@@ -143,7 +144,8 @@ class ArticleCategory extends \app\components\ActiveRecord
 			return self::getArticlesByStatus($this->id, 'published');
 
 		$model = Articles::find()
-			->where(['cat_id' => $this->id]);
+			->alias('t')
+			->where(['t.cat_id' => $this->id]);
 		if($publish == 0)
 			$model->unpublish();
 		elseif($publish == 1)

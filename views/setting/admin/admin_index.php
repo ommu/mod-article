@@ -17,14 +17,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 
 $this->params['breadcrumbs'][] = $this->title;
-
-$this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Add Category'), 'url' => Url::to(['setting/category/create']), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn modal-btn btn-success']],
-];
-$this->params['menu']['option'] = [
-	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],
-	['label' => Yii::t('app', 'Grid Option'), 'url' => 'javascript:void(0);'],
-];
 ?>
 
 <?php echo $this->renderWidget('/setting/category/admin_manage', [

@@ -54,7 +54,11 @@ $attributes = [
 		'attribute' => 'view_date',
 		'value' => Yii::$app->formatter->asDatetime($model->view_date, 'medium'),
 	],
-	'view_ip',
+	[
+		'attribute' => 'view_ip',
+		'value' => $model->view_ip,
+		'visible' => !$small,
+	],
 ];
 
 echo DetailView::widget([
