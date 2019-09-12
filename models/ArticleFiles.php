@@ -280,6 +280,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 		$setting = $this->article->getSetting(['media_file_type']);
 
 		if(parent::beforeValidate()) {
+			// $this->file_filename = UploadedFile::getInstance($this, 'file_filename');
 			if($this->file_filename instanceof UploadedFile && !$this->file_filename->getHasError()) {
 				$fileFileType = $this->formatFileType($setting->media_file_type);
 				if(!in_array(strtolower($this->file_filename->getExtension()), $fileFileType)) {
@@ -314,6 +315,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 			$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
 			$this->createUploadDirectory(Articles::getUploadPath(), $this->article_id);
 
+			// $this->file_filename = UploadedFile::getInstance($this, 'file_filename');
 			if($this->file_filename instanceof UploadedFile && !$this->file_filename->getHasError()) {
 				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->file_filename->getExtension()); 
 				if($this->file_filename->saveAs(join('/', [$uploadPath, $fileName]))) {
