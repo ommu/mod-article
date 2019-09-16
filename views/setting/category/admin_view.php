@@ -18,10 +18,10 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
 
+if(!$small) {
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Categories'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->title->message;
 
-if(!$small) {
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
 	['label' => Yii::t('app', 'Update'), 'url' => Url::to(['update', 'id'=>$model->id]), 'icon' => 'pencil', 'htmlOptions' => ['class'=>'btn btn-primary']],
@@ -59,10 +59,12 @@ $attributes = [
 	[
 		'attribute' => 'single_photo',
 		'value' => $model->filterYesNo($model->single_photo),
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'single_file',
 		'value' => $model->filterYesNo($model->single_file),
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'articles',

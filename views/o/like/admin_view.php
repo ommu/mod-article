@@ -18,10 +18,10 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
 
+if(!$small) {
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Likes'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->article->title;
 
-if(!$small) {
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
 	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
@@ -64,13 +64,17 @@ $attributes = [
 			return Html::a($histories, ['history/like/manage', 'like'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$histories])]);
 		},
 		'format' => 'html',
-		'visible' => !$small,
 	],
 	[
 		'attribute' => 'likes_date',
 		'value' => Yii::$app->formatter->asDatetime($model->likes_date, 'medium'),
+		'visible' => !$small,
 	],
-	'likes_ip',
+	[
+		'attribute' => 'likes_ip',
+		'value' => $model->likes_ip,
+		'visible' => !$small,
+	],
 	[
 		'attribute' => 'updated_date',
 		'value' => Yii::$app->formatter->asDatetime($model->updated_date, 'medium'),

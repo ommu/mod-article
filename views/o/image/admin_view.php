@@ -19,10 +19,10 @@ use yii\helpers\Url;
 use yii\widgets\DetailView;
 use ommu\article\models\Articles;
 
+if(!$small) {
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Photos'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->media_filename;
 
-if(!$small) {
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Detail Photo'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
 	['label' => Yii::t('app', 'Update Photo'), 'url' => Url::to(['update', 'id'=>$model->id]), 'icon' => 'pencil', 'htmlOptions' => ['class'=>'btn btn-primary']],
@@ -69,6 +69,7 @@ $attributes = [
 		'attribute' => 'description',
 		'value' => $model->description ? $model->description : '-',
 		'format' => 'html',
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'creation_date',

@@ -17,10 +17,10 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
 
+if(!$small) {
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Download Histories'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->download->file->file_filename;
 
-if(!$small) {
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
 	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
@@ -63,8 +63,13 @@ $attributes = [
 	[
 		'attribute' => 'download_date',
 		'value' => Yii::$app->formatter->asDatetime($model->download_date, 'medium'),
+		'visible' => !$small,
 	],
-	'download_ip',
+	[
+		'attribute' => 'download_ip',
+		'value' => $model->download_ip,
+		'visible' => !$small,
+	],
 ];
 
 echo DetailView::widget([

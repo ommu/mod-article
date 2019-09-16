@@ -19,8 +19,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\components\grid\GridView;
 use yii\widgets\Pjax;
-use yii\widgets\DetailView;
-use ommu\article\models\ArticleDownloads;
 
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -33,37 +31,8 @@ $this->params['menu']['option'] = [
 <div class="article-download-history-manage">
 <?php Pjax::begin(); ?>
 
-<?php if($download != null) {
-$model = $download;
-echo DetailView::widget([
-	'model' => $model,
-	'options' => [
-		'class'=>'table table-striped detail-view',
-	],
-	'attributes' => [
-		[
-			'attribute' => 'fileFilename',
-			'value' => function ($model) {
-				$fileFilename = isset($model->file) ? $model->file->file_filename : '-';
-				if($fileFilename != '-')
-					return Html::a($fileFilename, ['o/file/view', 'id'=>$model->file_id], ['title'=>$fileFilename, 'class'=>'modal-btn']);
-				return $fileFilename;
-			},
-			'format' => 'html',
-		],
-		[
-			'attribute' => 'userDisplayname',
-			'value' => isset($model->user) ? $model->user->displayname : '-',
-		],
-		'downloads',
-		[
-			'attribute' => 'download_date',
-			'value' => Yii::$app->formatter->asDatetime($model->download_date, 'medium'),
-		],
-		'download_ip',
-	],
-]);
-}?>
+<?php if($download != null)
+	echo $this->render('/o/download/admin_view', ['model'=>$download, 'small'=>true]); ?>
 
 <?php //echo $this->render('_search', ['model'=>$searchModel]); ?>
 

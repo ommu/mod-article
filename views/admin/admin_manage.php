@@ -19,8 +19,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\components\grid\GridView;
 use yii\widgets\Pjax;
-use yii\widgets\DetailView;
-use ommu\article\models\ArticleCategory;
 
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -36,31 +34,8 @@ $this->params['menu']['option'] = [
 <div class="articles-manage">
 <?php Pjax::begin(); ?>
 
-<?php if($category != null) {
-$model = $category;
-echo DetailView::widget([
-	'model' => $model,
-	'options' => [
-		'class'=>'table table-striped detail-view',
-	],
-	'attributes' => [
-		'parent_id',
-		[
-			'attribute' => 'name_i',
-			'value' => function ($model) {
-				if($model->name_i != '')
-					return Html::a($model->name_i, ['setting/category/view', 'id'=>$model->id], ['title'=>$model->name_i, 'class'=>'modal-btn']);
-				return $model->name_i;
-			},
-			'format' => 'html',
-		],
-		[
-			'attribute' => 'desc_i',
-			'value' => $model->desc_i,
-		],
-	],
-]);
-}?>
+<?php if($category != null)
+	echo $this->render('/setting/category/admin_view', ['model'=>$category, 'small'=>true]); ?>
 
 <?php //echo $this->render('_search', ['model'=>$searchModel]); ?>
 

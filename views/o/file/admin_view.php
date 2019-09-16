@@ -19,10 +19,10 @@ use yii\helpers\Url;
 use yii\widgets\DetailView;
 use ommu\article\models\Articles;
 
+if(!$small) {
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Documents'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->file_filename;
 
-if(!$small) {
 $this->params['menu']['content'] = [
 	['label' => Yii::t('app', 'Detail Document'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
 	['label' => Yii::t('app', 'Update Document'), 'url' => Url::to(['update', 'id'=>$model->id]), 'icon' => 'pencil', 'htmlOptions' => ['class'=>'btn btn-primary']],
@@ -64,7 +64,6 @@ $attributes = [
 			return Html::a($downloads, ['o/download/manage', 'file'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} downloads', ['count'=>$downloads])]);
 		},
 		'format' => 'html',
-		'visible' => !$small,
 	],
 	[
 		'attribute' => 'creation_date',

@@ -19,8 +19,6 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\components\grid\GridView;
 use yii\widgets\Pjax;
-use yii\widgets\DetailView;
-use ommu\article\models\ArticleLikes;
 
 $this->params['breadcrumbs'][] = $this->title;
 
@@ -33,75 +31,11 @@ $this->params['menu']['option'] = [
 <div class="article-like-history-manage">
 <?php Pjax::begin(); ?>
 
-<?php if($like != null) {
-$model = $like;
-echo DetailView::widget([
-	'model' => $model,
-	'options' => [
-		'class'=>'table table-striped detail-view',
-	],
-	'attributes' => [
-		[
-			'attribute' => 'articleTitle',
-			'value' => function ($model) {
-				$articleTitle = isset($model->article) ? $model->article->title : '-';
-				if($articleTitle != '-')
-					return Html::a($articleTitle, ['admin/view', 'id'=>$model->article_id], ['title'=>$articleTitle, 'class'=>'modal-btn']);
-				return $articleTitle;
-			},
-			'format' => 'html',
-		],
-		[
-			'attribute' => 'userDisplayname',
-			'value' => isset($model->user) ? $model->user->displayname : '-',
-		],
-		[
-			'attribute' => 'likes_date',
-			'value' => Yii::$app->formatter->asDatetime($model->likes_date, 'medium'),
-		],
-		'likes_ip',
-	],
-]);
-}?>
+<?php if($like != null)
+	echo $this->render('/o/like/admin_view', ['model'=>$like, 'small'=>true]); ?>
 
-<?php if($article != null) {
-$model = $article;
-echo DetailView::widget([
-	'model' => $model,
-	'options' => [
-		'class'=>'table table-striped detail-view',
-	],
-	'attributes' => [
-		[
-			'attribute' => 'categoryName',
-			'value' => function ($model) {
-				$categoryName = isset($model->category) ? $model->category->title->message : '-';
-				if($categoryName != '-')
-					return Html::a($categoryName, ['setting/category/view', 'id'=>$model->cat_id], ['title'=>$categoryName, 'class'=>'modal-btn']);
-				return $categoryName;
-			},
-			'format' => 'html',
-		],
-		[
-			'attribute' => 'title',
-			'value' => function ($model) {
-				if($model->title != '')
-					return Html::a($model->title, ['admin/view', 'id'=>$model->id], ['title'=>$model->title, 'class'=>'modal-btn']);
-				return $model->title;
-			},
-			'format' => 'html',
-		],
-		[
-			'attribute' => 'published_date',
-			'value' => Yii::$app->formatter->asDate($model->published_date, 'medium'),
-		],
-		[
-			'attribute' => 'headline_date',
-			'value' => Yii::$app->formatter->asDatetime($model->headline_date, 'medium'),
-		],
-	],
-]);
-}?>
+<?php if($article != null)
+	echo $this->render('/admin/admin_view', ['model'=>$article, 'small'=>true]); ?>
 
 <?php //echo $this->render('_search', ['model'=>$searchModel]); ?>
 

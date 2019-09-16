@@ -19,9 +19,10 @@ use yii\helpers\Url;
 use yii\widgets\DetailView;
 use ommu\article\models\Articles;
 
+if(!$small) {
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Articles'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $model->title;
-?>
+} ?>
 
 <div class="articles-view">
 
@@ -56,11 +57,13 @@ $attributes = [
 			return $model->cover ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->cover])), ['alt'=>$model->cover, 'class'=>'mb-3']).'<br/>'.$model->cover : '-';
 		},
 		'format' => 'html',
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'body',
 		'value' => $model->body ? $model->body : '-',
 		'format' => 'html',
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'file',
@@ -69,7 +72,7 @@ $attributes = [
 			return $model->document ? Html::a($model->document, Url::to(join('/', ['@webpublic', $uploadPath, $model->document])), ['title'=>$model->document, 'target'=>'_blank']) : '-';
 		},
 		'format' => 'raw',
-		'visible' => $model->category->single_file ? true : false,
+		'visible' => !$small && $model->category->single_file ? true : false,
 	],
 	[
 		'attribute' => 'medias',
@@ -78,7 +81,7 @@ $attributes = [
 			return Html::a($medias, ['o/image/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} medias', ['count'=>$media])]);
 		},
 		'format' => 'html',
-		'visible' => $model->category->single_file ? false : true,
+		'visible' => !$small && !$model->category->single_file ? true : false,
 	],
 	[
 		'attribute' => 'files',
@@ -87,11 +90,12 @@ $attributes = [
 			return Html::a($files, ['o/file/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} files', ['count'=>$files])]);
 		},
 		'format' => 'html',
-		'visible' => $model->category->single_file ? false : true,
+		'visible' => !$small && !$model->category->single_file ? true : false,
 	],
 	[
 		'attribute' => 'tag',
 		'value' => $model->tag ? $model->tag : '-',
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'published_date',
@@ -108,10 +112,12 @@ $attributes = [
 			return $model->quickAction(Url::to(['headline', 'id'=>$model->primaryKey]), $model->headline, 'Yes,No', true);
 		},
 		'format' => 'raw',
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'headline_date',
 		'value' => Yii::$app->formatter->asDatetime($model->headline_date, 'medium'),
+		'visible' => !$small,
 	],
 	[
 		'attribute' => 'views',
