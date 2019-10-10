@@ -108,7 +108,9 @@ echo $form->field($model, 'headline')
 	->label($model->getAttributeLabel('headline'));
 } ?>
 
-<?php echo $form->field($model, 'publish')
+<?php if($model->isNewRecord && !$model->getErrors())
+	$model->publish = 1;
+echo $form->field($model, 'publish')
 	->checkbox()
 	->label($model->getAttributeLabel('publish')); ?>
 
