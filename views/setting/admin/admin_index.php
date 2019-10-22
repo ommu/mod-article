@@ -28,5 +28,5 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?php echo $this->renderWidget(!$model->isNewRecord ? 'admin_view' : 'admin_update', [
 	'contentMenu' => true,
-	'model'=>$model,
+	'model' => $model,
 ]); ?>
