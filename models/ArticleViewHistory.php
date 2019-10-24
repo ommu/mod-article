@@ -104,15 +104,14 @@ class ArticleViewHistory extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		if(!Yii::$app->request->get('view')) {
-			$this->templateColumns['articleTitle'] = [
-				'attribute' => 'articleTitle',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->view) ? $model->view->article->title : '-';
-					// return $model->articleTitle;
-				},
-			];
-		}
+		$this->templateColumns['articleTitle'] = [
+			'attribute' => 'articleTitle',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->view) ? $model->view->article->title : '-';
+				// return $model->articleTitle;
+			},
+			'visible' => !Yii::$app->request->get('view') ? true : false,
+		];
 		$this->templateColumns['view_date'] = [
 			'attribute' => 'view_date',
 			'value' => function($model, $key, $index, $column) {

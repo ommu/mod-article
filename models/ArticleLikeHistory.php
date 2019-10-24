@@ -109,15 +109,14 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		if(!Yii::$app->request->get('like')) {
-			$this->templateColumns['articleTitle'] = [
-				'attribute' => 'articleTitle',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->like) ? $model->like->article->title : '-';
-					// return $model->articleTitle;
-				},
-			];
-		}
+		$this->templateColumns['articleTitle'] = [
+			'attribute' => 'articleTitle',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->like) ? $model->like->article->title : '-';
+				// return $model->articleTitle;
+			},
+			'visible' => !Yii::$app->request->get('like') ? true : false,
+		];
 		$this->templateColumns['likes_date'] = [
 			'attribute' => 'likes_date',
 			'value' => function($model, $key, $index, $column) {

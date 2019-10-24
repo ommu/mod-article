@@ -142,33 +142,30 @@ class ArticleDownloads extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		if(!Yii::$app->request->get('file')) {
-			if(!Yii::$app->request->get('article')) {
-				$this->templateColumns['articleTitle'] = [
-					'attribute' => 'articleTitle',
-					'value' => function($model, $key, $index, $column) {
-						return isset($model->file->article) ? $model->file->article->title : '-';
-						// return $model->articleTitle;
-					},
-				];
-			}
-			$this->templateColumns['fileFilename'] = [
-				'attribute' => 'fileFilename',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->file) ? $model->file->file_filename : '-';
-					// return $model->fileFilename;
-				},
-			];
-		}
-		if(!Yii::$app->request->get('user')) {
-			$this->templateColumns['userDisplayname'] = [
-				'attribute' => 'userDisplayname',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->user) ? $model->user->displayname : '-';
-					// return $model->userDisplayname;
-				},
-			];
-		}
+		$this->templateColumns['articleTitle'] = [
+			'attribute' => 'articleTitle',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->file->article) ? $model->file->article->title : '-';
+				// return $model->articleTitle;
+			},
+			'visible' => !Yii::$app->request->get('file') && !Yii::$app->request->get('article') ? true : false,
+		];
+		$this->templateColumns['fileFilename'] = [
+			'attribute' => 'fileFilename',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->file) ? $model->file->file_filename : '-';
+				// return $model->fileFilename;
+			},
+			'visible' => !Yii::$app->request->get('file') ? true : false,
+		];
+		$this->templateColumns['userDisplayname'] = [
+			'attribute' => 'userDisplayname',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->user) ? $model->user->displayname : '-';
+				// return $model->userDisplayname;
+			},
+			'visible' => !Yii::$app->request->get('user') ? true : false,
+		];
 		$this->templateColumns['download_date'] = [
 			'attribute' => 'download_date',
 			'value' => function($model, $key, $index, $column) {

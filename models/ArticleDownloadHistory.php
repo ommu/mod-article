@@ -105,22 +105,22 @@ class ArticleDownloadHistory extends \app\components\ActiveRecord
 			'class' => 'yii\grid\SerialColumn',
 			'contentOptions' => ['class'=>'center'],
 		];
-		if(!Yii::$app->request->get('download')) {
-			$this->templateColumns['articleTitle'] = [
-				'attribute' => 'articleTitle',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->download->file->article) ? $model->download->file->article->title : '-';
-					// return $model->articleTitle;
-				},
-			];
-			$this->templateColumns['fileName'] = [
-				'attribute' => 'fileName',
-				'value' => function($model, $key, $index, $column) {
-					return isset($model->download->file) ? $model->download->file->file_filename : '-';
-					// return $model->fileName;
-				},
-			];
-		}
+		$this->templateColumns['articleTitle'] = [
+			'attribute' => 'articleTitle',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->download->file->article) ? $model->download->file->article->title : '-';
+				// return $model->articleTitle;
+			},
+			'visible' => !Yii::$app->request->get('download') ? true : false,
+		];
+		$this->templateColumns['fileName'] = [
+			'attribute' => 'fileName',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->download->file) ? $model->download->file->file_filename : '-';
+				// return $model->fileName;
+			},
+			'visible' => !Yii::$app->request->get('download') ? true : false,
+		];
 		$this->templateColumns['download_date'] = [
 			'attribute' => 'download_date',
 			'value' => function($model, $key, $index, $column) {
