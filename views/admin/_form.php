@@ -94,7 +94,7 @@ echo $form->field($model, 'tag')
 	])
 	->label($model->getAttributeLabel('tag')); ?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php if($model->isNewRecord && !$model->getErrors())
 	$model->published_date = Yii::$app->formatter->asDate('now', 'php:Y-m-d');
@@ -114,7 +114,7 @@ echo $form->field($model, 'publish')
 	->checkbox()
 	->label($model->getAttributeLabel('publish')); ?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php echo $form->field($model, 'submitButton')
 	->submitButton(); ?>

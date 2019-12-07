@@ -68,7 +68,7 @@ echo $form->field($model, 'publish')
 	->checkbox()
 	->label($model->getAttributeLabel('headline')); ?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php echo $form->field($model, 'submitButton')
 	->submitButton(); ?>

@@ -76,7 +76,7 @@ echo $form->field($model, 'media_filename', ['template' => '{label}{beginWrapper
 		->label($model->getAttributeLabel('redirectUpdate'));
 } ?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php echo $form->field($model, 'submitButton')
 	->submitButton(); ?>

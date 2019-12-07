@@ -57,7 +57,7 @@ echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hi
 	->textarea(['rows'=>6, 'cols'=>50])
 	->label($model->getAttributeLabel('meta_keyword')); ?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php $headline = $model::getHeadline();
 echo $form->field($model, 'headline')
@@ -73,7 +73,7 @@ echo $form->field($model, 'headline_category')
 	->checkboxList($category)
 	->label($model->getAttributeLabel('headline_category')); ?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php echo $form->field($model, 'media_image_limit')
 	->textInput(['type'=>'number'])
@@ -122,7 +122,7 @@ echo $form->field($model, 'media_image_resize')
 	->label($model->getAttributeLabel('media_image_type'))
 	->hint(Yii::t('app', 'pisahkan jenis file dengan koma (,). example: "jpg, jpeg, bmp, gif, png"')); ?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php echo $form->field($model, 'media_file_limit')
 	->textInput(['type'=>'number'])
@@ -133,7 +133,7 @@ echo $form->field($model, 'media_image_resize')
 	->label($model->getAttributeLabel('media_file_type'))
 	->hint(Yii::t('app', 'pisahkan jenis file dengan koma (,). example: "pdf, doc, docx"')); ?>
 
-<div class="ln_solid"></div>
+<hr/>
 
 <?php echo $form->field($model, 'submitButton')
 	->submitButton(); ?>
