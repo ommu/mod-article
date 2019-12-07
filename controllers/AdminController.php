@@ -31,9 +31,9 @@
 namespace ommu\article\controllers;
 
 use Yii;
-use yii\filters\VerbFilter;
 use app\components\Controller;
 use mdm\admin\components\AccessControl;
+use yii\filters\VerbFilter;
 use ommu\article\models\Articles;
 use ommu\article\models\search\Articles as ArticlesSearch;
 use ommu\article\models\ArticleSetting;

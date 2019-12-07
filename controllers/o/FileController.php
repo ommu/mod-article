@@ -29,9 +29,9 @@
 namespace ommu\article\controllers\o;
 
 use Yii;
-use yii\filters\VerbFilter;
 use app\components\Controller;
 use mdm\admin\components\AccessControl;
+use yii\filters\VerbFilter;
 use ommu\article\models\ArticleFiles;
 use ommu\article\models\search\ArticleFiles as ArticleFilesSearch;
 use yii\web\UploadedFile;

@@ -30,9 +30,9 @@
 namespace ommu\article\controllers\o;
 
 use Yii;
-use yii\filters\VerbFilter;
 use app\components\Controller;
 use mdm\admin\components\AccessControl;
+use yii\filters\VerbFilter;
 use ommu\article\models\ArticleMedia;
 use ommu\article\models\search\ArticleMedia as ArticleMediaSearch;
 use yii\web\UploadedFile;
