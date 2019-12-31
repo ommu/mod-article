@@ -264,7 +264,7 @@ class AdminController extends Controller
 		$model = $this->findModel($id);
 
 		if(!in_array($model->cat_id, $headlineCategory))
-			throw new \yii\web\NotAcceptableHttpException(Yii::t('app', 'The requested page does not exist.'));
+			throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
 
 		$model->headline = 1;
 		$model->publish  = 1;

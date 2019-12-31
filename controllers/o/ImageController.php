@@ -130,7 +130,7 @@ class ImageController extends Controller
 	public function actionCreate()
 	{
 		if(($id = Yii::$app->request->get('id')) == null)
-			throw new \yii\web\NotAcceptableHttpException(Yii::t('app', 'The requested page does not exist.'));
+			throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
 
 		$model = new ArticleMedia(['article_id'=>$id]);
 		$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
@@ -293,7 +293,7 @@ class ImageController extends Controller
 		// Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
 		if(($id = Yii::$app->request->get('id')) == null)
-			throw new \yii\web\NotAcceptableHttpException(Yii::t('app', 'The requested page does not exist.'));
+			throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
 
 		$model = new ArticleMedia(['article_id'=>$id]);
 		$setting = $model->article->getSetting(['media_image_limit', 'media_image_resize', 'media_image_resize_size', 'media_image_type']);
