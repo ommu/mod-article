@@ -58,7 +58,7 @@ echo $form->field($model, 'cat_id')
 
 <?php $uploadPath = join('/', [Articles::getUploadPath(false), $model->id]);
 if($model->isNewRecord || (!$model->isNewRecord && ($model->category->single_photo || $setting->media_image_limit == 1))) {
-	$cover = !$model->isNewRecord && $model->cover ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->cover])), ['alt'=>$model->cover, 'class'=>'mb-3']) : '';
+	$cover = !$model->isNewRecord && $model->cover ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->cover])), ['alt'=>$model->cover, 'class'=>'d-block border border-width-3 mb-3']).$model->cover.'<hr/>' : '';
 	echo $form->field($model, 'image', ['template' => '{label}{beginWrapper}<div>'.$cover.'</div>{input}{error}{hint}{endWrapper}'])
 		->fileInput()
 		->label($model->getAttributeLabel('image'))

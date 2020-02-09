@@ -56,8 +56,6 @@ class AdminController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$this->layout = 'admin_default';
-
 		$model = ArticleSetting::findOne(1);
 		if($model === null) 
 			$model = new ArticleSetting(['id'=>1]);
@@ -91,6 +89,7 @@ class AdminController extends Controller
 		}
 		$columns = $searchModel->getGridColumn($cols);
 
+		$this->view->cards = false;
 		$this->view->title = Yii::t('app', 'Article Settings');
 		$this->view->description = '';
 		$this->view->keywords = '';
