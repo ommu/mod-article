@@ -233,7 +233,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 		$this->templateColumns['_no'] = [
 			'header' => '#',
 			'class' => 'yii\grid\SerialColumn',
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['parent_id'] = [
 			'attribute' => 'parent_id',
@@ -298,7 +298,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 				return Html::a($articles, ['admin/manage', 'category'=>$model->primaryKey, 'status'=>'publish'], ['title'=>Yii::t('app', '{count} articles', ['count'=>$articles]), 'data-pjax'=>0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 			'format' => 'raw',
 		];
 		$this->templateColumns['pending'] = [
@@ -308,7 +308,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 				return Html::a($pending, ['admin/manage', 'category'=>$model->primaryKey, 'status'=>'pending'], ['title'=>Yii::t('app', '{count} articles', ['count'=>$pending]), 'data-pjax'=>0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 			'format' => 'raw',
 		];
 		$this->templateColumns['unpublish'] = [
@@ -318,7 +318,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 				return Html::a($unpublish, ['admin/manage', 'category'=>$model->primaryKey, 'publish'=>0], ['title'=>Yii::t('app', '{count} articles', ['count'=>$unpublish]), 'data-pjax'=>0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 			'format' => 'raw',
 		];
 		$this->templateColumns['single_photo'] = [
@@ -327,7 +327,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 				return $this->filterYesNo($model->single_photo);
 			},
 			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['single_file'] = [
 			'attribute' => 'single_file',
@@ -335,7 +335,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 				return $this->filterYesNo($model->single_file);
 			},
 			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['publish'] = [
 			'attribute' => 'publish',
@@ -344,7 +344,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 				return $this->quickAction($url, $model->publish, 'Enable,Disable');
 			},
 			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 			'format' => 'raw',
 			'visible' => !Yii::$app->request->get('trash') ? true : false,
 		];

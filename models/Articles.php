@@ -331,7 +331,7 @@ class Articles extends \app\components\ActiveRecord
 		$this->templateColumns['_no'] = [
 			'header' => '#',
 			'class' => 'yii\grid\SerialColumn',
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['cat_id'] = [
 			'attribute' => 'cat_id',
@@ -413,7 +413,7 @@ class Articles extends \app\components\ActiveRecord
 				return Html::a($media, ['o/image/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} media', ['count'=>$media]), 'data-pjax'=>0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 			'format' => 'raw',
 		];
 		$this->templateColumns['files'] = [
@@ -423,7 +423,7 @@ class Articles extends \app\components\ActiveRecord
 				return Html::a($files, ['o/file/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} files', ['count'=>$files]), 'data-pjax'=>0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 			'format' => 'raw',
 		];
 		$this->templateColumns['tag'] = [
@@ -439,7 +439,7 @@ class Articles extends \app\components\ActiveRecord
 				return Html::a($views, ['o/view/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} views', ['count'=>$views]), 'data-pjax'=>0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 			'format' => 'raw',
 		];
 		$this->templateColumns['likes'] = [
@@ -449,7 +449,7 @@ class Articles extends \app\components\ActiveRecord
 				return Html::a($likes, ['o/like/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} likes', ['count'=>$likes]), 'data-pjax'=>0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 			'format' => 'raw',
 		];
 		if(ArticleSetting::getInfo('headline')) {
@@ -465,7 +465,7 @@ class Articles extends \app\components\ActiveRecord
 					return $this->quickAction($url, $model->headline, 'Yes,No', true);
 				},
 				'filter' => $this->filterYesNo(),
-				'contentOptions' => ['class'=>'center'],
+				'contentOptions' => ['class'=>'text-center'],
 				'format' => 'raw',
 			];
 		}
@@ -476,7 +476,7 @@ class Articles extends \app\components\ActiveRecord
 				return $this->quickAction($url, $model->publish);
 			},
 			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 			'format' => 'raw',
 			'visible' => !Yii::$app->request->get('trash') ? true : false,
 		];

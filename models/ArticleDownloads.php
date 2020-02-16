@@ -140,7 +140,7 @@ class ArticleDownloads extends \app\components\ActiveRecord
 		$this->templateColumns['_no'] = [
 			'header' => '#',
 			'class' => 'yii\grid\SerialColumn',
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['articleTitle'] = [
 			'attribute' => 'articleTitle',
@@ -186,7 +186,7 @@ class ArticleDownloads extends \app\components\ActiveRecord
 				return Html::a($downloads, ['history/download/manage', 'download'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$downloads]), 'data-pjax'=>0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 			'format' => 'raw',
 		];
 	}

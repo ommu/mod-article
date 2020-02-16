@@ -139,7 +139,7 @@ class ArticleSetting extends \app\components\ActiveRecord
 		$this->templateColumns['_no'] = [
 			'header' => '#',
 			'class' => 'yii\grid\SerialColumn',
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['license'] = [
 			'attribute' => 'license',
@@ -171,7 +171,7 @@ class ArticleSetting extends \app\components\ActiveRecord
 				return self::getHeadline($model->headline);
 			},
 			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['headline_limit'] = [
 			'attribute' => 'headline_limit',
@@ -197,7 +197,7 @@ class ArticleSetting extends \app\components\ActiveRecord
 				return self::getMediaImageResize($model->media_image_resize);
 			},
 			'filter' => self::getMediaImageResize(),
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['media_image_resize_size'] = [
 			'attribute' => 'media_image_resize_size',

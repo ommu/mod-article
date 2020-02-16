@@ -182,7 +182,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 		$this->templateColumns['_no'] = [
 			'header' => '#',
 			'class' => 'yii\grid\SerialColumn',
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['articleTitle'] = [
 			'attribute' => 'articleTitle',
@@ -262,7 +262,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 				return $this->filterYesNo($model->captionStatus);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['descriptionStatus'] = [
 			'attribute' => 'descriptionStatus',
@@ -270,7 +270,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 				return $this->filterYesNo($model->descriptionStatus);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 		];
 		$this->templateColumns['cover'] = [
 			'attribute' => 'cover',
@@ -279,7 +279,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 				return $this->quickAction($url, $model->cover, 'Yes,No', true);
 			},
 			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'center'],
+			'contentOptions' => ['class'=>'text-center'],
 			'format' => 'raw',
 		];
 	}
