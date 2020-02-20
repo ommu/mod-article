@@ -173,7 +173,7 @@ $this->params['menu']['option'] = [
 		'dataProvider' => $dataProvider,
 		//'filterModel' => $searchModel,
 		'columns' => [
-			['class' => 'yii\grid\SerialColumn'],
+			['class' => 'app\components\grid\SerialColumn'],
 			'media_filename',
 			'caption',
 		],
@@ -217,7 +217,7 @@ $this->params['menu']['option'] = [
 		'dataProvider' => $dataProvider1,
 		//'filterModel' => $searchModel,
 		'columns' => [
-			['class' => 'yii\grid\SerialColumn'],
+			['class' => 'app\components\grid\SerialColumn'],
 			'file_filename',
 			//button
 			[
