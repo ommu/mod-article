@@ -5,9 +5,9 @@
  * This is the ActiveQuery class for [[\ommu\article\models\ArticleCategory]].
  * @see \ommu\article\models\ArticleCategory
  * 
- * @author Putra Sudaryanto <putra@ommu.co>
+ * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2019 OMMU (www.ommu.co)
+ * @copyright Copyright (c) 2019 OMMU (www.ommu.id)
  * @created date 11 May 2019, 21:53 WIB
  * @link https://github.com/ommu/mod-article
  *

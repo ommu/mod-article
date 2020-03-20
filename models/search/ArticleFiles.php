@@ -4,9 +4,9 @@
  *
  * ArticleFiles represents the model behind the search form about `ommu\article\models\ArticleFiles`.
  *
- * @author Putra Sudaryanto <putra@ommu.co>
+ * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
+ * @copyright Copyright (c) 2017 OMMU (www.ommu.id)
  * @created date 20 October 2017, 11:06 WIB
  * @modified date 17 May 2019, 11:45 WIB
  * @link https://github.com/ommu/mod-article

@@ -5,9 +5,9 @@
  * This is the ActiveQuery class for [[\ommu\article\models\ArticleDownloads]].
  * @see \ommu\article\models\ArticleDownloads
  * 
- * @author Putra Sudaryanto <putra@ommu.co>
+ * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2019 OMMU (www.ommu.co)
+ * @copyright Copyright (c) 2019 OMMU (www.ommu.id)
  * @created date 12 May 2019, 18:26 WIB
  * @link https://github.com/ommu/mod-article
  *

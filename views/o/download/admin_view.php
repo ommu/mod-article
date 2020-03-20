@@ -5,9 +5,9 @@
  * @var $this ommu\article\controllers\o\DownloadController
  * @var $model ommu\article\models\ArticleDownloads
  *
- * @author Putra Sudaryanto <putra@ommu.co>
+ * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
+ * @copyright Copyright (c) 2017 OMMU (www.ommu.id)
  * @created date 20 October 2017, 11:14 WIB
  * @modified date 13 May 2019, 09:43 WIB
  * @link https://github.com/ommu/mod-article

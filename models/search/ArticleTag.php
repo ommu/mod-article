@@ -4,9 +4,9 @@
  *
  * ArticleTag represents the model behind the search form about `ommu\article\models\ArticleTag`.
  *
- * @author Putra Sudaryanto <putra@ommu.co>
+ * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
+ * @copyright Copyright (c) 2017 OMMU (www.ommu.id)
  * @created date 20 October 2017, 11:00 WIB
  * @modified date 13 May 2019, 21:01 WIB
  * @link https://github.com/ommu/mod-article

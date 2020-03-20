@@ -19,7 +19,7 @@
  *
  *	findModel
  *
- * @copyright Copyright (c) 2017 OMMU (www.ommu.co)
+ * @copyright Copyright (c) 2017 OMMU (www.ommu.id)
  * @contact (+62) 857-297-29382
  * @author Agus Susilo <smartgdi@gmail.com>
  * @created date 6 November 2017, 13:54 WIB
