@@ -102,7 +102,7 @@ class LikeController extends Controller
 				unset($this->subMenu['document']);
 		}
 		if(($user = Yii::$app->request->get('user')) != null)
-			$user = \ommu\users\models\Users::findOne($user);
+			$user = \app\models\Users::findOne($user);
 
 		$this->view->title = Yii::t('app', 'Likes');
 		$this->view->description = '';

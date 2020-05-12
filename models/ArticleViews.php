@@ -33,7 +33,7 @@ namespace ommu\article\models;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use ommu\users\models\Users;
+use app\models\Users;
 
 class ArticleViews extends \app\components\ActiveRecord
 {

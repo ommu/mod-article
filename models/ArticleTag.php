@@ -29,7 +29,7 @@ namespace ommu\article\models;
 
 use Yii;
 use app\models\CoreTags;
-use ommu\users\models\Users;
+use app\models\Users;
 
 class ArticleTag extends \app\components\ActiveRecord
 {

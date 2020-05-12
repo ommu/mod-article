@@ -42,7 +42,7 @@ use yii\helpers\Url;
 use yii\helpers\Inflector;
 use app\models\SourceMessage;
 use ommu\article\models\view\ArticleCategory as ArticleCategoryView;
-use ommu\users\models\Users;
+use app\models\Users;
 
 class ArticleCategory extends \app\components\ActiveRecord
 {

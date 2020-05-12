@@ -40,7 +40,7 @@ namespace ommu\article\models;
 use Yii;
 use yii\helpers\Url;
 use yii\helpers\Html;
-use ommu\users\models\Users;
+use app\models\Users;
 
 class ArticleSetting extends \app\components\ActiveRecord
 {

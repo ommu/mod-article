@@ -41,7 +41,7 @@ use yii\helpers\Url;
 use yii\web\UploadedFile;
 use thamtech\uuid\helpers\UuidHelper;
 use ommu\article\models\view\ArticleMedia as ArticleMediaView;
-use ommu\users\models\Users;
+use app\models\Users;
 use yii\helpers\ArrayHelper;
 
 class ArticleMedia extends \app\components\ActiveRecord

@@ -43,7 +43,7 @@ namespace ommu\article\models;
 use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use ommu\users\models\Users;
+use app\models\Users;
 use ommu\article\models\view\Articles as ArticlesView;
 use yii\web\UploadedFile;
 use thamtech\uuid\helpers\UuidHelper;
