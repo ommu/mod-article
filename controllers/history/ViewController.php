@@ -51,17 +51,17 @@ class ViewController extends Controller
 	 */
 	public function behaviors()
 	{
-		return [
-			'access' => [
-				'class' => AccessControl::className(),
-			],
-			'verbs' => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['POST'],
-				],
-			],
-		];
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
 	}
 
 	/**
@@ -69,7 +69,7 @@ class ViewController extends Controller
 	 */
 	public function actionIndex()
 	{
-		return $this->redirect(['manage']);
+        return $this->redirect(['manage']);
 	}
 
 	/**
@@ -96,7 +96,7 @@ class ViewController extends Controller
         $columns = $searchModel->getGridColumn($cols);
 
         if (($view = Yii::$app->request->get('view')) != null) {
-			$view = \ommu\article\models\ArticleViews::findOne($view);
+            $view = \ommu\article\models\ArticleViews::findOne($view);
 			$this->subMenuParam = $view->article_id;
 			$setting = $view->article->getSetting(['media_image_limit', 'media_file_limit']);
             if ($view->article->category->single_photo || $setting->media_image_limit == 1) {
@@ -138,7 +138,7 @@ class ViewController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$model = $this->findModel($id);
+        $model = $this->findModel($id);
 
         if (!Yii::$app->request->isAjax) {
 			$this->subMenuParam = $model->view->article_id;

@@ -54,19 +54,19 @@ class SiteController extends Controller
 	 */
 	public function behaviors()
 	{
-		return [
-			'access' => [
-				'class' => AccessControl::className(),
-			],
-			'verbs' => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['POST'],
-					'publish' => ['POST'],
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                    'publish' => ['POST'],
 					'headline' => ['POST'],
-				],
-			],
-		];
+                ],
+            ],
+        ];
 	}
 
 	/**
@@ -74,7 +74,7 @@ class SiteController extends Controller
 	 */
 	public function actionIndex()
 	{
-		return $this->redirect(['manage']);
+        return $this->redirect(['manage']);
 	}
 
 	/**
@@ -114,25 +114,25 @@ class SiteController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model = new Articles();
+        $model = new Articles();
 
         if (Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-			// $model->order = $postData['order'] ? $postData['order'] : 0;
+            $model->load(Yii::$app->request->post());
+            // $postData = Yii::$app->request->post();
+            // $model->load($postData);
+            // $model->order = $postData['order'] ? $postData['order'] : 0;
 
             if ($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Articles success created.'));
-				return $this->redirect(['manage']);
-				//return $this->redirect(['view', 'id'=>$model->article_id]);
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Articles success created.'));
+                return $this->redirect(['manage']);
+                //return $this->redirect(['view', 'id'=>$model->article_id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
                     return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
-			}
-		}
+            }
+        }
 
 		$this->view->title = Yii::t('app', 'Create Articles');
 		$this->view->description = '';
@@ -153,22 +153,22 @@ class SiteController extends Controller
 		$model = $this->findModel($id);
 
         if (Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-			// $model->order = $postData['order'] ? $postData['order'] : 0;
+            $model->load(Yii::$app->request->post());
+            // $postData = Yii::$app->request->post();
+            // $model->load($postData);
+            // $model->order = $postData['order'] ? $postData['order'] : 0;
 
             if ($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Articles success updated.'));
-				return $this->redirect(['manage']);
-				//return $this->redirect(['view', 'id'=>$model->article_id]);
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Articles success updated.'));
+                return $this->redirect(['manage']);
+                //return $this->redirect(['view', 'id'=>$model->article_id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
                     return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
-			}
-		}
+            }
+        }
 
 		$this->view->title = Yii::t('app', 'Update Articles: {title}', ['title' => $model->title]);
 		$this->view->description = '';

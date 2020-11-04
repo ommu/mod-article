@@ -63,18 +63,18 @@ class ImageController extends Controller
 	 */
 	public function behaviors()
 	{
-		return [
-			'access' => [
-				'class' => AccessControl::className(),
-			],
-			'verbs' => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['POST'],
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
 					'upload' => ['POST'],
-				],
-			],
-		];
+                ],
+            ],
+        ];
 	}
 
 	/**
@@ -82,7 +82,7 @@ class ImageController extends Controller
 	 */
 	public function actionIndex()
 	{
-		return $this->redirect(['manage']);
+        return $this->redirect(['manage']);
 	}
 
 	/**
@@ -106,7 +106,7 @@ class ImageController extends Controller
         $columns = $searchModel->getGridColumn($cols);
 
         if (($article = Yii::$app->request->get('article')) != null) {
-			$this->subMenuParam = $article;
+            $this->subMenuParam = $article;
 			$article = \ommu\article\models\Articles::findOne($article);
 			$setting = $article->getSetting(['media_image_limit', 'media_file_limit']);
             if ($article->category->single_photo || $setting->media_image_limit == 1) {
@@ -143,24 +143,24 @@ class ImageController extends Controller
 		$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
 
         if (Yii::$app->request->isPost) {
-			$postData = Yii::$app->request->post();
-			$model->load($postData);
-			$model->orders = $postData['orders'] ? $postData['orders'] : 0;
-			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
+            $postData = Yii::$app->request->post();
+            $model->load($postData);
+            $model->orders = $postData['orders'] ? $postData['orders'] : 0;
+            $model->media_filename = UploadedFile::getInstance($model, 'media_filename');
 
             if ($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success created.'));
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success created.'));
                 if ($model->redirectUpdate) {
                     return $this->redirect(['update', 'id'=>$model->id]);
                 }
-				return $this->redirect(['manage', 'article'=>$model->article_id]);
+                return $this->redirect(['manage', 'article'=>$model->article_id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
                     return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
-			}
-		}
+            }
+        }
 
         if ($model->article->category->single_photo || $setting->media_image_limit == 1) {
             unset($this->subMenu['photo']);
@@ -193,21 +193,21 @@ class ImageController extends Controller
 		$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
 
         if (Yii::$app->request->isPost) {
-			$postData = Yii::$app->request->post();
-			$model->load($postData);
-			$model->orders = $postData['orders'] ? $postData['orders'] : 0;
-			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
+            $postData = Yii::$app->request->post();
+            $model->load($postData);
+            $model->orders = $postData['orders'] ? $postData['orders'] : 0;
+            $model->media_filename = UploadedFile::getInstance($model, 'media_filename');
 
             if ($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success updated.'));
-				return $this->redirect(['update', 'id'=>$model->id]);
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success updated.'));
+                return $this->redirect(['update', 'id'=>$model->id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
                     return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
-			}
-		}
+            }
+        }
 
         if ($model->article->category->single_photo || $setting->media_image_limit == 1) {
             unset($this->subMenu['photo']);
@@ -231,7 +231,7 @@ class ImageController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$model = $this->findModel($id);
+        $model = $this->findModel($id);
 
         if (!Yii::$app->request->isAjax) {
 			$this->subMenuParam = $model->article_id;
@@ -356,7 +356,7 @@ class ImageController extends Controller
                 if (Yii::$app->request->isAjax) {
 					return Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
-			}
-		}
+            }
+        }
 	}
 }

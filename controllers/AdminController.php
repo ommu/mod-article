@@ -46,19 +46,19 @@ class AdminController extends Controller
 	 */
 	public function behaviors()
 	{
-		return [
-			'access' => [
-				'class' => AccessControl::className(),
-			],
-			'verbs' => [
-				'class' => VerbFilter::className(),
-				'actions' => [
-					'delete' => ['POST'],
-					'publish' => ['POST'],
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                    'publish' => ['POST'],
 					'headline' => ['POST'],
-				],
-			],
-		];
+                ],
+            ],
+        ];
 	}
 
 	/**
@@ -66,7 +66,7 @@ class AdminController extends Controller
 	 */
 	public function actionIndex()
 	{
-		return $this->redirect(['manage']);
+        return $this->redirect(['manage']);
 	}
 
 	/**
@@ -111,28 +111,28 @@ class AdminController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model = new Articles();
+        $model = new Articles();
 		$setting = $model->getSetting(['headline', 'headline_category', 'media_image_type', 'media_file_type']);
 
         if (Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
-			$model->image = UploadedFile::getInstance($model, 'image');
-			$model->file = UploadedFile::getInstance($model, 'file');
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-			// $model->order = $postData['order'] ? $postData['order'] : 0;
+            $model->load(Yii::$app->request->post());
+            $model->image = UploadedFile::getInstance($model, 'image');
+            $model->file = UploadedFile::getInstance($model, 'file');
+            // $postData = Yii::$app->request->post();
+            // $model->load($postData);
+            // $model->order = $postData['order'] ? $postData['order'] : 0;
 
             if ($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Article success created.'));
-				return $this->redirect(['manage']);
-				//return $this->redirect(['view', 'id'=>$model->id]);
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Article success created.'));
+                return $this->redirect(['manage']);
+                //return $this->redirect(['view', 'id'=>$model->id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
                     return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
-			}
-		}
+            }
+        }
 
 		$this->view->title = Yii::t('app', 'Create Article');
 		$this->view->description = '';
@@ -155,27 +155,27 @@ class AdminController extends Controller
 		$setting = $model->getSetting(['headline', 'headline_category', 'media_image_limit', 'media_image_type', 'media_file_limit', 'media_file_type']);
 
         if (Yii::$app->request->isPost) {
-			$model->load(Yii::$app->request->post());
+            $model->load(Yii::$app->request->post());
             if ($model->category->single_photo || $setting->media_image_limit == 1) {
                 $model->image = UploadedFile::getInstance($model, 'image');
             }
             if ($model->category->single_file || $setting->media_file_limit == 1) {
                 $model->file = UploadedFile::getInstance($model, 'file');
             }
-			// $postData = Yii::$app->request->post();
-			// $model->load($postData);
-			// $model->order = $postData['order'] ? $postData['order'] : 0;
+            // $postData = Yii::$app->request->post();
+            // $model->load($postData);
+            // $model->order = $postData['order'] ? $postData['order'] : 0;
 
             if ($model->save()) {
-				Yii::$app->session->setFlash('success', Yii::t('app', 'Article success updated.'));
-				return $this->redirect(['manage']);
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Article success updated.'));
+                return $this->redirect(['manage']);
 
             } else {
                 if (Yii::$app->request->isAjax) {
                     return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
-			}
-		}
+            }
+        }
 
 		$this->subMenu = $this->module->params['article_submenu'];
         if ($model->category->single_photo || $setting->media_image_limit == 1) {
@@ -201,7 +201,7 @@ class AdminController extends Controller
 	 */
 	public function actionView($id)
 	{
-		$model = $this->findModel($id);
+        $model = $this->findModel($id);
 		$setting = $model->getSetting(['media_image_limit', 'media_file_limit']);
 
 		$this->subMenu = $this->module->params['article_submenu'];

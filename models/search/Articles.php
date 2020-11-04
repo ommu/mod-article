@@ -169,8 +169,8 @@ class Articles extends ArticlesModel
                 } else {
                     $query->andFilterWhere(['t.publish' => $this->publish]);
                 }
-			}
-		}
+            }
+        }
 
         if (isset($params['tagId']) && $params['tagId']) {
             $query->andFilterWhere(['tags.tag_id' => $params['tagId']]);
