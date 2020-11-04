@@ -39,9 +39,11 @@ class ViewController extends Controller
 	 */
 	public function init()
 	{
-		parent::init();
-		if(Yii::$app->request->get('view') || Yii::$app->request->get('id') || Yii::$app->request->get('article'))
-			$this->subMenu = $this->module->params['article_submenu'];
+        parent::init();
+
+        if (Yii::$app->request->get('view') || Yii::$app->request->get('id') || Yii::$app->request->get('article')) {
+            $this->subMenu = $this->module->params['article_submenu'];
+        }
 	}
 
 	/**
@@ -76,39 +78,45 @@ class ViewController extends Controller
 	 */
 	public function actionManage()
 	{
-		$searchModel = new ArticleViewHistorySearch();
-		if(($article = Yii::$app->request->get('article')) != null)
-			$searchModel = new ArticleViewHistorySearch(['articleId'=>$article]);
+        $searchModel = new ArticleViewHistorySearch();
+        if (($article = Yii::$app->request->get('article')) != null) {
+            $searchModel = new ArticleViewHistorySearch(['articleId'=>$article]);
+        }
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-		$gridColumn = Yii::$app->request->get('GridColumn', null);
-		$cols = [];
-		if($gridColumn != null && count($gridColumn) > 0) {
-			foreach($gridColumn as $key => $val) {
-				if($gridColumn[$key] == 1)
-					$cols[] = $key;
-			}
-		}
-		$columns = $searchModel->getGridColumn($cols);
+        $gridColumn = Yii::$app->request->get('GridColumn', null);
+        $cols = [];
+        if ($gridColumn != null && count($gridColumn) > 0) {
+            foreach ($gridColumn as $key => $val) {
+                if ($gridColumn[$key] == 1) {
+                    $cols[] = $key;
+                }
+            }
+        }
+        $columns = $searchModel->getGridColumn($cols);
 
-		if(($view = Yii::$app->request->get('view')) != null) {
+        if (($view = Yii::$app->request->get('view')) != null) {
 			$view = \ommu\article\models\ArticleViews::findOne($view);
 			$this->subMenuParam = $view->article_id;
 			$setting = $view->article->getSetting(['media_image_limit', 'media_file_limit']);
-			if($view->article->category->single_photo || $setting->media_image_limit == 1)
-				unset($this->subMenu['photo']);
-			if($view->article->category->single_file || $setting->media_file_limit == 1)
-				unset($this->subMenu['document']);
+            if ($view->article->category->single_photo || $setting->media_image_limit == 1) {
+                unset($this->subMenu['photo']);
+            }
+            if ($view->article->category->single_file || $setting->media_file_limit == 1) {
+                unset($this->subMenu['document']);
+            }
 		}
 
-		if($article) {
+        if ($article) {
 			$this->subMenuParam = $article;
 			$article = \ommu\article\models\Articles::findOne($article);
 			$setting = $article->getSetting(['media_image_limit', 'media_file_limit']);
-			if($article->category->single_photo || $setting->media_image_limit == 1)
-				unset($this->subMenu['photo']);
-			if($article->category->single_file || $setting->media_file_limit == 1)
-				unset($this->subMenu['document']);
+            if ($article->category->single_photo || $setting->media_image_limit == 1) {
+                unset($this->subMenu['photo']);
+            }
+            if ($article->category->single_file || $setting->media_file_limit == 1) {
+                unset($this->subMenu['document']);
+            }
 		}
 
 		$this->view->title = Yii::t('app', 'View Histories');
@@ -132,14 +140,16 @@ class ViewController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		if(!Yii::$app->request->isAjax) {
+        if (!Yii::$app->request->isAjax) {
 			$this->subMenuParam = $model->view->article_id;
 			$setting = $model->view->article->getSetting(['media_image_limit', 'media_file_limit']);
 
-			if($model->view->article->category->single_photo || $setting->media_image_limit == 1)
+            if ($model->view->article->category->single_photo || $setting->media_image_limit == 1) {
 				unset($this->subMenu['photo']);
-			if($model->view->article->category->single_file || $setting->media_file_limit == 1)
+            }
+            if ($model->view->article->category->single_file || $setting->media_file_limit == 1) {
 				unset($this->subMenu['document']);
+            }
 		}
 
 		$this->view->title = Yii::t('app', 'Detail View History: {view-id}', ['view-id' => $model->view->article->title]);
@@ -174,8 +184,9 @@ class ViewController extends Controller
 	 */
 	protected function findModel($id)
 	{
-		if(($model = ArticleViewHistory::findOne($id)) !== null)
-			return $model;
+        if (($model = ArticleViewHistory::findOne($id)) !== null) {
+            return $model;
+        }
 
 		throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 	}

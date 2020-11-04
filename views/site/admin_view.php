@@ -27,19 +27,19 @@ use yii\widgets\Pjax;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Articles'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
-if(!$small) {
-$this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Back To Article List'), 'url' => Url::to(['index']), 'icon' => 'table'],
-];
+if (!$small) {
+    $this->params['menu']['content'] = [
+        ['label' => Yii::t('app', 'Back To Article List'), 'url' => Url::to(['index']), 'icon' => 'table'],
+    ];
 } ?>
 
 <div class="col-md-8 col-sm-12 col-xs-12">
 	<div class="x_panel">
 		<div class="x_title">
 			<h2><?php echo Html::encode($this->title); ?></h2>
-			<?php if($this->params['menu']['content']):
-			echo MenuContent::widget(['items' => $this->params['menu']['content']]);
-			endif;?>
+            <?php if ($this->params['menu']['content']) {
+                echo MenuContent::widget(['items' => $this->params['menu']['content']]);
+            } ?>
 			<ul class="nav navbar-right panel_toolbox">
 				<li><a href="#" title="<?php echo Yii::t('app', 'Toggle');?>" class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
 				<li><a href="#" title="<?php echo Yii::t('app', 'Close');?>" class="close-link"><i class="fa fa-close"></i></a></li>
@@ -70,7 +70,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'published_date',
-		'value' => !in_array($model->published_date, ['0000-00-00 00:00:00','1970-01-01 00:00:00']) ? Yii::$app->formatter->format($model->published_date, 'datetime') : '-',
+		'value' => !in_array($model->published_date, ['0000-00-00 00:00:00', '1970-01-01 00:00:00']) ? Yii::$app->formatter->format($model->published_date, 'datetime') : '-',
 	],
 	[
 		'attribute' => 'headline',
@@ -103,7 +103,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'headline_date',
-		'value' => !in_array($model->headline_date, ['0000-00-00 00:00:00','1970-01-01 00:00:00']) ? Yii::$app->formatter->format($model->headline_date, 'datetime') : '-',
+		'value' => !in_array($model->headline_date, ['0000-00-00 00:00:00', '1970-01-01 00:00:00']) ? Yii::$app->formatter->format($model->headline_date, 'datetime') : '-',
 	],
 ];
 
@@ -156,14 +156,14 @@ $this->params['menu']['option'] = [
 	<div class="x_panel">
 		<div class="x_title">
 			<h2>Media</h2>
-			<?php if($this->params['menu']['content']):
-			echo MenuContent::widget(['items' => $this->params['menu']['content']]);
-			endif;?>
+            <?php if ($this->params['menu']['content']) {
+                echo MenuContent::widget(['items' => $this->params['menu']['content']]);
+            } ?>
 			<ul class="nav navbar-right panel_toolbox">
 				<li><a href="#" title="<?php echo Yii::t('app', 'Toggle');?>" class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-				<?php if($this->params['menu']['option']):?>
+				<?php if ($this->params['menu']['option']) {?>
 				
-				<?php endif;?>
+                <?php } ?>
 				<li><a href="#" title="<?php echo Yii::t('app', 'Close');?>" class="close-link"><i class="fa fa-close"></i></a></li>
 			</ul>
 			<div class="clearfix"></div>
@@ -198,14 +198,14 @@ $this->params['menu']['option'] = [
 	<div class="x_panel">
 		<div class="x_title">
 			<h2>File</h2>
-			<?php if($this->params['menu']['content']):
-			echo MenuContent::widget(['items' => $this->params['menu']['content']]);
-			endif;?>
+            <?php if ($this->params['menu']['content']) {
+                echo MenuContent::widget(['items' => $this->params['menu']['content']]);
+            } ?>
 			<ul class="nav navbar-right panel_toolbox">
 				<li><a href="#" title="<?php echo Yii::t('app', 'Toggle');?>" class="collapse-link"><i class="fa fa-chevron-up"></i></a></li>
-				<?php if($this->params['menu']['option']):?>
+				<?php if ($this->params['menu']['option']) {?>
 				
-				<?php endif;?>
+                <?php } ?>
 				<li><a href="#" title="<?php echo Yii::t('app', 'Close');?>" class="close-link"><i class="fa fa-close"></i></a></li>
 			</ul>
 			<div class="clearfix"></div>
@@ -225,7 +225,7 @@ $this->params['menu']['option'] = [
 			'value' => function($model)
 			{
 			return
-			Html::a('Download', ['site/download','id' => $model->file_id]);
+			Html::a('Download', ['site/download', 'id' => $model->file_id]);
 			}
 			],
 

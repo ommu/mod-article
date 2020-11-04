@@ -37,13 +37,14 @@ class Events extends \yii\base\BaseObject
 	public static function setArticleTag($article)
 	{
 		$oldTag = $article->getTags(true, 'title');
-		if($article->tag)
-			$tag = explode(',', $article->tag);
+        if ($article->tag) {
+            $tag = explode(',', $article->tag);
+        }
 
 		// insert difference tag
-		if(is_array($tag)) {
+        if (is_array($tag)) {
 			foreach ($tag as $val) {
-				if(in_array($val, $oldTag)) {
+                if (in_array($val, $oldTag)) {
 					unset($oldTag[array_keys($oldTag, $val)[0]]);
 					continue;
 				}
@@ -54,13 +55,14 @@ class Events extends \yii\base\BaseObject
 					->andWhere(['body' => $tagSlug])
 					->one();
 
-				if($tagFind != null)
-					$tag_id = $tagFind->tag_id;
-				else {
+                if ($tagFind != null) {
+                    $tag_id = $tagFind->tag_id;
+                } else {
 					$model = new CoreTags();
 					$model->body = $tagSlug;
-					if($model->save())
-						$tag_id = $model->tag_id;
+                    if ($model->save()) {
+                        $tag_id = $model->tag_id;
+                    }
 				}
 
 				$model = new ArticleTag();
@@ -71,7 +73,7 @@ class Events extends \yii\base\BaseObject
 		}
 
 		// drop difference tag
-		if(!empty($oldTag)) {
+        if (!empty($oldTag)) {
 			foreach ($oldTag as $key => $val) {
 				ArticleTag::find()
 					->select(['id'])

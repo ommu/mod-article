@@ -46,7 +46,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 	use \ommu\traits\UtilityTrait;
 	use \ommu\traits\FileTrait;
 
-	public $gridForbiddenColumn = ['creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname','updated_date'];
+	public $gridForbiddenColumn = ['creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
 	public $old_file_filename;
 	public $articleTitle;
@@ -112,12 +112,13 @@ class ArticleFiles extends \app\components\ActiveRecord
 	 */
 	public function getDownloads($count=false)
 	{
-		if($count == false)
-			return $this->hasMany(ArticleDownloads::className(), ['file_id' => 'id']);
+        if ($count == false) {
+            return $this->hasMany(ArticleDownloads::className(), ['file_id' => 'id']);
+        }
 
 		$model = ArticleDownloads::find()
-			->alias('t')
-			->where(['t.file_id' => $this->id]);
+            ->alias('t')
+            ->where(['t.file_id' => $this->id]);
 		$downloads = $model->sum('downloads');
 
 		return $downloads ? $downloads : 0;
@@ -163,11 +164,13 @@ class ArticleFiles extends \app\components\ActiveRecord
 	{
 		parent::init();
 
-		if(!(Yii::$app instanceof \app\components\Application))
-			return;
+        if (!(Yii::$app instanceof \app\components\Application)) {
+            return;
+        }
 
-		if(!$this->hasMethod('search'))
-			return;
+        if (!$this->hasMethod('search')) {
+            return;
+        }
 
 		$this->templateColumns['_no'] = [
 			'header' => '#',
@@ -244,19 +247,20 @@ class ArticleFiles extends \app\components\ActiveRecord
 	 */
 	public static function getInfo($id, $column=null)
 	{
-		if($column != null) {
-			$model = self::find();
-			if(is_array($column))
-				$model->select($column);
-			else
-				$model->select([$column]);
-			$model = $model->where(['id' => $id])->one();
-			return is_array($column) ? $model : $model->$column;
-			
-		} else {
-			$model = self::findOne($id);
-			return $model;
-		}
+        if ($column != null) {
+            $model = self::find();
+            if (is_array($column)) {
+                $model->select($column);
+            } else {
+                $model->select([$column]);
+            }
+            $model = $model->where(['id' => $id])->one();
+            return is_array($column) ? $model : $model->$column;
+
+        } else {
+            $model = self::findOne($id);
+            return $model;
+        }
 	}
 
 	/**
@@ -279,30 +283,33 @@ class ArticleFiles extends \app\components\ActiveRecord
 	{
 		$setting = $this->article->getSetting(['media_file_type']);
 
-		if(parent::beforeValidate()) {
+        if (parent::beforeValidate()) {
 			// $this->file_filename = UploadedFile::getInstance($this, 'file_filename');
-			if($this->file_filename instanceof UploadedFile && !$this->file_filename->getHasError()) {
+            if ($this->file_filename instanceof UploadedFile && !$this->file_filename->getHasError()) {
 				$fileFileType = $this->formatFileType($setting->media_file_type);
-				if(!in_array(strtolower($this->file_filename->getExtension()), $fileFileType)) {
+                if (!in_array(strtolower($this->file_filename->getExtension()), $fileFileType)) {
 					$this->addError('file_filename', Yii::t('app', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
 						'name'=>$this->file_filename->name,
 						'extensions'=>$this->formatFileType($fileFileType, false),
 					]));
-				}
-			} else {
-				if($this->isNewRecord && $this->file_filename == '')
-					$this->addError('file_filename', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('file_filename')]));
+                }
+            } else {
+                if ($this->isNewRecord && $this->file_filename == '') {
+                    $this->addError('file_filename', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('file_filename')]));
+                }
 			}
 
-			if($this->isNewRecord) {
-				if($this->creation_id == null)
-					$this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			} else {
-				if($this->modified_id == null)
-					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			}
-		}
-		return true;
+            if ($this->isNewRecord) {
+                if ($this->creation_id == null) {
+                    $this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            } else {
+                if ($this->modified_id == null) {
+                    $this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            }
+        }
+        return true;
 	}
 
 	/**
@@ -310,25 +317,27 @@ class ArticleFiles extends \app\components\ActiveRecord
 	 */
 	public function beforeSave($insert)
 	{
-		if(parent::beforeSave($insert)) {
+        if (parent::beforeSave($insert)) {
 			$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
 			$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
 			$this->createUploadDirectory(Articles::getUploadPath(), $this->article_id);
 
 			// $this->file_filename = UploadedFile::getInstance($this, 'file_filename');
-			if($this->file_filename instanceof UploadedFile && !$this->file_filename->getHasError()) {
-				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->file_filename->getExtension()); 
-				if($this->file_filename->saveAs(join('/', [$uploadPath, $fileName]))) {
-					if($this->old_file_filename != '' && file_exists(join('/', [$uploadPath, $this->old_file_filename])))
-						rename(join('/', [$uploadPath, $this->old_file_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_change_'.$this->old_file_filename]));
+            if ($this->file_filename instanceof UploadedFile && !$this->file_filename->getHasError()) {
+				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->file_filename->getExtension());
+                if ($this->file_filename->saveAs(join('/', [$uploadPath, $fileName]))) {
+                    if ($this->old_file_filename != '' && file_exists(join('/', [$uploadPath, $this->old_file_filename]))) {
+                        rename(join('/', [$uploadPath, $this->old_file_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_change_'.$this->old_file_filename]));
+                    }
 					$this->file_filename = $fileName;
-				}
-			} else {
-				if($this->file_filename == '')
-					$this->file_filename = $this->old_file_filename;
-			}
-		}
-		return true;
+                }
+            } else {
+                if ($this->file_filename == '') {
+                    $this->file_filename = $this->old_file_filename;
+                }
+            }
+        }
+        return true;
 	}
 
 	/**
@@ -338,10 +347,10 @@ class ArticleFiles extends \app\components\ActiveRecord
 	{
 		$setting = $this->article->getSetting(['media_file_limit']);
 
-		parent::afterSave($insert, $changedAttributes);
+        parent::afterSave($insert, $changedAttributes);
 		
 		// delete other photo (media_file_limit = 1)
-		if($setting->media_file_limit == 1) {
+        if ($setting->media_file_limit == 1) {
 			$medias = self::find()
 				->where(['article_id'=>$this->article_id])
 				->andWhere(['<>', 'publish', 2])
@@ -357,13 +366,13 @@ class ArticleFiles extends \app\components\ActiveRecord
 	 */
 	public function afterDelete()
 	{
-		parent::afterDelete();
+        parent::afterDelete();
 
 		$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
-		$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
+        $verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
 
-		if($this->file_filename != '' && file_exists(join('/', [$uploadPath, $this->file_filename])))
-			rename(join('/', [$uploadPath, $this->file_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_deleted_'.$this->file_filename]));
-
+        if ($this->file_filename != '' && file_exists(join('/', [$uploadPath, $this->file_filename]))) {
+            rename(join('/', [$uploadPath, $this->file_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_deleted_'.$this->file_filename]));
+        }
 	}
 }

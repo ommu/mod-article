@@ -19,9 +19,9 @@ use yii\helpers\Url;
 use yii\widgets\DetailView;
 use ommu\article\models\Articles;
 
-if(!$small) {
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Articles'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $model->title;
+if (!$small) {
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Articles'), 'url' => ['index']];
+    $this->params['breadcrumbs'][] = $model->title;
 } ?>
 
 <div class="articles-view">
@@ -43,8 +43,9 @@ $attributes = [
 		'attribute' => 'categoryName',
 		'value' => function ($model) {
 			$categoryName = isset($model->category) ? $model->category->title->message : '-';
-			if($categoryName != '-')
-				return Html::a($categoryName, ['setting/category/view', 'id'=>$model->cat_id], ['title'=>$categoryName, 'class'=>'modal-btn']);
+            if ($categoryName != '-') {
+                return Html::a($categoryName, ['setting/category/view', 'id'=>$model->cat_id], ['title'=>$categoryName, 'class'=>'modal-btn']);
+            }
 			return $categoryName;
 		},
 		'format' => 'html',
@@ -105,10 +106,12 @@ $attributes = [
 		'attribute' => 'headline',
 		'value' => function ($model) {
 			$setting = $model->getSetting(['headline_category']);
-			if(!is_array(($headlineCategory = $setting->headline_category)))
-				$headlineCategory = [];
-			if(!in_array($model->cat_id, $headlineCategory))
-				return '-';
+            if (!is_array(($headlineCategory = $setting->headline_category))) {
+                $headlineCategory = [];
+            }
+            if (!in_array($model->cat_id, $headlineCategory)) {
+                return '-';
+            }
 			return $model->quickAction(Url::to(['headline', 'id'=>$model->primaryKey]), $model->headline, 'Yes,No', true);
 		},
 		'format' => 'raw',

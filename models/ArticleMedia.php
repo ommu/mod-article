@@ -173,11 +173,13 @@ class ArticleMedia extends \app\components\ActiveRecord
 	{
 		parent::init();
 
-		if(!(Yii::$app instanceof \app\components\Application))
-			return;
+        if (!(Yii::$app instanceof \app\components\Application)) {
+            return;
+        }
 
-		if(!$this->hasMethod('search'))
-			return;
+        if (!$this->hasMethod('search')) {
+            return;
+        }
 
 		$this->templateColumns['_no'] = [
 			'header' => '#',
@@ -289,19 +291,20 @@ class ArticleMedia extends \app\components\ActiveRecord
 	 */
 	public static function getInfo($id, $column=null)
 	{
-		if($column != null) {
-			$model = self::find();
-			if(is_array($column))
-				$model->select($column);
-			else
-				$model->select([$column]);
-			$model = $model->where(['id' => $id])->one();
-			return is_array($column) ? $model : $model->$column;
-			
-		} else {
-			$model = self::findOne($id);
-			return $model;
-		}
+        if ($column != null) {
+            $model = self::find();
+            if (is_array($column)) {
+                $model->select($column);
+            } else {
+                $model->select([$column]);
+            }
+            $model = $model->where(['id' => $id])->one();
+            return is_array($column) ? $model : $model->$column;
+
+        } else {
+            $model = self::findOne($id);
+            return $model;
+        }
 	}
 
 	/**
@@ -324,36 +327,40 @@ class ArticleMedia extends \app\components\ActiveRecord
 	{
 		$setting = $this->article->getSetting(['media_image_type']);
 
-		if(parent::beforeValidate()) {
+        if (parent::beforeValidate()) {
 			// $this->media_filename = UploadedFile::getInstance($this, 'media_filename');
-			if($this->media_filename instanceof UploadedFile && !$this->media_filename->getHasError()) {
+            if ($this->media_filename instanceof UploadedFile && !$this->media_filename->getHasError()) {
 				$imageFileType = $this->formatFileType($setting->media_image_type);
-				if(!in_array(strtolower($this->media_filename->getExtension()), $imageFileType)) {
+                if (!in_array(strtolower($this->media_filename->getExtension()), $imageFileType)) {
 					$this->addError('media_filename', Yii::t('app', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
 						'name'=>$this->media_filename->name,
 						'extensions'=>$this->formatFileType($imageFileType, false),
 					]));
-				}
-			} else {
-				if($this->isNewRecord && $this->media_filename == '')
-					$this->addError('media_filename', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('media_filename')]));
+                }
+            } else {
+                if ($this->isNewRecord && $this->media_filename == '') {
+                    $this->addError('media_filename', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('media_filename')]));
+                }
 			}
 
-			if($this->cover == null) {
+            if ($this->cover == null) {
 				$medias = $this->article->medias;
-				if(empty($medias))
-					$this->cover = 1;
+                if (empty($medias)) {
+                    $this->cover = 1;
+                }
 			}
 
-			if($this->isNewRecord) {
-				if($this->creation_id == null)
-					$this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			} else {
-				if($this->modified_id == null)
-					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			}
-		}
-		return true;
+            if ($this->isNewRecord) {
+                if ($this->creation_id == null) {
+                    $this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            } else {
+                if ($this->modified_id == null) {
+                    $this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            }
+        }
+        return true;
 	}
 
 	/**
@@ -363,28 +370,31 @@ class ArticleMedia extends \app\components\ActiveRecord
 	{
 		$setting = $this->article->getSetting(['media_image_resize', 'media_image_resize_size']);
 
-		if(parent::beforeSave($insert)) {
+        if (parent::beforeSave($insert)) {
 			$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
 			$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
 			$this->createUploadDirectory(Articles::getUploadPath(), $this->article_id);
 
 			// $this->media_filename = UploadedFile::getInstance($this, 'media_filename');
-			if($this->media_filename instanceof UploadedFile && !$this->media_filename->getHasError()) {
-				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->media_filename->getExtension()); 
-				if($this->media_filename->saveAs(join('/', [$uploadPath, $fileName]))) {
+            if ($this->media_filename instanceof UploadedFile && !$this->media_filename->getHasError()) {
+				$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->media_filename->getExtension());
+                if ($this->media_filename->saveAs(join('/', [$uploadPath, $fileName]))) {
 					$imageResize = $setting->media_image_resize_size;
-					if($setting->media_image_resize)
-						$this->resizeImage(join('/', [$uploadPath, $fileName]), $imageResize['width'], $imageResize['height']);
-					if($this->old_media_filename != '' && file_exists(join('/', [$uploadPath, $this->old_media_filename])))
-						rename(join('/', [$uploadPath, $this->old_media_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_change_'.$this->old_media_filename]));
+                    if ($setting->media_image_resize) {
+                        $this->resizeImage(join('/', [$uploadPath, $fileName]), $imageResize['width'], $imageResize['height']);
+                    }
+                    if ($this->old_media_filename != '' && file_exists(join('/', [$uploadPath, $this->old_media_filename]))) {
+                        rename(join('/', [$uploadPath, $this->old_media_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_change_'.$this->old_media_filename]));
+                    }
 					$this->media_filename = $fileName;
-				}
-			} else {
-				if($this->media_filename == '')
-					$this->media_filename = $this->old_media_filename;
-			}
-		}
-		return true;
+                }
+            } else {
+                if ($this->media_filename == '') {
+                    $this->media_filename = $this->old_media_filename;
+                }
+            }
+        }
+        return true;
 	}
 
 	/**
@@ -394,10 +404,10 @@ class ArticleMedia extends \app\components\ActiveRecord
 	{
 		$setting = $this->article->getSetting(['media_image_limit']);
 
-		parent::afterSave($insert, $changedAttributes);
+        parent::afterSave($insert, $changedAttributes);
 		
 		// delete other photo (media_image_limit = 1)
-		if($setting->media_image_limit == 1) {
+        if ($setting->media_image_limit == 1) {
 			$medias = self::find()
 				->where(['article_id'=>$this->article_id])
 				->andWhere(['<>', 'publish', 2])
@@ -408,10 +418,11 @@ class ArticleMedia extends \app\components\ActiveRecord
 		}
 
 		// update cover (new cover = 1)
-		if(array_key_exists('cover', $changedAttributes) && ($changedAttributes['cover'] != $this->cover) && $this->cover == 1)
+        if (array_key_exists('cover', $changedAttributes) && ($changedAttributes['cover'] != $this->cover) && $this->cover == 1) {
 			self::updateAll(['cover' => 0], 
 				'article_id = :article AND publish <> :publish AND id <> :media', 
-				[':article'=>$this->article_id, ':publish'=>2, ':media'=>$this->id]);
+                [':article'=>$this->article_id, ':publish'=>2, ':media'=>$this->id]);
+        }
 	}
 
 	/**
@@ -419,17 +430,19 @@ class ArticleMedia extends \app\components\ActiveRecord
 	 */
 	public function afterDelete()
 	{
-		parent::afterDelete();
+        parent::afterDelete();
 
 		$uploadPath = join('/', [Articles::getUploadPath(), $this->article_id]);
-		$verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
+        $verwijderenPath = join('/', [Articles::getUploadPath(), 'verwijderen']);
 
-		if($this->media_filename != '' && file_exists(join('/', [$uploadPath, $this->media_filename])))
-			rename(join('/', [$uploadPath, $this->media_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_deleted_'.$this->media_filename]));
+        if ($this->media_filename != '' && file_exists(join('/', [$uploadPath, $this->media_filename]))) {
+            rename(join('/', [$uploadPath, $this->media_filename]), join('/', [$verwijderenPath, $this->article_id.'-'.time().'_deleted_'.$this->media_filename]));
+        }
 
 		// reset cover (delete photo, cover = 1)
 		$medias = $this->article->medias;
-		if(!empty($medias) && $this->cover == 1)
-			self::findOne($medias[0]->id)->updateAttributes(['cover'=>1]);
+        if (!empty($medias) && $this->cover == 1) {
+            self::findOne($medias[0]->id)->updateAttributes(['cover'=>1]);
+        }
 	}
 }

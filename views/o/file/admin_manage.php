@@ -23,7 +23,7 @@ use devgroup\dropzone\DropZone;
 
 $this->params['breadcrumbs'][] = $this->title;
 
-if(($id = Yii::$app->request->get('article')) != null) {
+if (($id = Yii::$app->request->get('article')) != null) {
 	$this->params['menu']['content'] = [
 		['label' => Yii::t('app', 'Add Document'), 'url' => Url::to(['create', 'id'=>$id]), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
 	];
@@ -37,10 +37,11 @@ $this->params['menu']['option'] = [
 <div class="article-files-manage">
 <?php Pjax::begin(); ?>
 
-<?php if($article != null)
-	echo $this->render('/admin/admin_view', ['model'=>$article, 'small'=>true]); ?>
+<?php if ($article != null) {
+    echo $this->render('/admin/admin_view', ['model'=>$article, 'small'=>true]);
+} ?>
 
-<?php if($id != null) {
+<?php if ($id != null) {
 	echo DropZone::widget([
 		'name' => 'file_filename',
 		'url' => Url::to(['o/file/upload', 'id'=>$id]),
@@ -59,12 +60,15 @@ array_push($columnData, [
 	'class' => 'app\components\grid\ActionColumn',
 	'header' => Yii::t('app', 'Option'),
 	'urlCreator' => function($action, $model, $key, $index) {
-		if($action == 'view')
-			return Url::to(['view', 'id'=>$key]);
-		if($action == 'update')
-			return Url::to(['update', 'id'=>$key]);
-		if($action == 'delete')
-			return Url::to(['delete', 'id'=>$key]);
+        if ($action == 'view') {
+            return Url::to(['view', 'id'=>$key]);
+        }
+        if ($action == 'update') {
+            return Url::to(['update', 'id'=>$key]);
+        }
+        if ($action == 'delete') {
+            return Url::to(['delete', 'id'=>$key]);
+        }
 	},
 	'buttons' => [
 		'view' => function ($url, $model, $key) {

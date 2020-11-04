@@ -75,21 +75,23 @@ class AdminController extends Controller
 	 */
 	public function actionManage()
 	{
-		$searchModel = new ArticlesSearch();
-		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel = new ArticlesSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-		$gridColumn = Yii::$app->request->get('GridColumn', null);
-		$cols = [];
-		if($gridColumn != null && count($gridColumn) > 0) {
-			foreach($gridColumn as $key => $val) {
-				if($gridColumn[$key] == 1)
-					$cols[] = $key;
-			}
-		}
-		$columns = $searchModel->getGridColumn($cols);
+        $gridColumn = Yii::$app->request->get('GridColumn', null);
+        $cols = [];
+        if ($gridColumn != null && count($gridColumn) > 0) {
+            foreach ($gridColumn as $key => $val) {
+                if ($gridColumn[$key] == 1) {
+                    $cols[] = $key;
+                }
+            }
+        }
+        $columns = $searchModel->getGridColumn($cols);
 
-		if(($category = Yii::$app->request->get('category')) != null)
-			$category = \ommu\article\models\ArticleCategory::findOne($category);
+        if (($category = Yii::$app->request->get('category')) != null) {
+            $category = \ommu\article\models\ArticleCategory::findOne($category);
+        }
 
 		$this->view->title = Yii::t('app', 'Articles');
 		$this->view->description = '';
@@ -112,7 +114,7 @@ class AdminController extends Controller
 		$model = new Articles();
 		$setting = $model->getSetting(['headline', 'headline_category', 'media_image_type', 'media_file_type']);
 
-		if(Yii::$app->request->isPost) {
+        if (Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
 			$model->image = UploadedFile::getInstance($model, 'image');
 			$model->file = UploadedFile::getInstance($model, 'file');
@@ -120,14 +122,15 @@ class AdminController extends Controller
 			// $model->load($postData);
 			// $model->order = $postData['order'] ? $postData['order'] : 0;
 
-			if($model->save()) {
+            if ($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article success created.'));
 				return $this->redirect(['manage']);
 				//return $this->redirect(['view', 'id'=>$model->id]);
 
-			} else {
-				if(Yii::$app->request->isAjax)
-					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+            } else {
+                if (Yii::$app->request->isAjax) {
+                    return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+                }
 			}
 		}
 
@@ -151,31 +154,36 @@ class AdminController extends Controller
 		$model = $this->findModel($id);
 		$setting = $model->getSetting(['headline', 'headline_category', 'media_image_limit', 'media_image_type', 'media_file_limit', 'media_file_type']);
 
-		if(Yii::$app->request->isPost) {
+        if (Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
-			if($model->category->single_photo || $setting->media_image_limit == 1)
-				$model->image = UploadedFile::getInstance($model, 'image');
-			if($model->category->single_file || $setting->media_file_limit == 1)
-				$model->file = UploadedFile::getInstance($model, 'file');
+            if ($model->category->single_photo || $setting->media_image_limit == 1) {
+                $model->image = UploadedFile::getInstance($model, 'image');
+            }
+            if ($model->category->single_file || $setting->media_file_limit == 1) {
+                $model->file = UploadedFile::getInstance($model, 'file');
+            }
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
 			// $model->order = $postData['order'] ? $postData['order'] : 0;
 
-			if($model->save()) {
+            if ($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article success updated.'));
 				return $this->redirect(['manage']);
 
-			} else {
-				if(Yii::$app->request->isAjax)
-					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+            } else {
+                if (Yii::$app->request->isAjax) {
+                    return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+                }
 			}
 		}
 
 		$this->subMenu = $this->module->params['article_submenu'];
-		if($model->category->single_photo || $setting->media_image_limit == 1)
-			unset($this->subMenu['photo']);
-		if($model->category->single_file || $setting->media_file_limit == 1)
-			unset($this->subMenu['document']);
+        if ($model->category->single_photo || $setting->media_image_limit == 1) {
+            unset($this->subMenu['photo']);
+        }
+        if ($model->category->single_file || $setting->media_file_limit == 1) {
+            unset($this->subMenu['document']);
+        }
 
 		$this->view->title = Yii::t('app', 'Update Article: {title}', ['title' => $model->title]);
 		$this->view->description = '';
@@ -197,10 +205,12 @@ class AdminController extends Controller
 		$setting = $model->getSetting(['media_image_limit', 'media_file_limit']);
 
 		$this->subMenu = $this->module->params['article_submenu'];
-		if($model->category->single_photo || $setting->media_image_limit == 1)
-			unset($this->subMenu['photo']);
-		if($model->category->single_file || $setting->media_file_limit == 1)
-			unset($this->subMenu['document']);
+        if ($model->category->single_photo || $setting->media_image_limit == 1) {
+            unset($this->subMenu['photo']);
+        }
+        if ($model->category->single_file || $setting->media_file_limit == 1) {
+            unset($this->subMenu['document']);
+        }
 
 		$this->view->title = Yii::t('app', 'Detail Article: {title}', ['title' => $model->title]);
 		$this->view->description = '';
@@ -221,7 +231,7 @@ class AdminController extends Controller
 		$model = $this->findModel($id);
 		$model->publish = 2;
 
-		if($model->save(false, ['publish','modified_id'])) {
+        if ($model->save(false, ['publish', 'modified_id'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article success deleted.'));
 			return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
 		}
@@ -239,7 +249,7 @@ class AdminController extends Controller
 		$replace = $model->publish == 1 ? 0 : 1;
 		$model->publish = $replace;
 
-		if($model->save(false, ['publish','modified_id'])) {
+        if ($model->save(false, ['publish', 'modified_id'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article success updated.'));
 			return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
 		}
@@ -256,20 +266,22 @@ class AdminController extends Controller
 		$setting = ArticleSetting::find()
 			->select(['headline_category'])
 			->where(['id' => 1])
-			->one();
+            ->one();
 
-		if(!is_array(($headlineCategory = $setting->headline_category)))
-			$headlineCategory = [];
+        if (!is_array(($headlineCategory = $setting->headline_category))) {
+            $headlineCategory = [];
+        }
 
 		$model = $this->findModel($id);
 
-		if(!in_array($model->cat_id, $headlineCategory))
-			throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
+        if (!in_array($model->cat_id, $headlineCategory)) {
+            throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
 
 		$model->headline = 1;
 		$model->publish  = 1;
 
-		if($model->save(false, ['publish','headline','modified_id'])) {
+        if ($model->save(false, ['publish', 'headline', 'modified_id'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article success updated.'));
 			return $this->redirect(['manage']);
 		}
@@ -284,8 +296,9 @@ class AdminController extends Controller
 	 */
 	protected function findModel($id)
 	{
-		if(($model = Articles::findOne($id)) !== null)
-			return $model;
+        if (($model = Articles::findOne($id)) !== null) {
+            return $model;
+        }
 
 		throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 	}

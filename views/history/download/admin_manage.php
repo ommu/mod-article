@@ -31,8 +31,9 @@ $this->params['menu']['option'] = [
 <div class="article-download-history-manage">
 <?php Pjax::begin(); ?>
 
-<?php if($download != null)
-	echo $this->render('/o/download/admin_view', ['model'=>$download, 'small'=>true]); ?>
+<?php if ($download != null) {
+    echo $this->render('/o/download/admin_view', ['model'=>$download, 'small'=>true]);
+} ?>
 
 <?php //echo $this->render('_search', ['model'=>$searchModel]); ?>
 
@@ -44,12 +45,15 @@ array_push($columnData, [
 	'class' => 'app\components\grid\ActionColumn',
 	'header' => Yii::t('app', 'Option'),
 	'urlCreator' => function($action, $model, $key, $index) {
-		if($action == 'view')
-			return Url::to(['view', 'id'=>$key]);
-		if($action == 'update')
-			return Url::to(['update', 'id'=>$key]);
-		if($action == 'delete')
-			return Url::to(['delete', 'id'=>$key]);
+        if ($action == 'view') {
+            return Url::to(['view', 'id'=>$key]);
+        }
+        if ($action == 'update') {
+            return Url::to(['update', 'id'=>$key]);
+        }
+        if ($action == 'delete') {
+            return Url::to(['delete', 'id'=>$key]);
+        }
 	},
 	'buttons' => [
 		'view' => function ($url, $model, $key) {

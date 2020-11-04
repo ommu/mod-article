@@ -61,10 +61,11 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 	 */
 	public function search($params, $column=null)
 	{
-		if(!($column && is_array($column)))
-			$query = ArticleLikeHistoryModel::find()->alias('t');
-		else
-			$query = ArticleLikeHistoryModel::find()->alias('t')->select($column);
+        if (!($column && is_array($column))) {
+            $query = ArticleLikeHistoryModel::find()->alias('t');
+        } else {
+            $query = ArticleLikeHistoryModel::find()->alias('t')->select($column);
+        }
 		$query->joinWith([
 			'like like',
 			'like.article likeRltn'
@@ -76,8 +77,9 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 			'query' => $query,
 		];
 		// disable pagination agar data pada api tampil semua
-		if(isset($params['pagination']) && $params['pagination'] == 0)
-			$dataParams['pagination'] = false;
+        if (isset($params['pagination']) && $params['pagination'] == 0) {
+            $dataParams['pagination'] = false;
+        }
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
@@ -90,11 +92,12 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 			'defaultOrder' => ['id' => SORT_DESC],
 		]);
 
-		if(Yii::$app->request->get('id'))
-			unset($params['id']);
+        if (Yii::$app->request->get('id')) {
+            unset($params['id']);
+        }
 		$this->load($params);
 
-		if(!$this->validate()) {
+        if (!$this->validate()) {
 			// uncomment the following line if you do not want to return any records when validation fails
 			// $query->where('0=1');
 			return $dataProvider;
@@ -108,13 +111,14 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
 			'like.article_id' => $this->articleId,
 		]);
 
-		if(isset($params['trash']))
-			$query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
-		else {
-			if(!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == ''))
-				$query->andFilterWhere(['IN', 't.publish', [0,1]]);
-			else
-				$query->andFilterWhere(['t.publish' => $this->publish]);
+        if (isset($params['trash'])) {
+            $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
+        } else {
+            if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
+                $query->andFilterWhere(['IN', 't.publish', [0,1]]);
+            } else {
+                $query->andFilterWhere(['t.publish' => $this->publish]);
+            }
 		}
 
 		$query->andFilterWhere(['like', 't.likes_ip', $this->likes_ip])

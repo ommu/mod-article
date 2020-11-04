@@ -39,9 +39,11 @@ class DownloadController extends Controller
 	 */
 	public function init()
 	{
-		parent::init();
-		if(Yii::$app->request->get('download') || Yii::$app->request->get('id'))
-			$this->subMenu = $this->module->params['article_submenu'];
+        parent::init();
+
+        if (Yii::$app->request->get('download') || Yii::$app->request->get('id')) {
+            $this->subMenu = $this->module->params['article_submenu'];
+        }
 	}
 
 	/**
@@ -76,27 +78,30 @@ class DownloadController extends Controller
 	 */
 	public function actionManage()
 	{
-		$searchModel = new ArticleDownloadHistorySearch();
-		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel = new ArticleDownloadHistorySearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-		$gridColumn = Yii::$app->request->get('GridColumn', null);
-		$cols = [];
-		if($gridColumn != null && count($gridColumn) > 0) {
-			foreach($gridColumn as $key => $val) {
-				if($gridColumn[$key] == 1)
-					$cols[] = $key;
-			}
-		}
-		$columns = $searchModel->getGridColumn($cols);
+        $gridColumn = Yii::$app->request->get('GridColumn', null);
+        $cols = [];
+        if ($gridColumn != null && count($gridColumn) > 0) {
+            foreach ($gridColumn as $key => $val) {
+                if ($gridColumn[$key] == 1) {
+                    $cols[] = $key;
+                }
+            }
+        }
+        $columns = $searchModel->getGridColumn($cols);
 
-		if(($download = Yii::$app->request->get('download')) != null) {
+        if (($download = Yii::$app->request->get('download')) != null) {
 			$download = \ommu\article\models\ArticleDownloads::findOne($download);
 			$this->subMenuParam = $download->file->article_id;
 			$setting = $download->file->article->getSetting(['media_image_limit', 'media_file_limit']);
-			if($download->file->article->category->single_photo || $setting->media_image_limit == 1)
-				unset($this->subMenu['photo']);
-			if($download->file->article->category->single_file || $setting->media_file_limit == 1)
-				unset($this->subMenu['document']);
+            if ($download->file->article->category->single_photo || $setting->media_image_limit == 1) {
+                unset($this->subMenu['photo']);
+            }
+            if ($download->file->article->category->single_file || $setting->media_file_limit == 1) {
+                unset($this->subMenu['document']);
+            }
 		}
 
 		$this->view->title = Yii::t('app', 'Download Histories');
@@ -119,14 +124,16 @@ class DownloadController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		if(!Yii::$app->request->isAjax) {
+        if (!Yii::$app->request->isAjax) {
 			$this->subMenuParam = $model->download->file->article_id;
 			$setting = $model->download->file->article->getSetting(['media_image_limit', 'media_file_limit']);
 
-			if($model->download->file->article->category->single_photo || $setting->media_image_limit == 1)
+            if ($model->download->file->article->category->single_photo || $setting->media_image_limit == 1) {
 				unset($this->subMenu['photo']);
-			if($model->download->file->article->category->single_file || $setting->media_file_limit == 1)
+            }
+            if ($model->download->file->article->category->single_file || $setting->media_file_limit == 1) {
 				unset($this->subMenu['document']);
+            }
 		}
 
 		$this->view->title = Yii::t('app', 'Detail Download History: {download-id}', ['download-id' => $model->download->file->file_filename]);
@@ -161,8 +168,9 @@ class DownloadController extends Controller
 	 */
 	protected function findModel($id)
 	{
-		if(($model = ArticleDownloadHistory::findOne($id)) !== null)
-			return $model;
+        if (($model = ArticleDownloadHistory::findOne($id)) !== null) {
+            return $model;
+        }
 
 		throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 	}

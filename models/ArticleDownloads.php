@@ -88,12 +88,13 @@ class ArticleDownloads extends \app\components\ActiveRecord
 	 */
 	public function getHistories($count=false)
 	{
-		if($count == false)
-			return $this->hasMany(ArticleDownloadHistory::className(), ['download_id' => 'id']);
+        if ($count == false) {
+            return $this->hasMany(ArticleDownloadHistory::className(), ['download_id' => 'id']);
+        }
 
 		$model = ArticleDownloadHistory::find()
-			->alias('t')
-			->where(['t.download_id' => $this->id]);
+            ->alias('t')
+            ->where(['t.download_id' => $this->id]);
 		$histories = $model->count();
 
 		return $histories ? $histories : 0;
@@ -131,11 +132,13 @@ class ArticleDownloads extends \app\components\ActiveRecord
 	{
 		parent::init();
 
-		if(!(Yii::$app instanceof \app\components\Application))
-			return;
+        if (!(Yii::$app instanceof \app\components\Application)) {
+            return;
+        }
 
-		if(!$this->hasMethod('search'))
-			return;
+        if (!$this->hasMethod('search')) {
+            return;
+        }
 
 		$this->templateColumns['_no'] = [
 			'header' => '#',
@@ -196,19 +199,20 @@ class ArticleDownloads extends \app\components\ActiveRecord
 	 */
 	public static function getInfo($id, $column=null)
 	{
-		if($column != null) {
-			$model = self::find();
-			if(is_array($column))
-				$model->select($column);
-			else
-				$model->select([$column]);
-			$model = $model->where(['id' => $id])->one();
-			return is_array($column) ? $model : $model->$column;
-			
-		} else {
-			$model = self::findOne($id);
-			return $model;
-		}
+        if ($column != null) {
+            $model = self::find();
+            if (is_array($column)) {
+                $model->select($column);
+            } else {
+                $model->select([$column]);
+            }
+            $model = $model->where(['id' => $id])->one();
+            return is_array($column) ? $model : $model->$column;
+
+        } else {
+            $model = self::findOne($id);
+            return $model;
+        }
 	}
 
 	/**
@@ -216,22 +220,23 @@ class ArticleDownloads extends \app\components\ActiveRecord
 	 */
 	public function insertDownload($file_id, $user_id=null)
 	{
-		if($user_id == null)
-			$user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+        if ($user_id == null) {
+            $user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+        }
 
 		$findDownload = self::find()
 			->select(['id', 'downloads'])
 			->where(['file_id' => $file_id]);
-		if($user_id != null)
-			$findDownload->andWhere(['user_id' => $user_id]);
-		else
-			$findDownload->andWhere(['is', 'user_id', null]);
+        if ($user_id != null) {
+            $findDownload->andWhere(['user_id' => $user_id]);
+        } else {
+            $findDownload->andWhere(['is', 'user_id', null]);
+        }
 		$findDownload = $findDownload->one();
 
-		if($findDownload !== null)
-			$findDownload->updateAttributes(['downloads'=>$findDownload->downloads+1, 'download_ip'=>$_SERVER['REMOTE_ADDR']]);
-
-		else {
+        if ($findDownload !== null) {
+            $findDownload->updateAttributes(['downloads'=>$findDownload->downloads+1, 'download_ip'=>$_SERVER['REMOTE_ADDR']]);
+        } else {
 			$download = new ArticleDownloads();
 			$download->file_id = $file_id;
 			$download->user_id = $user_id;
@@ -256,13 +261,14 @@ class ArticleDownloads extends \app\components\ActiveRecord
 	 */
 	public function beforeValidate()
 	{
-		if(parent::beforeValidate()) {
-			if($this->isNewRecord) {
-				if($this->user_id == null)
-					$this->user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			}
-			$this->download_ip = $_SERVER['REMOTE_ADDR'];
-		}
-		return true;
+        if (parent::beforeValidate()) {
+            if ($this->isNewRecord) {
+                if ($this->user_id == null) {
+                    $this->user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            }
+            $this->download_ip = $_SERVER['REMOTE_ADDR'];
+        }
+        return true;
 	}
 }

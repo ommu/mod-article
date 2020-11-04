@@ -83,18 +83,19 @@ class SiteController extends Controller
 	 */
 	public function actionManage()
 	{
-		$searchModel = new ArticlesSearch();
-		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel = new ArticlesSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-		$gridColumn = Yii::$app->request->get('GridColumn', null);
-		$cols = [];
-		if($gridColumn != null && count($gridColumn) > 0) {
-			foreach($gridColumn as $key => $val) {
-				if($gridColumn[$key] == 1)
-					$cols[] = $key;
-			}
-		}
-		$columns = $searchModel->getGridColumn($cols);
+        $gridColumn = Yii::$app->request->get('GridColumn', null);
+        $cols = [];
+        if ($gridColumn != null && count($gridColumn) > 0) {
+            foreach ($gridColumn as $key => $val) {
+                if ($gridColumn[$key] == 1) {
+                    $cols[] = $key;
+                }
+            }
+        }
+        $columns = $searchModel->getGridColumn($cols);
 
 		$this->view->title = Yii::t('app', 'Articles');
 		$this->view->description = '';
@@ -115,20 +116,21 @@ class SiteController extends Controller
 	{
 		$model = new Articles();
 
-		if(Yii::$app->request->isPost) {
+        if (Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
 			// $model->order = $postData['order'] ? $postData['order'] : 0;
 
-			if($model->save()) {
+            if ($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Articles success created.'));
 				return $this->redirect(['manage']);
 				//return $this->redirect(['view', 'id'=>$model->article_id]);
 
-			} else {
-				if(Yii::$app->request->isAjax)
-					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+            } else {
+                if (Yii::$app->request->isAjax) {
+                    return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+                }
 			}
 		}
 
@@ -150,20 +152,21 @@ class SiteController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		if(Yii::$app->request->isPost) {
+        if (Yii::$app->request->isPost) {
 			$model->load(Yii::$app->request->post());
 			// $postData = Yii::$app->request->post();
 			// $model->load($postData);
 			// $model->order = $postData['order'] ? $postData['order'] : 0;
 
-			if($model->save()) {
+            if ($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Articles success updated.'));
 				return $this->redirect(['manage']);
 				//return $this->redirect(['view', 'id'=>$model->article_id]);
 
-			} else {
-				if(Yii::$app->request->isAjax)
-					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+            } else {
+                if (Yii::$app->request->isAjax) {
+                    return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+                }
 			}
 		}
 
@@ -191,15 +194,16 @@ class SiteController extends Controller
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
 		]);
-		$gridColumn = Yii::$app->request->get('GridColumn', null);
-		$cols = [];
-		if($gridColumn != null && count($gridColumn) > 0) {
-			foreach($gridColumn as $key => $val) {
-				if($gridColumn[$key] == 1)
-					$cols[] = $key;
-			}
-		}
-		$columns = $searchModel->getGridColumn($cols);
+        $gridColumn = Yii::$app->request->get('GridColumn', null);
+        $cols = [];
+        if ($gridColumn != null && count($gridColumn) > 0) {
+            foreach ($gridColumn as $key => $val) {
+                if ($gridColumn[$key] == 1) {
+                    $cols[] = $key;
+                }
+            }
+        }
+        $columns = $searchModel->getGridColumn($cols);
 		//menampilkan data file
 		$searchModel1 = new ArticleFilesSearch();
 		$query1 = ArticleFilesModel::find()->where(['t.article_id'=>$id,'t.publish'=>1])->alias('t');
@@ -209,12 +213,13 @@ class SiteController extends Controller
 		]);
 		$gridColumn1 = Yii::$app->request->get('GridColumn1', null);
 		$cols1 = [];
-		if($gridColumn1 != null && count($gridColumn1) > 0) {
-			foreach($gridColumn1 as $key => $val) {
-				if($gridColumn1[$key] == 1)
-					$cols1[] = $key;
-			}
-		}
+        if ($gridColumn1 != null && count($gridColumn1) > 0) {
+            foreach ($gridColumn1 as $key => $val) {
+                if ($gridColumn1[$key] == 1) {
+                    $cols1[] = $key;
+                }
+            }
+        }
 		$columns1 = $searchModel1->getGridColumn($cols1);
 
 		//view detail
@@ -258,7 +263,7 @@ class SiteController extends Controller
 		$replace = $model->publish == 1 ? 0 : 1;
 		$model->publish = $replace;
 
-		if($model->save(false, ['publish','modified_id'])) {
+        if ($model->save(false, ['publish', 'modified_id'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Articles success updated.'));
 			return $this->redirect(['manage']);
 		}
@@ -270,7 +275,7 @@ class SiteController extends Controller
 		$file = ArticleFilesModel::findOne($id);
 		$file_filename = $file->file_filename;
 		$root = Yii::getAlias('@webroot').'/public/article/file/'.$file_filename;
-		if (file_exists($root)) {
+        if (file_exists($root)) {
 			$download = new ArticleDownloads();
 			$fileDownload = $download->insertDownload($file->file_id);
 			return Yii::$app->response->sendFile($root);
@@ -288,8 +293,9 @@ class SiteController extends Controller
 	 */
 	protected function findModel($id)
 	{
-		if(($model = Articles::findOne($id)) !== null)
-			return $model;
+        if (($model = Articles::findOne($id)) !== null) {
+            return $model;
+        }
 
 		throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 	}

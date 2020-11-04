@@ -70,7 +70,8 @@ echo $form->field($model, 'media_filename', ['template' => '{label}{beginWrapper
 	->checkbox()
 	->label($model->getAttributeLabel('cover')); ?>
 
-<?php if($model->isNewRecord) {
+<?php 
+if ($model->isNewRecord) {
 	echo $form->field($model, 'redirectUpdate')
 		->checkbox()
 		->label($model->getAttributeLabel('redirectUpdate'));

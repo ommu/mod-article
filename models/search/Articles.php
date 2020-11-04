@@ -61,10 +61,11 @@ class Articles extends ArticlesModel
 	 */
 	public function search($params, $column=null)
 	{
-		if(!($column && is_array($column)))
-			$query = ArticlesModel::find()->alias('t');
-		else
-			$query = ArticlesModel::find()->alias('t')->select($column);
+        if (!($column && is_array($column))) {
+            $query = ArticlesModel::find()->alias('t');
+        } else {
+            $query = ArticlesModel::find()->alias('t')->select($column);
+        }
 		$query->joinWith([
 			'category.title category', 
 			'creation creation', 
@@ -80,8 +81,9 @@ class Articles extends ArticlesModel
 			'query' => $query,
 		];
 		// disable pagination agar data pada api tampil semua
-		if(isset($params['pagination']) && $params['pagination'] == 0)
-			$dataParams['pagination'] = false;
+        if (isset($params['pagination']) && $params['pagination'] == 0) {
+            $dataParams['pagination'] = false;
+        }
 		$dataProvider = new ActiveDataProvider($dataParams);
 
 		$attributes = array_keys($this->getTableSchema()->columns);
@@ -126,11 +128,12 @@ class Articles extends ArticlesModel
 			'defaultOrder' => ['id' => SORT_DESC],
 		]);
 
-		if(Yii::$app->request->get('id'))
-			unset($params['id']);
+        if (Yii::$app->request->get('id')) {
+            unset($params['id']);
+        }
 		$this->load($params);
 
-		if(!$this->validate()) {
+        if (!$this->validate()) {
 			// uncomment the following line if you do not want to return any records when validation fails
 			// $query->where('0=1');
 			return $dataProvider;
@@ -150,25 +153,28 @@ class Articles extends ArticlesModel
 			'cast(t.updated_date as date)' => $this->updated_date,
 		]);
 
-		if(isset($params['status'])) {
+        if (isset($params['status'])) {
 			$query->andFilterCompare('t.publish', 1);
-			if($params['status'] == 'publish')
-				$query->andFilterWhere(['<=', 'cast(published_date as date)', Yii::$app->formatter->asDate('now', 'php:Y-m-d')]);
-			else if($params['status'] == 'pending')
-				$query->andFilterWhere(['>', 'cast(published_date as date)', Yii::$app->formatter->asDate('now', 'php:Y-m-d')]);
+            if ($params['status'] == 'publish') {
+                $query->andFilterWhere(['<=', 'cast(published_date as date)', Yii::$app->formatter->asDate('now', 'php:Y-m-d')]);
+            } else if ($params['status'] == 'pending') {
+                $query->andFilterWhere(['>', 'cast(published_date as date)', Yii::$app->formatter->asDate('now', 'php:Y-m-d')]);
+            }
 		} else {
-			if(isset($params['trash']))
-				$query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
-			else {
-				if(!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == ''))
-					$query->andFilterWhere(['IN', 't.publish', [0,1]]);
-				else
-					$query->andFilterWhere(['t.publish' => $this->publish]);
+            if (isset($params['trash'])) {
+                $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
+            } else {
+                if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
+                    $query->andFilterWhere(['IN', 't.publish', [0,1]]);
+                } else {
+                    $query->andFilterWhere(['t.publish' => $this->publish]);
+                }
 			}
 		}
 
-		if(isset($params['tagId']) && $params['tagId'])
-			$query->andFilterWhere(['tags.tag_id' => $params['tagId']]);
+        if (isset($params['tagId']) && $params['tagId']) {
+            $query->andFilterWhere(['tags.tag_id' => $params['tagId']]);
+        }
 
 		$query->andFilterWhere(['like', 't.title', $this->title])
 			->andFilterWhere(['like', 't.body', $this->body])

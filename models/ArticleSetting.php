@@ -130,11 +130,13 @@ class ArticleSetting extends \app\components\ActiveRecord
 	{
 		parent::init();
 
-		if(!(Yii::$app instanceof \app\components\Application))
-			return;
+        if (!(Yii::$app instanceof \app\components\Application)) {
+            return;
+        }
 
-		if(!$this->hasMethod('search'))
-			return;
+        if (!$this->hasMethod('search')) {
+            return;
+        }
 
 		$this->templateColumns['_no'] = [
 			'header' => '#',
@@ -252,14 +254,15 @@ class ArticleSetting extends \app\components\ActiveRecord
 	 */
 	public static function getInfo($column=null)
 	{
-		if($column != null) {
-			$model = self::find();
-			if(is_array($column))
-				$model->select($column);
-			else
-				$model->select([$column]);
-			$model = $model->where(['id' => 1])->one();
-			return is_array($column) ? $model : $model->$column;
+        if ($column != null) {
+            $model = self::find();
+            if (is_array($column)) {
+                $model->select($column);
+            } else {
+                $model->select([$column]);
+            }
+            $model = $model->where(['id' => 1])->one();
+            return is_array($column) ? $model : $model->$column;
 			
 		} else {
 			$model = self::findOne(1);
@@ -274,18 +277,20 @@ class ArticleSetting extends \app\components\ActiveRecord
 	{
 		$moduleName = "module name";
 		$module = strtolower(Yii::$app->controller->module->id);
-		if(($module = Yii::$app->moduleManager->getModule($module)) != null);
-			$moduleName = strtolower($module->getName());
+        if (($module = Yii::$app->moduleManager->getModule($module)) != null) {
+            $moduleName = strtolower($module->getName());
+        }
 
 		$items = array(
 			1 => Yii::t('app', 'Yes, the public can view {module} unless they are made private.', ['module'=>$moduleName]),
 			0 => Yii::t('app', 'No, the public cannot view {module}.', ['module'=>$moduleName]),
 		);
 
-		if($value !== null)
-			return $items[$value];
-		else
-			return $items;
+        if ($value !== null) {
+            return $items[$value];
+        } else {
+            return $items;
+        }
 	}
 
 	/**
@@ -298,10 +303,11 @@ class ArticleSetting extends \app\components\ActiveRecord
 			0 => Yii::t('app', 'Disable'),
 		);
 
-		if($value !== null)
-			return $items[$value];
-		else
-			return $items;
+        if ($value !== null) {
+            return $items[$value];
+        } else {
+            return $items;
+        }
 	}
 
 	/**
@@ -314,10 +320,11 @@ class ArticleSetting extends \app\components\ActiveRecord
 			0 => Yii::t('app', 'No, not resize photo after upload.'),
 		);
 
-		if($value !== null)
-			return $items[$value];
-		else
-			return $items;
+        if ($value !== null) {
+            return $items[$value];
+        } else {
+            return $items;
+        }
 	}
 
 	/**
@@ -325,8 +332,9 @@ class ArticleSetting extends \app\components\ActiveRecord
 	 */
 	public function getSize($size)
 	{
-		if(empty($size))
-			return '-';
+        if (empty($size)) {
+            return '-';
+        }
 
 		$width = $size['width'] ? $size['width'] : '~';
 		$height = $size['height'] ? $size['height'] : '~';
@@ -339,8 +347,9 @@ class ArticleSetting extends \app\components\ActiveRecord
 	 */
 	public function parseImageViewSize($view_size)
 	{
-		if(empty($view_size))
-			return '-';
+        if (empty($view_size)) {
+            return '-';
+        }
 
 		$views = [];
 		foreach ($view_size as $key => $value) {
@@ -369,11 +378,13 @@ class ArticleSetting extends \app\components\ActiveRecord
 		$this->media_image_resize_size = unserialize($this->media_image_resize_size);
 		$this->media_image_view_size = unserialize($this->media_image_view_size);
 		$media_image_type = unserialize($this->media_image_type);
-		if(!empty($media_image_type))
-			$this->media_image_type = $this->formatFileType($media_image_type, false);
+        if (!empty($media_image_type)) {
+            $this->media_image_type = $this->formatFileType($media_image_type, false);
+        }
 		$media_file_type = unserialize($this->media_file_type);
-		if(!empty($media_file_type))
-			$this->media_file_type = $this->formatFileType($media_file_type, false);
+        if (!empty($media_file_type)) {
+            $this->media_file_type = $this->formatFileType($media_file_type, false);
+        }
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
 	}
 
@@ -382,19 +393,22 @@ class ArticleSetting extends \app\components\ActiveRecord
 	 */
 	public function beforeValidate()
 	{
-		if(parent::beforeValidate()) {
-			if(!$this->isNewRecord) {
-				if($this->modified_id == null)
-					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			}
+        if (parent::beforeValidate()) {
+            if (!$this->isNewRecord) {
+                if ($this->modified_id == null) {
+                    $this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            }
 
-			if($this->media_image_resize_size['width'] == '')
-				$this->addError('media_image_resize_size', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('media_image_resize_size')]));
+            if ($this->media_image_resize_size['width'] == '') {
+                $this->addError('media_image_resize_size', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('media_image_resize_size')]));
+            }
 
-			if($this->media_image_view_size['small']['width'] == '' || $this->media_image_view_size['medium']['width'] == '' || $this->media_image_view_size['large']['width'] == '')
-				$this->addError('media_image_view_size', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('media_image_view_size')]));
-		}
-		return true;
+            if ($this->media_image_view_size['small']['width'] == '' || $this->media_image_view_size['medium']['width'] == '' || $this->media_image_view_size['large']['width'] == '') {
+                $this->addError('media_image_view_size', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('media_image_view_size')]));
+            }
+        }
+        return true;
 	}
 
 	/**
@@ -402,13 +416,13 @@ class ArticleSetting extends \app\components\ActiveRecord
 	 */
 	public function beforeSave($insert)
 	{
-		if(parent::beforeSave($insert)) {
+        if (parent::beforeSave($insert)) {
 			$this->headline_category = serialize($this->headline_category);
 			$this->media_image_resize_size = serialize($this->media_image_resize_size);
 			$this->media_image_view_size = serialize($this->media_image_view_size);
 			$this->media_image_type = serialize($this->formatFileType($this->media_image_type));
 			$this->media_file_type = serialize($this->formatFileType($this->media_file_type));
-		}
-		return true;
+        }
+        return true;
 	}
 }

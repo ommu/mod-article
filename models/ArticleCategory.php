@@ -119,12 +119,13 @@ class ArticleCategory extends \app\components\ActiveRecord
 	public function getArticlesByStatus($cat_id, $type='published')
 	{
 		$model = Articles::find()
-			->alias('t')
-			->where(['t.cat_id' => $cat_id]);
-		if($type == 'published')
-			$model->published();
-		elseif($type == 'pending')
-			$model->pending();
+            ->alias('t')
+            ->where(['t.cat_id' => $cat_id]);
+        if ($type == 'published') {
+            $model->published();
+        } else if ($type == 'pending') {
+            $model->pending();
+        }
 		$articles = $model->count();
 
 		return $articles ? $articles : 0;
@@ -135,23 +136,26 @@ class ArticleCategory extends \app\components\ActiveRecord
 	 */
 	public function getArticles($count=false, $publish=null)
 	{
-		if($count == false)
-			return $this->hasMany(Articles::className(), ['cat_id' => 'id'])
-				->alias('articles')
-				->andOnCondition([sprintf('%s.publish', 'articles') => $publish]);
+        if ($count == false) {
+            return $this->hasMany(Articles::className(), ['cat_id' => 'id'])
+                ->alias('articles')
+                ->andOnCondition([sprintf('%s.publish', 'articles') => $publish]);
+        }
 
-		if($publish === null)
-			return self::getArticlesByStatus($this->id, 'published');
+        if ($publish === null) {
+            return self::getArticlesByStatus($this->id, 'published');
+        }
 
 		$model = Articles::find()
-			->alias('t')
-			->where(['t.cat_id' => $this->id]);
-		if($publish == 0)
-			$model->unpublish();
-		elseif($publish == 1)
-			$model->published();
-		elseif($publish == 2)
-			$model->deleted();
+            ->alias('t')
+            ->where(['t.cat_id' => $this->id]);
+        if ($publish == 0) {
+            $model->unpublish();
+        } else if ($publish == 1) {
+            $model->published();
+        } else if ($publish == 2) {
+            $model->deleted();
+        }
 		$articles = $model->count();
 
 		return $articles ? $articles : 0;
@@ -162,8 +166,9 @@ class ArticleCategory extends \app\components\ActiveRecord
 	 */
 	public function getPending($count=false)
 	{
-		if($count == false)
-			return $this->hasMany(Articles::className(), ['cat_id' => 'id']);
+        if ($count == false) {
+            return $this->hasMany(Articles::className(), ['cat_id' => 'id']);
+        }
 
 		return self::getArticlesByStatus($this->id, 'pending');
 	}
@@ -224,11 +229,13 @@ class ArticleCategory extends \app\components\ActiveRecord
 	{
 		parent::init();
 
-		if(!(Yii::$app instanceof \app\components\Application))
-			return;
+        if (!(Yii::$app instanceof \app\components\Application)) {
+            return;
+        }
 
-		if(!$this->hasMethod('search'))
-			return;
+        if (!$this->hasMethod('search')) {
+            return;
+        }
 
 		$this->templateColumns['_no'] = [
 			'header' => '#',
@@ -355,38 +362,42 @@ class ArticleCategory extends \app\components\ActiveRecord
 	 */
 	public static function getInfo($id, $column=null)
 	{
-		if($column != null) {
-			$model = self::find();
-			if(is_array($column))
-				$model->select($column);
-			else
-				$model->select([$column]);
-			$model = $model->where(['id' => $id])->one();
-			return is_array($column) ? $model : $model->$column;
-			
-		} else {
-			$model = self::findOne($id);
-			return $model;
-		}
+        if ($column != null) {
+            $model = self::find();
+            if (is_array($column)) {
+                $model->select($column);
+            } else {
+                $model->select([$column]);
+            }
+            $model = $model->where(['id' => $id])->one();
+            return is_array($column) ? $model : $model->$column;
+
+        } else {
+            $model = self::findOne($id);
+            return $model;
+        }
 	}
 
 	/**
 	 * function getCategory
 	 */
-	public static function getCategory($publish=null, $parent=null, $array=true) 
+	public static function getCategory($publish=null, $parent=null, $array=true)
 	{
 		$model = self::find()->alias('t')
 			->select(['t.id', 't.name']);
 		$model->leftJoin(sprintf('%s title', SourceMessage::tableName()), 't.name=title.id');
-		if($publish != null)
-			$model->andWhere(['t.publish' => $publish]);
-		if($parent != null)
-			$model->andWhere(['t.parent_id' => $parent]);
+        if ($publish != null) {
+            $model->andWhere(['t.publish' => $publish]);
+        }
+        if ($parent != null) {
+            $model->andWhere(['t.parent_id' => $parent]);
+        }
 
 		$model = $model->orderBy('title.message ASC')->all();
 
-		if($array == true)
-			return \yii\helpers\ArrayHelper::map($model, 'id', 'name_i');
+        if ($array == true) {
+            return \yii\helpers\ArrayHelper::map($model, 'id', 'name_i');
+        }
 
 		return $model;
 	}
@@ -409,16 +420,18 @@ class ArticleCategory extends \app\components\ActiveRecord
 	 */
 	public function beforeValidate()
 	{
-		if(parent::beforeValidate()) {
-			if($this->isNewRecord) {
-				if($this->creation_id == null)
-					$this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			} else {
-				if($this->modified_id == null)
-					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			}
-		}
-		return true;
+        if (parent::beforeValidate()) {
+            if ($this->isNewRecord) {
+                if ($this->creation_id == null) {
+                    $this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            } else {
+                if ($this->modified_id == null) {
+                    $this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            }
+        }
+        return true;
 	}
 
 	/**
@@ -426,40 +439,41 @@ class ArticleCategory extends \app\components\ActiveRecord
 	 */
 	public function beforeSave($insert)
 	{
-		$module = strtolower(Yii::$app->controller->module->id);
-		$controller = strtolower(Yii::$app->controller->id);
-		$action = strtolower(Yii::$app->controller->action->id);
+        $module = strtolower(Yii::$app->controller->module->id);
+        $controller = strtolower(Yii::$app->controller->id);
+        $action = strtolower(Yii::$app->controller->action->id);
 
-		$location = Inflector::slug($module.' '.$controller);
+        $location = Inflector::slug($module.' '.$controller);
 
-		if(parent::beforeSave($insert)) {
-			if($insert || (!$insert && !$this->name)) {
-				$name = new SourceMessage();
-				$name->location = $location.'_title';
-				$name->message = $this->name_i;
-				if($name->save())
-					$this->name = $name->id;
+        if (parent::beforeSave($insert)) {
+            if ($insert || (!$insert && !$this->name)) {
+                $name = new SourceMessage();
+                $name->location = $location.'_title';
+                $name->message = $this->name_i;
+                if ($name->save()) {
+                    $this->name = $name->id;
+                }
 
-			} else {
-				$name = SourceMessage::findOne($this->name);
-				$name->message = $this->name_i;
-				$name->save();
-			}
+            } else {
+                $name = SourceMessage::findOne($this->name);
+                $name->message = $this->name_i;
+                $name->save();
+            }
 
-			if($insert || (!$insert && !$this->desc)) {
-				$desc = new SourceMessage();
-				$desc->location = $location.'_description';
-				$desc->message = $this->desc_i;
-				if($desc->save())
-					$this->desc = $desc->id;
+            if ($insert || (!$insert && !$this->desc)) {
+                $desc = new SourceMessage();
+                $desc->location = $location.'_description';
+                $desc->message = $this->desc_i;
+                if ($desc->save()) {
+                    $this->desc = $desc->id;
+                }
 
-			} else {
-				$desc = SourceMessage::findOne($this->desc);
-				$desc->message = $this->desc_i;
-				$desc->save();
-			}
-
-		}
-		return true;
+            } else {
+                $desc = SourceMessage::findOne($this->desc);
+                $desc->message = $this->desc_i;
+                $desc->save();
+            }
+        }
+        return true;
 	}
 }

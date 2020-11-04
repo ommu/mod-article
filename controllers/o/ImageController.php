@@ -50,9 +50,12 @@ class ImageController extends Controller
 	 */
 	public function init()
 	{
-		parent::init();
-		if(Yii::$app->request->get('id') || Yii::$app->request->get('article'))
-			$this->subMenu = $this->module->params['article_submenu'];
+        parent::init();
+
+        if (Yii::$app->request->get('id') || Yii::$app->request->get('article')) {
+            $this->subMenu = $this->module->params['article_submenu'];
+        }
+            
 	}
 
 	/**
@@ -88,27 +91,30 @@ class ImageController extends Controller
 	 */
 	public function actionManage()
 	{
-		$searchModel = new ArticleMediaSearch();
-		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel = new ArticleMediaSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-		$gridColumn = Yii::$app->request->get('GridColumn', null);
-		$cols = [];
-		if($gridColumn != null && count($gridColumn) > 0) {
-			foreach($gridColumn as $key => $val) {
-				if($gridColumn[$key] == 1)
-					$cols[] = $key;
-			}
-		}
-		$columns = $searchModel->getGridColumn($cols);
+        $gridColumn = Yii::$app->request->get('GridColumn', null);
+        $cols = [];
+        if ($gridColumn != null && count($gridColumn) > 0) {
+            foreach ($gridColumn as $key => $val) {
+                if ($gridColumn[$key] == 1) {
+                    $cols[] = $key;
+                }
+            }
+        }
+        $columns = $searchModel->getGridColumn($cols);
 
-		if(($article = Yii::$app->request->get('article')) != null) {
+        if (($article = Yii::$app->request->get('article')) != null) {
 			$this->subMenuParam = $article;
 			$article = \ommu\article\models\Articles::findOne($article);
 			$setting = $article->getSetting(['media_image_limit', 'media_file_limit']);
-			if($article->category->single_photo || $setting->media_image_limit == 1)
-				unset($this->subMenu['photo']);
-			if($article->category->single_file || $setting->media_file_limit == 1)
-				unset($this->subMenu['document']);
+            if ($article->category->single_photo || $setting->media_image_limit == 1) {
+                unset($this->subMenu['photo']);
+            }
+            if ($article->category->single_file || $setting->media_file_limit == 1) {
+                unset($this->subMenu['document']);
+            }
 		}
 
 		$this->view->title = Yii::t('app', 'Photos');
@@ -129,38 +135,44 @@ class ImageController extends Controller
 	 */
 	public function actionCreate()
 	{
-		if(($id = Yii::$app->request->get('id')) == null)
-			throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
+        if (($id = Yii::$app->request->get('id')) == null) {
+            throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
 
 		$model = new ArticleMedia(['article_id'=>$id]);
 		$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
 
-		if(Yii::$app->request->isPost) {
+        if (Yii::$app->request->isPost) {
 			$postData = Yii::$app->request->post();
 			$model->load($postData);
 			$model->orders = $postData['orders'] ? $postData['orders'] : 0;
 			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
 
-			if($model->save()) {
+            if ($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success created.'));
-				if($model->redirectUpdate)
-					return $this->redirect(['update', 'id'=>$model->id]);
+                if ($model->redirectUpdate) {
+                    return $this->redirect(['update', 'id'=>$model->id]);
+                }
 				return $this->redirect(['manage', 'article'=>$model->article_id]);
 
-			} else {
-				if(Yii::$app->request->isAjax)
-					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+            } else {
+                if (Yii::$app->request->isAjax) {
+                    return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+                }
 			}
 		}
 
-		if($model->article->category->single_photo || $setting->media_image_limit == 1)
-			unset($this->subMenu['photo']);
-		if($model->article->category->single_file || $setting->media_file_limit == 1)
-			unset($this->subMenu['document']);
+        if ($model->article->category->single_photo || $setting->media_image_limit == 1) {
+            unset($this->subMenu['photo']);
+        }
+        if ($model->article->category->single_file || $setting->media_file_limit == 1) {
+            unset($this->subMenu['document']);
+        }
 
 		$this->view->title = Yii::t('app', 'Create Photo');
-		if($id)
-			$this->view->title = Yii::t('app', 'Create Photo Article: {title}', ['title' => $model->article->title]);
+        if ($id) {
+            $this->view->title = Yii::t('app', 'Create Photo Article: {title}', ['title' => $model->article->title]);
+        }
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_create', [
@@ -180,26 +192,29 @@ class ImageController extends Controller
 		$this->subMenuParam = $model->article_id;
 		$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
 
-		if(Yii::$app->request->isPost) {
+        if (Yii::$app->request->isPost) {
 			$postData = Yii::$app->request->post();
 			$model->load($postData);
 			$model->orders = $postData['orders'] ? $postData['orders'] : 0;
 			$model->media_filename = UploadedFile::getInstance($model, 'media_filename');
 
-			if($model->save()) {
+            if ($model->save()) {
 				Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success updated.'));
 				return $this->redirect(['update', 'id'=>$model->id]);
 
-			} else {
-				if(Yii::$app->request->isAjax)
-					return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+            } else {
+                if (Yii::$app->request->isAjax) {
+                    return \yii\helpers\Json::encode(\app\components\widgets\ActiveForm::validate($model));
+                }
 			}
 		}
 
-		if($model->article->category->single_photo || $setting->media_image_limit == 1)
-			unset($this->subMenu['photo']);
-		if($model->article->category->single_file || $setting->media_file_limit == 1)
-			unset($this->subMenu['document']);
+        if ($model->article->category->single_photo || $setting->media_image_limit == 1) {
+            unset($this->subMenu['photo']);
+        }
+        if ($model->article->category->single_file || $setting->media_file_limit == 1) {
+            unset($this->subMenu['document']);
+        }
 
 		$this->view->title = Yii::t('app', 'Update Photo: {media-filename}', ['media-filename' => $model->media_filename]);
 		$this->view->description = '';
@@ -218,14 +233,16 @@ class ImageController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		if(!Yii::$app->request->isAjax) {
+        if (!Yii::$app->request->isAjax) {
 			$this->subMenuParam = $model->article_id;
 			$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
 
-			if($model->article->category->single_photo || $setting->media_image_limit == 1)
+            if ($model->article->category->single_photo || $setting->media_image_limit == 1) {
 				unset($this->subMenu['photo']);
-			if($model->article->category->single_file || $setting->media_file_limit == 1)
+            }
+            if ($model->article->category->single_file || $setting->media_file_limit == 1) {
 				unset($this->subMenu['document']);
+            }
 		}
 
 		$this->view->title = Yii::t('app', 'Detail Photo: {media-filename}', ['media-filename' => $model->media_filename]);
@@ -247,7 +264,7 @@ class ImageController extends Controller
 		$model = $this->findModel($id);
 		$model->publish = 2;
 
-		if($model->save(false, ['publish','modified_id'])) {
+        if ($model->save(false, ['publish', 'modified_id'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success deleted.'));
 			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article'=>$model->article_id]);
 		}
@@ -264,7 +281,7 @@ class ImageController extends Controller
 		$model = $this->findModel($id);
 		$model->cover = 1;
 
-		if($model->save(false, ['cover','modified_id'])) {
+        if ($model->save(false, ['cover', 'modified_id'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success updated.'));
 			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article'=>$model->article_id]);
 		}
@@ -279,8 +296,9 @@ class ImageController extends Controller
 	 */
 	protected function findModel($id)
 	{
-		if(($model = ArticleMedia::findOne($id)) !== null)
-			return $model;
+        if (($model = ArticleMedia::findOne($id)) !== null) {
+            return $model;
+        }
 
 		throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 	}
@@ -292,38 +310,42 @@ class ImageController extends Controller
 	{
 		// Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-		if(($id = Yii::$app->request->get('id')) == null)
+        if (($id = Yii::$app->request->get('id')) == null) {
 			throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
+        }
 
 		$model = new ArticleMedia(['article_id'=>$id]);
 		$setting = $model->article->getSetting(['media_image_limit', 'media_image_resize', 'media_image_resize_size', 'media_image_type']);
 
 		$uploadPath = join('/', [Articles::getUploadPath(), $id]);
 
-		if(Yii::$app->request->isPost) {
+        if (Yii::$app->request->isPost) {
 			$imageFilename = UploadedFile::getInstanceByName('media_filename');
-			if ($imageFilename->getHasError())
+            if ($imageFilename->getHasError()) {
 				throw new HttpException(500, Yii::t('app', 'Upload error'));
+            }
 
-			if(($model->article->category->single_photo && !empty($model->article->medias)) || (!$model->article->category->single_photo && count($model->article->medias) >= $setting->media_image_limit))
+            if (($model->article->category->single_photo && !empty($model->article->medias)) || (!$model->article->category->single_photo && count($model->article->medias) >= $setting->media_image_limit)) {
 				throw new HttpException(500, Yii::t('app', 'Photo limited uploaded'));
+            }
 
 			$imageFileType = $this->formatFileType($setting->media_image_type);
-			if(!in_array(strtolower($imageFilename->getExtension()), $imageFileType)) {
+            if (!in_array(strtolower($imageFilename->getExtension()), $imageFileType)) {
 				throw new HttpException(500, Yii::t('app', 'This photo cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
 					'extensions'=>$this->formatFileType($imageFileType, false),
 				]));
 			}
 
 			$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($imageFilename->getExtension());
-			if($imageFilename->saveAs(join('/', [$uploadPath, $fileName]))) {
+            if ($imageFilename->saveAs(join('/', [$uploadPath, $fileName]))) {
 				$imageResize = $setting->media_image_resize_size;
-				if($setting->media_image_resize)
+                if ($setting->media_image_resize) {
 					$this->resizeImage(join('/', [$uploadPath, $fileName]), $imageResize['width'], $imageResize['height']);
+                }
 				$model->media_filename = $fileName;
 			}
 
-			if($model->save()) {
+            if ($model->save()) {
 				$response = [
 					'filename' => $fileName,
 				];
@@ -331,8 +353,9 @@ class ImageController extends Controller
 				return Json::encode($response);
 
 			} else {
-				if(Yii::$app->request->isAjax)
+                if (Yii::$app->request->isAjax) {
 					return Json::encode(\app\components\widgets\ActiveForm::validate($model));
+                }
 			}
 		}
 	}

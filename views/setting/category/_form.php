@@ -57,8 +57,10 @@ echo $form->field($model,'parent_id')
 	->checkbox()
 	->label($model->getAttributeLabel('single_file')); ?>
 
-<?php if($model->isNewRecord && !$model->getErrors())
-	$model->publish = 1;
+<?php 
+if ($model->isNewRecord && !$model->getErrors()) {
+    $model->publish = 1;
+}
 echo $form->field($model, 'publish')
 	->checkbox()
 	->label($model->getAttributeLabel('publish')); ?>

@@ -18,14 +18,14 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
 
-if(!$small) {
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Downloads'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $model->file->file_filename;
+if (!$small) {
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Downloads'), 'url' => ['index']];
+    $this->params['breadcrumbs'][] = $model->file->file_filename;
 
-$this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
-	['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
-];
+    $this->params['menu']['content'] = [
+        ['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
+        ['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
+    ];
 } ?>
 
 <div class="article-downloads-view">
@@ -41,8 +41,9 @@ $attributes = [
 		'attribute' => 'articleTitle',
 		'value' => function ($model) {
 			$articleTitle = isset($model->file->article) ? $model->file->article->title : '-';
-			if($articleTitle != '-')
-				return Html::a($articleTitle, ['admin/view', 'id'=>$model->file->article_id], ['title'=>$articleTitle, 'class'=>'modal-btn']);
+            if ($articleTitle != '-') {
+                return Html::a($articleTitle, ['admin/view', 'id'=>$model->file->article_id], ['title'=>$articleTitle, 'class'=>'modal-btn']);
+            }
 			return $articleTitle;
 		},
 		'format' => 'html',
@@ -51,8 +52,9 @@ $attributes = [
 		'attribute' => 'fileFilename',
 		'value' => function ($model) {
 			$fileFilename = isset($model->file) ? $model->file->file_filename : '-';
-			if($fileFilename != '-')
-				return Html::a($fileFilename, ['o/file/view', 'id'=>$model->file_id], ['title'=>$fileFilename, 'class'=>'modal-btn']);
+            if ($fileFilename != '-') {
+                return Html::a($fileFilename, ['o/file/view', 'id'=>$model->file_id], ['title'=>$fileFilename, 'class'=>'modal-btn']);
+            }
 			return $fileFilename;
 		},
 		'format' => 'html',

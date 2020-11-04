@@ -90,12 +90,13 @@ class ArticleLikes extends \app\components\ActiveRecord
 	 */
 	public function getHistories($count=false)
 	{
-		if($count == false)
-			return $this->hasMany(ArticleLikeHistory::className(), ['like_id' => 'id']);
+        if ($count == false) {
+            return $this->hasMany(ArticleLikeHistory::className(), ['like_id' => 'id']);
+        }
 
 		$model = ArticleLikeHistory::find()
-			->alias('t')
-			->where(['t.like_id' => $this->id]);
+            ->alias('t')
+            ->where(['t.like_id' => $this->id]);
 		$histories = $model->count();
 
 		return $histories ? $histories : 0;
@@ -133,11 +134,13 @@ class ArticleLikes extends \app\components\ActiveRecord
 	{
 		parent::init();
 
-		if(!(Yii::$app instanceof \app\components\Application))
-			return;
+        if (!(Yii::$app instanceof \app\components\Application)) {
+            return;
+        }
 
-		if(!$this->hasMethod('search'))
-			return;
+        if (!$this->hasMethod('search')) {
+            return;
+        }
 
 		$this->templateColumns['_no'] = [
 			'header' => '#',
@@ -208,19 +211,20 @@ class ArticleLikes extends \app\components\ActiveRecord
 	 */
 	public static function getInfo($id, $column=null)
 	{
-		if($column != null) {
-			$model = self::find();
-			if(is_array($column))
-				$model->select($column);
-			else
-				$model->select([$column]);
-			$model = $model->where(['id' => $id])->one();
-			return is_array($column) ? $model : $model->$column;
-			
-		} else {
-			$model = self::findOne($id);
-			return $model;
-		}
+        if ($column != null) {
+            $model = self::find();
+            if (is_array($column)) {
+                $model->select($column);
+            } else {
+                $model->select([$column]);
+            }
+            $model = $model->where(['id' => $id])->one();
+            return is_array($column) ? $model : $model->$column;
+
+        } else {
+            $model = self::findOne($id);
+            return $model;
+        }
 	}
 
 	/**
@@ -229,20 +233,22 @@ class ArticleLikes extends \app\components\ActiveRecord
 
 	public function insertLike($article_id, $user_id=null)
 	{
-		if($user_id == null)
-			$user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+        if ($user_id == null) {
+            $user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+        }
 
 		$findLike = self::find()
 			->select(['id'])
 			->where(['publish' => 1])
 			->andWhere(['article_id' => $article_id]);
-		if($user_id != null)
-			$findLike->andWhere(['user_id' => $user_id]);
-		else
-			$findLike->andWhere(['is', 'user_id', null]);
+        if ($user_id != null) {
+            $findLike->andWhere(['user_id' => $user_id]);
+        } else {
+            $findLike->andWhere(['is', 'user_id', null]);
+        }
 		$findLike = $findLike->one();
 
-		if($findLike === null) {
+        if ($findLike === null) {
 			$like = new ArticleLikes();
 			$like->article_id = $article_id;
 			$like->user_id = $user_id;
@@ -266,13 +272,14 @@ class ArticleLikes extends \app\components\ActiveRecord
 	 */
 	public function beforeValidate()
 	{
-		if(parent::beforeValidate()) {
-			if($this->isNewRecord) {
-				if($this->user_id == null)
-					$this->user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			}
-			$this->likes_ip = $_SERVER['REMOTE_ADDR'];
-		}
-		return true;
+        if (parent::beforeValidate()) {
+            if ($this->isNewRecord) {
+                if ($this->user_id == null) {
+                    $this->user_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            }
+            $this->likes_ip = $_SERVER['REMOTE_ADDR'];
+        }
+        return true;
 	}
 }

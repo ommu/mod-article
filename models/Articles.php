@@ -137,20 +137,22 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function getFiles($count=false, $publish=1)
 	{
-		if($count == false)
-			return $this->hasMany(ArticleFiles::className(), ['article_id' => 'id'])
-				->alias('files')
-				->andOnCondition([sprintf('%s.publish', 'files') => $publish]);
+        if ($count == false) {
+            return $this->hasMany(ArticleFiles::className(), ['article_id' => 'id'])
+                ->alias('files')
+                ->andOnCondition([sprintf('%s.publish', 'files') => $publish]);
+        }
 
 		$model = ArticleFiles::find()
-			->alias('t')
-			->where(['t.article_id' => $this->id]);
-		if($publish == 0)
-			$model->unpublish();
-		elseif($publish == 1)
-			$model->published();
-		elseif($publish == 2)
-			$model->deleted();
+            ->alias('t')
+            ->where(['t.article_id' => $this->id]);
+        if ($publish == 0) {
+            $model->unpublish();
+        } else if ($publish == 1) {
+            $model->published();
+        } else if ($publish == 2) {
+            $model->deleted();
+        }
 		$files = $model->count();
 
 		return $files ? $files : 0;
@@ -161,20 +163,22 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function getLikes($count=false, $publish=1)
 	{
-		if($count == false)
-			return $this->hasMany(ArticleLikes::className(), ['article_id' => 'id'])
-				->alias('likes')
-				->andOnCondition([sprintf('%s.publish', 'likes') => $publish]);
+        if ($count == false) {
+            return $this->hasMany(ArticleLikes::className(), ['article_id' => 'id'])
+                ->alias('likes')
+                ->andOnCondition([sprintf('%s.publish', 'likes') => $publish]);
+        }
 
 		$model = ArticleLikes::find()
-			->alias('t')
-			->where(['t.article_id' => $this->id]);
-		if($publish == 0)
-			$model->unpublish();
-		elseif($publish == 1)
-			$model->published();
-		elseif($publish == 2)
-			$model->deleted();
+            ->alias('t')
+            ->where(['t.article_id' => $this->id]);
+        if ($publish == 0) {
+            $model->unpublish();
+        } else if ($publish == 1) {
+            $model->published();
+        } else if ($publish == 2) {
+            $model->deleted();
+        }
 		$likes = $model->count();
 
 		return $likes ? $likes : 0;
@@ -186,26 +190,29 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function getMedias($type='relation', $publish=1)
 	{
-		if($type == 'relation')
-			return $this->hasMany(ArticleMedia::className(), ['article_id' => 'id'])
-				->alias('medias')
-				->andOnCondition([sprintf('%s.publish', 'medias') => 1]);
+        if ($type == 'relation') {
+            return $this->hasMany(ArticleMedia::className(), ['article_id' => 'id'])
+                ->alias('medias')
+                ->andOnCondition([sprintf('%s.publish', 'medias') => 1]);
+        }
 
-		if($type == 'cover')
+        if ($type == 'cover') {
 			return $this->hasMany(ArticleMedia::className(), ['article_id' => 'id'])
-				->alias('medias')
-				->andOnCondition([sprintf('%s.publish', 'medias') => 1])
-				->andOnCondition([sprintf('%s.cover', 'medias') => 1]);
+                ->alias('medias')
+                ->andOnCondition([sprintf('%s.publish', 'medias') => 1])
+                ->andOnCondition([sprintf('%s.cover', 'medias') => 1]);
+        }
 
 		$model = ArticleMedia::find()
-			->alias('t')
-			->where(['t.article_id' => $this->id]);
-		if($publish == 0)
-			$model->unpublish();
-		elseif($publish == 1)
-			$model->published();
-		elseif($publish == 2)
-			$model->deleted();
+            ->alias('t')
+            ->where(['t.article_id' => $this->id]);
+        if ($publish == 0) {
+            $model->unpublish();
+        } else if ($publish == 1) {
+            $model->published();
+        } else if ($publish == 2) {
+            $model->deleted();
+        }
 		$media = $model->count();
 
 		return $media ? $media : 0;
@@ -216,8 +223,9 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function getTags($result=false, $val='id')
 	{
-		if($result == true)
-			return \yii\helpers\ArrayHelper::map($this->tags, 'tag_id', $val=='id' ? 'id' : 'tag.body');
+        if ($result == true) {
+            return \yii\helpers\ArrayHelper::map($this->tags, 'tag_id', $val=='id' ? 'id' : 'tag.body');
+        }
 
 		return $this->hasMany(ArticleTag::className(), ['article_id' => 'id']);
 	}
@@ -227,20 +235,22 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function getViews($count=false, $publish=1)
 	{
-		if($count == false)
-			return $this->hasMany(ArticleViews::className(), ['article_id' => 'id'])
-				->alias('views')
-				->andOnCondition([sprintf('%s.publish', 'views') => $publish]);
+        if ($count == false) {
+            return $this->hasMany(ArticleViews::className(), ['article_id' => 'id'])
+                ->alias('views')
+                ->andOnCondition([sprintf('%s.publish', 'views') => $publish]);
+        }
 
 		$model = ArticleViews::find()
-			->alias('t')
-			->where(['t.article_id' => $this->id]);
-		if($publish == 0)
-			$model->unpublish();
-		elseif($publish == 1)
-			$model->published();
-		elseif($publish == 2)
-			$model->deleted();
+            ->alias('t')
+            ->where(['t.article_id' => $this->id]);
+        if ($publish == 0) {
+            $model->unpublish();
+        } else if ($publish == 1) {
+            $model->published();
+        } else if ($publish == 2) {
+            $model->deleted();
+        }
 		$views = $model->sum('views');
 
 		return $views ? $views : 0;
@@ -322,11 +332,13 @@ class Articles extends \app\components\ActiveRecord
 	{
 		parent::init();
 
-		if(!(Yii::$app instanceof \app\components\Application))
-			return;
+        if (!(Yii::$app instanceof \app\components\Application)) {
+            return;
+        }
 
-		if(!$this->hasMethod('search'))
-			return;
+        if (!$this->hasMethod('search')) {
+            return;
+        }
 
 		$this->templateColumns['_no'] = [
 			'header' => '#',
@@ -452,23 +464,24 @@ class Articles extends \app\components\ActiveRecord
 			'contentOptions' => ['class'=>'text-center'],
 			'format' => 'raw',
 		];
-		if(ArticleSetting::getInfo('headline')) {
-			$this->templateColumns['headline'] = [
-				'attribute' => 'headline',
-				'value' => function($model, $key, $index, $column) {
-					$setting = $model->getSetting(['headline_category']);
-					if(!is_array(($headlineCategory = $setting->headline_category)))
-						$headlineCategory = [];
-					if(!in_array($model->cat_id, $headlineCategory))
-						return '-';
-					$url = Url::to(['headline', 'id'=>$model->primaryKey]);
-					return $this->quickAction($url, $model->headline, 'Yes,No', true);
-				},
-				'filter' => $this->filterYesNo(),
-				'contentOptions' => ['class'=>'text-center'],
-				'format' => 'raw',
-			];
-		}
+        $this->templateColumns['headline'] = [
+            'attribute' => 'headline',
+            'value' => function($model, $key, $index, $column) {
+                $setting = $model->getSetting(['headline_category']);
+                if (!is_array(($headlineCategory = $setting->headline_category))) {
+                    $headlineCategory = [];
+                }
+                if (!in_array($model->cat_id, $headlineCategory)) {
+                    return '-';
+                }
+                $url = Url::to(['headline', 'id'=>$model->primaryKey]);
+                return $this->quickAction($url, $model->headline, 'Yes,No', true);
+            },
+            'filter' => $this->filterYesNo(),
+            'contentOptions' => ['class'=>'text-center'],
+            'format' => 'raw',
+            'visible' => ArticleSetting::getInfo('headline') ? true : false,
+        ];
 		$this->templateColumns['publish'] = [
 			'attribute' => 'publish',
 			'value' => function($model, $key, $index, $column) {
@@ -487,19 +500,20 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public static function getInfo($id, $column=null)
 	{
-		if($column != null) {
-			$model = self::find();
-			if(is_array($column))
-				$model->select($column);
-			else
-				$model->select([$column]);
-			$model = $model->where(['id' => $id])->one();
-			return is_array($column) ? $model : $model->$column;
-			
-		} else {
-			$model = self::findOne($id);
-			return $model;
-		}
+        if ($column != null) {
+            $model = self::find();
+            if (is_array($column)) {
+                $model->select($column);
+            } else {
+                $model->select([$column]);
+            }
+            $model = $model->where(['id' => $id])->one();
+            return is_array($column) ? $model : $model->$column;
+
+        } else {
+            $model = self::findOne($id);
+            return $model;
+        }
 	}
 
 	/**
@@ -507,8 +521,9 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function getSetting($field=[])
 	{
-		if(empty($field))
-			$field = ['headline', 'headline_limit', 'headline_category', 'media_image_limit', 'media_image_resize', 'media_image_resize_size', 'media_image_view_size', 'media_image_type', 'media_file_limit', 'media_file_type'];
+        if (empty($field)) {
+            $field = ['headline', 'headline_limit', 'headline_category', 'media_image_limit', 'media_image_resize', 'media_image_resize_size', 'media_image_view_size', 'media_image_type', 'media_file_limit', 'media_file_type'];
+        }
 
 		$setting = ArticleSetting::find()
 			->select($field)
@@ -522,7 +537,7 @@ class Articles extends \app\components\ActiveRecord
 	 * @param returnAlias set true jika ingin kembaliannya path alias atau false jika ingin string
 	 * relative path. default true.
 	 */
-	public static function getUploadPath($returnAlias=true) 
+	public static function getUploadPath($returnAlias=true)
 	{
 		return ($returnAlias ? Yii::getAlias('@public/article') : 'article');
 	}
@@ -535,10 +550,11 @@ class Articles extends \app\components\ActiveRecord
 		$setting = ArticleSetting::find()
 			->select(['headline_limit', 'headline_category'])
 			->where(['id' => 1])
-			->one();
+            ->one();
 
-		if(!is_array(($headlineCategory = $setting->headline_category)))
-			$headlineCategory = [];
+        if (!is_array(($headlineCategory = $setting->headline_category))) {
+            $headlineCategory = [];
+        }
 
 		$model = self::find()
 			->select(['id'])
@@ -549,12 +565,13 @@ class Articles extends \app\components\ActiveRecord
 			->all();
 		
 		$headline = [];
-		if(!empty($model)) {
-			$i=0;
-			foreach($model as $val) {
+        if (!empty($model)) {
+			$i = 0;
+			foreach ($model as $val) {
 				$i++;
-				if($i <= $setting->headline_limit)
-					$headline[$i] = $val->id;
+                if ($i <= $setting->headline_limit) {
+                    $headline[$i] = $val->id;
+                }
 			}
 		}
 		
@@ -584,23 +601,24 @@ class Articles extends \app\components\ActiveRecord
 	{
 		$setting = $this->getSetting(['media_image_type', 'media_file_type']);
 
-		if(parent::beforeValidate()) {
-			if($this->image instanceof UploadedFile && !$this->image->getHasError()) {
+        if (parent::beforeValidate()) {
+            if ($this->image instanceof UploadedFile && !$this->image->getHasError()) {
 				$imageFileType = $this->formatFileType($setting->media_image_type);
-				if(!in_array(strtolower($this->image->getExtension()), $imageFileType)) {
+                if (!in_array(strtolower($this->image->getExtension()), $imageFileType)) {
 					$this->addError('image', Yii::t('app', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
 						'name'=>$this->image->name,
 						'extensions'=>$setting->media_image_type,
 					]));
-				}
-			} else {
-				if($this->isNewRecord || (!$this->isNewRecord && $this->category->single_photo && $this->old_image == ''))
-					$this->addError('image', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('image')]));
+                }
+            } else {
+                if ($this->isNewRecord || (!$this->isNewRecord && $this->category->single_photo && $this->old_image == '')) {
+                    $this->addError('image', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('image')]));
+                }
 			}
 
-			if($this->file instanceof UploadedFile && !$this->file->getHasError()) {
+            if ($this->file instanceof UploadedFile && !$this->file->getHasError()) {
 				$fileFileType = $this->formatFileType($setting->media_file_type);
-				if(!in_array(strtolower($this->file->getExtension()), $fileFileType)) {
+                if (!in_array(strtolower($this->file->getExtension()), $fileFileType)) {
 					$this->addError('file', Yii::t('app', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
 						'name'=>$this->file->name,
 						'extensions'=>$setting->media_file_type,
@@ -608,18 +626,21 @@ class Articles extends \app\components\ActiveRecord
 				}
 			}
 			
-			if($this->headline && !$this->publish)
-				$this->publish = 1;
+            if ($this->headline && !$this->publish) {
+                $this->publish = 1;
+            }
 
-			if($this->isNewRecord) {
-				if($this->creation_id == null)
-					$this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			} else {
-				if($this->modified_id == null)
-					$this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
-			}
-		}
-		return true;
+            if ($this->isNewRecord) {
+                if ($this->creation_id == null) {
+                    $this->creation_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            } else {
+                if ($this->modified_id == null) {
+                    $this->modified_id = !Yii::$app->user->isGuest ? Yii::$app->user->id : null;
+                }
+            }
+        }
+        return true;
 	}
 
 	/**
@@ -627,21 +648,21 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function beforeSave($insert)
 	{
-		if(parent::beforeSave($insert)) {
-			$this->published_date = Yii::$app->formatter->asDate($this->published_date, 'php:Y-m-d');
-		
-			if(!$insert) {
-				// generate upload path
-				$uploadPath = join('/', [self::getUploadPath(), $this->id]);
-				$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
-				$this->createUploadDirectory(self::getUploadPath(), $this->id);
+        if (parent::beforeSave($insert)) {
+            $this->published_date = Yii::$app->formatter->asDate($this->published_date, 'php:Y-m-d');
+        
+            if (!$insert) {
+                // generate upload path
+                $uploadPath = join('/', [self::getUploadPath(), $this->id]);
+                $verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+                $this->createUploadDirectory(self::getUploadPath(), $this->id);
 
-				// set tags
-				$event = new Event(['sender' => $this]);
-				Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARTICLE, $event);
-			}
-		}
-		return true;
+                // set tags
+                $event = new Event(['sender' => $this]);
+                Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARTICLE, $event);
+            }
+        }
+        return true;
 	}
 		
 
@@ -650,69 +671,73 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function afterSave($insert, $changedAttributes)
 	{
-		$setting = $this->getSetting(['headline', 'headline_limit', 'media_image_resize', 'media_image_resize_size']);
+        $setting = $this->getSetting(['headline', 'headline_limit', 'media_image_resize', 'media_image_resize_size']);
 
-		parent::afterSave($insert, $changedAttributes);
+        parent::afterSave($insert, $changedAttributes);
 
-		// generate upload path
-		$uploadPath = join('/', [self::getUploadPath(), $this->id]);
-		$verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
-		$this->createUploadDirectory(self::getUploadPath(), $this->id);
+        // generate upload path
+        $uploadPath = join('/', [self::getUploadPath(), $this->id]);
+        $verwijderenPath = join('/', [self::getUploadPath(), 'verwijderen']);
+        $this->createUploadDirectory(self::getUploadPath(), $this->id);
 
-		// Reset headline
-		if($setting->headline && array_key_exists('headline', $changedAttributes) && ($changedAttributes['headline'] != $this->headline) && (count($this->headlines) == $setting->headline_limit) && $this->headline == 1)
-			self::updateAll(['headline' => 0], ['NOT IN', 'id', $this->headlines]);
+        // Reset headline
+        if ($setting->headline && array_key_exists('headline', $changedAttributes) && ($changedAttributes['headline'] != $this->headline) && (count($this->headlines) == $setting->headline_limit) && $this->headline == 1) {
+            self::updateAll(['headline' => 0], ['NOT IN', 'id', $this->headlines]);
+        }
 
-		if($insert) {
-			// set tags
-			$event = new Event(['sender' => $this]);
-			Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARTICLE, $event);
-		}
+        if ($insert) {
+            // set tags
+            $event = new Event(['sender' => $this]);
+            Event::trigger(self::className(), self::EVENT_BEFORE_SAVE_ARTICLE, $event);
+        }
 
-		// upload image
-		if($this->image instanceof UploadedFile && !$this->image->getHasError()) {
-			$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->image->getExtension()); 
-			if($this->image->saveAs(join('/', [$uploadPath, $fileName]))) {
-				$medias = $this->medias;
-				if($insert || (!$insert && empty($medias))) {
-					$model = new ArticleMedia();
-					$model->cover = 1;
-					$model->article_id = $this->id;
-					$model->media_filename = $fileName;
-					$model->save();
-				} else {
-					$coverId = $this->getCoverAttribute()['id'];
-					if(ArticleMedia::findOne($coverId)->updateAttributes(['media_filename'=>$fileName])) {
-						$imageResize = $setting->media_image_resize_size;
-						if($setting->media_image_resize)
-							$this->resizeImage(join('/', [$uploadPath, $fileName]), $imageResize['width'], $imageResize['height']);
-					}
-					if($this->old_image != '' && file_exists(join('/', [$uploadPath, $this->old_image])))
-						rename(join('/', [$uploadPath, $this->old_image]), join('/', [$verwijderenPath, $this->id.'-'.time().'_change_'.$this->old_image]));
-				}
-			}
-		}
+        // upload image
+        if ($this->image instanceof UploadedFile && !$this->image->getHasError()) {
+            $fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->image->getExtension());
+            if ($this->image->saveAs(join('/', [$uploadPath, $fileName]))) {
+                $medias = $this->medias;
+                if ($insert || (!$insert && empty($medias))) {
+                    $model = new ArticleMedia();
+                    $model->cover = 1;
+                    $model->article_id = $this->id;
+                    $model->media_filename = $fileName;
+                    $model->save();
+                } else {
+                    $coverId = $this->getCoverAttribute()['id'];
+                    if (ArticleMedia::findOne($coverId)->updateAttributes(['media_filename'=>$fileName])) {
+                        $imageResize = $setting->media_image_resize_size;
+                        if ($setting->media_image_resize) {
+                            $this->resizeImage(join('/', [$uploadPath, $fileName]), $imageResize['width'], $imageResize['height']);
+                        }
+                    }
+                    if ($this->old_image != '' && file_exists(join('/', [$uploadPath, $this->old_image]))) {
+                        rename(join('/', [$uploadPath, $this->old_image]), join('/', [$verwijderenPath, $this->id.'-'.time().'_change_'.$this->old_image]));
+                    }
+                }
+            }
+        }
 
-		// upload file
-		if($this->file instanceof UploadedFile && !$this->file->getHasError()) {
-			$fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->file->getExtension()); 
-			if($this->file->saveAs(join('/', [$uploadPath, $fileName]))) {
-				$files = $this->files;
-				if($insert || (!$insert && empty($files))) {
-					$model = new ArticleFiles();
-					$model->article_id = $this->id;
-					$model->file_filename = $fileName;
-					$model->save();
-				} else {
-					$fileId = $this->getDocumentAttribute()['id'];
-					ArticleFiles::findOne($fileId)->updateAttributes(['file_filename'=>$fileName]);
-					if($this->old_file != '' && file_exists(join('/', [$uploadPath, $this->old_file])))
-						rename(join('/', [$uploadPath, $this->old_file]), join('/', [$verwijderenPath, $this->id.'-'.time().'_change_'.$this->old_file]));
-				}
-			}
-		}
+        // upload file
+        if ($this->file instanceof UploadedFile && !$this->file->getHasError()) {
+            $fileName = join('-', [time(), UuidHelper::uuid()]).'.'.strtolower($this->file->getExtension());
+            if ($this->file->saveAs(join('/', [$uploadPath, $fileName]))) {
+                $files = $this->files;
+                if ($insert || (!$insert && empty($files))) {
+                    $model = new ArticleFiles();
+                    $model->article_id = $this->id;
+                    $model->file_filename = $fileName;
+                    $model->save();
+                } else {
+                    $fileId = $this->getDocumentAttribute()['id'];
+                    ArticleFiles::findOne($fileId)->updateAttributes(['file_filename'=>$fileName]);
+                    if ($this->old_file != '' && file_exists(join('/', [$uploadPath, $this->old_file]))) {
+                        rename(join('/', [$uploadPath, $this->old_file]), join('/', [$verwijderenPath, $this->id.'-'.time().'_change_'.$this->old_file]));
+                    }
+                }
+            }
+        }
 
-		return true;
+        return true;
 	}
 
 	/**
@@ -720,28 +745,30 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function beforeDelete()
 	{
-		if(parent::beforeDelete()) {
-			$uploadPath = join('/', [self::getUploadPath(), $this->id]);
+        if (parent::beforeDelete()) {
+            $uploadPath = join('/', [self::getUploadPath(), $this->id]);
 
-			// upload image
-			$medias = $this->medias;
-			if(!empty($medias)) {
-				foreach ($medias as $val) {
-					if($this->media_filename != '' && file_exists(join('/', [$uploadPath, $this->media_filename])))
-						rename(join('/', [$uploadPath, $this->media_filename]), join('/', [$verwijderenPath, $this->id.'-'.time().'_deleted_'.$this->media_filename]));
-				}
-			}
+            // upload image
+            $medias = $this->medias;
+            if (!empty($medias)) {
+                foreach ($medias as $val) {
+                    if ($this->media_filename != '' && file_exists(join('/', [$uploadPath, $this->media_filename]))) {
+                        rename(join('/', [$uploadPath, $this->media_filename]), join('/', [$verwijderenPath, $this->id.'-'.time().'_deleted_'.$this->media_filename]));
+                    }
+                }
+            }
 
-			// upload file
-			$files = $this->files;
-			if(!empty($files)) {
-				foreach ($files as $val) {
-					if($this->file_filename != '' && file_exists(join('/', [$uploadPath, $this->file_filename])))
-						rename(join('/', [$uploadPath, $this->file_filename]), join('/', [$verwijderenPath, $this->id.'-'.time().'_deleted_'.$this->file_filename]));
-				}
-			}
-		}
-		return true;
+            // upload file
+            $files = $this->files;
+            if (!empty($files)) {
+                foreach ($files as $val) {
+                    if ($this->file_filename != '' && file_exists(join('/', [$uploadPath, $this->file_filename]))) {
+                        rename(join('/', [$uploadPath, $this->file_filename]), join('/', [$verwijderenPath, $this->id.'-'.time().'_deleted_'.$this->file_filename]));
+                    }
+                }
+            }
+        }
+        return true;
 	}
 
 	/**
@@ -749,9 +776,9 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function afterDelete()
 	{
-		parent::afterDelete();
+        parent::afterDelete();
 
-		$uploadPath = join('/', [self::getUploadPath(), $this->id]);
-		$this->deleteFolder($uploadPath);
+        $uploadPath = join('/', [self::getUploadPath(), $this->id]);
+        $this->deleteFolder($uploadPath);
 	}
 }

@@ -39,9 +39,11 @@ class LikeController extends Controller
 	 */
 	public function init()
 	{
-		parent::init();
-		if(Yii::$app->request->get('like') || Yii::$app->request->get('id') || Yii::$app->request->get('article'))
-			$this->subMenu = $this->module->params['article_submenu'];
+        parent::init();
+
+        if (Yii::$app->request->get('like') || Yii::$app->request->get('id') || Yii::$app->request->get('article')) {
+            $this->subMenu = $this->module->params['article_submenu'];
+        }
 	}
 
 	/**
@@ -76,39 +78,45 @@ class LikeController extends Controller
 	 */
 	public function actionManage()
 	{
-		$searchModel = new ArticleLikeHistorySearch();
-		if(($article = Yii::$app->request->get('article')) != null)
-			$searchModel = new ArticleLikeHistorySearch(['articleId'=>$article]);
+        $searchModel = new ArticleLikeHistorySearch();
+        if (($article = Yii::$app->request->get('article')) != null) {
+            $searchModel = new ArticleLikeHistorySearch(['articleId'=>$article]);
+        }
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-		$gridColumn = Yii::$app->request->get('GridColumn', null);
-		$cols = [];
-		if($gridColumn != null && count($gridColumn) > 0) {
-			foreach($gridColumn as $key => $val) {
-				if($gridColumn[$key] == 1)
-					$cols[] = $key;
-			}
-		}
-		$columns = $searchModel->getGridColumn($cols);
+        $gridColumn = Yii::$app->request->get('GridColumn', null);
+        $cols = [];
+        if ($gridColumn != null && count($gridColumn) > 0) {
+            foreach ($gridColumn as $key => $val) {
+                if ($gridColumn[$key] == 1) {
+                    $cols[] = $key;
+                }
+            }
+        }
+        $columns = $searchModel->getGridColumn($cols);
 
-		if(($like = Yii::$app->request->get('like')) != null) {
+        if (($like = Yii::$app->request->get('like')) != null) {
 			$like = \ommu\article\models\ArticleLikes::findOne($like);
 			$this->subMenuParam = $like->article_id;
 			$setting = $like->article->getSetting(['media_image_limit', 'media_file_limit']);
-			if($like->article->category->single_photo || $setting->media_image_limit == 1)
-				unset($this->subMenu['photo']);
-			if($like->article->category->single_file || $setting->media_file_limit == 1)
-				unset($this->subMenu['document']);
+            if ($like->article->category->single_photo || $setting->media_image_limit == 1) {
+                unset($this->subMenu['photo']);
+            }
+            if ($like->article->category->single_file || $setting->media_file_limit == 1) {
+                unset($this->subMenu['document']);
+            }
 		}
 
-		if($article) {
+        if ($article) {
 			$this->subMenuParam = $article;
 			$article = \ommu\article\models\Articles::findOne($article);
 			$setting = $article->getSetting(['media_image_limit', 'media_file_limit']);
-			if($article->category->single_photo || $setting->media_image_limit == 1)
-				unset($this->subMenu['photo']);
-			if($article->category->single_file || $setting->media_file_limit == 1)
-				unset($this->subMenu['document']);
+            if ($article->category->single_photo || $setting->media_image_limit == 1) {
+                unset($this->subMenu['photo']);
+            }
+            if ($article->category->single_file || $setting->media_file_limit == 1) {
+                unset($this->subMenu['document']);
+            }
 		}
 
 		$this->view->title = Yii::t('app', 'Like Histories');
@@ -132,14 +140,16 @@ class LikeController extends Controller
 	{
 		$model = $this->findModel($id);
 
-		if(!Yii::$app->request->isAjax) {
+        if (!Yii::$app->request->isAjax) {
 			$this->subMenuParam = $model->like->article_id;
 			$setting = $model->like->article->getSetting(['media_image_limit', 'media_file_limit']);
 
-			if($model->like->article->category->single_photo || $setting->media_image_limit == 1)
+            if ($model->like->article->category->single_photo || $setting->media_image_limit == 1) {
 				unset($this->subMenu['photo']);
-			if($model->like->article->category->single_file || $setting->media_file_limit == 1)
+            }
+            if ($model->like->article->category->single_file || $setting->media_file_limit == 1) {
 				unset($this->subMenu['document']);
+            }
 		}
 
 		$this->view->title = Yii::t('app', 'Detail Like History: {like-id}', ['like-id' => $model->like->article->title]);
@@ -174,8 +184,9 @@ class LikeController extends Controller
 	 */
 	protected function findModel($id)
 	{
-		if(($model = ArticleLikeHistory::findOne($id)) !== null)
-			return $model;
+        if (($model = ArticleLikeHistory::findOne($id)) !== null) {
+            return $model;
+        }
 
 		throw new \yii\web\NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
 	}
