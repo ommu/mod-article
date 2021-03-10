@@ -23,8 +23,8 @@ if (!$small) {
     $this->params['breadcrumbs'][] = $model->article->title;
 
     $this->params['menu']['content'] = [
-        ['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
-        ['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
+        ['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id' => $model->id]), 'icon' => 'eye', 'htmlOptions' => ['class' => 'btn btn-info']],
+        ['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id' => $model->id]), 'htmlOptions' => ['data-confirm' => Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method' => 'post', 'class' => 'btn btn-danger'], 'icon' => 'trash'],
     ];
 } ?>
 
@@ -39,7 +39,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'publish',
-		'value' => $model->quickAction(Url::to(['publish', 'id'=>$model->primaryKey]), $model->publish),
+		'value' => $model->quickAction(Url::to(['publish', 'id' => $model->primaryKey]), $model->publish),
 		'format' => 'raw',
 		'visible' => !$small,
 	],
@@ -48,7 +48,7 @@ $attributes = [
 		'value' => function ($model) {
 			$articleTitle = isset($model->article) ? $model->article->title : '-';
             if ($articleTitle != '-') {
-                return Html::a($articleTitle, ['admin/view', 'id'=>$model->article_id], ['title'=>$articleTitle, 'class'=>'modal-btn']);
+                return Html::a($articleTitle, ['admin/view', 'id' => $model->article_id], ['title' => $articleTitle, 'class' => 'modal-btn']);
             }
 			return $articleTitle;
 		},
@@ -62,7 +62,7 @@ $attributes = [
 		'attribute' => 'histories',
 		'value' => function ($model) {
 			$histories = $model->getHistories(true);
-			return Html::a($histories, ['history/like/manage', 'like'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$histories])]);
+			return Html::a($histories, ['history/like/manage', 'like' => $model->primaryKey], ['title' => Yii::t('app', '{count} histories', ['count' => $histories])]);
 		},
 		'format' => 'html',
 	],
@@ -86,7 +86,7 @@ $attributes = [
 echo DetailView::widget([
 	'model' => $model,
 	'options' => [
-		'class'=>'table table-striped detail-view',
+		'class' => 'table table-striped detail-view',
 	],
 	'attributes' => $attributes,
 ]); ?>

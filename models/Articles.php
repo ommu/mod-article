@@ -286,7 +286,7 @@ class Articles extends \app\components\ActiveRecord
 	public function getCoverAttribute()
 	{
 		$model = $this->getMedias('cover')->one();
-		return ['id'=>$model->id, 'cover'=>$model->media_filename];
+		return ['id' => $model->id, 'cover' => $model->media_filename];
 	}
 
 	/**
@@ -304,7 +304,7 @@ class Articles extends \app\components\ActiveRecord
 	public function getDocumentAttribute()
 	{
 		$model = $this->getFiles(false)->one();
-		return ['id'=>$model->id, 'file'=>$model->file_filename];
+		return ['id' => $model->id, 'file' => $model->file_filename];
 	}
 
 	/**
@@ -343,7 +343,7 @@ class Articles extends \app\components\ActiveRecord
 		$this->templateColumns['_no'] = [
 			'header' => '#',
 			'class' => 'app\components\grid\SerialColumn',
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 		];
 		$this->templateColumns['cat_id'] = [
 			'attribute' => 'cat_id',
@@ -422,20 +422,20 @@ class Articles extends \app\components\ActiveRecord
 			'attribute' => 'medias',
 			'value' => function($model, $key, $index, $column) {
 				$media = $model->getMedias('count');
-				return Html::a($media, ['o/image/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} media', ['count'=>$media]), 'data-pjax'=>0]);
+				return Html::a($media, ['o/image/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} media', ['count' => $media]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 		];
 		$this->templateColumns['files'] = [
 			'attribute' => 'files',
 			'value' => function($model, $key, $index, $column) {
 				$files = $model->getFiles(true);
-				return Html::a($files, ['o/file/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} files', ['count'=>$files]), 'data-pjax'=>0]);
+				return Html::a($files, ['o/file/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} files', ['count' => $files]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 		];
 		$this->templateColumns['tag'] = [
@@ -448,20 +448,20 @@ class Articles extends \app\components\ActiveRecord
 			'attribute' => 'views',
 			'value' => function($model, $key, $index, $column) {
 				$views = $model->getViews(true);
-				return Html::a($views, ['o/view/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} views', ['count'=>$views]), 'data-pjax'=>0]);
+				return Html::a($views, ['o/view/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} views', ['count' => $views]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 		];
 		$this->templateColumns['likes'] = [
 			'attribute' => 'likes',
 			'value' => function($model, $key, $index, $column) {
 				$likes = $model->getLikes(true);
-				return Html::a($likes, ['o/like/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} likes', ['count'=>$likes]), 'data-pjax'=>0]);
+				return Html::a($likes, ['o/like/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} likes', ['count' => $likes]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 		];
         $this->templateColumns['headline'] = [
@@ -474,22 +474,22 @@ class Articles extends \app\components\ActiveRecord
                 if (!in_array($model->cat_id, $headlineCategory)) {
                     return '-';
                 }
-                $url = Url::to(['headline', 'id'=>$model->primaryKey]);
+                $url = Url::to(['headline', 'id' => $model->primaryKey]);
                 return $this->quickAction($url, $model->headline, 'Yes,No', true);
             },
             'filter' => $this->filterYesNo(),
-            'contentOptions' => ['class'=>'text-center'],
+            'contentOptions' => ['class' => 'text-center'],
             'format' => 'raw',
             'visible' => ArticleSetting::getInfo('headline') ? true : false,
         ];
 		$this->templateColumns['publish'] = [
 			'attribute' => 'publish',
 			'value' => function($model, $key, $index, $column) {
-				$url = Url::to(['publish', 'id'=>$model->primaryKey]);
+				$url = Url::to(['publish', 'id' => $model->primaryKey]);
 				return $this->quickAction($url, $model->publish);
 			},
 			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 			'visible' => !Yii::$app->request->get('trash') ? true : false,
 		];
@@ -606,13 +606,13 @@ class Articles extends \app\components\ActiveRecord
 				$imageFileType = $this->formatFileType($setting->media_image_type);
                 if (!in_array(strtolower($this->image->getExtension()), $imageFileType)) {
 					$this->addError('image', Yii::t('app', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
-						'name'=>$this->image->name,
-						'extensions'=>$setting->media_image_type,
+						'name' => $this->image->name,
+						'extensions' => $setting->media_image_type,
 					]));
                 }
             } else {
                 if ($this->isNewRecord || (!$this->isNewRecord && $this->category->single_photo && $this->old_image == '')) {
-                    $this->addError('image', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('image')]));
+                    $this->addError('image', Yii::t('app', '{attribute} cannot be blank.', ['attribute' => $this->getAttributeLabel('image')]));
                 }
 			}
 
@@ -620,8 +620,8 @@ class Articles extends \app\components\ActiveRecord
 				$fileFileType = $this->formatFileType($setting->media_file_type);
                 if (!in_array(strtolower($this->file->getExtension()), $fileFileType)) {
 					$this->addError('file', Yii::t('app', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
-						'name'=>$this->file->name,
-						'extensions'=>$setting->media_file_type,
+						'name' => $this->file->name,
+						'extensions' => $setting->media_file_type,
 					]));
 				}
 			}
@@ -704,7 +704,7 @@ class Articles extends \app\components\ActiveRecord
                     $model->save();
                 } else {
                     $coverId = $this->getCoverAttribute()['id'];
-                    if (ArticleMedia::findOne($coverId)->updateAttributes(['media_filename'=>$fileName])) {
+                    if (ArticleMedia::findOne($coverId)->updateAttributes(['media_filename' => $fileName])) {
                         $imageResize = $setting->media_image_resize_size;
                         if ($setting->media_image_resize) {
                             $this->resizeImage(join('/', [$uploadPath, $fileName]), $imageResize['width'], $imageResize['height']);
@@ -729,7 +729,7 @@ class Articles extends \app\components\ActiveRecord
                     $model->save();
                 } else {
                     $fileId = $this->getDocumentAttribute()['id'];
-                    ArticleFiles::findOne($fileId)->updateAttributes(['file_filename'=>$fileName]);
+                    ArticleFiles::findOne($fileId)->updateAttributes(['file_filename' => $fileName]);
                     if ($this->old_file != '' && file_exists(join('/', [$uploadPath, $this->old_file]))) {
                         rename(join('/', [$uploadPath, $this->old_file]), join('/', [$verwijderenPath, $this->id.'-'.time().'_change_'.$this->old_file]));
                     }

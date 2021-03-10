@@ -28,7 +28,7 @@ $redactorOptions = [
 ?>
 
 <?php $form = ActiveForm::begin([
-	'options' => ['class'=>'form-horizontal form-label-left'],
+	'options' => ['class' => 'form-horizontal form-label-left'],
 	'enableClientValidation' => true,
 	'enableAjaxValidation' => false,
 	//'enableClientScript' => true,
@@ -46,11 +46,11 @@ $redactorOptions = [
 	->label($model->getAttributeLabel('cat_id')); ?>
 
 <?php echo $form->field($model, 'title')
-	->textInput(['maxlength'=>true])
+	->textInput(['maxlength' => true])
 	->label($model->getAttributeLabel('title')); ?>
 
 <?php echo $form->field($model, 'body')
-	->textarea(['rows'=>2,'rows'=>6])
+	->textarea(['rows' => 2,'rows' => 6])
 	->widget(Redactor::className(), ['clientOptions' => $redactorOptions])
 	->label($model->getAttributeLabel('body')); ?>
 

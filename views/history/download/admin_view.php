@@ -22,8 +22,8 @@ if (!$small) {
     $this->params['breadcrumbs'][] = $model->download->file->file_filename;
 
     $this->params['menu']['content'] = [
-        ['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
-        ['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
+        ['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id' => $model->id]), 'icon' => 'eye', 'htmlOptions' => ['class' => 'btn btn-info']],
+        ['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id' => $model->id]), 'htmlOptions' => ['data-confirm' => Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method' => 'post', 'class' => 'btn btn-danger'], 'icon' => 'trash'],
     ];
 } ?>
 
@@ -41,7 +41,7 @@ $attributes = [
 		'value' => function ($model) {
 			$articleTitle = isset($model->download->file->article) ? $model->download->file->article->title : '-';
             if ($articleTitle != '-') {
-                return Html::a($articleTitle, ['admin/view', 'id'=>$model->download->file->article_id], ['title'=>$articleTitle, 'class'=>'modal-btn']);
+                return Html::a($articleTitle, ['admin/view', 'id' => $model->download->file->article_id], ['title' => $articleTitle, 'class' => 'modal-btn']);
             }
 			return $articleTitle;
 		},
@@ -52,7 +52,7 @@ $attributes = [
 		'value' => function ($model) {
 			$fileName = isset($model->download->file) ? $model->download->file->file_filename : '-';
             if ($fileName != '-') {
-                return Html::a($fileName, ['o/file/view', 'id'=>$model->download->file_id], ['title'=>$fileName, 'class'=>'modal-btn']);
+                return Html::a($fileName, ['o/file/view', 'id' => $model->download->file_id], ['title' => $fileName, 'class' => 'modal-btn']);
             }
 			return $fileName;
 		},
@@ -77,7 +77,7 @@ $attributes = [
 echo DetailView::widget([
 	'model' => $model,
 	'options' => [
-		'class'=>'table table-striped detail-view',
+		'class' => 'table table-striped detail-view',
 	],
 	'attributes' => $attributes,
 ]); ?>

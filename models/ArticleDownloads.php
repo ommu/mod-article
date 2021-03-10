@@ -143,7 +143,7 @@ class ArticleDownloads extends \app\components\ActiveRecord
 		$this->templateColumns['_no'] = [
 			'header' => '#',
 			'class' => 'app\components\grid\SerialColumn',
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 		];
 		$this->templateColumns['articleTitle'] = [
 			'attribute' => 'articleTitle',
@@ -186,10 +186,10 @@ class ArticleDownloads extends \app\components\ActiveRecord
 			'attribute' => 'downloads',
 			'value' => function($model, $key, $index, $column) {
 				$downloads = $model->downloads;
-				return Html::a($downloads, ['history/download/manage', 'download'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} histories', ['count'=>$downloads]), 'data-pjax'=>0]);
+				return Html::a($downloads, ['history/download/manage', 'download' => $model->primaryKey], ['title' => Yii::t('app', '{count} histories', ['count' => $downloads]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 		];
 	}
@@ -235,7 +235,7 @@ class ArticleDownloads extends \app\components\ActiveRecord
 		$findDownload = $findDownload->one();
 
         if ($findDownload !== null) {
-            $findDownload->updateAttributes(['downloads'=>$findDownload->downloads+1, 'download_ip'=>$_SERVER['REMOTE_ADDR']]);
+            $findDownload->updateAttributes(['downloads' => $findDownload->downloads+1, 'download_ip' => $_SERVER['REMOTE_ADDR']]);
         } else {
 			$download = new ArticleDownloads();
 			$download->file_id = $file_id;

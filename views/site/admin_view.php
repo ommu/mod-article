@@ -110,7 +110,7 @@ $attributes = [
 echo DetailView::widget([
 				'model' => $model,
 				'options' => [
-					'class'=>'table table-striped detail-view',
+					'class' => 'table table-striped detail-view',
 				],
 				'attributes' => $attributes,
 			]) ?>
@@ -134,7 +134,7 @@ echo DetailView::widget([
 				'dataProvider' => $dataProvider2,
 				'itemOptions' => ['class' => 'item'],
 				'itemView' => function ($model, $key, $index, $widget) {
-					return Html::a(Html::encode($model->title), ['view', 'id'=>$model->id]);
+					return Html::a(Html::encode($model->title), ['view', 'id' => $model->id]);
 				},
 			]); ?>	
 		</div>
@@ -211,7 +211,7 @@ $this->params['menu']['option'] = [
 			<div class="clearfix"></div>
 		</div>
 		<div class="x_content">
-		<?php echo $this->render('_option_form', ['model'=>$searchModel1, 'gridColumns'=>$this->activeDefaultColumns($columns), 'route'=>$this->context->route]); ?>
+		<?php echo $this->render('_option_form', ['model' => $searchModel1, 'gridColumns' => $this->activeDefaultColumns($columns), 'route' => $this->context->route]); ?>
 
 			<?= GridView::widget([
 		'dataProvider' => $dataProvider1,
@@ -221,7 +221,7 @@ $this->params['menu']['option'] = [
 			'file_filename',
 			//button
 			[
-			'format'=>'raw',
+			'format' => 'raw',
 			'value' => function($model)
 			{
 			return

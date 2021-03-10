@@ -175,7 +175,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 		$this->templateColumns['_no'] = [
 			'header' => '#',
 			'class' => 'app\components\grid\SerialColumn',
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 		];
 		$this->templateColumns['articleTitle'] = [
 			'attribute' => 'articleTitle',
@@ -189,7 +189,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 			'attribute' => 'file_filename',
 			'value' => function($model, $key, $index, $column) {
 				$uploadPath = join('/', [Articles::getUploadPath(false), $model->article_id]);
-				return $model->file_filename ? Html::a($model->file_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->file_filename])), ['title'=>$model->file_filename, 'target'=>'_blank']) : '-';
+				return $model->file_filename ? Html::a($model->file_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->file_filename])), ['title' => $model->file_filename, 'target' => '_blank']) : '-';
 			},
 			'format' => 'raw',
 		];
@@ -234,10 +234,10 @@ class ArticleFiles extends \app\components\ActiveRecord
 			'attribute' => 'downloads',
 			'value' => function($model, $key, $index, $column) {
 				$downloads = $model->getDownloads(true);
-				return Html::a($downloads, ['o/download/manage', 'file'=>$model->primaryKey], ['title'=>Yii::t('app', '{count} downloads', ['count'=>$downloads]), 'data-pjax'=>0]);
+				return Html::a($downloads, ['o/download/manage', 'file' => $model->primaryKey], ['title' => Yii::t('app', '{count} downloads', ['count' => $downloads]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 		];
 	}
@@ -289,13 +289,13 @@ class ArticleFiles extends \app\components\ActiveRecord
 				$fileFileType = $this->formatFileType($setting->media_file_type);
                 if (!in_array(strtolower($this->file_filename->getExtension()), $fileFileType)) {
 					$this->addError('file_filename', Yii::t('app', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
-						'name'=>$this->file_filename->name,
-						'extensions'=>$this->formatFileType($fileFileType, false),
+						'name' => $this->file_filename->name,
+						'extensions' => $this->formatFileType($fileFileType, false),
 					]));
                 }
             } else {
                 if ($this->isNewRecord && $this->file_filename == '') {
-                    $this->addError('file_filename', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('file_filename')]));
+                    $this->addError('file_filename', Yii::t('app', '{attribute} cannot be blank.', ['attribute' => $this->getAttributeLabel('file_filename')]));
                 }
 			}
 
@@ -352,7 +352,7 @@ class ArticleFiles extends \app\components\ActiveRecord
 		// delete other photo (media_file_limit = 1)
         if ($setting->media_file_limit == 1) {
 			$medias = self::find()
-				->where(['article_id'=>$this->article_id])
+				->where(['article_id' => $this->article_id])
 				->andWhere(['<>', 'publish', 2])
 				->andWhere(['<>', 'id', $this->id])
 				->all();

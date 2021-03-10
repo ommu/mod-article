@@ -184,7 +184,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 		$this->templateColumns['_no'] = [
 			'header' => '#',
 			'class' => 'app\components\grid\SerialColumn',
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 		];
 		$this->templateColumns['articleTitle'] = [
 			'attribute' => 'articleTitle',
@@ -198,7 +198,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 			'attribute' => 'media_filename',
 			'value' => function($model, $key, $index, $column) {
 				$uploadPath = join('/', [Articles::getUploadPath(false), $model->article_id]);
-				return $model->media_filename ? Html::a($model->media_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->media_filename])), ['alt'=>$model->media_filename]) : '-';
+				return $model->media_filename ? Html::a($model->media_filename, Url::to(join('/', ['@webpublic', $uploadPath, $model->media_filename])), ['alt' => $model->media_filename]) : '-';
 			},
 			'format' => 'html',
 		];
@@ -264,7 +264,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 				return $this->filterYesNo($model->captionStatus);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 		];
 		$this->templateColumns['descriptionStatus'] = [
 			'attribute' => 'descriptionStatus',
@@ -272,16 +272,16 @@ class ArticleMedia extends \app\components\ActiveRecord
 				return $this->filterYesNo($model->descriptionStatus);
 			},
 			'filter' => false,
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 		];
 		$this->templateColumns['cover'] = [
 			'attribute' => 'cover',
 			'value' => function($model, $key, $index, $column) {
-				$url = Url::to(['cover', 'id'=>$model->primaryKey]);
+				$url = Url::to(['cover', 'id' => $model->primaryKey]);
 				return $this->quickAction($url, $model->cover, 'Yes,No', true);
 			},
 			'filter' => $this->filterYesNo(),
-			'contentOptions' => ['class'=>'text-center'],
+			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 		];
 	}
@@ -333,13 +333,13 @@ class ArticleMedia extends \app\components\ActiveRecord
 				$imageFileType = $this->formatFileType($setting->media_image_type);
                 if (!in_array(strtolower($this->media_filename->getExtension()), $imageFileType)) {
 					$this->addError('media_filename', Yii::t('app', 'The file {name} cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
-						'name'=>$this->media_filename->name,
-						'extensions'=>$this->formatFileType($imageFileType, false),
+						'name' => $this->media_filename->name,
+						'extensions' => $this->formatFileType($imageFileType, false),
 					]));
                 }
             } else {
                 if ($this->isNewRecord && $this->media_filename == '') {
-                    $this->addError('media_filename', Yii::t('app', '{attribute} cannot be blank.', ['attribute'=>$this->getAttributeLabel('media_filename')]));
+                    $this->addError('media_filename', Yii::t('app', '{attribute} cannot be blank.', ['attribute' => $this->getAttributeLabel('media_filename')]));
                 }
 			}
 
@@ -409,7 +409,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 		// delete other photo (media_image_limit = 1)
         if ($setting->media_image_limit == 1) {
 			$medias = self::find()
-				->where(['article_id'=>$this->article_id])
+				->where(['article_id' => $this->article_id])
 				->andWhere(['<>', 'publish', 2])
 				->andWhere(['<>', 'id', $this->id])
 				->all();
@@ -421,7 +421,7 @@ class ArticleMedia extends \app\components\ActiveRecord
         if (array_key_exists('cover', $changedAttributes) && ($changedAttributes['cover'] != $this->cover) && $this->cover == 1) {
 			self::updateAll(['cover' => 0], 
 				'article_id = :article AND publish <> :publish AND id <> :media', 
-                [':article'=>$this->article_id, ':publish'=>2, ':media'=>$this->id]);
+                [':article' => $this->article_id, ':publish' => 2, ':media' => $this->id]);
         }
 	}
 
@@ -442,7 +442,7 @@ class ArticleMedia extends \app\components\ActiveRecord
 		// reset cover (delete photo, cover = 1)
 		$medias = $this->article->medias;
         if (!empty($medias) && $this->cover == 1) {
-            self::findOne($medias[0]->id)->updateAttributes(['cover'=>1]);
+            self::findOne($medias[0]->id)->updateAttributes(['cover' => 1]);
         }
 	}
 }

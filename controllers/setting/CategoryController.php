@@ -126,7 +126,7 @@ class CategoryController extends Controller
                     return $this->redirect(['manage']);
                 }
                 return $this->redirect(Yii::$app->request->referrer ?: ['manage']);
-                //return $this->redirect(['view', 'id'=>$model->id]);
+                //return $this->redirect(['view', 'id' => $model->id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {

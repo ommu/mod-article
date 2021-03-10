@@ -80,7 +80,7 @@ class LikeController extends Controller
 	{
         $searchModel = new ArticleLikeHistorySearch();
         if (($article = Yii::$app->request->get('article')) != null) {
-            $searchModel = new ArticleLikeHistorySearch(['articleId'=>$article]);
+            $searchModel = new ArticleLikeHistorySearch(['articleId' => $article]);
         }
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -105,7 +105,7 @@ class LikeController extends Controller
             if ($like->article->category->single_file || $setting->media_file_limit == 1) {
                 unset($this->subMenu['document']);
             }
-		}
+        }
 
         if ($article) {
 			$this->subMenuParam = $article;
@@ -117,7 +117,7 @@ class LikeController extends Controller
             if ($article->category->single_file || $setting->media_file_limit == 1) {
                 unset($this->subMenu['document']);
             }
-		}
+        }
 
 		$this->view->title = Yii::t('app', 'Like Histories');
 		$this->view->description = '';
@@ -150,7 +150,7 @@ class LikeController extends Controller
             if ($model->like->article->category->single_file || $setting->media_file_limit == 1) {
 				unset($this->subMenu['document']);
             }
-		}
+        }
 
 		$this->view->title = Yii::t('app', 'Detail Like History: {like-id}', ['like-id' => $model->like->article->title]);
 		$this->view->description = '';
@@ -172,7 +172,7 @@ class LikeController extends Controller
 		$model->delete();
 
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Article like history success deleted.'));
-		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'like'=>$model->like_id]);
+		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'like' => $model->like_id]);
 	}
 
 	/**

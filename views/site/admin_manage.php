@@ -20,7 +20,7 @@ use yii\widgets\ListView;
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->params['menu']['content'] = [
-	//['label' => Yii::t('app', 'Add Articles'), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class'=>'btn btn-success']],
+	//['label' => Yii::t('app', 'Add Articles'), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class' => 'btn btn-primary']],
 ];
 $this->params['menu']['option'] = [
 	['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],
@@ -31,15 +31,15 @@ $this->params['menu']['option'] = [
 >
 			<?php echo $this->description != '' ? "<p class=\"text-muted font-13 m-b-30\">$this->description</p>" : '';?>
 
-			<?php echo $this->render('_search', ['model'=>$searchModel]); ?>
+			<?php echo $this->render('_search', ['model' => $searchModel]); ?>
 
-			<?php // echo $this->render('_option_form', ['model'=>$searchModel, 'gridColumns'=>$searchModel->activeDefaultColumns($columns), 'route'=>$this->context->route]); ?>
+			<?php // echo $this->render('_option_form', ['model' => $searchModel, 'gridColumns' => $searchModel->activeDefaultColumns($columns), 'route' => $this->context->route]); ?>
 
 			<?php echo ListView::widget([
 				'dataProvider' => $dataProvider,
 				'itemOptions' => ['class' => 'item'],
 				'itemView' => function ($model, $key, $index, $widget) {
-					return Html::a(Html::encode($model->title), ['view', 'id'=>$model->article_id]);
+					return Html::a(Html::encode($model->title), ['view', 'id' => $model->article_id]);
 				},
 			]); ?>
 		</div>

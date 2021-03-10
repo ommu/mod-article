@@ -113,7 +113,7 @@ class FileController extends Controller
             if ($article->category->single_file || $setting->media_file_limit == 1) {
                 unset($this->subMenu['document']);
             }
-		}
+        }
 
 		$this->view->title = Yii::t('app', 'Documents');
 		$this->view->description = '';
@@ -137,7 +137,7 @@ class FileController extends Controller
             throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
 
-		$model = new ArticleFiles(['article_id'=>$id]);
+		$model = new ArticleFiles(['article_id' => $id]);
 		$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
 
         if (Yii::$app->request->isPost) {
@@ -150,9 +150,9 @@ class FileController extends Controller
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Article document success created.'));
                 if ($model->redirectUpdate) {
-                    return $this->redirect(['update', 'id'=>$model->id]);
+                    return $this->redirect(['update', 'id' => $model->id]);
                 }
-                return $this->redirect(['manage', 'article'=>$model->article_id]);
+                return $this->redirect(['manage', 'article' => $model->article_id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
@@ -200,7 +200,7 @@ class FileController extends Controller
 
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Article document success updated.'));
-                return $this->redirect(['update', 'id'=>$model->id]);
+                return $this->redirect(['update', 'id' => $model->id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
@@ -242,7 +242,7 @@ class FileController extends Controller
             if ($model->article->category->single_file || $setting->media_file_limit == 1) {
 				unset($this->subMenu['document']);
             }
-		}
+        }
 
 		$this->view->title = Yii::t('app', 'Detail Document: {file-filename}', ['file-filename' => $model->file_filename]);
 		$this->view->description = '';
@@ -265,7 +265,7 @@ class FileController extends Controller
 
         if ($model->save(false, ['publish', 'modified_id'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article document success deleted.'));
-			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article'=>$model->article_id]);
+			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article' => $model->article_id]);
 		}
 	}
 
@@ -296,7 +296,7 @@ class FileController extends Controller
             throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
 
-		$model = new ArticleFiles(['article_id'=>$id]);
+		$model = new ArticleFiles(['article_id' => $id]);
 		$setting = $model->article->getSetting(['media_file_limit', 'media_file_type']);
 
 		$uploadPath = join('/', [Articles::getUploadPath(), $id]);
@@ -313,7 +313,7 @@ class FileController extends Controller
 			$fileFileType = $this->formatFileType($setting->media_file_type);
             if (!in_array(strtolower($fileFilename->getExtension()), $fileFileType)) {
 				throw new HttpException(500, Yii::t('app', 'This document cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
-					'extensions'=>$this->formatFileType($fileFileType, false),
+					'extensions' => $this->formatFileType($fileFileType, false),
 				]));
 			}
 
@@ -327,11 +327,11 @@ class FileController extends Controller
 					'filename' => $fileName,
 				];
 
-				return Json::encode($response);
+                return Json::encode($response);
 
 			} else {
                 if (Yii::$app->request->isAjax) {
-					return Json::encode(\app\components\widgets\ActiveForm::validate($model));
+	                return Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
             }
         }

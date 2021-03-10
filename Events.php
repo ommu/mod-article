@@ -77,7 +77,7 @@ class Events extends \yii\base\BaseObject
 			foreach ($oldTag as $key => $val) {
 				ArticleTag::find()
 					->select(['id'])
-					->where(['article_id'=>$article->id, 'tag_id'=>$key])
+					->where(['article_id' => $article->id, 'tag_id' => $key])
 					->one()
 					->delete();
 			}

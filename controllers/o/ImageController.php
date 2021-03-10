@@ -115,7 +115,7 @@ class ImageController extends Controller
             if ($article->category->single_file || $setting->media_file_limit == 1) {
                 unset($this->subMenu['document']);
             }
-		}
+        }
 
 		$this->view->title = Yii::t('app', 'Photos');
 		$this->view->description = '';
@@ -139,7 +139,7 @@ class ImageController extends Controller
             throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
 
-		$model = new ArticleMedia(['article_id'=>$id]);
+		$model = new ArticleMedia(['article_id' => $id]);
 		$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
 
         if (Yii::$app->request->isPost) {
@@ -151,9 +151,9 @@ class ImageController extends Controller
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success created.'));
                 if ($model->redirectUpdate) {
-                    return $this->redirect(['update', 'id'=>$model->id]);
+                    return $this->redirect(['update', 'id' => $model->id]);
                 }
-                return $this->redirect(['manage', 'article'=>$model->article_id]);
+                return $this->redirect(['manage', 'article' => $model->article_id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
@@ -200,7 +200,7 @@ class ImageController extends Controller
 
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success updated.'));
-                return $this->redirect(['update', 'id'=>$model->id]);
+                return $this->redirect(['update', 'id' => $model->id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
@@ -243,7 +243,7 @@ class ImageController extends Controller
             if ($model->article->category->single_file || $setting->media_file_limit == 1) {
 				unset($this->subMenu['document']);
             }
-		}
+        }
 
 		$this->view->title = Yii::t('app', 'Detail Photo: {media-filename}', ['media-filename' => $model->media_filename]);
 		$this->view->description = '';
@@ -266,7 +266,7 @@ class ImageController extends Controller
 
         if ($model->save(false, ['publish', 'modified_id'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success deleted.'));
-			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article'=>$model->article_id]);
+			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article' => $model->article_id]);
 		}
 	}
 
@@ -283,7 +283,7 @@ class ImageController extends Controller
 
         if ($model->save(false, ['cover', 'modified_id'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article photo success updated.'));
-			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article'=>$model->article_id]);
+			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article' => $model->article_id]);
 		}
 	}
 
@@ -314,7 +314,7 @@ class ImageController extends Controller
 			throw new \yii\web\ForbiddenHttpException(Yii::t('app', 'The requested page does not exist.'));
         }
 
-		$model = new ArticleMedia(['article_id'=>$id]);
+		$model = new ArticleMedia(['article_id' => $id]);
 		$setting = $model->article->getSetting(['media_image_limit', 'media_image_resize', 'media_image_resize_size', 'media_image_type']);
 
 		$uploadPath = join('/', [Articles::getUploadPath(), $id]);
@@ -332,7 +332,7 @@ class ImageController extends Controller
 			$imageFileType = $this->formatFileType($setting->media_image_type);
             if (!in_array(strtolower($imageFilename->getExtension()), $imageFileType)) {
 				throw new HttpException(500, Yii::t('app', 'This photo cannot be uploaded. Only files with these extensions are allowed: {extensions}', [
-					'extensions'=>$this->formatFileType($imageFileType, false),
+					'extensions' => $this->formatFileType($imageFileType, false),
 				]));
 			}
 
@@ -350,11 +350,11 @@ class ImageController extends Controller
 					'filename' => $fileName,
 				];
 
-				return Json::encode($response);
+                return Json::encode($response);
 
 			} else {
                 if (Yii::$app->request->isAjax) {
-					return Json::encode(\app\components\widgets\ActiveForm::validate($model));
+	                return Json::encode(\app\components\widgets\ActiveForm::validate($model));
                 }
             }
         }

@@ -23,7 +23,7 @@ use ommu\article\models\ArticleCategory;
 <div class="article-category-form">
 
 <?php $form = ActiveForm::begin([
-	'options' => ['class'=>'form-horizontal form-label-left'],
+	'options' => ['class' => 'form-horizontal form-label-left'],
 	'enableClientValidation' => true,
 	'enableAjaxValidation' => false,
 	//'enableClientScript' => true,
@@ -38,15 +38,15 @@ use ommu\article\models\ArticleCategory;
 
 <?php $category = ArticleCategory::getCategory();
 echo $form->field($model,'parent_id')
-	->dropDownList($category, ['prompt'=>''])
+	->dropDownList($category, ['prompt' => ''])
 	->label($model->getAttributeLabel('parent_id')); ?>
 
 <?php echo $form->field($model, 'name_i')
-	->textInput(['maxlength'=>true])
+	->textInput(['maxlength' => true])
 	->label($model->getAttributeLabel('name_i')); ?>
 
 <?php echo $form->field($model, 'desc_i')
-	->textarea(['rows'=>6, 'cols'=>50, 'maxlength'=>true])
+	->textarea(['rows' => 6, 'cols' => 50, 'maxlength' => true])
 	->label($model->getAttributeLabel('desc_i')); ?>
 
 <?php echo $form->field($model, 'single_photo')

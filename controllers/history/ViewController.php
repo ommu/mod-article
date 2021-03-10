@@ -80,7 +80,7 @@ class ViewController extends Controller
 	{
         $searchModel = new ArticleViewHistorySearch();
         if (($article = Yii::$app->request->get('article')) != null) {
-            $searchModel = new ArticleViewHistorySearch(['articleId'=>$article]);
+            $searchModel = new ArticleViewHistorySearch(['articleId' => $article]);
         }
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -105,7 +105,7 @@ class ViewController extends Controller
             if ($view->article->category->single_file || $setting->media_file_limit == 1) {
                 unset($this->subMenu['document']);
             }
-		}
+        }
 
         if ($article) {
 			$this->subMenuParam = $article;
@@ -117,7 +117,7 @@ class ViewController extends Controller
             if ($article->category->single_file || $setting->media_file_limit == 1) {
                 unset($this->subMenu['document']);
             }
-		}
+        }
 
 		$this->view->title = Yii::t('app', 'View Histories');
 		$this->view->description = '';
@@ -150,7 +150,7 @@ class ViewController extends Controller
             if ($model->view->article->category->single_file || $setting->media_file_limit == 1) {
 				unset($this->subMenu['document']);
             }
-		}
+        }
 
 		$this->view->title = Yii::t('app', 'Detail View History: {view-id}', ['view-id' => $model->view->article->title]);
 		$this->view->description = '';
@@ -172,7 +172,7 @@ class ViewController extends Controller
 		$model->delete();
 
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Article view history success deleted.'));
-		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'view'=>$model->view_id]);
+		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'view' => $model->view_id]);
 	}
 
 	/**

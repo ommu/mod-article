@@ -22,8 +22,8 @@ if (!$small) {
     $this->params['breadcrumbs'][] = $model->like->article->title;
 
     $this->params['menu']['content'] = [
-        ['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id'=>$model->id]), 'icon' => 'eye', 'htmlOptions' => ['class'=>'btn btn-success']],
-        ['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id'=>$model->id]), 'htmlOptions' => ['data-confirm'=>Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method'=>'post', 'class'=>'btn btn-danger'], 'icon' => 'trash'],
+        ['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id' => $model->id]), 'icon' => 'eye', 'htmlOptions' => ['class' => 'btn btn-info']],
+        ['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id' => $model->id]), 'htmlOptions' => ['data-confirm' => Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method' => 'post', 'class' => 'btn btn-danger'], 'icon' => 'trash'],
     ];
 } ?>
 
@@ -46,7 +46,7 @@ $attributes = [
 		'value' => function ($model) {
 			$articleTitle = isset($model->like->article) ? $model->like->article->title : '-';
             if ($articleTitle != '-') {
-                return Html::a($articleTitle, ['admin/view', 'id'=>$model->like->article_id], ['title'=>$articleTitle, 'class'=>'modal-btn']);
+                return Html::a($articleTitle, ['admin/view', 'id' => $model->like->article_id], ['title' => $articleTitle, 'class' => 'modal-btn']);
             }
 			return $articleTitle;
 		},
@@ -71,7 +71,7 @@ $attributes = [
 echo DetailView::widget([
 	'model' => $model,
 	'options' => [
-		'class'=>'table table-striped detail-view',
+		'class' => 'table table-striped detail-view',
 	],
 	'attributes' => $attributes,
 ]); ?>

@@ -31,7 +31,6 @@
 	],
 	"require": {
 		"php": "~7.0",
-		"yiisoft/yii2": "~2.0.13",
 		"ommu/yii2-dropzone": "*"
 	},
 	"autoload": {

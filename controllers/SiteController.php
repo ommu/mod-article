@@ -125,7 +125,7 @@ class SiteController extends Controller
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Articles success created.'));
                 return $this->redirect(['manage']);
-                //return $this->redirect(['view', 'id'=>$model->article_id]);
+                //return $this->redirect(['view', 'id' => $model->article_id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
@@ -161,7 +161,7 @@ class SiteController extends Controller
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', Yii::t('app', 'Articles success updated.'));
                 return $this->redirect(['manage']);
-                //return $this->redirect(['view', 'id'=>$model->article_id]);
+                //return $this->redirect(['view', 'id' => $model->article_id]);
 
             } else {
                 if (Yii::$app->request->isAjax) {
@@ -189,7 +189,7 @@ class SiteController extends Controller
 	{
 		//menampilkan data media
 		$searchModel = new ArticleMediaSearch();
-		$query = ArticleMediaModel::find()->where(['t.article_id'=>$id,'t.publish'=>1])->alias('t');
+		$query = ArticleMediaModel::find()->where(['t.article_id' => $id,'t.publish' => 1])->alias('t');
 		$query->joinWith(['article article']);
 		$dataProvider = new ActiveDataProvider([
 			'query' => $query,
@@ -206,7 +206,7 @@ class SiteController extends Controller
         $columns = $searchModel->getGridColumn($cols);
 		//menampilkan data file
 		$searchModel1 = new ArticleFilesSearch();
-		$query1 = ArticleFilesModel::find()->where(['t.article_id'=>$id,'t.publish'=>1])->alias('t');
+		$query1 = ArticleFilesModel::find()->where(['t.article_id' => $id,'t.publish' => 1])->alias('t');
 		$query1->joinWith(['article article']);
 		$dataProvider1 = new ActiveDataProvider([
 			'query' => $query1,
@@ -226,7 +226,7 @@ class SiteController extends Controller
 		$model = $this->findModel($id);
 		//related article
 		$dataProvider2 = new ActiveDataProvider([
-			'query' => Articles::find()->where(['cat_id'=>$model->cat_id])->limit(5),
+			'query' => Articles::find()->where(['cat_id' => $model->cat_id])->limit(5),
 			'pagination' => false,
 		]);
 		

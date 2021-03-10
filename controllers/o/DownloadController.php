@@ -80,7 +80,7 @@ class DownloadController extends Controller
 	{
         $searchModel = new ArticleDownloadsSearch();
         if (($article = Yii::$app->request->get('article')) != null) {
-            $searchModel = new ArticleDownloadsSearch(['articleId'=>$article]);
+            $searchModel = new ArticleDownloadsSearch(['articleId' => $article]);
         }
 		$dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -105,7 +105,7 @@ class DownloadController extends Controller
             if ($file->article->category->single_file || $setting->media_file_limit == 1) {
                 unset($this->subMenu['document']);
             }
-		}
+        }
         if (($user = Yii::$app->request->get('user')) != null) {
             $user = \app\models\Users::findOne($user);
         }
@@ -120,7 +120,7 @@ class DownloadController extends Controller
             if ($article->category->single_file || $setting->media_file_limit == 1) {
                 unset($this->subMenu['document']);
             }
-		}
+        }
 
 		$this->view->title = Yii::t('app', 'Downloads');
 		$this->view->description = '';
@@ -154,7 +154,7 @@ class DownloadController extends Controller
             if ($model->file->article->category->single_file || $setting->media_file_limit == 1) {
 				unset($this->subMenu['document']);
             }
-		}
+        }
 
 		$this->view->title = Yii::t('app', 'Detail Download: {file-id}', ['file-id' => $model->file->file_filename]);
 		$this->view->description = '';
@@ -176,7 +176,7 @@ class DownloadController extends Controller
 		$model->delete();
 
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Article download success deleted.'));
-		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article'=>$model->file->article_id]);
+		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article' => $model->file->article_id]);
 	}
 
 	/**

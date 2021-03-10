@@ -102,7 +102,7 @@ class DownloadController extends Controller
             if ($download->file->article->category->single_file || $setting->media_file_limit == 1) {
                 unset($this->subMenu['document']);
             }
-		}
+        }
 
 		$this->view->title = Yii::t('app', 'Download Histories');
 		$this->view->description = '';
@@ -134,7 +134,7 @@ class DownloadController extends Controller
             if ($model->download->file->article->category->single_file || $setting->media_file_limit == 1) {
 				unset($this->subMenu['document']);
             }
-		}
+        }
 
 		$this->view->title = Yii::t('app', 'Detail Download History: {download-id}', ['download-id' => $model->download->file->file_filename]);
 		$this->view->description = '';
@@ -156,7 +156,7 @@ class DownloadController extends Controller
 		$model->delete();
 
 		Yii::$app->session->setFlash('success', Yii::t('app', 'Article download history success deleted.'));
-		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'download'=>$model->download_id]);
+		return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'download' => $model->download_id]);
 	}
 
 	/**

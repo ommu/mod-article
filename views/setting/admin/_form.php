@@ -23,7 +23,7 @@ use ommu\article\models\ArticleCategory;
 <div class="article-setting-form">
 
 <?php $form = ActiveForm::begin([
-	'options' => ['class'=>'form-horizontal form-label-left'],
+	'options' => ['class' => 'form-horizontal form-label-left'],
 	'enableClientValidation' => false,
 	'enableAjaxValidation' => false,
 	//'enableClientScript' => true,
@@ -41,7 +41,7 @@ if ($model->isNewRecord && !$model->getErrors()) {
 	$model->license = $model->licenseCode();
 }
 echo $form->field($model, 'license')
-	->textInput(['maxlength'=>true])
+	->textInput(['maxlength' => true])
 	->label($model->getAttributeLabel('license'))
 	->hint(Yii::t('app', 'Enter the your license key that is provided to you when you purchased this plugin. If you do not know your license key, please contact support team.').'<br/>'.Yii::t('app', 'Format: XXXX-XXXX-XXXX-XXXX')); ?>
 
@@ -52,11 +52,11 @@ echo $form->field($model, 'permission', ['template' => '{label}{beginWrapper}{hi
 	->hint(Yii::t('app', 'Select whether or not you want to let the public (visitors that are not logged-in) to view the following sections of your social network. In some cases (such as Profiles, Blogs, and Albums), if you have given them the option, your users will be able to make their pages private even though you have made them publically viewable here. For more permissions settings, please visit the General Settings page.')); ?>
 
 <?php echo $form->field($model, 'meta_description')
-	->textarea(['rows'=>6, 'cols'=>50])
+	->textarea(['rows' => 6, 'cols' => 50])
 	->label($model->getAttributeLabel('meta_description')); ?>
 
 <?php echo $form->field($model, 'meta_keyword')
-	->textarea(['rows'=>6, 'cols'=>50])
+	->textarea(['rows' => 6, 'cols' => 50])
 	->label($model->getAttributeLabel('meta_keyword')); ?>
 
 <hr/>
@@ -67,7 +67,7 @@ echo $form->field($model, 'headline')
 	->label($model->getAttributeLabel('headline')); ?>
 
 <?php echo $form->field($model, 'headline_limit')
-	->textInput(['type'=>'number'])
+	->textInput(['type' => 'number'])
 	->label($model->getAttributeLabel('headline_limit')); ?>
 
 <?php $category = ArticleCategory::getCategory();
@@ -78,7 +78,7 @@ echo $form->field($model, 'headline_category')
 <hr/>
 
 <?php echo $form->field($model, 'media_image_limit')
-	->textInput(['type'=>'number'])
+	->textInput(['type' => 'number'])
 	->label($model->getAttributeLabel('media_image_limit')); ?>
 
 <?php $mediaImageResize = $model::getMediaImageResize();
@@ -86,37 +86,37 @@ echo $form->field($model, 'media_image_resize')
 	->radioList($mediaImageResize)
 	->label($model->getAttributeLabel('media_image_resize')); ?>
 
-<?php $media_image_resize_size_height = $form->field($model, 'media_image_resize_size[height]', ['template' => '{beginWrapper}{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper'=>'col-sm-5 col-xs-6'], 'options' => ['tag' => null]])
-	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('height')])
+<?php $media_image_resize_size_height = $form->field($model, 'media_image_resize_size[height]', ['template' => '{beginWrapper}{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper' => 'col-sm-5 col-xs-6'], 'options' => ['tag' => null]])
+	->textInput(['type' => 'number', 'min' => 0, 'maxlength' => '4', 'placeholder' => $model->getAttributeLabel('height')])
 	->label($model->getAttributeLabel('media_image_resize_size[height]')); ?>
 
-<?php echo $form->field($model, 'media_image_resize_size[width]', ['template' => '{hint}{beginWrapper}{input}{endWrapper}'.$media_image_resize_size_height.'{error}', 'horizontalCssClasses' => ['wrapper'=>'col-sm-4 col-xs-6 col-sm-offset-3', 'error'=>'col-sm-9 col-xs-12 col-sm-offset-3', 'hint'=>'col-sm-9 col-xs-12 col-sm-offset-3']])
-	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('width')])
+<?php echo $form->field($model, 'media_image_resize_size[width]', ['template' => '{hint}{beginWrapper}{input}{endWrapper}'.$media_image_resize_size_height.'{error}', 'horizontalCssClasses' => ['wrapper' => 'col-sm-4 col-xs-6 col-sm-offset-3', 'error' => 'col-sm-9 col-xs-12 col-sm-offset-3', 'hint' => 'col-sm-9 col-xs-12 col-sm-offset-3']])
+	->textInput(['type' => 'number', 'min' => 0, 'maxlength' => '4', 'placeholder' => $model->getAttributeLabel('width')])
 	->label($model->getAttributeLabel('media_image_resize_size'))
 	->hint(Yii::t('app', 'If you have selected "Yes" above, please input the maximum dimensions for the project image. If your users upload a image that is larger than these dimensions, the server will attempt to scale them down automatically. This feature requires that your PHP server is compiled with support for the GD Libraries.')); ?>
 
-<?php $media_image_view_size_small_height = $form->field($model, 'media_image_view_size[small][height]', ['template' => '{beginWrapper}{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper'=>'col-sm-5 col-xs-6'], 'options' => ['tag' => null]])
-	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('height')])
+<?php $media_image_view_size_small_height = $form->field($model, 'media_image_view_size[small][height]', ['template' => '{beginWrapper}{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper' => 'col-sm-5 col-xs-6'], 'options' => ['tag' => null]])
+	->textInput(['type' => 'number', 'min' => 0, 'maxlength' => '4', 'placeholder' => $model->getAttributeLabel('height')])
 	->label($model->getAttributeLabel('media_image_view_size[small][height]')); ?>
 
-<?php echo $form->field($model, 'media_image_view_size[small][width]', ['template' => '{label}<div class="h5 col-sm-9 col-xs-12">'.$model->getAttributeLabel('media_image_view_size[small]').'</div>{beginWrapper}{input}{endWrapper}'.$media_image_view_size_small_height.'{error}', 'horizontalCssClasses' => ['wrapper'=>'col-sm-4 col-xs-6 col-sm-offset-3', 'error'=>'col-sm-9 col-xs-12 col-sm-offset-3']])
-	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('width')])
+<?php echo $form->field($model, 'media_image_view_size[small][width]', ['template' => '{label}<div class="h5 col-sm-9 col-xs-12">'.$model->getAttributeLabel('media_image_view_size[small]').'</div>{beginWrapper}{input}{endWrapper}'.$media_image_view_size_small_height.'{error}', 'horizontalCssClasses' => ['wrapper' => 'col-sm-4 col-xs-6 col-sm-offset-3', 'error' => 'col-sm-9 col-xs-12 col-sm-offset-3']])
+	->textInput(['type' => 'number', 'min' => 0, 'maxlength' => '4', 'placeholder' => $model->getAttributeLabel('width')])
 	->label($model->getAttributeLabel('media_image_view_size')); ?>
 
-<?php $media_image_view_size_medium_height = $form->field($model, 'media_image_view_size[medium][height]', ['template' => '{beginWrapper}{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper'=>'col-sm-5 col-xs-6'], 'options' => ['tag' => null]])
-	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('height')])
+<?php $media_image_view_size_medium_height = $form->field($model, 'media_image_view_size[medium][height]', ['template' => '{beginWrapper}{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper' => 'col-sm-5 col-xs-6'], 'options' => ['tag' => null]])
+	->textInput(['type' => 'number', 'min' => 0, 'maxlength' => '4', 'placeholder' => $model->getAttributeLabel('height')])
 	->label($model->getAttributeLabel('media_image_view_size[medium][height]')); ?>
 
-<?php echo $form->field($model, 'media_image_view_size[medium][width]', ['template' => '<div class="h5 col-sm-9 col-xs-12 col-sm-offset-3 mt-0">'.$model->getAttributeLabel('media_image_view_size[medium]').'</div>{beginWrapper}{input}{endWrapper}'.$media_image_view_size_medium_height.'{error}', 'horizontalCssClasses' => ['wrapper'=>'col-sm-4 col-xs-6 col-sm-offset-3', 'error'=>'col-sm-9 col-xs-12 col-sm-offset-3']])
-	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('width')])
+<?php echo $form->field($model, 'media_image_view_size[medium][width]', ['template' => '<div class="h5 col-sm-9 col-xs-12 col-sm-offset-3 mt-0">'.$model->getAttributeLabel('media_image_view_size[medium]').'</div>{beginWrapper}{input}{endWrapper}'.$media_image_view_size_medium_height.'{error}', 'horizontalCssClasses' => ['wrapper' => 'col-sm-4 col-xs-6 col-sm-offset-3', 'error' => 'col-sm-9 col-xs-12 col-sm-offset-3']])
+	->textInput(['type' => 'number', 'min' => 0, 'maxlength' => '4', 'placeholder' => $model->getAttributeLabel('width')])
 	->label($model->getAttributeLabel('media_image_view_size[medium][width]')); ?>
 
-<?php $media_image_view_size_large_height = $form->field($model, 'media_image_view_size[large][height]', ['template' => '{beginWrapper}{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper'=>'col-sm-5 col-xs-6'], 'options' => ['tag' => null]])
-	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('height')])
+<?php $media_image_view_size_large_height = $form->field($model, 'media_image_view_size[large][height]', ['template' => '{beginWrapper}{input}{endWrapper}', 'horizontalCssClasses' => ['wrapper' => 'col-sm-5 col-xs-6'], 'options' => ['tag' => null]])
+	->textInput(['type' => 'number', 'min' => 0, 'maxlength' => '4', 'placeholder' => $model->getAttributeLabel('height')])
 	->label($model->getAttributeLabel('media_image_view_size[large][height]')); ?>
 
-<?php echo $form->field($model, 'media_image_view_size[large][width]', ['template' => '<div class="h5 col-sm-9 col-xs-12 col-sm-offset-3 mt-0">'.$model->getAttributeLabel('media_image_view_size[large]').'</div>{beginWrapper}{input}{endWrapper}'.$media_image_view_size_large_height.'{error}', 'horizontalCssClasses' => ['wrapper'=>'col-sm-4 col-xs-6 col-sm-offset-3', 'error'=>'col-sm-9 col-xs-12 col-sm-offset-3']])
-	->textInput(['type'=>'number', 'min'=>0, 'maxlength'=>'4', 'placeholder'=>$model->getAttributeLabel('width')])
+<?php echo $form->field($model, 'media_image_view_size[large][width]', ['template' => '<div class="h5 col-sm-9 col-xs-12 col-sm-offset-3 mt-0">'.$model->getAttributeLabel('media_image_view_size[large]').'</div>{beginWrapper}{input}{endWrapper}'.$media_image_view_size_large_height.'{error}', 'horizontalCssClasses' => ['wrapper' => 'col-sm-4 col-xs-6 col-sm-offset-3', 'error' => 'col-sm-9 col-xs-12 col-sm-offset-3']])
+	->textInput(['type' => 'number', 'min' => 0, 'maxlength' => '4', 'placeholder' => $model->getAttributeLabel('width')])
 	->label($model->getAttributeLabel('media_image_view_size[large][width]')); ?>
 
 <?php echo $form->field($model, 'media_image_type')
@@ -127,7 +127,7 @@ echo $form->field($model, 'media_image_resize')
 <hr/>
 
 <?php echo $form->field($model, 'media_file_limit')
-	->textInput(['type'=>'number'])
+	->textInput(['type' => 'number'])
 	->label($model->getAttributeLabel('media_file_limit')); ?>
 
 <?php echo $form->field($model, 'media_file_type')

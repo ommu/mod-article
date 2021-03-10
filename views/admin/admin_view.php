@@ -35,7 +35,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'publish',
-		'value' => $model->quickAction(Url::to(['publish', 'id'=>$model->primaryKey]), $model->publish),
+		'value' => $model->quickAction(Url::to(['publish', 'id' => $model->primaryKey]), $model->publish),
 		'format' => 'raw',
 		'visible' => !$small,
 	],
@@ -44,7 +44,7 @@ $attributes = [
 		'value' => function ($model) {
 			$categoryName = isset($model->category) ? $model->category->title->message : '-';
             if ($categoryName != '-') {
-                return Html::a($categoryName, ['setting/category/view', 'id'=>$model->cat_id], ['title'=>$categoryName, 'class'=>'modal-btn']);
+                return Html::a($categoryName, ['setting/category/view', 'id' => $model->cat_id], ['title' => $categoryName, 'class' => 'modal-btn']);
             }
 			return $categoryName;
 		},
@@ -55,7 +55,7 @@ $attributes = [
 		'attribute' => 'image',
 		'value' => function ($model) {
 			$uploadPath = join('/', [Articles::getUploadPath(false), $model->id]);
-			return $model->cover ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->cover])), ['alt'=>$model->cover, 'class'=>'d-block border border-width-3 mb-3']).$model->cover : '-';
+			return $model->cover ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->cover])), ['alt' => $model->cover, 'class' => 'd-block border border-width-3 mb-4']).$model->cover : '-';
 		},
 		'format' => 'html',
 		'visible' => !$small,
@@ -70,7 +70,7 @@ $attributes = [
 		'attribute' => 'file',
 		'value' => function ($model) {
 			$uploadPath = join('/', [Articles::getUploadPath(false), $model->id]);
-			return $model->document ? Html::a($model->document, Url::to(join('/', ['@webpublic', $uploadPath, $model->document])), ['title'=>$model->document, 'target'=>'_blank']) : '-';
+			return $model->document ? Html::a($model->document, Url::to(join('/', ['@webpublic', $uploadPath, $model->document])), ['title' => $model->document, 'target' => '_blank']) : '-';
 		},
 		'format' => 'raw',
 		'visible' => !$small && $model->category->single_file ? true : false,
@@ -79,7 +79,7 @@ $attributes = [
 		'attribute' => 'medias',
 		'value' => function ($model) {
 			$medias = $model->getMedias('count');
-			return Html::a($medias, ['o/image/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} medias', ['count'=>$media])]);
+			return Html::a($medias, ['o/image/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} medias', ['count' => $media])]);
 		},
 		'format' => 'html',
 		'visible' => !$small && !$model->category->single_file ? true : false,
@@ -88,7 +88,7 @@ $attributes = [
 		'attribute' => 'files',
 		'value' => function ($model) {
 			$files = $model->getFiles(true);
-			return Html::a($files, ['o/file/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} files', ['count'=>$files])]);
+			return Html::a($files, ['o/file/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} files', ['count' => $files])]);
 		},
 		'format' => 'html',
 		'visible' => !$small && !$model->category->single_file ? true : false,
@@ -112,7 +112,7 @@ $attributes = [
             if (!in_array($model->cat_id, $headlineCategory)) {
                 return '-';
             }
-			return $model->quickAction(Url::to(['headline', 'id'=>$model->primaryKey]), $model->headline, 'Yes,No', true);
+			return $model->quickAction(Url::to(['headline', 'id' => $model->primaryKey]), $model->headline, 'Yes,No', true);
 		},
 		'format' => 'raw',
 		'visible' => !$small,
@@ -126,7 +126,7 @@ $attributes = [
 		'attribute' => 'views',
 		'value' => function ($model) {
 			$views = $model->getViews(true);
-			return Html::a($views, ['o/view/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} views', ['count'=>$views])]);
+			return Html::a($views, ['o/view/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} views', ['count' => $views])]);
 		},
 		'format' => 'html',
 		'visible' => !$small,
@@ -135,7 +135,7 @@ $attributes = [
 		'attribute' => 'likes',
 		'value' => function ($model) {
 			$likes = $model->getLikes(true);
-			return Html::a($likes, ['o/like/manage', 'article'=>$model->primaryKey, 'publish'=>1], ['title'=>Yii::t('app', '{count} likes', ['count'=>$likes])]);
+			return Html::a($likes, ['o/like/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} likes', ['count' => $likes])]);
 		},
 		'format' => 'html',
 		'visible' => !$small,
@@ -167,7 +167,7 @@ $attributes = [
 	],
 	[
 		'attribute' => '',
-		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id'=>$model->primaryKey], ['title'=>Yii::t('app', 'Update'), 'class'=>'btn btn-success btn-sm']),
+		'value' => Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->primaryKey], ['title' => Yii::t('app', 'Update'), 'class' => 'btn btn-primary btn-sm']),
 		'format' => 'html',
 		'visible' => !$small && Yii::$app->request->isAjax ? true : false,
 	],
@@ -176,7 +176,7 @@ $attributes = [
 echo DetailView::widget([
 	'model' => $model,
 	'options' => [
-		'class'=>'table table-striped detail-view',
+		'class' => 'table table-striped detail-view',
 	],
 	'attributes' => $attributes,
 ]); ?>

@@ -48,22 +48,22 @@ $redactorOptions = [
 
 <?php //echo $form->errorSummary($model);?>
 <?php $uploadPath = join('/', [Articles::getUploadPath(false), $model->article_id]);
-$mediaFilename = !$model->isNewRecord && $model->old_media_filename != '' ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_media_filename])), ['alt'=>$model->old_media_filename, 'class'=>'d-block border border-width-3 mb-3']).$model->old_media_filename.'<hr/>' : '';
+$mediaFilename = !$model->isNewRecord && $model->old_media_filename != '' ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->old_media_filename])), ['alt' => $model->old_media_filename, 'class' => 'd-block border border-width-3 mb-4']).$model->old_media_filename.'<hr/>' : '';
 echo $form->field($model, 'media_filename', ['template' => '{label}{beginWrapper}<div>'.$mediaFilename.'</div>{input}{error}{hint}{endWrapper}'])
 	->fileInput()
 	->label($model->getAttributeLabel('media_filename')); ?>
 
 <?php echo $form->field($model, 'caption')
-	->textInput(['maxlength'=>true])
+	->textInput(['maxlength' => true])
 	->label($model->getAttributeLabel('caption')); ?>
 
 <?php echo $form->field($model, 'description')
-	->textarea(['rows'=>6, 'cols'=>50])
+	->textarea(['rows' => 6, 'cols' => 50])
 	->widget(Redactor::className(), ['clientOptions' => $redactorOptions])
 	->label($model->getAttributeLabel('description')); ?>
 
 <?php echo $form->field($model, 'orders')
-	->textInput(['type'=>'number'])
+	->textInput(['type' => 'number'])
 	->label($model->getAttributeLabel('orders')); ?>
 
 <?php echo $form->field($model, 'cover')

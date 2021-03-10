@@ -105,7 +105,7 @@ class LikeController extends Controller
             if ($article->category->single_file || $setting->media_file_limit == 1) {
                 unset($this->subMenu['document']);
             }
-		}
+        }
         if (($user = Yii::$app->request->get('user')) != null) {
             $user = \app\models\Users::findOne($user);
         }
@@ -141,7 +141,7 @@ class LikeController extends Controller
             if ($model->article->category->single_file || $setting->media_file_limit == 1) {
 				unset($this->subMenu['document']);
             }
-		}
+        }
 
 		$this->view->title = Yii::t('app', 'Detail Like: {article-id}', ['article-id' => $model->article->title]);
 		$this->view->description = '';
@@ -164,7 +164,7 @@ class LikeController extends Controller
 
         if ($model->save(false, ['publish'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article like success deleted.'));
-			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article'=>$model->article_id]);
+			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article' => $model->article_id]);
 		}
 	}
 
@@ -182,7 +182,7 @@ class LikeController extends Controller
 
         if ($model->save(false, ['publish'])) {
 			Yii::$app->session->setFlash('success', Yii::t('app', 'Article like success updated.'));
-			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article'=>$model->article_id]);
+			return $this->redirect(Yii::$app->request->referrer ?: ['manage', 'article' => $model->article_id]);
 		}
 	}
 

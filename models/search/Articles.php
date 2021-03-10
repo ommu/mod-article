@@ -73,14 +73,15 @@ class Articles extends ArticlesModel
 			'tags tags',
 			'tags.tag tagsRltn',
 			'view view',
-		])
-		->groupBy(['id']);
+		]);
 
-		// add conditions that should always apply here
+		$query->groupBy(['id']);
+
+        // add conditions that should always apply here
 		$dataParams = [
 			'query' => $query,
 		];
-		// disable pagination agar data pada api tampil semua
+        // disable pagination agar data pada api tampil semua
         if (isset($params['pagination']) && $params['pagination'] == 0) {
             $dataParams['pagination'] = false;
         }
@@ -134,10 +135,10 @@ class Articles extends ArticlesModel
 		$this->load($params);
 
         if (!$this->validate()) {
-			// uncomment the following line if you do not want to return any records when validation fails
-			// $query->where('0=1');
-			return $dataProvider;
-		}
+            // uncomment the following line if you do not want to return any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
 
 		// grid filtering conditions
 		$query->andFilterWhere([
@@ -160,7 +161,7 @@ class Articles extends ArticlesModel
             } else if ($params['status'] == 'pending') {
                 $query->andFilterWhere(['>', 'cast(published_date as date)', Yii::$app->formatter->asDate('now', 'php:Y-m-d')]);
             }
-		} else {
+        } else {
             if (isset($params['trash'])) {
                 $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
             } else {
