@@ -20,7 +20,8 @@ use yii\widgets\DetailView;
 use ommu\article\models\Articles;
 
 if (!$small) {
-    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Articles'), 'url' => ['index']];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Publication'), 'url' => ['/admin/page/admin/index']];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Article'), 'url' => ['index']];
     $this->params['breadcrumbs'][] = $model->title;
 } ?>
 
