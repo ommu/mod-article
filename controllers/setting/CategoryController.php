@@ -102,6 +102,7 @@ class CategoryController extends Controller
 			'searchModel' => $searchModel,
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
+			'breadcrumb' => true,
 		]);
 	}
 
