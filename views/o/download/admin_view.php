@@ -19,8 +19,13 @@ use yii\helpers\Url;
 use yii\widgets\DetailView;
 
 if (!$small) {
-    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Downloads'), 'url' => ['index']];
-    $this->params['breadcrumbs'][] = $model->file->file_filename;
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Publication'), 'url' => ['/admin/page/admin/index']];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Article'), 'url' => ['admin/index']];
+    $this->params['breadcrumbs'][] = ['label' => $model->file->article->title, 'url' => ['admin/view', 'id' => $model->file->article_id]];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Document'), 'url' => ['o/file/manage', 'article' => $model->file->article_id]];
+    $this->params['breadcrumbs'][] = ['label' => $model->file->file_filename, 'url' => ['o/file/view', 'id' => $model->file_id]];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Download'), 'url' => ['manage', 'file' => $model->file_id]];
+    $this->params['breadcrumbs'][] = Yii::t('app', 'Detail');
 
     $this->params['menu']['content'] = [
         ['label' => Yii::t('app', 'Detail'), 'url' => Url::to(['view', 'id' => $model->id]), 'icon' => 'eye', 'htmlOptions' => ['class' => 'btn btn-info']],
