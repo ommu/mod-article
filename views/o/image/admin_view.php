@@ -27,7 +27,6 @@ if (!$small) {
     $this->params['breadcrumbs'][] = $model->media_filename;
 
     $this->params['menu']['content'] = [
-        ['label' => Yii::t('app', 'Detail Photo'), 'url' => Url::to(['view', 'id' => $model->id]), 'icon' => 'eye', 'htmlOptions' => ['class' => 'btn btn-info']],
         ['label' => Yii::t('app', 'Update Photo'), 'url' => Url::to(['update', 'id' => $model->id]), 'icon' => 'pencil', 'htmlOptions' => ['class' => 'btn btn-primary']],
         ['label' => Yii::t('app', 'Delete Photo'), 'url' => Url::to(['delete', 'id' => $model->id]), 'htmlOptions' => ['data-confirm' => Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method' => 'post', 'class' => 'btn btn-danger'], 'icon' => 'trash'],
     ];
