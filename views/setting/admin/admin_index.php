@@ -16,7 +16,8 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Settings'), 'url' => ['/setting/update']];
+$this->params['breadcrumbs'][] = Yii::t('app', 'Article');
 ?>
 
 <?php echo $this->renderWidget('/setting/category/admin_manage', [
@@ -24,9 +25,11 @@ $this->params['breadcrumbs'][] = $this->title;
 	'searchModel' => $searchModel,
 	'dataProvider' => $dataProvider,
 	'columns' => $columns,
+	'breadcrumb' => false,
 ]); ?>
 
 <?php echo $this->renderWidget(!$model->isNewRecord ? 'admin_view' : 'admin_update', [
 	'contentMenu' => true,
 	'model' => $model,
+	'breadcrumb' => false,
 ]); ?>
