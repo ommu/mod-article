@@ -20,7 +20,10 @@ use yii\widgets\DetailView;
 use ommu\article\models\Articles;
 
 if (!$small) {
-    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Photos'), 'url' => ['index']];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Publication'), 'url' => ['/admin/page/admin/index']];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Article'), 'url' => ['admin/index']];
+    $this->params['breadcrumbs'][] = ['label' => $model->article->title, 'url' => ['admin/view', 'id' => $model->article_id]];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Photo'), 'url' => ['manage', 'article' => $model->article_id]];
     $this->params['breadcrumbs'][] = $model->media_filename;
 
     $this->params['menu']['content'] = [

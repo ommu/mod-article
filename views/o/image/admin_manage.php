@@ -21,6 +21,11 @@ use app\components\grid\GridView;
 use yii\widgets\Pjax;
 use devgroup\dropzone\DropZone;
 
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Publication'), 'url' => ['/admin/page/admin/index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Article'), 'url' => ['admin/index']];
+if ($article != null) {
+    $this->params['breadcrumbs'][] = ['label' => $article->title, 'url' => ['admin/view', 'id' => $article->id]];
+}
 $this->params['breadcrumbs'][] = $this->title;
 
 if (($id = Yii::$app->request->get('article')) != null) {
