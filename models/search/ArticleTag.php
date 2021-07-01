@@ -8,7 +8,7 @@
  * @contact (+62)856-299-4114
  * @copyright Copyright (c) 2017 OMMU (www.ommu.id)
  * @created date 20 October 2017, 11:00 WIB
- * @modified date 13 May 2019, 21:01 WIB
+ * @modified date 1 July 2021, 11:24 WIB
  * @link https://github.com/ommu/mod-article
  *
  */
@@ -67,10 +67,19 @@ class ArticleTag extends ArticleTagModel
             $query = ArticleTagModel::find()->alias('t')->select($column);
         }
 		$query->joinWith([
-			'tag tag', 
-			'article article', 
-			'creation creation'
+			// 'tag tag', 
+			// 'article article', 
+			// 'creation creation'
 		]);
+        if ((isset($params['sort']) && in_array($params['sort'], ['tagBody', '-tagBody'])) || (isset($params['tagBody']) && $params['tagBody'] != '')) {
+            $query->joinWith(['tag tag']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['articleTitle', '-articleTitle'])) || (isset($params['articleTitle']) && $params['articleTitle'] != '')) {
+            $query->joinWith(['article article']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')) {
+            $query->joinWith(['creation creation']);
+        }
 
 		$query->groupBy(['id']);
 
@@ -114,7 +123,7 @@ class ArticleTag extends ArticleTagModel
         }
 
 		// grid filtering conditions
-		$query->andFilterWhere([
+        $query->andFilterWhere([
 			't.id' => $this->id,
 			't.article_id' => isset($params['article']) ? $params['article'] : $this->article_id,
 			't.tag_id' => isset($params['tag']) ? $params['tag'] : $this->tag_id,

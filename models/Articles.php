@@ -589,7 +589,7 @@ class Articles extends \app\components\ActiveRecord
 		// $this->categoryName = isset($this->category) ? $this->category->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
-		$this->tag = implode(',', $this->getTags(true, 'title'));
+		$this->tag = implode(', ', $this->getTags(true, 'title'));
 		$this->old_image = $this->cover;
 		$this->old_file = $this->document;
 	}
