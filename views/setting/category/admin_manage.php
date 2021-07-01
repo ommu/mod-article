@@ -22,7 +22,7 @@ use yii\widgets\Pjax;
 
 if ($breadcrumb) {
     $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Settings'), 'url' => ['/setting/update']];
-    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Article'), 'url' => ['admin/index']];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Article'), 'url' => ['setting/admin/index']];
     $this->params['breadcrumbs'][] = $this->title;
 }
 

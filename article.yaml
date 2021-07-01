@@ -59,3 +59,7 @@ setting_submenu:
     label: Categories
     url: ['setting/category']
     select: controller
+  tag:
+    label: Tags
+    url: ['o/tag']
+    select: controller

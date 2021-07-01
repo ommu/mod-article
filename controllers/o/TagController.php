@@ -42,6 +42,8 @@ class TagController extends Controller
 
         if (Yii::$app->request->get('id') || Yii::$app->request->get('article')) {
             $this->subMenu = $this->module->params['article_submenu'];
+        } else {
+            $this->subMenu = $this->module->params['setting_submenu'];
         }
 	}
 
@@ -107,6 +109,9 @@ class TagController extends Controller
         }
 
 		$this->view->title = Yii::t('app', 'Tags');
+        if ($tag) {
+            $this->view->title = Yii::t('app', 'Tag: {tag}', ['tag' => $tag->body]);
+        }
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->render('admin_manage', [

@@ -30,6 +30,7 @@ namespace ommu\article\models;
 use Yii;
 use app\models\CoreTags;
 use app\models\Users;
+use yii\helpers\Html;
 
 class ArticleTag extends \app\components\ActiveRecord
 {
@@ -38,6 +39,7 @@ class ArticleTag extends \app\components\ActiveRecord
 	public $tagBody;
 	public $articleTitle;
 	public $creationDisplayname;
+	public $articles;
 
 	/**
 	 * @return string the associated database table name
@@ -130,14 +132,6 @@ class ArticleTag extends \app\components\ActiveRecord
 			'class' => 'app\components\grid\SerialColumn',
 			'contentOptions' => ['class' => 'text-center'],
 		];
-		$this->templateColumns['articleTitle'] = [
-			'attribute' => 'articleTitle',
-			'value' => function($model, $key, $index, $column) {
-				return isset($model->article) ? $model->article->title : '-';
-				// return $model->articleTitle;
-			},
-			'visible' => !Yii::$app->request->get('article') && !Yii::$app->request->get('id') ? true : false,
-		];
 		$this->templateColumns['tagBody'] = [
 			'attribute' => 'tagBody',
 			'value' => function($model, $key, $index, $column) {
@@ -145,6 +139,25 @@ class ArticleTag extends \app\components\ActiveRecord
 				// return $model->tagBody;
 			},
 			'visible' => !Yii::$app->request->get('tag') ? true : false,
+		];
+		$this->templateColumns['articleTitle'] = [
+			'attribute' => 'articleTitle',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->article) ? $model->article->title : '-';
+				// return $model->articleTitle;
+			},
+			'visible' => Yii::$app->request->get('tag') ? true : false,
+		];
+		$this->templateColumns['articles'] = [
+			'attribute' => 'articles',
+			'value' => function($model, $key, $index, $column) {
+                $articles = $model->articles;
+				return Html::a($articles, ['manage', 'tag' => $model->tag_id], ['title' => Yii::t('app', '{count} articles', ['count' => $articles]), 'data-pjax' => 0]);
+			},
+			'filter' => false,
+            'contentOptions' => ['class' => 'text-center'],
+			'format' => 'raw',
+			'visible' => !Yii::$app->request->get('tag') && !Yii::$app->request->get('article') ? true : false,
 		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',

@@ -19,6 +19,7 @@ use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use ommu\article\models\ArticleTag as ArticleTagModel;
+use yii\helpers\ArrayHelper;
 
 class ArticleTag extends ArticleTagModel
 {
@@ -62,9 +63,14 @@ class ArticleTag extends ArticleTagModel
 	public function search($params, $column=null)
 	{
         if (!($column && is_array($column))) {
-            $query = ArticleTagModel::find()->alias('t');
+            $query = ArticleTagModel::find()
+                ->alias('t')
+                ->select(['*', 'count(t.id) as articles']);
         } else {
-            $query = ArticleTagModel::find()->alias('t')->select($column);
+            $column = ArrayHelper::merge($column, ['count(t.id) as articles']);
+            $query = ArticleTagModel::find()
+                ->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			// 'tag tag', 
@@ -81,7 +87,10 @@ class ArticleTag extends ArticleTagModel
             $query->joinWith(['creation creation']);
         }
 
-		$query->groupBy(['id']);
+        $query->groupBy(['tag_id']);
+        if (Yii::$app->request->get('tag') || Yii::$app->request->get('article')) {
+            $query->groupBy(['id']);
+        }
 
         // add conditions that should always apply here
 		$dataParams = [
@@ -105,6 +114,10 @@ class ArticleTag extends ArticleTagModel
 		$attributes['creationDisplayname'] = [
 			'asc' => ['creation.displayname' => SORT_ASC],
 			'desc' => ['creation.displayname' => SORT_DESC],
+		];
+		$attributes['articles'] = [
+			'asc' => ['articles' => SORT_ASC],
+			'desc' => ['articles' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,

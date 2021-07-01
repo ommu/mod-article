@@ -19,12 +19,15 @@ use yii\helpers\Url;
 use app\components\grid\GridView;
 use yii\widgets\Pjax;
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Publication'), 'url' => ['/admin/page/admin/index']];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Article'), 'url' => ['admin/index']];
 if ($article != null) {
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Publication'), 'url' => ['/admin/page/admin/index']];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Article'), 'url' => ['admin/index']];
     $this->params['breadcrumbs'][] = ['label' => $article->title, 'url' => ['admin/view', 'id' => $article->id]];
+} else {
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Settings'), 'url' => ['/setting/update']];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Article'), 'url' => ['setting/admin/index']];
 }
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = Yii::t('app', 'Tags');
 
 $this->params['menu']['option'] = [
 	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],
@@ -78,7 +81,7 @@ array_push($columnData, [
 			]);
 		},
 	],
-	'template' => '{view} {delete}',
+	'template' => $article || $tag ? '{view} {delete}' : '{delete}',
 ]);
 
 echo GridView::widget([
