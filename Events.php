@@ -49,17 +49,16 @@ class Events extends \yii\base\BaseObject
 					continue;
 				}
 
-				$tagSlug = Inflector::slug($val);
 				$tagFind = CoreTags::find()
 					->select(['tag_id'])
-					->andWhere(['body' => $tagSlug])
+					->andWhere(['body' => Inflector::camelize($val)])
 					->one();
 
                 if ($tagFind != null) {
                     $tag_id = $tagFind->tag_id;
                 } else {
 					$model = new CoreTags();
-					$model->body = $tagSlug;
+					$model->body = $val;
                     if ($model->save()) {
                         $tag_id = $model->tag_id;
                     }
