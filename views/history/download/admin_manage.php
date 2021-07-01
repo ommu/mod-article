@@ -20,7 +20,17 @@ use yii\helpers\Url;
 use app\components\grid\GridView;
 use yii\widgets\Pjax;
 
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Publication'), 'url' => ['/admin/page/admin/index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Article'), 'url' => ['admin/index']];
+if ($download != null) {
+	$this->params['breadcrumbs'][] = ['label' => $download->file->article->title, 'url' => ['admin/view', 'id' => $download->file->article_id]];
+    $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Document'), 'url' => ['o/file/manage', 'article' => $download->file->article_id]];
+    $this->params['breadcrumbs'][] = ['label' => $download->file->file_filename, 'url' => ['o/file/view', 'id' => $download->file_id]];
+	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Download'), 'url' => ['o/download/manage', 'file' => $download->file_id]];
+} else {
+	$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Download'), 'url' => ['o/download/index']];
+}
+$this->params['breadcrumbs'][] = Yii::t('app', 'Histories');
 
 $this->params['menu']['option'] = [
 	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],
