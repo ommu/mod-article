@@ -247,7 +247,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 			'value' => function($model, $key, $index, $column) {
 				return isset($model->parent) ? $model->parent->name_i : '-';
 			},
-			// 'filter' => ArticleCategory::getCategory(),
+			'filter' => ArticleCategory::getCategory(null, 'is_null'),
 		];
 		$this->templateColumns['name_i'] = [
 			'attribute' => 'name_i',
@@ -389,8 +389,12 @@ class ArticleCategory extends \app\components\ActiveRecord
         if ($publish != null) {
             $model->andWhere(['t.publish' => $publish]);
         }
-        if ($parent != null) {
-            $model->andWhere(['t.parent_id' => $parent]);
+        if ($parent == 'is_null') {
+            $model->andWhere(['is', 't.parent_id', null]);
+        } else {
+            if ($parent != null) {
+                $model->andWhere(['t.parent_id' => $parent]);
+            }
         }
 
 		$model = $model->orderBy('title.message ASC')->all();
