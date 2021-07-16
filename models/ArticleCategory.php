@@ -41,6 +41,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\Inflector;
 use app\models\SourceMessage;
+use yii\helpers\ArrayHelper;
 use ommu\article\models\view\ArticleCategory as ArticleCategoryView;
 use app\models\Users;
 
@@ -172,6 +173,65 @@ class ArticleCategory extends \app\components\ActiveRecord
 
 		return self::getArticlesByStatus($this->id, 'pending');
 	}
+
+	/**
+	 * @param $type relation|array|count
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getSubs($type='relation', $publish=1, $inherit=false)
+	{
+        if ($type == 'relation') {
+            $model = $this->hasMany(self::className(), ['parent_id' => 'id'])
+                ->alias('subs');
+
+            if ($publish != null) {
+                return $model->andOnCondition([sprintf('%s.publish', 'subs') => $publish]);
+            } else {
+                return $model->andOnCondition(['IN', sprintf('%s.publish', 'subs'), [0,1]]);
+            }
+        }
+
+		$model = self::find()
+            ->alias('t')
+			->select(['t.id'])
+			->where(['t.parent_id' => $this->id]);
+        if ($publish != null) {
+            if ($publish == 0) {
+                $model->unpublish();
+            } else if ($publish == 1) {
+                $model->published();
+            } else if ($publish == 2) {
+				$model->deleted();
+            }
+		} else {
+            $model->andWhere(['IN', 't.publish', [0,1]]);
+        }
+
+        if ($type == 'array') {
+			$model = $model->all();
+            $subs = ArrayHelper::map($model, 'id', 'id');
+
+            if ($inherit == true) {
+                $inheritSubs = $this->subs;
+                if ($inheritSubs != null) {
+                    $subs = ArrayHelper::merge([$this->id], $this->getSubsInherit($inheritSubs, $subs, $type));
+                }
+            }
+
+			return $subs;
+		}
+
+        $subs = $model->count();
+        if ($inherit == true) {
+            $inheritSubs = $this->subs;
+            if ($inheritSubs != null) {
+                $subs = $subs + $this->getSubsInherit($inheritSubs, $subs, $type);
+            }
+        }
+
+        return $subs ? $subs : 0;
+    }
+
 
 	/**
 	 * @return \yii\db\ActiveQuery
@@ -405,6 +465,27 @@ class ArticleCategory extends \app\components\ActiveRecord
 
 		return $model;
 	}
+
+	/**
+	 * function getSubsInherit
+	 */
+    public function getSubsInherit($subs, $return, $type='array')
+    {
+        if ($subs != null) {
+            foreach ($subs as $sub) {
+                $inheritSubs = $sub->subs;
+                if ($type == 'array') {
+                    $return = ArrayHelper::merge($return, ArrayHelper::map($inheritSubs, 'id', 'id'));
+                } else {
+                    $return = $return + $sub->getSubs('count');
+                }
+                if ($inheritSubs != null) {
+                    $return = $sub->getSubsInherit($inheritSubs, $return, $type);
+                }
+            }
+            return $return;
+        }
+    }
 
 	/**
 	 * after find attributes
