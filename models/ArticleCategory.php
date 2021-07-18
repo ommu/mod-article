@@ -193,7 +193,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 
 		$model = self::find()
             ->alias('t')
-			->select(['t.id'])
+			->select(['t.id', 't.name'])
 			->where(['t.parent_id' => $this->id]);
         if ($publish != null) {
             if ($publish == 0) {
@@ -209,12 +209,12 @@ class ArticleCategory extends \app\components\ActiveRecord
 
         if ($type == 'array') {
 			$model = $model->all();
-            $subs = ArrayHelper::map($model, 'id', 'id');
+            $subs = ArrayHelper::map($model, 'id', 'name_i');
 
             if ($inherit == true) {
                 $inheritSubs = $this->subs;
                 if ($inheritSubs != null) {
-                    $subs = ArrayHelper::merge([$this->id], $this->getSubsInherit($inheritSubs, $subs, $type));
+                    $subs = ArrayHelper::merge([$this->id => '$'.$this->name_i], $this->getSubsInherit($inheritSubs, $subs, $type));
                 }
             }
 
@@ -475,7 +475,7 @@ class ArticleCategory extends \app\components\ActiveRecord
             foreach ($subs as $sub) {
                 $inheritSubs = $sub->subs;
                 if ($type == 'array') {
-                    $return = ArrayHelper::merge($return, ArrayHelper::map($inheritSubs, 'id', 'id'));
+                    $return = ArrayHelper::merge($return, ArrayHelper::map($inheritSubs, 'id', 'name_i'));
                 } else {
                     $return = $return + $sub->getSubs('count');
                 }
