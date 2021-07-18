@@ -214,7 +214,7 @@ class ArticleCategory extends \app\components\ActiveRecord
             if ($inherit == true) {
                 $inheritSubs = $this->subs;
                 if ($inheritSubs != null) {
-                    $subs = ArrayHelper::merge([$this->id => '$'.$this->name_i], $this->getSubsInherit($inheritSubs, $subs, $type));
+                    $subs = $this->getSubsInherit($inheritSubs, $subs, $type);
                 }
             }
 
