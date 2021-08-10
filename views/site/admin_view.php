@@ -70,7 +70,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'published_date',
-		'value' => !in_array($model->published_date, ['0000-00-00 00:00:00', '1970-01-01 00:00:00']) ? Yii::$app->formatter->format($model->published_date, 'datetime') : '-',
+		'value' => Yii::$app->formatter->asDate($model->published_date, 'medium'),
 	],
 	[
 		'attribute' => 'headline',
@@ -103,7 +103,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'headline_date',
-		'value' => !in_array($model->headline_date, ['0000-00-00 00:00:00', '1970-01-01 00:00:00']) ? Yii::$app->formatter->format($model->headline_date, 'datetime') : '-',
+		'value' => Yii::$app->formatter->asDatetime($model->headline_date, 'medium'),
 	],
 ];
 

@@ -138,9 +138,15 @@ class ArticleCategory extends \app\components\ActiveRecord
 	public function getArticles($count=false, $publish=null)
 	{
         if ($count == false) {
-            return $this->hasMany(Articles::className(), ['cat_id' => 'id'])
-                ->alias('articles')
-                ->andOnCondition([sprintf('%s.publish', 'articles') => $publish]);
+			$model = $this->hasMany(Articles::className(), ['cat_id' => 'id'])
+                ->alias('articles');
+            if ($publish != null) {
+                $model->andOnCondition([sprintf('%s.publish', 'articles') => $publish]);
+            } else {
+                $model->andOnCondition(['IN', sprintf('%s.publish', 'articles'), [0,1]]);
+            }
+
+            return $model;
         }
 
         if ($publish === null) {
