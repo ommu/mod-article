@@ -66,9 +66,9 @@ class m190522_042401_article_module_insert_role extends \yii\db\Migration
 			]);
 		}
 
-        // permission
 		$tableName = Yii::$app->db->tablePrefix . $authManager->itemChildTable;
         if (Yii::$app->db->getTableSchema($tableName, true)) {
+            // permission
 			$this->batchInsert($tableName, ['parent', 'child'], [
 				['articleModLevelAdmin', 'articleModLevelModerator'],
 				['articleModLevelAdmin', '/article/setting/admin/update'],
@@ -86,11 +86,8 @@ class m190522_042401_article_module_insert_role extends \yii\db\Migration
 				['articleModLevelModerator', '/article/history/view/*'],
 				['articleModLevelModerator', '/article/history/like/*'],
 			]);
-		}
 
-        // role
-		$tableName = Yii::$app->db->tablePrefix . $authManager->itemChildTable;
-        if (Yii::$app->db->getTableSchema($tableName, true)) {
+            // role
 			$this->batchInsert($tableName, ['parent', 'child'], [
 				['userAdmin', 'articleModLevelAdmin'],
 				['userModerator', 'articleModLevelModerator'],
