@@ -40,13 +40,13 @@ class m210825_133032_article_module_create_table_media extends \yii\db\Migration
 				'PRIMARY KEY ([[id]])',
 				'CONSTRAINT ommu_article_media_ibfk_1 FOREIGN KEY ([[article_id]]) REFERENCES ommu_articles ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
 			], $tableOptions);
-		}
 
-        $this->createIndex(
-            'id_publish_articleId',
-            $tableName,
-            ['id', 'publish', 'article_id']
-        );
+            $this->createIndex(
+                'id_publish_articleId',
+                $tableName,
+                ['id', 'publish', 'article_id']
+            );
+		}
 	}
 
 	public function down()

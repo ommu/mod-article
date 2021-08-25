@@ -38,31 +38,31 @@ class m210825_132850_article_module_create_table_category extends \yii\db\Migrat
 				'updated_date' => Schema::TYPE_DATETIME . ' NOT NULL DEFAULT \'0000-00-00 00:00:00\' COMMENT \'trigger\'',
 				'PRIMARY KEY ([[id]])',
 			], $tableOptions);
+
+            $this->createIndex(
+                'idWithPublish',
+                $tableName,
+                ['id', 'publish']
+            );
+    
+            $this->createIndex(
+                'publishWithParent',
+                $tableName,
+                ['publish', 'parent_id']
+            );
+    
+            $this->createIndex(
+                'parent_id',
+                $tableName,
+                'parent_id'
+            );
+    
+            $this->createIndex(
+                'name',
+                $tableName,
+                'name'
+            );
 		}
-
-        $this->createIndex(
-            'idWithPublish',
-            $tableName,
-            ['id', 'publish']
-        );
-
-        $this->createIndex(
-            'publishWithParent',
-            $tableName,
-            ['publish', 'parent_id']
-        );
-
-        $this->createIndex(
-            'parent_id',
-            $tableName,
-            'parent_id'
-        );
-
-        $this->createIndex(
-            'name',
-            $tableName,
-            'name'
-        );
 	}
 
 	public function down()

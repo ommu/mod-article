@@ -32,13 +32,13 @@ class m210825_133129_article_module_create_table_tag extends \yii\db\Migration
 				'PRIMARY KEY ([[id]])',
 				'CONSTRAINT ommu_article_tag_ibfk_1 FOREIGN KEY ([[article_id]]) REFERENCES ommu_articles ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
 			], $tableOptions);
-		}
 
-        $this->createIndex(
-            'tag_id',
-            $tableName,
-            'tag_id'
-        );
+            $this->createIndex(
+                'tag_id',
+                $tableName,
+                'tag_id'
+            );
+		}
 	}
 
 	public function down()

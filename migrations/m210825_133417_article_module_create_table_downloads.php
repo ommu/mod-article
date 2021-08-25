@@ -34,13 +34,13 @@ class m210825_133417_article_module_create_table_downloads extends \yii\db\Migra
 				'CONSTRAINT ommu_article_downloads_ibfk_1 FOREIGN KEY ([[file_id]]) REFERENCES ommu_article_files ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
 				'CONSTRAINT ommu_article_downloads_ibfk_2 FOREIGN KEY ([[user_id]]) REFERENCES ommu_users ([[user_id]]) ON DELETE CASCADE ON UPDATE CASCADE',
 			], $tableOptions);
-		}
 
-        $this->createIndex(
-            'fileId_userId',
-            $tableName,
-            ['file_id', 'user_id']
-        );
+            $this->createIndex(
+                'fileId_userId',
+                $tableName,
+                ['file_id', 'user_id']
+            );
+		}
 	}
 
 	public function down()

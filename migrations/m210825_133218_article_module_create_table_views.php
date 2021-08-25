@@ -36,13 +36,13 @@ class m210825_133218_article_module_create_table_views extends \yii\db\Migration
 				'CONSTRAINT ommu_article_views_ibfk_1 FOREIGN KEY ([[article_id]]) REFERENCES ommu_articles ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
 				'CONSTRAINT ommu_article_views_ibfk_2 FOREIGN KEY ([[user_id]]) REFERENCES ommu_users ([[user_id]]) ON DELETE CASCADE ON UPDATE CASCADE',
 			], $tableOptions);
-		}
 
-        $this->createIndex(
-            'articleId_userId',
-            $tableName,
-            ['article_id', 'user_id']
-        );
+            $this->createIndex(
+                'articleId_userId',
+                $tableName,
+                ['article_id', 'user_id']
+            );
+		}
 	}
 
 	public function down()

@@ -40,25 +40,25 @@ class m210825_132937_article_module_create_table_articles extends \yii\db\Migrat
 				'PRIMARY KEY ([[id]])',
 				'CONSTRAINT ommu_articles_ibfk_1 FOREIGN KEY ([[cat_id]]) REFERENCES ommu_article_category ([[id]]) ON DELETE CASCADE ON UPDATE CASCADE',
 			], $tableOptions);
+
+            $this->createIndex(
+                'getArticleWithCategory',
+                $tableName,
+                ['publish', 'cat_id', 'published_date']
+            );
+    
+            $this->createIndex(
+                'getArticleWithCategoryAndNotIn',
+                $tableName,
+                ['id', 'publish', 'cat_id', 'published_date']
+            );
+    
+            $this->createIndex(
+                'getArticleWithHeadline',
+                $tableName,
+                ['publish', 'published_date', 'headline']
+            );
 		}
-
-        $this->createIndex(
-            'getArticleWithCategory',
-            $tableName,
-            ['publish', 'cat_id', 'published_date']
-        );
-
-        $this->createIndex(
-            'getArticleWithCategoryAndNotIn',
-            $tableName,
-            ['id', 'publish', 'cat_id', 'published_date']
-        );
-
-        $this->createIndex(
-            'getArticleWithHeadline',
-            $tableName,
-            ['publish', 'published_date', 'headline']
-        );
 	}
 
 	public function down()
