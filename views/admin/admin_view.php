@@ -113,7 +113,7 @@ $attributes = [
             if (!in_array($model->cat_id, $headlineCategory)) {
                 return '-';
             }
-			return $model->quickAction(Url::to(['headline', 'id' => $model->primaryKey]), $model->headline, 'Yes,No', true);
+			return $model->quickAction(Url::to(['headline', 'id' => $model->primaryKey]), $model->headline, 'Headline,Not headline', true);
 		},
 		'format' => 'raw',
 		'visible' => !$small,
