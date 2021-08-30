@@ -351,7 +351,7 @@ class Articles extends \app\components\ActiveRecord
 				return isset($model->category) ? $model->category->title->message : '-';
 				// return $model->categoryName;
 			},
-			'filter' => ArticleCategory::getCategory(),
+			'filter' => ArticleCategory::getCategory(null, 'is_null', 'optgroup'),
 			'visible' => !Yii::$app->request->get('category') ? true : false,
 		];
 		$this->templateColumns['title'] = [

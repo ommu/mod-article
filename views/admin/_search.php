@@ -30,7 +30,7 @@ use ommu\article\models\ArticleCategory;
 		],
 	]); ?>
 
-		<?php $category = ArticleCategory::getCategory();
+		<?php $category = ArticleCategory::getCategory(null, 'is_null', 'optgroup');
 		echo $form->field($model, 'cat_id')
 			->dropDownList($category, ['prompt' => '']);?>
 

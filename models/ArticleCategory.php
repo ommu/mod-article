@@ -447,13 +447,15 @@ class ArticleCategory extends \app\components\ActiveRecord
 	/**
 	 * function getCategory
 	 */
-	public static function getCategory($publish=null, $parent=null, $array=true)
+	public static function getCategory($publish=null, $parent=null, $type='array')
 	{
 		$model = self::find()->alias('t')
 			->select(['t.id', 't.name']);
 		$model->leftJoin(sprintf('%s title', SourceMessage::tableName()), 't.name=title.id');
         if ($publish != null) {
             $model->andWhere(['t.publish' => $publish]);
+        } else {
+            $model->andWhere(['in', 't.publish', [0,1]]);
         }
         if ($parent == 'is_null') {
             $model->andWhere(['is', 't.parent_id', null]);
@@ -465,12 +467,34 @@ class ArticleCategory extends \app\components\ActiveRecord
 
 		$model = $model->orderBy('title.message ASC')->all();
 
-        if ($array == true) {
+        if ($type == 'array') {
             return \yii\helpers\ArrayHelper::map($model, 'id', 'name_i');
+        } else if ('optgroup') {
+            return self::getOptgroup($model, $publish);
         }
 
 		return $model;
 	}
+
+	/**
+	 * function getCategory
+	 */
+	public static function getOptgroup($categories, $publish=null)
+    {
+        $data = [];
+        if ($categories != null) {
+            foreach ($categories as $key => $category) {
+                $subs = $category->getSubs('relation', $publish)->all();
+                if ($subs == null) {
+                    $data[$category->id] = $category->name_i;
+                } else {
+                    $data[$category->name_i] = $category::getOptgroup($subs, $publish);
+                }
+            }
+        }
+
+        return $data;
+    }
 
 	/**
 	 * function getSubsInherit
