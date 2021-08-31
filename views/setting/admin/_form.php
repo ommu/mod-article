@@ -70,9 +70,19 @@ echo $form->field($model, 'headline')
 	->textInput(['type' => 'number'])
 	->label($model->getAttributeLabel('headline_limit')); ?>
 
-<?php $category = ArticleCategory::getCategory();
+<?php $category = ArticleCategory::getCategory(null, 'is_null', 'checkboxGroup');
 echo $form->field($model, 'headline_category')
-	->checkboxList($category)
+	->checkboxList($category, [
+        'item' => function($index, $label, $name, $checked, $value) {
+            $checked = $checked ? 'checked' : '';
+            if (is_array($label) && !empty($label)) {
+                $labelGroup = $label['label'];
+                return "<div class=\"h5\">{$labelGroup}</div>";
+            } else {
+                return "<div class=\"checkbox\"><label><input type=\"checkbox\" name=\"{$name}\" value=\"{$value}\" {$checked}> {$label}</label></div>";
+            }
+        }
+    ])
 	->label($model->getAttributeLabel('headline_category')); ?>
 
 <hr/>

@@ -469,8 +469,10 @@ class ArticleCategory extends \app\components\ActiveRecord
 
         if ($type == 'array') {
             return \yii\helpers\ArrayHelper::map($model, 'id', 'name_i');
-        } else if ('optgroup') {
+        } else if ($type == 'optgroup') {
             return self::getOptgroup($model, $publish);
+        } else if ($type == 'checkboxGroup') {
+            return self::getOptgroup($model, $publish, 'checkbox');
         }
 
 		return $model;
@@ -479,7 +481,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 	/**
 	 * function getCategory
 	 */
-	public static function getOptgroup($categories, $publish=null)
+	public static function getOptgroup($categories, $publish=null, $type='select')
     {
         $data = [];
         if ($categories != null) {
@@ -488,7 +490,12 @@ class ArticleCategory extends \app\components\ActiveRecord
                 if ($subs == null) {
                     $data[$category->id] = $category->name_i;
                 } else {
-                    $data[$category->name_i] = $category::getOptgroup($subs, $publish);
+                    if ($type == 'select') {
+                        $data[$category->name_i] = $category::getOptgroup($subs, $publish);
+                    } else if ($type == 'checkbox') {
+                        $data[$category->id] = ['id' => $category->id, 'label' => $category->name_i];
+                        $data = ArrayHelper::merge($data, $category::getOptgroup($subs, $publish, 'checkbox'));
+                    }
                 }
             }
         }
