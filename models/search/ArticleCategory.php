@@ -64,7 +64,8 @@ class ArticleCategory extends ArticleCategoryModel
         if (!($column && is_array($column))) {
             $query = ArticleCategoryModel::find()->alias('t');
         } else {
-            $query = ArticleCategoryModel::find()->alias('t')->select($column);
+            $query = ArticleCategoryModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			'title title', 

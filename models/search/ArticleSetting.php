@@ -63,7 +63,8 @@ class ArticleSetting extends ArticleSettingModel
         if (!($column && is_array($column))) {
             $query = ArticleSettingModel::find()->alias('t');
         } else {
-            $query = ArticleSettingModel::find()->alias('t')->select($column);
+            $query = ArticleSettingModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			'modified modified',

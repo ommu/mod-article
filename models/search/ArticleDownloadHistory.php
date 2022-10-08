@@ -64,7 +64,8 @@ class ArticleDownloadHistory extends ArticleDownloadHistoryModel
         if (!($column && is_array($column))) {
             $query = ArticleDownloadHistoryModel::find()->alias('t');
         } else {
-            $query = ArticleDownloadHistoryModel::find()->alias('t')->select($column);
+            $query = ArticleDownloadHistoryModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			'download.file file',

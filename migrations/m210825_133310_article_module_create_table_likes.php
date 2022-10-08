@@ -37,7 +37,7 @@ class m210825_133310_article_module_create_table_likes extends \yii\db\Migration
 			], $tableOptions);
 
             $this->createIndex(
-                'articleId_userId',
+                'articleWithUser',
                 $tableName,
                 ['article_id', 'user_id']
             );

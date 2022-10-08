@@ -64,7 +64,8 @@ class ArticleViewHistory extends ArticleViewHistoryModel
         if (!($column && is_array($column))) {
             $query = ArticleViewHistoryModel::find()->alias('t');
         } else {
-            $query = ArticleViewHistoryModel::find()->alias('t')->select($column);
+            $query = ArticleViewHistoryModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			'view view',

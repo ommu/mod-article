@@ -64,7 +64,8 @@ class ArticleMedia extends ArticleMediaModel
         if (!($column && is_array($column))) {
             $query = ArticleMediaModel::find()->alias('t');
         } else {
-            $query = ArticleMediaModel::find()->alias('t')->select($column);
+            $query = ArticleMediaModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			'article article', 

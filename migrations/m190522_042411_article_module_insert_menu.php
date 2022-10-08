@@ -1,6 +1,6 @@
 <?php
 /**
- * m190522_042401_article_module_insert_menu
+ * m190522_042411_article_module_insert_menu
  * 
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
@@ -14,7 +14,7 @@ use Yii;
 use app\models\Menu;
 use mdm\admin\components\Configs;
 
-class m190522_042401_article_module_insert_menu extends \yii\db\Migration
+class m190522_042411_article_module_insert_menu extends \yii\db\Migration
 {
 	public function up()
 	{

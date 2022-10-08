@@ -64,7 +64,8 @@ class ArticleLikeHistory extends ArticleLikeHistoryModel
         if (!($column && is_array($column))) {
             $query = ArticleLikeHistoryModel::find()->alias('t');
         } else {
-            $query = ArticleLikeHistoryModel::find()->alias('t')->select($column);
+            $query = ArticleLikeHistoryModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			'like like',

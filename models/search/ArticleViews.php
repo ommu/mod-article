@@ -64,7 +64,8 @@ class ArticleViews extends ArticleViewsModel
         if (!($column && is_array($column))) {
             $query = ArticleViewsModel::find()->alias('t');
         } else {
-            $query = ArticleViewsModel::find()->alias('t')->select($column);
+            $query = ArticleViewsModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			'article article', 

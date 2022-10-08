@@ -64,7 +64,8 @@ class ArticleDownloads extends ArticleDownloadsModel
         if (!($column && is_array($column))) {
             $query = ArticleDownloadsModel::find()->alias('t');
         } else {
-            $query = ArticleDownloadsModel::find()->alias('t')->select($column);
+            $query = ArticleDownloadsModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			'file file', 

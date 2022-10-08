@@ -64,7 +64,8 @@ class ArticleFiles extends ArticleFilesModel
         if (!($column && is_array($column))) {
             $query = ArticleFilesModel::find()->alias('t');
         } else {
-            $query = ArticleFilesModel::find()->alias('t')->select($column);
+            $query = ArticleFilesModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			'article article', 

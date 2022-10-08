@@ -64,7 +64,8 @@ class ArticleLikes extends ArticleLikesModel
         if (!($column && is_array($column))) {
             $query = ArticleLikesModel::find()->alias('t');
         } else {
-            $query = ArticleLikesModel::find()->alias('t')->select($column);
+            $query = ArticleLikesModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
 			'article article', 

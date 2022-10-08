@@ -42,7 +42,7 @@ class m210825_133032_article_module_create_table_media extends \yii\db\Migration
 			], $tableOptions);
 
             $this->createIndex(
-                'id_publish_articleId',
+                'idWithPublishArticle',
                 $tableName,
                 ['id', 'publish', 'article_id']
             );
