@@ -14,7 +14,6 @@
  * The followings are the available columns in table "_article_likes":
  * @property integer $id
  * @property string $likes
- * @property string $unlikes
  * @property integer $like_all
  *
  */
@@ -50,7 +49,7 @@ class ArticleLikes extends \app\components\ActiveRecord
 	{
 		return [
 			[['id', 'like_all'], 'integer'],
-			[['likes', 'unlikes'], 'number'],
+			[['likes'], 'number'],
 		];
 	}
 
@@ -62,7 +61,6 @@ class ArticleLikes extends \app\components\ActiveRecord
 		return [
 			'id' => Yii::t('app', 'ID'),
 			'likes' => Yii::t('app', 'Likes'),
-			'unlikes' => Yii::t('app', 'Unlikes'),
 			'like_all' => Yii::t('app', 'Like All'),
 		];
 	}
@@ -97,12 +95,6 @@ class ArticleLikes extends \app\components\ActiveRecord
 			'attribute' => 'likes',
 			'value' => function($model, $key, $index, $column) {
 				return $model->likes;
-			},
-		];
-		$this->templateColumns['unlikes'] = [
-			'attribute' => 'unlikes',
-			'value' => function($model, $key, $index, $column) {
-				return $model->unlikes;
 			},
 		];
 		$this->templateColumns['like_all'] = [

@@ -68,7 +68,7 @@ $attributes = [
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'articles',
+		'attribute' => 'publish',
 		'value' => function ($model) {
 			$articles = $model->getArticles(true);
 			return Html::a($articles, ['admin/manage', 'category' => $model->primaryKey, 'status' => 'publish'], ['title' => Yii::t('app', '{count} articles', ['count' => $articles])]);

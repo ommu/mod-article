@@ -378,8 +378,8 @@ class ArticleCategory extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
 		];
-		$this->templateColumns['articles'] = [
-			'attribute' => 'articles',
+		$this->templateColumns['publish'] = [
+			'attribute' => 'publish',
 			'value' => function($model, $key, $index, $column) {
 				$articles = $model->getArticles(true);
 				return Html::a($articles, ['admin/manage', 'category' => $model->primaryKey, 'status' => 'publish'], ['title' => Yii::t('app', '{count} articles', ['count' => $articles]), 'data-pjax' => 0]);

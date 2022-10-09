@@ -116,17 +116,17 @@ class ArticleCategory extends ArticleCategoryModel
 			'asc' => ['modified.displayname' => SORT_ASC],
 			'desc' => ['modified.displayname' => SORT_DESC],
 		];
-		$attributes['articles'] = [
-			'asc' => ['view.articles' => SORT_ASC],
-			'desc' => ['view.articles' => SORT_DESC],
+		$attributes['publish'] = [
+			'asc' => ['view.publish' => SORT_ASC],
+			'desc' => ['view.publish' => SORT_DESC],
 		];
 		$attributes['pending'] = [
-			'asc' => ['view.article_pending' => SORT_ASC],
-			'desc' => ['view.article_pending' => SORT_DESC],
+			'asc' => ['view.pending' => SORT_ASC],
+			'desc' => ['view.pending' => SORT_DESC],
 		];
 		$attributes['unpublish'] = [
-			'asc' => ['view.article_unpublish' => SORT_ASC],
-			'desc' => ['view.article_unpublish' => SORT_DESC],
+			'asc' => ['view.unpublish' => SORT_ASC],
+			'desc' => ['view.unpublish' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,

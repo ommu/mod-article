@@ -13,10 +13,10 @@
  *
  * The followings are the available columns in table "_article_category":
  * @property integer $id
- * @property string $articles
- * @property string $article_pending
- * @property string $article_unpublish
- * @property integer $article_all
+ * @property string $publish
+ * @property string $pending
+ * @property string $unpublish
+ * @property integer $all
  * @property string $article_id
  *
  */
@@ -51,8 +51,8 @@ class ArticleCategory extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['id', 'article_all', 'article_id'], 'integer'],
-			[['articles', 'article_pending', 'article_unpublish'], 'number'],
+			[['id', 'all', 'article_id'], 'integer'],
+			[['publish', 'pending', 'unpublish'], 'number'],
 		];
 	}
 
@@ -63,10 +63,10 @@ class ArticleCategory extends \app\components\ActiveRecord
 	{
 		return [
 			'id' => Yii::t('app', 'ID'),
-			'articles' => Yii::t('app', 'Articles'),
-			'article_pending' => Yii::t('app', 'Article Pending'),
-			'article_unpublish' => Yii::t('app', 'Article Unpublish'),
-			'article_all' => Yii::t('app', 'Article All'),
+			'publish' => Yii::t('app', 'Publish'),
+			'pending' => Yii::t('app', 'Pending'),
+			'unpublish' => Yii::t('app', 'Unpublish'),
+			'all' => Yii::t('app', 'All'),
 			'article_id' => Yii::t('app', 'Article'),
 		];
 	}
@@ -97,28 +97,28 @@ class ArticleCategory extends \app\components\ActiveRecord
 				return $model->id;
 			},
 		];
-		$this->templateColumns['articles'] = [
-			'attribute' => 'articles',
+		$this->templateColumns['publish'] = [
+			'attribute' => 'publish',
 			'value' => function($model, $key, $index, $column) {
-				return $model->articles;
+				return $model->publish;
 			},
 		];
-		$this->templateColumns['article_pending'] = [
-			'attribute' => 'article_pending',
+		$this->templateColumns['pending'] = [
+			'attribute' => 'pending',
 			'value' => function($model, $key, $index, $column) {
-				return $model->article_pending;
+				return $model->pending;
 			},
 		];
-		$this->templateColumns['article_unpublish'] = [
-			'attribute' => 'article_unpublish',
+		$this->templateColumns['unpublish'] = [
+			'attribute' => 'unpublish',
 			'value' => function($model, $key, $index, $column) {
-				return $model->article_unpublish;
+				return $model->unpublish;
 			},
 		];
-		$this->templateColumns['article_all'] = [
-			'attribute' => 'article_all',
+		$this->templateColumns['all'] = [
+			'attribute' => 'all',
 			'value' => function($model, $key, $index, $column) {
-				return $model->article_all;
+				return $model->all;
 			},
 		];
 		$this->templateColumns['article_id'] = [
