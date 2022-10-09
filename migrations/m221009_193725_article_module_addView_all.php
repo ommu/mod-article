@@ -38,7 +38,7 @@ select
   sum(case when `b`.`publish` = '1' and `b`.`published_date` <= curdate() then 1 else 0 end) AS `publish`,
   sum(case when `b`.`publish` = '1' and `b`.`published_date` > curdate() then 1 else 0 end) AS `pending`,
   sum(case when `b`.`publish` = '0' then 1 else 0 end) AS `unpublish`,
-  count(`b`.`cat_id`) AS `all`,
+  sum(case when `b`.`publish` <> '2' then 1 else 0 end) AS `all`,
   max(case when `b`.`publish` = '1' and `b`.`published_date` <= curdate() then `b`.`id` end) AS `article_id`
 from (`ommu_article_category` `a`
    left join `ommu_articles` `b`

@@ -85,48 +85,6 @@ class ArticleCategory extends \app\components\ActiveRecord
         if (!$this->hasMethod('search')) {
             return;
         }
-
-		$this->templateColumns['_no'] = [
-			'header' => '#',
-			'class' => 'app\components\grid\SerialColumn',
-			'contentOptions' => ['class' => 'text-center'],
-		];
-		$this->templateColumns['id'] = [
-			'attribute' => 'id',
-			'value' => function($model, $key, $index, $column) {
-				return $model->id;
-			},
-		];
-		$this->templateColumns['publish'] = [
-			'attribute' => 'publish',
-			'value' => function($model, $key, $index, $column) {
-				return $model->publish;
-			},
-		];
-		$this->templateColumns['pending'] = [
-			'attribute' => 'pending',
-			'value' => function($model, $key, $index, $column) {
-				return $model->pending;
-			},
-		];
-		$this->templateColumns['unpublish'] = [
-			'attribute' => 'unpublish',
-			'value' => function($model, $key, $index, $column) {
-				return $model->unpublish;
-			},
-		];
-		$this->templateColumns['all'] = [
-			'attribute' => 'all',
-			'value' => function($model, $key, $index, $column) {
-				return $model->all;
-			},
-		];
-		$this->templateColumns['article_id'] = [
-			'attribute' => 'article_id',
-			'value' => function($model, $key, $index, $column) {
-				return $model->article_id;
-			},
-		];
 	}
 
 	/**

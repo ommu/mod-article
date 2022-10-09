@@ -26,6 +26,7 @@
  * @property string $updated_date
  *
  * The followings are the available model relations:
+ * @property ArticleCategoryGrid $grid
  * @property Articles[] $articles
  * @property SourceMessage $title
  * @property SourceMessage $description
@@ -41,20 +42,24 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\Inflector;
 use app\models\SourceMessage;
+use app\models\Users;
 use yii\helpers\ArrayHelper;
 use ommu\article\models\view\ArticleCategory as ArticleCategoryView;
-use app\models\Users;
 
 class ArticleCategory extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 
-	public $gridForbiddenColumn = ['creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'desc_i', 'updated_date', 'pending', 'unpublish'];
+	public $gridForbiddenColumn = ['creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'desc_i', 'updated_date'];
 
 	public $name_i;
 	public $desc_i;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
+    public $oPublish;
+    public $oPending;
+    public $oUnpublish;
+    public $oAll;
 
 	/**
 	 * @return string the associated database table name
@@ -100,37 +105,20 @@ class ArticleCategory extends \app\components\ActiveRecord
 			'desc_i' => Yii::t('app', 'Description'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
-			'articles' => Yii::t('app', 'Articles'),
-			'pending' => Yii::t('app', 'Pending'),
-			'unpublish' => Yii::t('app', 'Unpublish'),
+			'oPublish' => Yii::t('app', 'Published'),
+			'oPending' => Yii::t('app', 'Pending'),
+			'oUnpublish' => Yii::t('app', 'Unpublished'),
+			'oAll' => Yii::t('app', 'All'),
 		];
 	}
 
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getView()
-	{
-		return $this->hasOne(ArticleCategoryView::className(), ['id' => 'id']);
-	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getArticlesByStatus($cat_id, $type='published')
-	{
-		$model = Articles::find()
-            ->alias('t')
-            ->where(['t.cat_id' => $cat_id]);
-        if ($type == 'published') {
-            $model->published();
-        } else if ($type == 'pending') {
-            $model->pending();
-        }
-		$articles = $model->count();
-
-		return $articles ? $articles : 0;
-	}
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGrid()
+    {
+        return $this->hasOne(ArticleCategoryGrid::className(), ['id' => 'id']);
+    }
 
 	/**
 	 * @return \yii\db\ActiveQuery
@@ -149,19 +137,19 @@ class ArticleCategory extends \app\components\ActiveRecord
             return $model;
         }
 
-        if ($publish === null) {
-            return self::getArticlesByStatus($this->id, 'published');
-        }
-
 		$model = Articles::find()
             ->alias('t')
             ->where(['t.cat_id' => $this->id]);
-        if ($publish == 0) {
-            $model->unpublish();
-        } else if ($publish == 1) {
-            $model->published();
-        } else if ($publish == 2) {
-            $model->deleted();
+        if ($publish == null) {
+            $model->andWhere(['in', 't.publish', [0,1]]);
+        } else {
+            if ($publish == 0) {
+                $model->unpublish();
+            } else if ($publish == 1) {
+                $model->published();
+            } else if ($publish == 2) {
+                $model->deleted();
+            }
         }
 		$articles = $model->count();
 
@@ -171,13 +159,64 @@ class ArticleCategory extends \app\components\ActiveRecord
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
-	public function getPending($count=false)
+	public function getParent()
 	{
-        if ($count == false) {
-            return $this->hasMany(Articles::className(), ['cat_id' => 'id']);
-        }
+		return $this->hasOne(ArticleCategory::className(), ['id' => 'parent_id'])
+            ->select(['id', 'parent_id', 'name']);
+	}
 
-		return self::getArticlesByStatus($this->id, 'pending');
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getParentTitle()
+	{
+		return $this->hasOne(SourceMessage::className(), ['id' => 'name'])
+            ->select(['id', 'message'])
+            ->via('parent');
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getTitle()
+	{
+		return $this->hasOne(SourceMessage::className(), ['id' => 'name'])
+            ->select(['id', 'message']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getDescription()
+	{
+		return $this->hasOne(SourceMessage::className(), ['id' => 'desc'])
+            ->select(['id', 'message']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getCreation()
+	{
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getModified()
+	{
+		return $this->hasOne(Users::className(), ['user_id' => 'modified_id'])
+            ->select(['user_id', 'displayname']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getView()
+	{
+		return $this->hasOne(ArticleCategoryView::className(), ['id' => 'id']);
 	}
 
 	/**
@@ -237,61 +276,6 @@ class ArticleCategory extends \app\components\ActiveRecord
 
         return $subs ? $subs : 0;
     }
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getParent()
-	{
-		return $this->hasOne(ArticleCategory::className(), ['id' => 'parent_id'])
-            ->select(['id', 'parent_id', 'name']);
-	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getParentTitle()
-	{
-		return $this->hasOne(SourceMessage::className(), ['id' => 'name'])
-            ->select(['id', 'message'])
-            ->via('parent');
-	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getTitle()
-	{
-		return $this->hasOne(SourceMessage::className(), ['id' => 'name'])
-            ->select(['id', 'message']);
-	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getDescription()
-	{
-		return $this->hasOne(SourceMessage::className(), ['id' => 'desc'])
-            ->select(['id', 'message']);
-	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getCreation()
-	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
-            ->select(['user_id', 'displayname']);
-	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getModified()
-	{
-		return $this->hasOne(Users::className(), ['user_id' => 'modified_id'])
-            ->select(['user_id', 'displayname']);
-	}
 
 	/**
 	 * {@inheritdoc}
@@ -378,33 +362,43 @@ class ArticleCategory extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
 		];
-		$this->templateColumns['publish'] = [
-			'attribute' => 'publish',
+		$this->templateColumns['oPublish'] = [
+			'attribute' => 'oPublish',
 			'value' => function($model, $key, $index, $column) {
-				$articles = $model->getArticles(true);
+				$articles = $model->view->publish;
 				return Html::a($articles, ['admin/manage', 'category' => $model->primaryKey, 'status' => 'publish'], ['title' => Yii::t('app', '{count} articles', ['count' => $articles]), 'data-pjax' => 0]);
 			},
-			'filter' => false,
+			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 		];
-		$this->templateColumns['pending'] = [
-			'attribute' => 'pending',
+		$this->templateColumns['oPending'] = [
+			'attribute' => 'oPending',
 			'value' => function($model, $key, $index, $column) {
-				$pending = $model->getPending(true);
+				$pending = $model->view->pending;
 				return Html::a($pending, ['admin/manage', 'category' => $model->primaryKey, 'status' => 'pending'], ['title' => Yii::t('app', '{count} articles', ['count' => $pending]), 'data-pjax' => 0]);
 			},
-			'filter' => false,
+			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 		];
-		$this->templateColumns['unpublish'] = [
-			'attribute' => 'unpublish',
+		$this->templateColumns['oUnpublish'] = [
+			'attribute' => 'oUnpublish',
 			'value' => function($model, $key, $index, $column) {
-				$unpublish = $model->getArticles(true, 0);
+				$unpublish = $model->view->unpublish;
 				return Html::a($unpublish, ['admin/manage', 'category' => $model->primaryKey, 'publish' => 0], ['title' => Yii::t('app', '{count} articles', ['count' => $unpublish]), 'data-pjax' => 0]);
 			},
-			'filter' => false,
+			'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class' => 'text-center'],
+			'format' => 'raw',
+		];
+		$this->templateColumns['oAll'] = [
+			'attribute' => 'oAll',
+			'value' => function($model, $key, $index, $column) {
+				$all = $model->view->all;
+				return Html::a($all, ['admin/manage', 'category' => $model->primaryKey], ['title' => Yii::t('app', '{count} articles', ['count' => $all]), 'data-pjax' => 0]);
+			},
+			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 		];
@@ -482,7 +476,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 		$model = $model->orderBy('title.message ASC')->all();
 
         if ($type == 'array') {
-            return \yii\helpers\ArrayHelper::map($model, 'id', 'title.message');
+            return ArrayHelper::map($model, 'id', 'title.message');
         } else if ($type == 'optgroup') {
             return self::getOptgroup($model, $publish);
         } else if ($type == 'checkboxGroup') {
