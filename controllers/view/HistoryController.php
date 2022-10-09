@@ -1,10 +1,10 @@
 <?php
 /**
- * ViewController
+ * HistoryController
  * @var $this ommu\article\controllers\view\HistoryController
  * @var $model ommu\article\models\ArticleViewHistory
  *
- * ViewController implements the CRUD actions for ArticleViewHistory model.
+ * HistoryController implements the CRUD actions for ArticleViewHistory model.
  * Reference start
  * TOC :
  *  Index
@@ -32,7 +32,7 @@ use yii\filters\VerbFilter;
 use ommu\article\models\ArticleViewHistory;
 use ommu\article\models\search\ArticleViewHistory as ArticleViewHistorySearch;
 
-class ViewController extends Controller
+class HistoryController extends Controller
 {
 	/**
 	 * {@inheritdoc}

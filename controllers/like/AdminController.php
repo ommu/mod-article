@@ -1,10 +1,10 @@
 <?php
 /**
- * LikeController
+ * AdminController
  * @var $this ommu\article\controllers\like\AdminController
  * @var $model ommu\article\models\ArticleLikes
  *
- * LikeController implements the CRUD actions for ArticleLikes model.
+ * AdminController implements the CRUD actions for ArticleLikes model.
  * Reference start
  * TOC :
  *  Index
@@ -34,7 +34,7 @@ use yii\filters\VerbFilter;
 use ommu\article\models\ArticleLikes;
 use ommu\article\models\search\ArticleLikes as ArticleLikesSearch;
 
-class LikeController extends Controller
+class AdminController extends Controller
 {
 	/**
 	 * {@inheritdoc}

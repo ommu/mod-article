@@ -1,10 +1,10 @@
 <?php
 /**
- * DownloadController
+ * AdminController
  * @var $this ommu\article\controllers\download\AdminController
  * @var $model ommu\article\models\ArticleDownloads
  *
- * DownloadController implements the CRUD actions for ArticleDownloads model.
+ * AdminController implements the CRUD actions for ArticleDownloads model.
  * Reference start
  * TOC :
  *  Index
@@ -32,7 +32,7 @@ use yii\filters\VerbFilter;
 use ommu\article\models\ArticleDownloads;
 use ommu\article\models\search\ArticleDownloads as ArticleDownloadsSearch;
 
-class DownloadController extends Controller
+class AdminController extends Controller
 {
 	/**
 	 * {@inheritdoc}

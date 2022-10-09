@@ -1,10 +1,10 @@
 <?php
 /**
- * ViewController
+ * AdminController
  * @var $this ommu\article\controllers\view\AdminController
  * @var $model ommu\article\models\ArticleViews
  *
- * ViewController implements the CRUD actions for ArticleViews model.
+ * AdminController implements the CRUD actions for ArticleViews model.
  * Reference start
  * TOC :
  *  Index
@@ -34,7 +34,7 @@ use yii\filters\VerbFilter;
 use ommu\article\models\ArticleViews;
 use ommu\article\models\search\ArticleViews as ArticleViewsSearch;
 
-class ViewController extends Controller
+class AdminController extends Controller
 {
 	/**
 	 * {@inheritdoc}

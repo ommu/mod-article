@@ -1,10 +1,10 @@
 <?php
 /**
- * DownloadController
+ * HistoryController
  * @var $this ommu\article\controllers\download\HistoryController
  * @var $model ommu\article\models\ArticleDownloadHistory
  *
- * DownloadController implements the CRUD actions for ArticleDownloadHistory model.
+ * HistoryController implements the CRUD actions for ArticleDownloadHistory model.
  * Reference start
  * TOC :
  *  Index
@@ -32,7 +32,7 @@ use yii\filters\VerbFilter;
 use ommu\article\models\ArticleDownloadHistory;
 use ommu\article\models\search\ArticleDownloadHistory as ArticleDownloadHistorySearch;
 
-class DownloadController extends Controller
+class HistoryController extends Controller
 {
 	/**
 	 * {@inheritdoc}

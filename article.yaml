@@ -29,19 +29,19 @@ article_submenu:
     views:
       label: View(s)
       url:
-        0: 'o/view/manage'
+        0: 'view/admin/manage'
         article: $_GET*id
       select: controller
     like:
       label: Like(s)
       url:
-        0: 'o/like/manage'
+        0: 'like/admin/manage'
         article: $_GET*id
       select: controller
     download:
       label: Download(s)
       url:
-        0: 'o/download/manage'
+        0: 'download/admin/manage'
         article: $_GET*id
       select: controller
   4:

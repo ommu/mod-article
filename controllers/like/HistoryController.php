@@ -1,10 +1,10 @@
 <?php
 /**
- * LikeController
+ * HistoryController
  * @var $this ommu\article\controllers\like\HistoryController
  * @var $model ommu\article\models\ArticleLikeHistory
  *
- * LikeController implements the CRUD actions for ArticleLikeHistory model.
+ * HistoryController implements the CRUD actions for ArticleLikeHistory model.
  * Reference start
  * TOC :
  *  Index
@@ -32,7 +32,7 @@ use yii\filters\VerbFilter;
 use ommu\article\models\ArticleLikeHistory;
 use ommu\article\models\search\ArticleLikeHistory as ArticleLikeHistorySearch;
 
-class LikeController extends Controller
+class HistoryController extends Controller
 {
 	/**
 	 * {@inheritdoc}
