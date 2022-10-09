@@ -67,8 +67,11 @@ class ArticleSetting extends ArticleSettingModel
                 ->select($column);
         }
 		$query->joinWith([
-			'modified modified',
+			// 'modified modified',
 		]);
+        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')) {
+            $query->joinWith(['modified modified']);
+        }
 
 		$query->groupBy(['id']);
 

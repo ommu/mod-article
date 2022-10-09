@@ -7,11 +7,11 @@
  * AdminController implements the CRUD actions for ArticleSetting model.
  * Reference start
  * TOC :
- *	Index
- *	Update
- *	Delete
+ *  Index
+ *  Update
+ *  Delete
  *
- *	findModel
+ *  findModel
  *
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114

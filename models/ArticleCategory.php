@@ -98,11 +98,11 @@ class ArticleCategory extends \app\components\ActiveRecord
 			'updated_date' => Yii::t('app', 'Updated Date'),
 			'name_i' => Yii::t('app', 'Category'),
 			'desc_i' => Yii::t('app', 'Description'),
+			'creationDisplayname' => Yii::t('app', 'Creation'),
+			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 			'articles' => Yii::t('app', 'Articles'),
 			'pending' => Yii::t('app', 'Pending'),
 			'unpublish' => Yii::t('app', 'Unpublish'),
-			'creationDisplayname' => Yii::t('app', 'Creation'),
-			'modifiedDisplayname' => Yii::t('app', 'Modified'),
 		];
 	}
 
@@ -215,7 +215,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 
         if ($type == 'array') {
 			$model = $model->all();
-            $subs = ArrayHelper::map($model, 'id', 'name_i');
+            $subs = ArrayHelper::map($model, 'id', 'title.message');
 
             if ($inherit == true) {
                 $inheritSubs = $this->subs;
@@ -238,13 +238,23 @@ class ArticleCategory extends \app\components\ActiveRecord
         return $subs ? $subs : 0;
     }
 
-
 	/**
 	 * @return \yii\db\ActiveQuery
 	 */
 	public function getParent()
 	{
-		return $this->hasOne(ArticleCategory::className(), ['id' => 'parent_id']);
+		return $this->hasOne(ArticleCategory::className(), ['id' => 'parent_id'])
+            ->select(['id', 'parent_id', 'name']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getParentTitle()
+	{
+		return $this->hasOne(SourceMessage::className(), ['id' => 'name'])
+            ->select(['id', 'message'])
+            ->via('parent');
 	}
 
 	/**
@@ -252,7 +262,8 @@ class ArticleCategory extends \app\components\ActiveRecord
 	 */
 	public function getTitle()
 	{
-		return $this->hasOne(SourceMessage::className(), ['id' => 'name']);
+		return $this->hasOne(SourceMessage::className(), ['id' => 'name'])
+            ->select(['id', 'message']);
 	}
 
 	/**
@@ -260,7 +271,8 @@ class ArticleCategory extends \app\components\ActiveRecord
 	 */
 	public function getDescription()
 	{
-		return $this->hasOne(SourceMessage::className(), ['id' => 'desc']);
+		return $this->hasOne(SourceMessage::className(), ['id' => 'desc'])
+            ->select(['id', 'message']);
 	}
 
 	/**
@@ -268,7 +280,8 @@ class ArticleCategory extends \app\components\ActiveRecord
 	 */
 	public function getCreation()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -276,7 +289,8 @@ class ArticleCategory extends \app\components\ActiveRecord
 	 */
 	public function getModified()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'modified_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -311,20 +325,20 @@ class ArticleCategory extends \app\components\ActiveRecord
 		$this->templateColumns['parent_id'] = [
 			'attribute' => 'parent_id',
 			'value' => function($model, $key, $index, $column) {
-				return isset($model->parent) ? $model->parent->name_i : '-';
+				return isset($model->parentTitle) ? $model->parentTitle->message : '-';
 			},
 			'filter' => ArticleCategory::getCategory(null, 'is_null'),
 		];
 		$this->templateColumns['name_i'] = [
 			'attribute' => 'name_i',
 			'value' => function($model, $key, $index, $column) {
-				return $model->name_i;
+				return isset($model->title) ? $model->title->message : '';
 			},
 		];
 		$this->templateColumns['desc_i'] = [
 			'attribute' => 'desc_i',
 			'value' => function($model, $key, $index, $column) {
-				return $model->desc_i;
+				return isset($model->description) ? $model->description->message : '';
 			},
 		];
 		$this->templateColumns['creation_date'] = [
@@ -468,7 +482,7 @@ class ArticleCategory extends \app\components\ActiveRecord
 		$model = $model->orderBy('title.message ASC')->all();
 
         if ($type == 'array') {
-            return \yii\helpers\ArrayHelper::map($model, 'id', 'name_i');
+            return \yii\helpers\ArrayHelper::map($model, 'id', 'title.message');
         } else if ($type == 'optgroup') {
             return self::getOptgroup($model, $publish);
         } else if ($type == 'checkboxGroup') {
@@ -488,12 +502,12 @@ class ArticleCategory extends \app\components\ActiveRecord
             foreach ($categories as $key => $category) {
                 $subs = $category->getSubs('relation', $publish)->all();
                 if ($subs == null) {
-                    $data[$category->id] = $category->name_i;
+                    $data[$category->id] = $category->title->message;
                 } else {
                     if ($type == 'select') {
-                        $data[$category->name_i] = $category::getOptgroup($subs, $publish);
+                        $data[$category->title->message] = $category::getOptgroup($subs, $publish);
                     } else if ($type == 'checkbox') {
-                        $data[$category->id] = ['id' => $category->id, 'label' => $category->name_i];
+                        $data[$category->id] = ['id' => $category->id, 'label' => $category->title->message];
                         $data = ArrayHelper::merge($data, $category::getOptgroup($subs, $publish, 'checkbox'));
                     }
                 }
@@ -512,7 +526,7 @@ class ArticleCategory extends \app\components\ActiveRecord
             foreach ($subs as $sub) {
                 $inheritSubs = $sub->subs;
                 if ($type == 'array') {
-                    $return = ArrayHelper::merge($return, ArrayHelper::map($inheritSubs, 'id', 'name_i'));
+                    $return = ArrayHelper::merge($return, ArrayHelper::map($inheritSubs, 'id', 'title.message'));
                 } else {
                     $return = $return + $sub->getSubs('count');
                 }
@@ -531,10 +545,11 @@ class ArticleCategory extends \app\components\ActiveRecord
 	{
 		parent::afterFind();
 
-		$this->name_i = isset($this->title) ? $this->title->message : '';
-		$this->desc_i = isset($this->description) ? $this->description->message : '';
+		// $this->name_i = isset($this->title) ? $this->title->message : '';
+		// $this->desc_i = isset($this->description) ? $this->description->message : '';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
+		// $this->article = $this->getArticles(true) ? 1 : 0;
 	}
 
 	/**

@@ -75,7 +75,18 @@ class ArticleDownloadHistory extends \app\components\ActiveRecord
 	 */
 	public function getDownload()
 	{
-		return $this->hasOne(ArticleDownloads::className(), ['id' => 'download_id']);
+		return $this->hasOne(ArticleDownloads::className(), ['id' => 'download_id'])
+            ->select(['id', 'file_id', 'user_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getFile()
+	{
+		return $this->hasOne(ArticleFiles::className(), ['id' => 'download_id'])
+            ->select(['id', 'article_id', 'file_filename'])
+            ->via('download');
 	}
 
 	/**
@@ -110,7 +121,7 @@ class ArticleDownloadHistory extends \app\components\ActiveRecord
 		$this->templateColumns['articleTitle'] = [
 			'attribute' => 'articleTitle',
 			'value' => function($model, $key, $index, $column) {
-				return isset($model->download->file->article) ? $model->download->file->article->title : '-';
+				return isset($model->download->article) ? $model->download->article->title : '-';
 				// return $model->articleTitle;
 			},
 			'visible' => !Yii::$app->request->get('download') ? true : false,
@@ -118,7 +129,7 @@ class ArticleDownloadHistory extends \app\components\ActiveRecord
 		$this->templateColumns['fileName'] = [
 			'attribute' => 'fileName',
 			'value' => function($model, $key, $index, $column) {
-				return isset($model->download->file) ? $model->download->file->file_filename : '-';
+				return isset($model->file) ? $model->file->file_filename : '-';
 				// return $model->fileName;
 			},
 			'visible' => !Yii::$app->request->get('download') ? true : false,

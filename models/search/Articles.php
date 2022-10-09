@@ -68,13 +68,32 @@ class Articles extends ArticlesModel
                 ->select($column);
         }
 		$query->joinWith([
-			'category.title category', 
-			'creation creation', 
-			'modified modified',
-			'tags tags',
-			'tags.tag tagsRltn',
+			// 'category.title category', 
+			// 'creation creation', 
+			// 'modified modified',
+			// 'tags tags',
+			// 'tags.tag tagsRltn',
 			'view view',
 		]);
+        if ((isset($params['sort']) && in_array($params['sort'], ['cat_id', '-cat_id', 'categoryName', '-categoryName'])) || 
+            (isset($params['categoryName']) && $params['categoryName'] != '')
+        ) {
+            $query->joinWith(['categoryTitle categoryTitle']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')) {
+            $query->joinWith(['creation creation']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')) {
+            $query->joinWith(['modified modified']);
+        }
+        if (isset($params['tagId']) && $params['tagId'] != '') {
+            $query->joinWith(['tags tags']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['tag', '-tag'])) || 
+            (isset($params['tag']) && $params['tag'] != '')
+        ) {
+            $query->joinWith(['tags.tag tag']);
+        }
 
 		$query->groupBy(['id']);
 
@@ -90,12 +109,12 @@ class Articles extends ArticlesModel
 
 		$attributes = array_keys($this->getTableSchema()->columns);
 		$attributes['cat_id'] = [
-			'asc' => ['category.message' => SORT_ASC],
-			'desc' => ['category.message' => SORT_DESC],
+			'asc' => ['categoryTitle.message' => SORT_ASC],
+			'desc' => ['categoryTitle.message' => SORT_DESC],
 		];
 		$attributes['categoryName'] = [
-			'asc' => ['category.message' => SORT_ASC],
-			'desc' => ['category.message' => SORT_DESC],
+			'asc' => ['categoryTitle.message' => SORT_ASC],
+			'desc' => ['categoryTitle.message' => SORT_DESC],
 		];
 		$attributes['creationDisplayname'] = [
 			'asc' => ['creation.displayname' => SORT_ASC],
@@ -163,27 +182,27 @@ class Articles extends ArticlesModel
                 $query->andFilterWhere(['>', 'cast(published_date as date)', Yii::$app->formatter->asDate('now', 'php:Y-m-d')]);
             }
         } else {
-            if (isset($params['trash'])) {
-                $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
+            if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
+                $query->andFilterWhere(['IN', 't.publish', [0,1]]);
             } else {
-                if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
-                    $query->andFilterWhere(['IN', 't.publish', [0,1]]);
-                } else {
-                    $query->andFilterWhere(['t.publish' => $this->publish]);
-                }
+                $query->andFilterWhere(['t.publish' => $this->publish]);
+            }
+    
+            if (isset($params['trash']) && $params['trash'] == 1) {
+                $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
             }
         }
 
-        if (isset($params['tagId']) && $params['tagId']) {
+        if (isset($params['tagId']) && $params['tagId'] != '') {
             $query->andFilterWhere(['tags.tag_id' => $params['tagId']]);
         }
 
 		$query->andFilterWhere(['like', 't.title', $this->title])
 			->andFilterWhere(['like', 't.body', $this->body])
-			->andFilterWhere(['like', 'category.message', $this->categoryName])
+			->andFilterWhere(['like', 'categoryTitle.message', $this->categoryName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
 			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname])
-			->andFilterWhere(['like', 'tagsRltn.body', $this->tag]);
+			->andFilterWhere(['like', 'tag.body', $this->tag]);
 
 		return $dataProvider;
 	}

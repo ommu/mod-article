@@ -43,7 +43,7 @@ $attributes = [
 	[
 		'attribute' => 'categoryName',
 		'value' => function ($model) {
-			$categoryName = isset($model->category) ? $model->category->title->message : '-';
+			$categoryName = isset($model->categoryTitle) ? $model->categoryTitle->message : '-';
             if ($categoryName != '-') {
                 return Html::a($categoryName, ['setting/category/view', 'id' => $model->cat_id], ['title' => $categoryName, 'class' => 'modal-btn']);
             }
@@ -127,7 +127,7 @@ $attributes = [
 		'attribute' => 'views',
 		'value' => function ($model) {
 			$views = $model->getViews(true);
-			return Html::a($views, ['o/view/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} views', ['count' => $views])]);
+			return Html::a($views, ['view/admin/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} views', ['count' => $views])]);
 		},
 		'format' => 'html',
 		'visible' => !$small,
@@ -136,7 +136,7 @@ $attributes = [
 		'attribute' => 'likes',
 		'value' => function ($model) {
 			$likes = $model->getLikes(true);
-			return Html::a($likes, ['o/like/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} likes', ['count' => $likes])]);
+			return Html::a($likes, ['like/admin/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} likes', ['count' => $likes])]);
 		},
 		'format' => 'html',
 		'visible' => !$small,

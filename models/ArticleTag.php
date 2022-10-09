@@ -84,7 +84,8 @@ class ArticleTag extends \app\components\ActiveRecord
 	 */
 	public function getArticle()
 	{
-		return $this->hasOne(Articles::className(), ['id' => 'article_id']);
+		return $this->hasOne(Articles::className(), ['id' => 'article_id'])
+            ->select(['id', 'cat_id', 'title']);
 	}
 
 	/**
@@ -92,7 +93,8 @@ class ArticleTag extends \app\components\ActiveRecord
 	 */
 	public function getTag()
 	{
-		return $this->hasOne(CoreTags::className(), ['tag_id' => 'tag_id']);
+		return $this->hasOne(CoreTags::className(), ['tag_id' => 'tag_id'])
+            ->select(['tag_id', 'body']);
 	}
 
 	/**
@@ -100,7 +102,8 @@ class ArticleTag extends \app\components\ActiveRecord
 	 */
 	public function getCreation()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**

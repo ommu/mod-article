@@ -47,15 +47,15 @@ $attributes = [
 	],
 	[
 		'attribute' => 'parent_id',
-		'value' => isset($model->parent) ? $model->parent->name_i : '-',
+		'value' => isset($model->parentTitle) ? $model->parentTitle->message : '-',
 	],
 	[
 		'attribute' => 'name_i',
-		'value' => $model->name_i,
+		'value' => isset($model->title) ? $model->title->message : '',
 	],
 	[
 		'attribute' => 'desc_i',
-		'value' => $model->desc_i,
+		'value' => isset($model->description) ? $model->description->message : '',
 	],
 	[
 		'attribute' => 'single_photo',

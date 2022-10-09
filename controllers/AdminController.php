@@ -7,17 +7,17 @@
  * AdminController implements the CRUD actions for Articles model.
  * Reference start
  * TOC :
- *	Index
- *	Manage
- *	Create
- *	Update
- *	View
- *	Delete
- *	RunAction
- *	Publish
- *	Headline
+ *  Index
+ *  Manage
+ *  Create
+ *  Update
+ *  View
+ *  Delete
+ *  RunAction
+ *  Publish
+ *  Headline
  *
- *	findModel
+ *  findModel
  *
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
@@ -297,6 +297,8 @@ class AdminController extends Controller
 	protected function findModel($id)
 	{
         if (($model = Articles::findOne($id)) !== null) {
+            $model->tag = implode(', ', $model->getTags(true, 'title'));
+
             return $model;
         }
 

@@ -1,55 +1,60 @@
 article_submenu:
-  view:
-    label: Detail
-    url:
-      0: 'admin/view'
-      id: $_GET*id
-    select: action
-  update:
-    label: Update
-    url:
-      0: 'admin/update'
-      id: $_GET*id
-    select: action
-  photo:
-    label: Photo(s)
-    url:
-      0: 'o/image/manage'
-      article: $_GET*id
-    select: controller
-  document:
-    label: Document(s)
-    url:
-      0: 'o/file/manage'
-      article: $_GET*id
-    select: controller
-  views:
-    label: View(s)
-    url:
-      0: 'o/view/manage'
-      article: $_GET*id
-    select: controller
-  download:
-    label: Download(s)
-    url:
-      0: 'o/download/manage'
-      article: $_GET*id
-    select: controller
-  like:
-    label: Like(s)
-    url:
-      0: 'o/like/manage'
-      article: $_GET*id
-    select: controller
-  delete:
-    label: Delete
-    url:
-      0: 'admin/delete'
-      id: $_GET*id
-    htmlOptions:
-      data-confirm: Are you sure you want to delete this item?
-      data-method: post
-    select: action
+  0:
+    view:
+      label: Detail
+      url:
+        0: 'admin/view'
+        id: $_GET*id
+      select: action
+    update:
+      label: Update
+      url:
+        0: 'admin/update'
+        id: $_GET*id
+      select: action
+  1:
+    photo:
+      label: Photo(s)
+      url:
+        0: 'o/image/manage'
+        article: $_GET*id
+      select: controller
+    document:
+      label: Document(s)
+      url:
+        0: 'o/file/manage'
+        article: $_GET*id
+      select: controller
+  2:
+    views:
+      label: View(s)
+      url:
+        0: 'o/view/manage'
+        article: $_GET*id
+      select: controller
+    like:
+      label: Like(s)
+      url:
+        0: 'o/like/manage'
+        article: $_GET*id
+      select: controller
+    download:
+      label: Download(s)
+      url:
+        0: 'o/download/manage'
+        article: $_GET*id
+      select: controller
+  4:
+    delete:
+      label: Delete
+      url:
+        0: 'admin/delete'
+        id: $_GET*id
+      htmlOptions:
+        data-confirm: Are you sure you want to delete this item?
+        data-method: post
+      select: action
+
 setting_submenu:
   update:
     label: Settings

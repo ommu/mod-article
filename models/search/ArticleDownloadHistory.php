@@ -68,9 +68,20 @@ class ArticleDownloadHistory extends ArticleDownloadHistoryModel
                 ->select($column);
         }
 		$query->joinWith([
-			'download.file file',
-			'download.file.article article'
+			// 'download.file file',
+			// 'download.file.article article'
 		]);
+        if ((isset($params['sort']) && in_array($params['sort'], ['fileName', '-fileName'])) || (
+            (isset($params['fileName']) && $params['fileName'] != '') ||
+            (isset($params['article']) && $params['article'] != '')
+        )) {
+            $query->joinWith(['file file']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['articleTitle', '-articleTitle'])) ||
+            (isset($params['articleTitle']) && $params['articleTitle'] != '')
+        ) {
+            $query->joinWith(['file.article article']);
+        }
 
 		$query->groupBy(['id']);
 

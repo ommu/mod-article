@@ -49,6 +49,7 @@ use yii\web\UploadedFile;
 use thamtech\uuid\helpers\UuidHelper;
 use yii\helpers\ArrayHelper;
 use yii\base\Event;
+use app\models\SourceMessage;
 
 class Articles extends \app\components\ActiveRecord
 {
@@ -139,8 +140,9 @@ class Articles extends \app\components\ActiveRecord
 	{
         if ($count == false) {
             return $this->hasMany(ArticleFiles::className(), ['article_id' => 'id'])
-                ->alias('files')
-                ->andOnCondition([sprintf('%s.publish', 'files') => $publish]);
+                ->alias('t')
+                ->select(['id', 'publish', 'article_id', 'file_filename'])
+                ->andOnCondition([sprintf('%s.publish', 't') => $publish]);
         }
 
 		$model = ArticleFiles::find()
@@ -192,15 +194,17 @@ class Articles extends \app\components\ActiveRecord
 	{
         if ($type == 'relation') {
             return $this->hasMany(ArticleMedia::className(), ['article_id' => 'id'])
-                ->alias('medias')
-                ->andOnCondition([sprintf('%s.publish', 'medias') => 1]);
+                ->alias('t')
+                ->select(['id', 'publish', 'article_id'])
+                ->andOnCondition([sprintf('%s.publish', 't') => 1]);
         }
 
         if ($type == 'cover') {
 			return $this->hasMany(ArticleMedia::className(), ['article_id' => 'id'])
-                ->alias('medias')
-                ->andOnCondition([sprintf('%s.publish', 'medias') => 1])
-                ->andOnCondition([sprintf('%s.cover', 'medias') => 1]);
+                ->alias('t')
+                ->select(['id', 'publish', 'cover', 'article_id', 'media_filename'])
+                ->andOnCondition([sprintf('%s.publish', 't') => 1])
+                ->andOnCondition([sprintf('%s.cover', 't') => 1]);
         }
 
 		$model = ArticleMedia::find()
@@ -227,7 +231,8 @@ class Articles extends \app\components\ActiveRecord
             return \yii\helpers\ArrayHelper::map($this->tags, 'tag_id', $val=='id' ? 'id' : 'tag.body');
         }
 
-		return $this->hasMany(ArticleTag::className(), ['article_id' => 'id']);
+		return $this->hasMany(ArticleTag::className(), ['article_id' => 'id'])
+            ->select(['id', 'article_id', 'tag_id']);
 	}
 
 	/**
@@ -261,7 +266,18 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function getCategory()
 	{
-		return $this->hasOne(ArticleCategory::className(), ['id' => 'cat_id']);
+		return $this->hasOne(ArticleCategory::className(), ['id' => 'cat_id'])
+            ->select(['id', 'name']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getCategoryTitle()
+	{
+		return $this->hasOne(SourceMessage::className(), ['id' => 'name'])
+            ->select(['id', 'message'])
+            ->via('category');
 	}
 
 	/**
@@ -269,7 +285,8 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function getCreation()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -277,7 +294,8 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function getModified()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'modified_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -348,7 +366,7 @@ class Articles extends \app\components\ActiveRecord
 		$this->templateColumns['cat_id'] = [
 			'attribute' => 'cat_id',
 			'value' => function($model, $key, $index, $column) {
-				return isset($model->category) ? $model->category->title->message : '-';
+				return isset($model->categoryTitle) ? $model->categoryTitle->message : '-';
 				// return $model->categoryName;
 			},
 			'filter' => ArticleCategory::getCategory(null, 'is_null', 'optgroup'),
@@ -448,7 +466,7 @@ class Articles extends \app\components\ActiveRecord
 			'attribute' => 'views',
 			'value' => function($model, $key, $index, $column) {
 				$views = $model->getViews(true);
-				return Html::a($views, ['o/view/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} views', ['count' => $views]), 'data-pjax' => 0]);
+				return Html::a($views, ['view/admin/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} views', ['count' => $views]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class' => 'text-center'],
@@ -458,7 +476,7 @@ class Articles extends \app\components\ActiveRecord
 			'attribute' => 'likes',
 			'value' => function($model, $key, $index, $column) {
 				$likes = $model->getLikes(true);
-				return Html::a($likes, ['o/like/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} likes', ['count' => $likes]), 'data-pjax' => 0]);
+				return Html::a($likes, ['like/admin/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} likes', ['count' => $likes]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class' => 'text-center'],
@@ -589,7 +607,7 @@ class Articles extends \app\components\ActiveRecord
 		// $this->categoryName = isset($this->category) ? $this->category->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
-		$this->tag = implode(', ', $this->getTags(true, 'title'));
+		// $this->tag = implode(', ', $this->getTags(true, 'title'));
 		$this->old_image = $this->cover;
 		$this->old_file = $this->document;
 	}

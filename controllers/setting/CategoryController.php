@@ -7,16 +7,16 @@
  * CategoryController implements the CRUD actions for ArticleCategory model.
  * Reference start
  * TOC :
- *	Index
- *	Manage
- *	Create
- *	Update
- *	View
- *	Delete
- *	RunAction
- *	Publish
+ *  Index
+ *  Manage
+ *  Create
+ *  Update
+ *  View
+ *  Delete
+ *  RunAction
+ *  Publish
  *
- *	findModel
+ *  findModel
  *
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
@@ -244,6 +244,9 @@ class CategoryController extends Controller
 	protected function findModel($id)
 	{
         if (($model = ArticleCategory::findOne($id)) !== null) {
+            $model->name_i = $model->title->message;
+            $model->desc_i = $model->description->message;
+
             return $model;
         }
 

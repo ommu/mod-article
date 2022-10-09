@@ -64,7 +64,7 @@ $attributes = [
 		'attribute' => 'downloads',
 		'value' => function ($model) {
 			$downloads = $model->getDownloads(true);
-			return Html::a($downloads, ['o/download/manage', 'file' => $model->primaryKey], ['title' => Yii::t('app', '{count} downloads', ['count' => $downloads])]);
+			return Html::a($downloads, ['download/admin/manage', 'file' => $model->primaryKey], ['title' => Yii::t('app', '{count} downloads', ['count' => $downloads])]);
 		},
 		'format' => 'html',
 	],
