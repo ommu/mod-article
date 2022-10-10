@@ -61,11 +61,12 @@ setting_submenu:
       label: Categories
       url: ['setting/category']
       select: controller
+  1:
     tag:
       label: Tags
-      url: ['o/tag']
+      url: ['setting/tag']
       select: controller
-  1:
+  2:
     update:
       label: Settings
       url: ['setting/admin/update']

@@ -1,7 +1,7 @@
 <?php
 /**
  * TagController
- * @var $this ommu\article\controllers\o\TagController
+ * @var $this ommu\article\controllers\setting\TagController
  * @var $model ommu\article\models\ArticleTag
  *
  * TagController implements the CRUD actions for ArticleTag model.
@@ -9,7 +9,6 @@
  * TOC :
  *  Index
  *  Manage
- *  View
  *  Delete
  *
  *  findModel
@@ -22,7 +21,7 @@
  *
  */
 
-namespace ommu\article\controllers\o;
+namespace ommu\article\controllers\setting;
 
 use Yii;
 use app\components\Controller;
@@ -40,11 +39,7 @@ class TagController extends Controller
 	{
         parent::init();
 
-        if (Yii::$app->request->get('id') || Yii::$app->request->get('article')) {
-            $this->subMenu = $this->module->params['article_submenu'];
-        } else {
-            $this->subMenu = $this->module->params['setting_submenu'];
-        }
+        $this->subMenu = $this->module->params['setting_submenu'];
 	}
 
 	/**
@@ -124,35 +119,6 @@ class TagController extends Controller
 	}
 
 	/**
-	 * Displays a single ArticleTag model.
-	 * @param integer $id
-	 * @return mixed
-	 */
-	public function actionView($id)
-	{
-        $model = $this->findModel($id);
-
-        if (!Yii::$app->request->isAjax) {
-			$this->subMenuParam = $model->article_id;
-			$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
-
-            if ($model->article->category->single_photo || $setting->media_image_limit == 1) {
-				unset($this->subMenu[1]['photo']);
-            }
-            if ($model->article->category->single_file || $setting->media_file_limit == 1) {
-				unset($this->subMenu[1]['document']);
-            }
-        }
-
-		$this->view->title = Yii::t('app', 'Detail Tag: {tag-id}', ['tag-id' => $model->tag->body]);
-		$this->view->description = '';
-		$this->view->keywords = '';
-		return $this->oRender('admin_view', [
-			'model' => $model,
-		]);
-	}
-
-	/**
 	 * Deletes an existing ArticleTag model.
 	 * If deletion is successful, the browser will be redirected to the 'index' page.
 	 * @param integer $id
@@ -177,6 +143,8 @@ class TagController extends Controller
 	protected function findModel($id)
 	{
         if (($model = ArticleTag::findOne($id)) !== null) {
+            $model->tagBody = isset($model->tag) ? $model->tag->body : '';
+
             return $model;
         }
 

@@ -30,7 +30,8 @@ class ArticleTag extends ArticleTagModel
 	{
 		return [
 			[['id', 'article_id', 'tag_id', 'creation_id'], 'integer'],
-			[['creation_date', 'tagBody', 'articleTitle', 'creationDisplayname'], 'safe'],
+			[['creation_date', 
+                'tagBody', 'articleTitle', 'creationDisplayname'], 'safe'],
 		];
 	}
 
@@ -77,18 +78,24 @@ class ArticleTag extends ArticleTagModel
 			// 'article article', 
 			// 'creation creation'
 		]);
-        if ((isset($params['sort']) && in_array($params['sort'], ['tagBody', '-tagBody'])) || (isset($params['tagBody']) && $params['tagBody'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['tagBody', '-tagBody'])) || 
+            (isset($params['tagBody']) && $params['tagBody'] != '')
+        ) {
             $query->joinWith(['tag tag']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['articleTitle', '-articleTitle'])) || (isset($params['articleTitle']) && $params['articleTitle'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['articleTitle', '-articleTitle'])) || 
+            (isset($params['articleTitle']) && $params['articleTitle'] != '')
+        ) {
             $query->joinWith(['article article']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || 
+            (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')
+        ) {
             $query->joinWith(['creation creation']);
         }
 
         $query->groupBy(['tag_id']);
-        if (Yii::$app->request->get('tag') || Yii::$app->request->get('article')) {
+        if (Yii::$app->request->get('data')) {
             $query->groupBy(['id']);
         }
 
