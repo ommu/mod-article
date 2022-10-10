@@ -92,7 +92,11 @@ class ImageController extends Controller
 	public function actionManage()
 	{
         $searchModel = new ArticleMediaSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $queryParams = Yii::$app->request->queryParams;
+        if (($category = Yii::$app->request->get('category')) != null) {
+            $queryParams = ArrayHelper::merge(Yii::$app->request->queryParams, ['categoryId' => $category]);
+        }
+		$dataProvider = $searchModel->search($queryParams);
 
         $gridColumn = Yii::$app->request->get('GridColumn', null);
         $cols = [];

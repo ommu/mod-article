@@ -49,10 +49,11 @@ class ArticleFiles extends \app\components\ActiveRecord
 	public $gridForbiddenColumn = ['creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
 	public $old_file_filename;
+	public $redirectUpdate;
 	public $articleTitle;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
-	public $redirectUpdate;
+	public $categoryId;
 
 	/**
 	 * @return string the associated database table name
@@ -91,11 +92,12 @@ class ArticleFiles extends \app\components\ActiveRecord
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
 			'old_file_filename' => Yii::t('app', 'Old Document'),
+			'redirectUpdate' => Yii::t('app', 'Redirect to Update'),
 			'downloads' => Yii::t('app', 'Downloads'),
 			'articleTitle' => Yii::t('app', 'Article'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
-			'redirectUpdate' => Yii::t('app', 'Redirect to Update'),
+			'categoryId' => Yii::t('app', 'Category'),
 		];
 	}
 
@@ -179,6 +181,15 @@ class ArticleFiles extends \app\components\ActiveRecord
 			'header' => '#',
 			'class' => 'app\components\grid\SerialColumn',
 			'contentOptions' => ['class' => 'text-center'],
+		];
+		$this->templateColumns['categoryId'] = [
+			'attribute' => 'categoryId',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->article->categoryTitle) ? $model->article->categoryTitle->message : '-';
+				// return $model->articleTitle;
+			},
+			'filter' => ArticleCategory::getCategory(null, 'is_null', 'optgroup'),
+			'visible' => !Yii::$app->request->get('article') && !Yii::$app->request->get('level') ? true : false,
 		];
 		$this->templateColumns['articleTitle'] = [
 			'attribute' => 'articleTitle',
