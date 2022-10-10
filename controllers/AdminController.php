@@ -38,6 +38,7 @@ use ommu\article\models\Articles;
 use ommu\article\models\search\Articles as ArticlesSearch;
 use ommu\article\models\ArticleSetting;
 use yii\web\UploadedFile;
+use yii\helpers\ArrayHelper;
 
 class AdminController extends Controller
 {
@@ -75,8 +76,13 @@ class AdminController extends Controller
 	 */
 	public function actionManage()
 	{
+
         $searchModel = new ArticlesSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $queryParams = Yii::$app->request->queryParams;
+        if (($tag = Yii::$app->request->get('tag')) != null) {
+            $queryParams = ArrayHelper::merge(Yii::$app->request->queryParams, ['tagId' => $tag]);
+        }
+		$dataProvider = $searchModel->search($queryParams);
 
         $gridColumn = Yii::$app->request->get('GridColumn', null);
         $cols = [];

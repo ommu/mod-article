@@ -28,9 +28,10 @@ class ArticleCategory extends ArticleCategoryModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'parent_id', 'name', 'desc', 'single_photo', 'single_file', 'creation_id', 'modified_id'], 'integer'],
-			[['creation_date', 'modified_date', 'updated_date', 'name_i', 'desc_i', 'creationDisplayname', 'modifiedDisplayname',
-                'oPublish', 'oPending', 'oUnpublish', 'oAll'], 'safe'],
+			[['id', 'publish', 'parent_id', 'name', 'desc', 'single_photo', 'single_file', 'creation_id', 'modified_id',
+                'oPublish', 'oPending', 'oUnpublish', 'oAll'], 'integer'],
+			[['creation_date', 'modified_date', 'updated_date', 
+                'name_i', 'desc_i', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
 

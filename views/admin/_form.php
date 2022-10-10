@@ -71,15 +71,6 @@ if ($model->isNewRecord || (!$model->isNewRecord && ($model->category->single_ph
 	->widget(Redactor::className(), ['clientOptions' => $redactorOptions])
 	->label($model->getAttributeLabel('body')); ?>
 
-<?php 
-if ($model->isNewRecord || (!$model->isNewRecord && ($model->category->single_file || $setting->media_file_limit == 1))) {
-    $file = !$model->isNewRecord && $model->document ? Html::a($model->document, Url::to(join('/', ['@webpublic', $uploadPath, $model->document])), ['title' => $model->document, 'target' => '_blank', 'class' => 'd-inline-block mb-4']) : '';
-    echo $form->field($model, 'file', ['template' => '{label}{beginWrapper}<div>'.$file.'</div>{input}{error}{hint}{endWrapper}'])
-        ->fileInput()
-        ->label($model->getAttributeLabel('file'))
-        ->hint(Yii::t('app', 'extensions are allowed: {extensions}', ['extensions' => $setting->media_file_type]));
-} ?>
-
 <?php $tagSuggestUrl = Url::to(['/admin/tag/suggest']);
 echo $form->field($model, 'tag')
 	->widget(Selectize::className(), [
@@ -95,6 +86,17 @@ echo $form->field($model, 'tag')
 		],
 	])
 	->label($model->getAttributeLabel('tag')); ?>
+
+<hr/>
+
+<?php 
+if ($model->isNewRecord || (!$model->isNewRecord && ($model->category->single_file || $setting->media_file_limit == 1))) {
+    $file = !$model->isNewRecord && $model->document ? '<hr/>'.Html::a($model->document, Url::to(join('/', ['@webpublic', $uploadPath, $model->document])), ['title' => $model->document, 'target' => '_blank', 'class' => 'd-inline-block mb-4']) : '';
+    echo $form->field($model, 'file', ['template' => '{label}{beginWrapper}{input}{error}{hint}<div>'.$file.'</div>{endWrapper}'])
+        ->fileInput()
+        ->label($model->getAttributeLabel('file'))
+        ->hint(Yii::t('app', 'extensions are allowed: {extensions}', ['extensions' => $setting->media_file_type]));
+} ?>
 
 <hr/>
 

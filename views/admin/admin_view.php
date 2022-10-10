@@ -53,17 +53,17 @@ $attributes = [
 	],
 	'title',
 	[
+		'attribute' => 'body',
+		'value' => $model->body ? $model->body : '-',
+		'format' => 'html',
+		'visible' => !$small,
+	],
+	[
 		'attribute' => 'image',
 		'value' => function ($model) {
 			$uploadPath = join('/', [Articles::getUploadPath(false), $model->id]);
 			return $model->cover ? Html::img(Url::to(join('/', ['@webpublic', $uploadPath, $model->cover])), ['alt' => $model->cover, 'class' => 'd-block border border-width-3 mb-4']).$model->cover : '-';
 		},
-		'format' => 'html',
-		'visible' => !$small,
-	],
-	[
-		'attribute' => 'body',
-		'value' => $model->body ? $model->body : '-',
 		'format' => 'html',
 		'visible' => !$small,
 	],
@@ -77,26 +77,11 @@ $attributes = [
 		'visible' => !$small && $model->category->single_file ? true : false,
 	],
 	[
-		'attribute' => 'medias',
+		'attribute' => 'tagBody',
 		'value' => function ($model) {
-			$medias = $model->getMedias('count');
-			return Html::a($medias, ['o/image/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} medias', ['count' => $media])]);
+            return $model::parseTag($model->getTags(true, 'title'), 'tag', ', ');
 		},
 		'format' => 'html',
-		'visible' => !$small && !$model->category->single_file ? true : false,
-	],
-	[
-		'attribute' => 'files',
-		'value' => function ($model) {
-			$files = $model->getFiles(true);
-			return Html::a($files, ['o/file/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} files', ['count' => $files])]);
-		},
-		'format' => 'html',
-		'visible' => !$small && !$model->category->single_file ? true : false,
-	],
-	[
-		'attribute' => 'tag',
-		'value' => $model->tag ? $model->tag : '-',
 		'visible' => !$small,
 	],
 	[
@@ -124,18 +109,36 @@ $attributes = [
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'views',
+		'attribute' => 'oMedia',
 		'value' => function ($model) {
-			$views = $model->getViews(true);
+			$medias = $model->grid->media;
+			return Html::a($medias, ['o/image/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} medias', ['count' => $media])]);
+		},
+		'format' => 'html',
+		'visible' => !$small && !$model->category->single_file ? true : false,
+	],
+	[
+		'attribute' => 'oFile',
+		'value' => function ($model) {
+			$files = $model->grid->file;
+			return Html::a($files, ['o/file/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} files', ['count' => $files])]);
+		},
+		'format' => 'html',
+		'visible' => !$small && !$model->category->single_file ? true : false,
+	],
+	[
+		'attribute' => 'oView',
+		'value' => function ($model) {
+			$views = $model->grid->view;
 			return Html::a($views, ['view/admin/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} views', ['count' => $views])]);
 		},
 		'format' => 'html',
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'likes',
+		'attribute' => 'oLike',
 		'value' => function ($model) {
-			$likes = $model->getLikes(true);
+			$likes = $model->grid->like;
 			return Html::a($likes, ['like/admin/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} likes', ['count' => $likes])]);
 		},
 		'format' => 'html',
