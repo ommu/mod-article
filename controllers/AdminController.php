@@ -185,10 +185,10 @@ class AdminController extends Controller
 
 		$this->subMenu = $this->module->params['article_submenu'];
         if ($model->category->single_photo || $setting->media_image_limit == 1) {
-            unset($this->subMenu['photo']);
+            unset($this->subMenu[1]['photo']);
         }
         if ($model->category->single_file || $setting->media_file_limit == 1) {
-            unset($this->subMenu['document']);
+            unset($this->subMenu[1]['document']);
         }
 
 		$this->view->title = Yii::t('app', 'Update Article: {title}', ['title' => $model->title]);
@@ -212,10 +212,10 @@ class AdminController extends Controller
 
 		$this->subMenu = $this->module->params['article_submenu'];
         if ($model->category->single_photo || $setting->media_image_limit == 1) {
-            unset($this->subMenu['photo']);
+            unset($this->subMenu[1]['photo']);
         }
         if ($model->category->single_file || $setting->media_file_limit == 1) {
-            unset($this->subMenu['document']);
+            unset($this->subMenu[1]['document']);
         }
 
 		$this->view->title = Yii::t('app', 'Detail Article: {title}', ['title' => $model->title]);

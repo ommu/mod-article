@@ -110,10 +110,10 @@ class ImageController extends Controller
 			$article = \ommu\article\models\Articles::findOne($article);
 			$setting = $article->getSetting(['media_image_limit', 'media_file_limit']);
             if ($article->category->single_photo || $setting->media_image_limit == 1) {
-                unset($this->subMenu['photo']);
+                unset($this->subMenu[1]['photo']);
             }
             if ($article->category->single_file || $setting->media_file_limit == 1) {
-                unset($this->subMenu['document']);
+                unset($this->subMenu[1]['document']);
             }
         }
 
@@ -163,10 +163,10 @@ class ImageController extends Controller
         }
 
         if ($model->article->category->single_photo || $setting->media_image_limit == 1) {
-            unset($this->subMenu['photo']);
+            unset($this->subMenu[1]['photo']);
         }
         if ($model->article->category->single_file || $setting->media_file_limit == 1) {
-            unset($this->subMenu['document']);
+            unset($this->subMenu[1]['document']);
         }
 
 		$this->view->title = Yii::t('app', 'Create Photo');
@@ -210,10 +210,10 @@ class ImageController extends Controller
         }
 
         if ($model->article->category->single_photo || $setting->media_image_limit == 1) {
-            unset($this->subMenu['photo']);
+            unset($this->subMenu[1]['photo']);
         }
         if ($model->article->category->single_file || $setting->media_file_limit == 1) {
-            unset($this->subMenu['document']);
+            unset($this->subMenu[1]['document']);
         }
 
 		$this->view->title = Yii::t('app', 'Update Photo: {media-filename}', ['media-filename' => $model->media_filename]);
@@ -238,10 +238,10 @@ class ImageController extends Controller
 			$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
 
             if ($model->article->category->single_photo || $setting->media_image_limit == 1) {
-				unset($this->subMenu['photo']);
+				unset($this->subMenu[1]['photo']);
             }
             if ($model->article->category->single_file || $setting->media_file_limit == 1) {
-				unset($this->subMenu['document']);
+				unset($this->subMenu[1]['document']);
             }
         }
 

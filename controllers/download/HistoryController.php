@@ -97,10 +97,10 @@ class HistoryController extends Controller
 			$this->subMenuParam = $download->file->article_id;
 			$setting = $download->article->getSetting(['media_image_limit', 'media_file_limit']);
             if ($download->article->category->single_photo || $setting->media_image_limit == 1) {
-                unset($this->subMenu['photo']);
+                unset($this->subMenu[1]['photo']);
             }
             if ($download->article->category->single_file || $setting->media_file_limit == 1) {
-                unset($this->subMenu['document']);
+                unset($this->subMenu[1]['document']);
             }
         }
 
@@ -129,10 +129,10 @@ class HistoryController extends Controller
 			$setting = $model->download->article->getSetting(['media_image_limit', 'media_file_limit']);
 
             if ($model->download->article->category->single_photo || $setting->media_image_limit == 1) {
-				unset($this->subMenu['photo']);
+				unset($this->subMenu[1]['photo']);
             }
             if ($model->download->article->category->single_file || $setting->media_file_limit == 1) {
-				unset($this->subMenu['document']);
+				unset($this->subMenu[1]['document']);
             }
         }
 

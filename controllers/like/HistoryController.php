@@ -100,10 +100,10 @@ class HistoryController extends Controller
 			$this->subMenuParam = $like->article_id;
 			$setting = $like->article->getSetting(['media_image_limit', 'media_file_limit']);
             if ($like->article->category->single_photo || $setting->media_image_limit == 1) {
-                unset($this->subMenu['photo']);
+                unset($this->subMenu[1]['photo']);
             }
             if ($like->article->category->single_file || $setting->media_file_limit == 1) {
-                unset($this->subMenu['document']);
+                unset($this->subMenu[1]['document']);
             }
         }
 
@@ -112,10 +112,10 @@ class HistoryController extends Controller
 			$article = \ommu\article\models\Articles::findOne($article);
 			$setting = $article->getSetting(['media_image_limit', 'media_file_limit']);
             if ($article->category->single_photo || $setting->media_image_limit == 1) {
-                unset($this->subMenu['photo']);
+                unset($this->subMenu[1]['photo']);
             }
             if ($article->category->single_file || $setting->media_file_limit == 1) {
-                unset($this->subMenu['document']);
+                unset($this->subMenu[1]['document']);
             }
         }
 
@@ -145,10 +145,10 @@ class HistoryController extends Controller
 			$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
 
             if ($model->article->category->single_photo || $setting->media_image_limit == 1) {
-				unset($this->subMenu['photo']);
+				unset($this->subMenu[1]['photo']);
             }
             if ($model->article->category->single_file || $setting->media_file_limit == 1) {
-				unset($this->subMenu['document']);
+				unset($this->subMenu[1]['document']);
             }
         }
 
