@@ -98,6 +98,9 @@ class AdminController extends Controller
         if (($category = Yii::$app->request->get('category')) != null) {
             $category = \ommu\article\models\ArticleCategory::findOne($category);
         }
+        if (($tag = Yii::$app->request->get('tag')) != null) {
+            $tag = \app\models\CoreTags::findOne($tag);
+        }
 
 		$this->view->title = Yii::t('app', 'Articles');
 		$this->view->description = '';
@@ -107,6 +110,7 @@ class AdminController extends Controller
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
 			'category' => $category,
+			'tag' => $tag,
 		]);
 	}
 
