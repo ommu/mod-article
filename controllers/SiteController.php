@@ -247,7 +247,6 @@ class SiteController extends Controller
 			'dataProvider1' => $dataProvider1,
 			'columns1' => $columns1,
 			'dataProvider2' => $dataProvider2,
-
 		]);
 	}
 

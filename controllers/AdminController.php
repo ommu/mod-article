@@ -227,6 +227,7 @@ class AdminController extends Controller
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
 			'model' => $model,
+			'small' => false,
 		]);
 	}
 
