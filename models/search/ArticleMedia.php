@@ -28,8 +28,10 @@ class ArticleMedia extends ArticleMediaModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'cover', 'orders', 'article_id', 'creation_id', 'modified_id'], 'integer'],
-			[['media_filename', 'caption', 'description', 'creation_date', 'modified_date', 'updated_date', 'articleTitle', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
+			[['id', 'publish', 'cover', 'orders', 'article_id', 'creation_id', 'modified_id', 
+                'oCaption', 'oDescription', 'categoryId'], 'integer'],
+			[['media_filename', 'caption', 'description', 'creation_date', 'modified_date', 'updated_date', 
+                'articleTitle', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
 
@@ -71,16 +73,27 @@ class ArticleMedia extends ArticleMediaModel
 			// 'article article', 
 			// 'creation creation', 
 			// 'modified modified',
-			'view view',
+			// 'view view',
 		]);
-        if ((isset($params['sort']) && in_array($params['sort'], ['articleTitle', '-articleTitle'])) || (isset($params['articleTitle']) && $params['articleTitle'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['articleTitle', '-articleTitle'])) || (
+            (isset($params['articleTitle']) && $params['articleTitle'] != '') ||
+            (isset($params['categoryId']) && $params['categoryId'] != '') ||
+            (isset($params['category']) && $params['category'] != '')
+        )) {
             $query->joinWith(['article article']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || 
+            (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')
+        ) {
             $query->joinWith(['creation creation']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || 
+            (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')
+        ) {
             $query->joinWith(['modified modified']);
+        }
+        if (isset($params['sort']) && in_array($params['sort'], ['categoryId', '-categoryId'])) {
+            $query->joinWith(['article.categoryTitle categoryTitle']);
         }
 
 		$query->groupBy(['id']);
@@ -108,13 +121,17 @@ class ArticleMedia extends ArticleMediaModel
 			'asc' => ['modified.displayname' => SORT_ASC],
 			'desc' => ['modified.displayname' => SORT_DESC],
 		];
-		$attributes['captionStatus'] = [
-			'asc' => ['view.caption' => SORT_ASC],
-			'desc' => ['view.caption' => SORT_DESC],
+		$attributes['oCaption'] = [
+			'asc' => ['t.caption' => SORT_ASC],
+			'desc' => ['t.caption' => SORT_DESC],
 		];
-		$attributes['descriptionStatus'] = [
-			'asc' => ['view.description' => SORT_ASC],
-			'desc' => ['view.description' => SORT_DESC],
+		$attributes['oDescription'] = [
+			'asc' => ['t.description' => SORT_ASC],
+			'desc' => ['t.description' => SORT_DESC],
+		];
+		$attributes['categoryId'] = [
+			'asc' => ['categoryTitle.message' => SORT_ASC],
+			'desc' => ['categoryTitle.message' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
@@ -143,9 +160,25 @@ class ArticleMedia extends ArticleMediaModel
 			'cast(t.modified_date as date)' => $this->modified_date,
 			't.modified_id' => isset($params['modified']) ? $params['modified'] : $this->modified_id,
 			'cast(t.updated_date as date)' => $this->updated_date,
+			'article.cat_id' => $this->categoryId,
 		]);
 
-        if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
+        if (isset($params['oCaption']) && $params['oCaption'] != '') {
+            if ($this->oCaption == 1) {
+                $query->andWhere(['<>', 't.caption', '']);
+            } else if ($this->oCaption == 0) {
+                $query->andWhere(['=', 't.caption', '']);
+            }
+        }
+        if (isset($params['oDescription']) && $params['oDescription'] != '') {
+            if ($this->oDescription == 1) {
+                $query->andWhere(['<>', 't.description', '']);
+            } else if ($this->oDescription == 0) {
+                $query->andWhere(['=', 't.description', '']);
+            }
+        }
+
+        if ((!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) && !$this->publish) {
             $query->andFilterWhere(['IN', 't.publish', [0,1]]);
         } else {
             $query->andFilterWhere(['t.publish' => $this->publish]);

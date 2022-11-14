@@ -42,6 +42,17 @@ $attributes = [
 		'visible' => !$small,
 	],
 	[
+		'attribute' => 'categoryId',
+		'value' => function ($model) {
+			$categoryId = isset($model->article->categoryTitle) ? $model->article->categoryTitle->message : '-';
+            if ($categoryId != '-') {
+                return Html::a($categoryId, ['setting/category/view', 'id' => $model->article->cat_id], ['title' => $categoryId, 'class' => 'modal-btn']);
+            }
+			return $categoryId;
+		},
+		'format' => 'html',
+	],
+	[
 		'attribute' => 'articleTitle',
 		'value' => function ($model) {
 			$articleTitle = isset($model->article) ? $model->article->title : '-';

@@ -38,6 +38,7 @@ use ommu\article\models\Articles;
 use ommu\article\models\search\Articles as ArticlesSearch;
 use ommu\article\models\ArticleSetting;
 use yii\web\UploadedFile;
+use yii\helpers\ArrayHelper;
 
 class AdminController extends Controller
 {
@@ -75,8 +76,13 @@ class AdminController extends Controller
 	 */
 	public function actionManage()
 	{
+
         $searchModel = new ArticlesSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $queryParams = Yii::$app->request->queryParams;
+        if (($tag = Yii::$app->request->get('tag')) != null) {
+            $queryParams = ArrayHelper::merge(Yii::$app->request->queryParams, ['tagId' => $tag]);
+        }
+		$dataProvider = $searchModel->search($queryParams);
 
         $gridColumn = Yii::$app->request->get('GridColumn', null);
         $cols = [];
@@ -92,6 +98,9 @@ class AdminController extends Controller
         if (($category = Yii::$app->request->get('category')) != null) {
             $category = \ommu\article\models\ArticleCategory::findOne($category);
         }
+        if (($tag = Yii::$app->request->get('tag')) != null) {
+            $tag = \app\models\CoreTags::findOne($tag);
+        }
 
 		$this->view->title = Yii::t('app', 'Articles');
 		$this->view->description = '';
@@ -101,6 +110,7 @@ class AdminController extends Controller
 			'dataProvider' => $dataProvider,
 			'columns' => $columns,
 			'category' => $category,
+			'tag' => $tag,
 		]);
 	}
 
@@ -179,10 +189,10 @@ class AdminController extends Controller
 
 		$this->subMenu = $this->module->params['article_submenu'];
         if ($model->category->single_photo || $setting->media_image_limit == 1) {
-            unset($this->subMenu['photo']);
+            unset($this->subMenu[1]['photo']);
         }
         if ($model->category->single_file || $setting->media_file_limit == 1) {
-            unset($this->subMenu['document']);
+            unset($this->subMenu[1]['document']);
         }
 
 		$this->view->title = Yii::t('app', 'Update Article: {title}', ['title' => $model->title]);
@@ -206,10 +216,10 @@ class AdminController extends Controller
 
 		$this->subMenu = $this->module->params['article_submenu'];
         if ($model->category->single_photo || $setting->media_image_limit == 1) {
-            unset($this->subMenu['photo']);
+            unset($this->subMenu[1]['photo']);
         }
         if ($model->category->single_file || $setting->media_file_limit == 1) {
-            unset($this->subMenu['document']);
+            unset($this->subMenu[1]['document']);
         }
 
 		$this->view->title = Yii::t('app', 'Detail Article: {title}', ['title' => $model->title]);
@@ -217,6 +227,7 @@ class AdminController extends Controller
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
 			'model' => $model,
+			'small' => false,
 		]);
 	}
 

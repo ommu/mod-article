@@ -2,7 +2,7 @@
 /**
  * Article Tags (article-tag)
  * @var $this app\components\View
- * @var $this ommu\article\controllers\o\TagController
+ * @var $this ommu\article\controllers\setting\TagController
  * @var $model ommu\article\models\search\ArticleTag
  * @var $form yii\widgets\ActiveForm
  *

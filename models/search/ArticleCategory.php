@@ -28,8 +28,10 @@ class ArticleCategory extends ArticleCategoryModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'parent_id', 'name', 'desc', 'single_photo', 'single_file', 'creation_id', 'modified_id'], 'integer'],
-			[['creation_date', 'modified_date', 'updated_date', 'name_i', 'desc_i', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
+			[['id', 'publish', 'parent_id', 'name', 'desc', 'single_photo', 'single_file', 'creation_id', 'modified_id',
+                'oPublish', 'oPending', 'oUnpublish', 'oAll'], 'integer'],
+			[['creation_date', 'modified_date', 'updated_date', 
+                'name_i', 'desc_i', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
 
@@ -72,18 +74,34 @@ class ArticleCategory extends ArticleCategoryModel
 			// 'description description', 
 			// 'creation creation', 
 			// 'modified modified', 
-			'view view',
+			// 'view view',
 		]);
-        if ((isset($params['sort']) && in_array($params['sort'], ['name_i', '-name_i'])) || (isset($params['name_i']) && $params['name_i'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['oPublish', '-oPublish', 'oPending', '-oPending', 'oUnpublish', '-oUnpublish', 'oAll', '-oAll'])) || (
+            (isset($params['oPublish']) && $params['oPublish'] != '') ||
+            (isset($params['oPending']) && $params['oPending'] != '') ||
+            (isset($params['oUnpublish']) && $params['oUnpublish'] != '') ||
+            (isset($params['oAll']) && $params['oAll'] != '')
+        )) {
+            $query->joinWith(['view view']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['name_i', '-name_i'])) || 
+            (isset($params['name_i']) && $params['name_i'] != '')
+        ) {
             $query->joinWith(['title title']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['desc_i', '-desc_i'])) || (isset($params['desc_i']) && $params['desc_i'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['desc_i', '-desc_i'])) || 
+            (isset($params['desc_i']) && $params['desc_i'] != '')
+        ) {
             $query->joinWith(['description description']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || 
+            (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')
+        ) {
             $query->joinWith(['creation creation']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')) {
+        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || 
+            (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')
+        ) {
             $query->joinWith(['modified modified']);
         }
 
@@ -116,17 +134,21 @@ class ArticleCategory extends ArticleCategoryModel
 			'asc' => ['modified.displayname' => SORT_ASC],
 			'desc' => ['modified.displayname' => SORT_DESC],
 		];
-		$attributes['publish'] = [
+		$attributes['oPublish'] = [
 			'asc' => ['view.publish' => SORT_ASC],
 			'desc' => ['view.publish' => SORT_DESC],
 		];
-		$attributes['pending'] = [
+		$attributes['oPending'] = [
 			'asc' => ['view.pending' => SORT_ASC],
 			'desc' => ['view.pending' => SORT_DESC],
 		];
-		$attributes['unpublish'] = [
+		$attributes['oUnpublish'] = [
 			'asc' => ['view.unpublish' => SORT_ASC],
 			'desc' => ['view.unpublish' => SORT_DESC],
+		];
+		$attributes['oAll'] = [
+			'asc' => ['view.all' => SORT_ASC],
+			'desc' => ['view.all' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
@@ -159,7 +181,36 @@ class ArticleCategory extends ArticleCategoryModel
 			'cast(t.updated_date as date)' => $this->updated_date,
 		]);
 
-        if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
+        if (isset($params['oPublish']) && $params['oPublish'] != '') {
+            if ($this->oPublish == 1) {
+                $query->andWhere(['<>', 'view.publish', 0]);
+            } else if ($this->oPublish == 0) {
+                $query->andWhere(['=', 'view.publish', 0]);
+            }
+        }
+        if (isset($params['oPending']) && $params['oPending'] != '') {
+            if ($this->oPending == 1) {
+                $query->andWhere(['<>', 'view.pending', 0]);
+            } else if ($this->oPending == 0) {
+                $query->andWhere(['=', 'view.pending', 0]);
+            }
+        }
+        if (isset($params['oUnpublish']) && $params['oUnpublish'] != '') {
+            if ($this->oUnpublish == 1) {
+                $query->andWhere(['<>', 'view.unpublish', 0]);
+            } else if ($this->oUnpublish == 0) {
+                $query->andWhere(['=', 'view.unpublish', 0]);
+            }
+        }
+        if (isset($params['oAll']) && $params['oAll'] != '') {
+            if ($this->oAll == 1) {
+                $query->andWhere(['<>', 'view.all', 0]);
+            } else if ($this->oAll == 0) {
+                $query->andWhere(['=', 'view.all', 0]);
+            }
+        }
+
+        if ((!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) && !$this->publish) {
             $query->andFilterWhere(['IN', 't.publish', [0,1]]);
         } else {
             $query->andFilterWhere(['t.publish' => $this->publish]);

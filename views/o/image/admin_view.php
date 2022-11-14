@@ -47,7 +47,17 @@ $attributes = [
 		'format' => 'raw',
 		'visible' => !$small,
 	],
-	'orders',
+	[
+		'attribute' => 'categoryId',
+		'value' => function ($model) {
+			$categoryId = isset($model->article->categoryTitle) ? $model->article->categoryTitle->message : '-';
+            if ($categoryId != '-') {
+                return Html::a($categoryId, ['setting/category/view', 'id' => $model->article->cat_id], ['title' => $categoryId, 'class' => 'modal-btn']);
+            }
+			return $categoryId;
+		},
+		'format' => 'html',
+	],
 	[
 		'attribute' => 'articleTitle',
 		'value' => function ($model) {
@@ -74,6 +84,7 @@ $attributes = [
 		'format' => 'html',
 		'visible' => !$small,
 	],
+	'orders',
 	[
 		'attribute' => 'creation_date',
 		'value' => Yii::$app->formatter->asDatetime($model->creation_date, 'medium'),

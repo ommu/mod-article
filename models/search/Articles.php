@@ -28,8 +28,10 @@ class Articles extends ArticlesModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'cat_id', 'headline', 'creation_id', 'modified_id'], 'integer'],
-			[['title', 'body', 'published_date', 'headline_date', 'creation_date', 'modified_date', 'updated_date', 'categoryName', 'creationDisplayname', 'modifiedDisplayname', 'tag'], 'safe'],
+			[['id', 'publish', 'cat_id', 'headline', 'creation_id', 'modified_id', 
+                'tagId', 'oFile', 'oLike', 'oMedia', 'oView'], 'integer'],
+			[['title', 'body', 'published_date', 'headline_date', 'creation_date', 'modified_date', 'updated_date', 
+                'categoryName', 'creationDisplayname', 'modifiedDisplayname', 'tagBody'], 'safe'],
 		];
 	}
 
@@ -73,8 +75,15 @@ class Articles extends ArticlesModel
 			// 'modified modified',
 			// 'tags tags',
 			// 'tags.tag tagsRltn',
-			'view view',
 		]);
+        if ((isset($params['sort']) && in_array($params['sort'], ['oFile', '-oFile', 'oLike', '-oLike', 'oMedia', '-oMedia', 'oView', '-oView'])) || (
+            (isset($params['oFile']) && $params['oFile'] != '') || 
+            (isset($params['oLike']) && $params['oLike'] != '') || 
+            (isset($params['oMedia']) && $params['oMedia'] != '') || 
+            (isset($params['oView']) && $params['oView'] != '')
+        )) {
+            $query->joinWith(['grid grid']);
+        }
         if ((isset($params['sort']) && in_array($params['sort'], ['cat_id', '-cat_id', 'categoryName', '-categoryName'])) || 
             (isset($params['categoryName']) && $params['categoryName'] != '')
         ) {
@@ -86,11 +95,11 @@ class Articles extends ArticlesModel
         if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')) {
             $query->joinWith(['modified modified']);
         }
-        if (isset($params['tagId']) && $params['tagId'] != '') {
+        if (isset($params['tag']) && $params['tag'] != '') {
             $query->joinWith(['tags tags']);
         }
-        if ((isset($params['sort']) && in_array($params['sort'], ['tag', '-tag'])) || 
-            (isset($params['tag']) && $params['tag'] != '')
+        if ((isset($params['sort']) && in_array($params['sort'], ['tagBody', '-tagBody'])) || 
+            (isset($params['tagBody']) && $params['tagBody'] != '')
         ) {
             $query->joinWith(['tags.tag tag']);
         }
@@ -124,25 +133,21 @@ class Articles extends ArticlesModel
 			'asc' => ['modified.displayname' => SORT_ASC],
 			'desc' => ['modified.displayname' => SORT_DESC],
 		];
-		$attributes['medias'] = [
-			'asc' => ['view.images' => SORT_ASC],
-			'desc' => ['view.images' => SORT_DESC],
+		$attributes['oFile'] = [
+			'asc' => ['grid.file' => SORT_ASC],
+			'desc' => ['grid.file' => SORT_DESC],
 		];
-		$attributes['files'] = [
-			'asc' => ['view.files' => SORT_ASC],
-			'desc' => ['view.files' => SORT_DESC],
+		$attributes['oLike'] = [
+			'asc' => ['grid.like' => SORT_ASC],
+			'desc' => ['grid.like' => SORT_DESC],
 		];
-		$attributes['views'] = [
-			'asc' => ['view.views' => SORT_ASC],
-			'desc' => ['view.views' => SORT_DESC],
+		$attributes['oMedia'] = [
+			'asc' => ['grid.media' => SORT_ASC],
+			'desc' => ['grid.media' => SORT_DESC],
 		];
-		$attributes['downloads'] = [
-			'asc' => ['view.downloads' => SORT_ASC],
-			'desc' => ['view.downloads' => SORT_DESC],
-		];
-		$attributes['likes'] = [
-			'asc' => ['view.likes' => SORT_ASC],
-			'desc' => ['view.likes' => SORT_DESC],
+		$attributes['oView'] = [
+			'asc' => ['grid.view' => SORT_ASC],
+			'desc' => ['grid.view' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
@@ -174,6 +179,37 @@ class Articles extends ArticlesModel
 			'cast(t.updated_date as date)' => $this->updated_date,
 		]);
 
+        $query->andFilterWhere(['tags.tag_id' => $this->tagId]);
+
+        if (isset($params['oFile']) && $params['oFile'] != '') {
+            if ($this->oFile == 1) {
+                $query->andWhere(['<>', 'grid.file', 0]);
+            } else if ($this->oFile == 0) {
+                $query->andWhere(['=', 'grid.file', 0]);
+            }
+        }
+        if (isset($params['oLike']) && $params['oLike'] != '') {
+            if ($this->oLike == 1) {
+                $query->andWhere(['<>', 'grid.like', 0]);
+            } else if ($this->oLike == 0) {
+                $query->andWhere(['=', 'grid.like', 0]);
+            }
+        }
+        if (isset($params['oMedia']) && $params['oMedia'] != '') {
+            if ($this->oMedia == 1) {
+                $query->andWhere(['<>', 'grid.media', 0]);
+            } else if ($this->oMedia == 0) {
+                $query->andWhere(['=', 'grid.media', 0]);
+            }
+        }
+        if (isset($params['oView']) && $params['oView'] != '') {
+            if ($this->oView == 1) {
+                $query->andWhere(['<>', 'grid.view', 0]);
+            } else if ($this->oView == 0) {
+                $query->andWhere(['=', 'grid.view', 0]);
+            }
+        }
+
         if (isset($params['status'])) {
 			$query->andFilterCompare('t.publish', 1);
             if ($params['status'] == 'publish') {
@@ -193,16 +229,12 @@ class Articles extends ArticlesModel
             }
         }
 
-        if (isset($params['tagId']) && $params['tagId'] != '') {
-            $query->andFilterWhere(['tags.tag_id' => $params['tagId']]);
-        }
-
 		$query->andFilterWhere(['like', 't.title', $this->title])
 			->andFilterWhere(['like', 't.body', $this->body])
 			->andFilterWhere(['like', 'categoryTitle.message', $this->categoryName])
 			->andFilterWhere(['like', 'creation.displayname', $this->creationDisplayname])
 			->andFilterWhere(['like', 'modified.displayname', $this->modifiedDisplayname])
-			->andFilterWhere(['like', 'tag.body', $this->tag]);
+			->andFilterWhere(['like', 'tag.body', $this->tagBody]);
 
 		return $dataProvider;
 	}

@@ -1,48 +1,43 @@
 <?php
 /**
- * ArticleCategory
+ * ArticleGrid
  * 
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
- * @copyright Copyright (c) 2017 OMMU (www.ommu.id)
- * @created date 20 October 2017, 10:18 WIB
- * @modified date 21 May 2019, 12:55 WIB
- * @link https://github.com/ommu/mod-article
+ * @copyright Copyright (c) 2022 OMMU (www.ommu.id)
+ * @created date 10 October 2022, 09:24 WIB
+ * @link https://bitbucket.org/ommu/article
  *
- * This is the model class for table "_article_category".
+ * This is the model class for table "ommu_article_grid".
  *
- * The followings are the available columns in table "_article_category":
+ * The followings are the available columns in table "ommu_article_grid":
  * @property integer $id
- * @property string $publish
- * @property string $pending
- * @property string $unpublish
- * @property integer $all
- * @property string $article_id
+ * @property integer $file
+ * @property integer $like
+ * @property integer $media
+ * @property integer $tag
+ * @property integer $view
+ * @property string $modified_date
+ *
+ * The followings are the available model relations:
+ * @property Articles $0
  *
  */
 
-namespace ommu\article\models\view;
+namespace ommu\article\models;
 
 use Yii;
 
-class ArticleCategory extends \app\components\ActiveRecord
+class ArticleGrid extends \app\components\ActiveRecord
 {
-	public $gridForbiddenColumn = [];
+    public $gridForbiddenColumn = [];
 
 	/**
 	 * @return string the associated database table name
 	 */
 	public static function tableName()
 	{
-		return '_article_category';
-	}
-
-	/**
-	 * @return string the primarykey column
-	 */
-	public static function primaryKey()
-	{
-		return ['id'];
+		return 'ommu_article_grid';
 	}
 
 	/**
@@ -51,8 +46,10 @@ class ArticleCategory extends \app\components\ActiveRecord
 	public function rules()
 	{
 		return [
-			[['id', 'all', 'article_id'], 'integer'],
-			[['publish', 'pending', 'unpublish'], 'number'],
+			[['id', 'file', 'like', 'media', 'tag', 'view'], 'required'],
+			[['id', 'file', 'like', 'media', 'tag', 'view'], 'integer'],
+			[['id'], 'unique'],
+			[['id'], 'exist', 'skipOnError' => true, 'targetClass' => Articles::className(), 'targetAttribute' => ['id' => 'id']],
 		];
 	}
 
@@ -63,11 +60,12 @@ class ArticleCategory extends \app\components\ActiveRecord
 	{
 		return [
 			'id' => Yii::t('app', 'ID'),
-			'publish' => Yii::t('app', 'Publish'),
-			'pending' => Yii::t('app', 'Pending'),
-			'unpublish' => Yii::t('app', 'Unpublish'),
-			'all' => Yii::t('app', 'All'),
-			'article_id' => Yii::t('app', 'Article'),
+			'file' => Yii::t('app', 'File'),
+			'like' => Yii::t('app', 'Like'),
+			'media' => Yii::t('app', 'Media'),
+			'tag' => Yii::t('app', 'Tag'),
+			'view' => Yii::t('app', 'View'),
+			'modified_date' => Yii::t('app', 'Modified Date'),
 		];
 	}
 

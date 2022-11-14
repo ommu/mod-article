@@ -39,6 +39,10 @@ $this->params['menu']['option'] = [
     echo $this->render('/setting/category/admin_view', ['model' => $category, 'small' => true]);
 } ?>
 
+<?php if ($tag != null) {
+	echo $this->render('@ommu/core/views/tag/admin_view', ['model' => $tag, 'small' => true]);
+} ?>
+
 <?php //echo $this->render('_search', ['model' => $searchModel]); ?>
 
 <?php echo $this->render('_option_form', ['model' => $searchModel, 'gridColumns' => $searchModel->activeDefaultColumns($columns), 'route' => $this->context->route]); ?>

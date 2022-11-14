@@ -56,15 +56,50 @@ article_submenu:
       select: action
 
 setting_submenu:
-  update:
-    label: Settings
-    url: ['setting/admin/update']
-    select: controller
-  category:
-    label: Categories
-    url: ['setting/category']
-    select: controller
-  tag:
-    label: Tags
-    url: ['o/tag']
-    select: controller
+  0:
+    category:
+      label: Categories
+      url: ['setting/category']
+      select: controller
+  1:
+    tag:
+      label: Tags
+      url: ['setting/tag']
+      select: controller
+  2:
+    update:
+      label: Settings
+      url: ['setting/admin/update']
+      select: controller
+
+category_submenu:
+  0:
+    setting:
+      label: Back to Category Setting(s)
+      url:
+        0: 'setting/category/index'
+      select: action
+      backTo: true
+  1:
+    view:
+      label: Detail
+      url:
+        0: 'setting/category/view'
+        id: $_GET*id
+      select: action
+    update:
+      label: Update
+      url:
+        0: 'setting/category/update'
+        id: $_GET*id
+      select: action
+  2:
+    delete:
+      label: Delete
+      url:
+        0: 'setting/category/delete'
+        id: $_GET*id
+      htmlOptions:
+        data-confirm: Are you sure you want to delete this item?
+        data-method: post
+      select: action

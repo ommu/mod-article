@@ -38,7 +38,7 @@ select
   sum(case when `b`.`publish` = '1' and `b`.`published_date` <= curdate() then 1 else 0 end) AS `publish`,
   sum(case when `b`.`publish` = '1' and `b`.`published_date` > curdate() then 1 else 0 end) AS `pending`,
   sum(case when `b`.`publish` = '0' then 1 else 0 end) AS `unpublish`,
-  count(`b`.`cat_id`) AS `all`,
+  sum(case when `b`.`publish` <> '2' then 1 else 0 end) AS `all`,
   max(case when `b`.`publish` = '1' and `b`.`published_date` <= curdate() then `b`.`id` end) AS `article_id`
 from (`ommu_article_category` `a`
    left join `ommu_articles` `b`
@@ -104,7 +104,7 @@ CREATE VIEW `_article_statistic_file` AS
 select
   `a`.`article_id` AS `article_id`,
   sum(case when `a`.`publish` = '1' then 1 else 0 end) AS `files`,
-  count(`a`.`id`)  AS `all`
+  SUM(CASE WHEN `a`.`publish` <> '2' THEN 1 ELSE 0 END) AS `all`
 from `ommu_article_files` `a`
 group by `a`.`id`;
 SQL;
@@ -116,7 +116,7 @@ CREATE VIEW `_article_statistic_like` AS
 select
   `a`.`article_id` AS `article_id`,
   sum(case when `a`.`publish` = '1' then 1 else 0 end) AS `likes`,
-  count(`a`.`article_id`) AS `all`
+  SUM(CASE WHEN `a`.`publish` <> '2' THEN 1 ELSE 0 END) AS `all`
 from `ommu_article_likes` `a`
 group by `a`.`article_id`;
 SQL;
@@ -128,7 +128,7 @@ CREATE VIEW `_article_statistic_media` AS
 select
   `a`.`article_id` AS `article_id`,
   sum(case when `a`.`publish` = '1' then 1 else 0 end) AS `images`,
-  count(`a`.`id`)  AS `all`
+  SUM(CASE WHEN `a`.`publish` <> '2' THEN 1 ELSE 0 END) AS `all`
 from `ommu_article_media` `a`
 group by `a`.`article_id`;
 SQL;

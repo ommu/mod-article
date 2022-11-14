@@ -41,16 +41,6 @@ class CategoryController extends Controller
 	/**
 	 * {@inheritdoc}
 	 */
-	public function init()
-	{
-        parent::init();
-
-        $this->subMenu = $this->module->params['setting_submenu'];
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
 	public function behaviors()
 	{
         return [
@@ -95,6 +85,7 @@ class CategoryController extends Controller
         }
         $columns = $searchModel->getGridColumn($cols);
 
+        $this->subMenu = $this->module->params['setting_submenu'];
 		$this->view->title = Yii::t('app', 'Categories');
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -136,6 +127,7 @@ class CategoryController extends Controller
             }
         }
 
+        $this->subMenu = $this->module->params['setting_submenu'];
 		$this->view->title = Yii::t('app', 'Create Category');
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -174,6 +166,7 @@ class CategoryController extends Controller
             }
         }
 
+        $this->subMenu = $this->module->params['category_submenu'];
 		$this->view->title = Yii::t('app', 'Update Category: {name}', ['name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -191,11 +184,13 @@ class CategoryController extends Controller
 	{
         $model = $this->findModel($id);
 
+        $this->subMenu = $this->module->params['category_submenu'];
 		$this->view->title = Yii::t('app', 'Detail Category: {name}', ['name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
 			'model' => $model,
+			'small' => false,
 		]);
 	}
 
