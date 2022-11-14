@@ -321,6 +321,9 @@ class Articles extends \app\components\ActiveRecord
 	public function getCoverAttribute()
 	{
 		$model = $this->getMedias('cover')->one();
+        if (!$model) {
+            return [];
+        }
 		return ['id' => $model->id, 'cover' => $model->media_filename];
 	}
 
@@ -330,6 +333,9 @@ class Articles extends \app\components\ActiveRecord
 	public function getCover()
 	{
 		$model = $this->getCoverAttribute();
+        if (is_array($model)  && empty($model)) {
+            return;
+        }
 		return $model['cover'];
 	}
 
@@ -339,6 +345,9 @@ class Articles extends \app\components\ActiveRecord
 	public function getDocumentAttribute()
 	{
 		$model = $this->getFiles(false)->one();
+        if (!$model) {
+            return [];
+        }
 		return ['id' => $model->id, 'file' => $model->file_filename];
 	}
 
@@ -348,6 +357,9 @@ class Articles extends \app\components\ActiveRecord
 	public function getDocument()
 	{
 		$model = $this->getDocumentAttribute();
+        if (is_array($model)  && empty($model)) {
+            return;
+        }
 		return $model['file'];
 	}
 

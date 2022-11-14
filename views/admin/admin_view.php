@@ -112,7 +112,7 @@ $attributes = [
 		'attribute' => 'oMedia',
 		'value' => function ($model) {
 			$medias = $model->grid->media;
-			return Html::a($medias, ['o/image/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} medias', ['count' => $media])]);
+			return Html::a($medias, ['o/image/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} medias', ['count' => $medias])]);
 		},
 		'format' => 'html',
 		'visible' => !$small && !$model->category->single_file ? true : false,

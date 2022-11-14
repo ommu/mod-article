@@ -191,7 +191,7 @@ class ArticleViews extends \app\components\ActiveRecord
 			'attribute' => 'views',
 			'value' => function($model, $key, $index, $column) {
 				$views = $model->views;
-				return Html::a($views, ['view/history/manage', 'view' => $model->primaryKey], ['title' => Yii::t('app', '{count} histories', ['count' => $histories]), 'data-pjax' => 0]);
+				return Html::a($views, ['view/history/manage', 'view' => $model->primaryKey], ['title' => Yii::t('app', '{count} histories', ['count' => $views]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class' => 'text-center'],
