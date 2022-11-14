@@ -66,7 +66,7 @@ class ArticleTag extends ArticleTagModel
         if (!($column && is_array($column))) {
             $query = ArticleTagModel::find()
                 ->alias('t')
-                ->select(['*', 'count(t.id) as articles']);
+                ->select(['t.*', 'count(t.id) as articles']);
         } else {
             $column = ArrayHelper::merge($column, ['count(t.id) as articles']);
             $query = ArticleTagModel::find()
@@ -94,9 +94,9 @@ class ArticleTag extends ArticleTagModel
             $query->joinWith(['creation creation']);
         }
 
-        $query->groupBy(['tag_id']);
-        if (Yii::$app->request->get('data')) {
-            $query->groupBy(['id']);
+        $query->groupBy(['t.tag_id']);
+        if ($this->isData) {
+            $query->groupBy(['t.id']);
         }
 
         // add conditions that should always apply here

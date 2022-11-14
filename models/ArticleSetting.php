@@ -331,7 +331,7 @@ class ArticleSetting extends \app\components\ActiveRecord
 	/**
 	 * function getSize
 	 */
-	public function getSize($size)
+	public static function getSize($size)
 	{
         if (empty($size)) {
             return '-';
@@ -346,7 +346,7 @@ class ArticleSetting extends \app\components\ActiveRecord
 	/**
 	 * function parseImageViewSize
 	 */
-	public function parseImageViewSize($view_size)
+	public static function parseImageViewSize($view_size)
 	{
         if (empty($view_size)) {
             return '-';

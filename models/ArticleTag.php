@@ -34,7 +34,7 @@ use yii\helpers\Html;
 
 class ArticleTag extends \app\components\ActiveRecord
 {
-	public $gridForbiddenColumn = ['creation_date', 'creationDisplayname'];
+	public $gridForbiddenColumn = [];
 
 	public $tagBody;
 	public $articleTitle;
@@ -107,6 +107,17 @@ class ArticleTag extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getIsData()
+	{
+        if ((Yii::$app->request->get('data') && Yii::$app->request->get('data') == 'true') || Yii::$app->request->get('article')) {
+            return true;
+        }
+        return false;
+	}
+
+	/**
 	 * {@inheritdoc}
 	 * @return \ommu\article\models\query\ArticleTag the active query used by this AR class.
 	 */
@@ -148,7 +159,7 @@ class ArticleTag extends \app\components\ActiveRecord
 				return isset($model->article) ? $model->article->title : '-';
 				// return $model->articleTitle;
 			},
-			'visible' => Yii::$app->request->get('data') ? true : false,
+			'visible' => $this->isData ? (!Yii::$app->request->get('type') && !Yii::$app->request->get('article') ? true : false) : false,
 		];
 		$this->templateColumns['articles'] = [
 			'attribute' => 'articles',
@@ -159,6 +170,7 @@ class ArticleTag extends \app\components\ActiveRecord
 			'filter' => false,
             'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
+			'visible' => !$this->isData,
 		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
@@ -166,7 +178,7 @@ class ArticleTag extends \app\components\ActiveRecord
 				return Yii::$app->formatter->asDatetime($model->creation_date, 'medium');
 			},
 			'filter' => $this->filterDatepicker($this, 'creation_date'),
-			'visible' => Yii::$app->request->get('data') ? true : false,
+			'visible' => $this->isData,
 		];
 		$this->templateColumns['creationDisplayname'] = [
 			'attribute' => 'creationDisplayname',
@@ -174,7 +186,7 @@ class ArticleTag extends \app\components\ActiveRecord
 				return isset($model->creation) ? $model->creation->displayname : '-';
 				// return $model->creationDisplayname;
 			},
-			'visible' => Yii::$app->request->get('data') ? true : false,
+			'visible' => $this->isData,
 		];
 	}
 
