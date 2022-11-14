@@ -60,7 +60,7 @@ $attributes = [
 	],
 	[
 		'attribute' => 'categoryName',
-		'value' => $model->category->title->message,
+		'value' => $model->categoryTitle->message,
 	],
 	'title',
 	[

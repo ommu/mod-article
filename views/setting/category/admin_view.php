@@ -23,11 +23,6 @@ if (!$small) {
     $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Article'), 'url' => ['setting/admin/index']];
     $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Category'), 'url' => ['index']];
     $this->params['breadcrumbs'][] = $model->title->message;
-
-    $this->params['menu']['content'] = [
-        ['label' => Yii::t('app', 'Update'), 'url' => Url::to(['update', 'id' => $model->id]), 'icon' => 'pencil', 'htmlOptions' => ['class' => 'btn btn-primary']],
-        ['label' => Yii::t('app', 'Delete'), 'url' => Url::to(['delete', 'id' => $model->id]), 'htmlOptions' => ['data-confirm' => Yii::t('app', 'Are you sure you want to delete this item?'), 'data-method' => 'post', 'class' => 'btn btn-danger'], 'icon' => 'trash'],
-    ];
 } ?>
 
 <div class="article-category-view">
@@ -47,15 +42,15 @@ $attributes = [
 	],
 	[
 		'attribute' => 'parent_id',
-		'value' => isset($model->parent) ? $model->parent->name_i : '-',
+		'value' => isset($model->parentTitle) ? $model->parentTitle->message : '-',
 	],
 	[
 		'attribute' => 'name_i',
-		'value' => $model->name_i,
+		'value' => isset($model->title) ? $model->title->message : '',
 	],
 	[
 		'attribute' => 'desc_i',
-		'value' => $model->desc_i,
+		'value' => isset($model->description) ? $model->description->message : '',
 	],
 	[
 		'attribute' => 'single_photo',
@@ -68,28 +63,37 @@ $attributes = [
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'articles',
+		'attribute' => 'oPublish',
 		'value' => function ($model) {
-			$articles = $model->getArticles(true);
+			$articles = $model->view->publish;
 			return Html::a($articles, ['admin/manage', 'category' => $model->primaryKey, 'status' => 'publish'], ['title' => Yii::t('app', '{count} articles', ['count' => $articles])]);
 		},
 		'format' => 'html',
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'pending',
+		'attribute' => 'oPending',
 		'value' => function ($model) {
-			$pending = $model->getPending(true);
+			$pending = $model->view->pending;
 			return Html::a($pending, ['admin/manage', 'category' => $model->primaryKey, 'status' => 'pending'], ['title' => Yii::t('app', '{count} articles', ['count' => $pending])]);
 		},
 		'format' => 'html',
 		'visible' => !$small,
 	],
 	[
-		'attribute' => 'unpublish',
+		'attribute' => 'oUnpublish',
 		'value' => function ($model) {
-			$unpublish = $model->getArticles(true, 0);
+			$unpublish = $model->view->unpublish;
 			return Html::a($unpublish, ['admin/manage', 'category' => $model->primaryKey, 'publish' => 0], ['title' => Yii::t('app', '{count} articles', ['count' => $unpublish])]);
+		},
+		'format' => 'html',
+		'visible' => !$small,
+	],
+	[
+		'attribute' => 'oAll',
+		'value' => function ($model) {
+			$all = $model->view->all;
+			return Html::a($all, ['admin/manage', 'category' => $model->primaryKey], ['title' => Yii::t('app', '{count} articles', ['count' => $all])]);
 		},
 		'format' => 'html',
 		'visible' => !$small,

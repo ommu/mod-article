@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 if (($id = Yii::$app->request->get('article')) != null) {
 	$this->params['menu']['content'] = [
-		['label' => Yii::t('app', 'Add Document'), 'url' => Url::to(['create', 'id' => $id]), 'icon' => 'plus-square', 'htmlOptions' => ['class' => 'btn btn-primary']],
+		['label' => Yii::t('app', 'Add Document'), 'url' => Url::to(['create', 'id' => $id]), 'icon' => 'plus-square', 'htmlOptions' => ['class' => 'btn btn-success']],
 	];
 }
 $this->params['menu']['option'] = [

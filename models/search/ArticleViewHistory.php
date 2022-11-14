@@ -64,12 +64,21 @@ class ArticleViewHistory extends ArticleViewHistoryModel
         if (!($column && is_array($column))) {
             $query = ArticleViewHistoryModel::find()->alias('t');
         } else {
-            $query = ArticleViewHistoryModel::find()->alias('t')->select($column);
+            $query = ArticleViewHistoryModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
-			'view view',
-			'view.article viewRltn'
+			// 'view view',
+			// 'view.article viewRltn'
 		]);
+        if ((isset($params['sort']) && in_array($params['sort'], ['articleTitle', '-articleTitle'])) ||
+            (isset($params['articleTitle']) && $params['articleTitle'] != '')
+        ) {
+            $query->joinWith(['article article']);
+        }
+        if (isset($params['article']) && $params['article'] != '') {
+            $query->joinWith(['view view']);
+        }
 
 		$query->groupBy(['id']);
 
@@ -85,8 +94,8 @@ class ArticleViewHistory extends ArticleViewHistoryModel
 
 		$attributes = array_keys($this->getTableSchema()->columns);
 		$attributes['articleTitle'] = [
-			'asc' => ['viewRltn.title' => SORT_ASC],
-			'desc' => ['viewRltn.title' => SORT_DESC],
+			'asc' => ['article.title' => SORT_ASC],
+			'desc' => ['article.title' => SORT_DESC],
 		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
@@ -113,7 +122,7 @@ class ArticleViewHistory extends ArticleViewHistoryModel
 		]);
 
 		$query->andFilterWhere(['like', 't.view_ip', $this->view_ip])
-			->andFilterWhere(['like', 'viewRltn.title', $this->articleTitle]);
+			->andFilterWhere(['like', 'article.title', $this->articleTitle]);
 
 		return $dataProvider;
 	}

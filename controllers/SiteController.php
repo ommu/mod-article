@@ -7,17 +7,17 @@
  * SiteController implements the CRUD actions for Articles model.
  * Reference start
  * TOC :
- *	Index
- *	Manage
- *	Create
- *	Update
- *	View
- *	Delete
- *	RunAction
- *	Publish
- *	Headline
+ *  Index
+ *  Manage
+ *  Create
+ *  Update
+ *  View
+ *  Delete
+ *  RunAction
+ *  Publish
+ *  Headline
  *
- *	findModel
+ *  findModel
  *
  * @copyright Copyright (c) 2017 OMMU (www.ommu.id)
  * @contact (+62) 857-297-29382
@@ -247,7 +247,6 @@ class SiteController extends Controller
 			'dataProvider1' => $dataProvider1,
 			'columns1' => $columns1,
 			'dataProvider2' => $dataProvider2,
-
 		]);
 	}
 

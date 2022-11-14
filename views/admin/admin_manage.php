@@ -24,7 +24,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Publication'), 'url'
 $this->params['breadcrumbs'][] = $this->title;
 
 $this->params['menu']['content'] = [
-	['label' => Yii::t('app', 'Add Article'), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class' => 'btn btn-primary']],
+	['label' => Yii::t('app', 'Add Article'), 'url' => Url::to(['create']), 'icon' => 'plus-square', 'htmlOptions' => ['class' => 'btn btn-success']],
 ];
 $this->params['menu']['option'] = [
 	//['label' => Yii::t('app', 'Search'), 'url' => 'javascript:void(0);'],
@@ -37,6 +37,10 @@ $this->params['menu']['option'] = [
 
 <?php if ($category != null) {
     echo $this->render('/setting/category/admin_view', ['model' => $category, 'small' => true]);
+} ?>
+
+<?php if ($tag != null) {
+	echo $this->render('@ommu/core/views/tag/admin_view', ['model' => $tag, 'small' => true]);
 } ?>
 
 <?php //echo $this->render('_search', ['model' => $searchModel]); ?>

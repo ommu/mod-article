@@ -34,7 +34,7 @@ use yii\helpers\Html;
 
 class ArticleTag extends \app\components\ActiveRecord
 {
-	public $gridForbiddenColumn = ['creation_date', 'creationDisplayname'];
+	public $gridForbiddenColumn = [];
 
 	public $tagBody;
 	public $articleTitle;
@@ -84,7 +84,8 @@ class ArticleTag extends \app\components\ActiveRecord
 	 */
 	public function getArticle()
 	{
-		return $this->hasOne(Articles::className(), ['id' => 'article_id']);
+		return $this->hasOne(Articles::className(), ['id' => 'article_id'])
+            ->select(['id', 'cat_id', 'title']);
 	}
 
 	/**
@@ -92,7 +93,8 @@ class ArticleTag extends \app\components\ActiveRecord
 	 */
 	public function getTag()
 	{
-		return $this->hasOne(CoreTags::className(), ['tag_id' => 'tag_id']);
+		return $this->hasOne(CoreTags::className(), ['tag_id' => 'tag_id'])
+            ->select(['tag_id', 'body']);
 	}
 
 	/**
@@ -100,7 +102,19 @@ class ArticleTag extends \app\components\ActiveRecord
 	 */
 	public function getCreation()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getIsData()
+	{
+        if ((Yii::$app->request->get('data') && Yii::$app->request->get('data') == 'true') || Yii::$app->request->get('article')) {
+            return true;
+        }
+        return false;
 	}
 
 	/**
@@ -138,7 +152,6 @@ class ArticleTag extends \app\components\ActiveRecord
 				return isset($model->tag) ? $model->tag->body : '-';
 				// return $model->tagBody;
 			},
-			'visible' => !Yii::$app->request->get('tag') ? true : false,
 		];
 		$this->templateColumns['articleTitle'] = [
 			'attribute' => 'articleTitle',
@@ -146,18 +159,18 @@ class ArticleTag extends \app\components\ActiveRecord
 				return isset($model->article) ? $model->article->title : '-';
 				// return $model->articleTitle;
 			},
-			'visible' => Yii::$app->request->get('tag') ? true : false,
+			'visible' => $this->isData ? (!Yii::$app->request->get('type') && !Yii::$app->request->get('article') ? true : false) : false,
 		];
 		$this->templateColumns['articles'] = [
 			'attribute' => 'articles',
 			'value' => function($model, $key, $index, $column) {
                 $articles = $model->articles;
-				return Html::a($articles, ['manage', 'tag' => $model->tag_id], ['title' => Yii::t('app', '{count} articles', ['count' => $articles]), 'data-pjax' => 0]);
+				return Html::a($articles, ['admin/manage', 'tag' => $model->tag_id], ['title' => Yii::t('app', '{count} articles', ['count' => $articles]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
             'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
-			'visible' => !Yii::$app->request->get('tag') && !Yii::$app->request->get('article') ? true : false,
+			'visible' => !$this->isData,
 		];
 		$this->templateColumns['creation_date'] = [
 			'attribute' => 'creation_date',
@@ -165,6 +178,7 @@ class ArticleTag extends \app\components\ActiveRecord
 				return Yii::$app->formatter->asDatetime($model->creation_date, 'medium');
 			},
 			'filter' => $this->filterDatepicker($this, 'creation_date'),
+			'visible' => $this->isData,
 		];
 		$this->templateColumns['creationDisplayname'] = [
 			'attribute' => 'creationDisplayname',
@@ -172,7 +186,7 @@ class ArticleTag extends \app\components\ActiveRecord
 				return isset($model->creation) ? $model->creation->displayname : '-';
 				// return $model->creationDisplayname;
 			},
-			'visible' => !Yii::$app->request->get('creation') ? true : false,
+			'visible' => $this->isData,
 		];
 	}
 
@@ -204,7 +218,7 @@ class ArticleTag extends \app\components\ActiveRecord
 	{
 		parent::afterFind();
 
-		$this->tagBody = isset($this->tag) ? $this->tag->body : '';
+		// $this->tagBody = isset($this->tag) ? $this->tag->body : '';
 		// $this->articleTitle = isset($this->article) ? $this->article->title : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 	}

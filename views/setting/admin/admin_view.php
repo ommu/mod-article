@@ -22,11 +22,10 @@ if ($breadcrumb) {
     $this->params['breadcrumbs'][] = Yii::t('app', 'Article');
 }
 
-if (!$small) {
-    $this->params['menu']['content'] = [
-        ['label' => Yii::t('app', 'Reset'), 'url' => Url::to(['delete']), 'htmlOptions' => ['data-confirm' => Yii::t('app', 'Are you sure you want to reset this setting?'), 'data-method' => 'post', 'class' => 'btn btn-danger'], 'icon' => 'trash'],
-    ];
-} ?>
+$this->params['menu']['content'] = [
+    ['label' => Yii::t('app', 'Reset'), 'url' => Url::to(['delete']), 'htmlOptions' => ['data-confirm' => Yii::t('app', 'Are you sure you want to reset this setting?'), 'data-method' => 'post', 'class' => 'btn btn-danger'], 'icon' => 'trash'],
+];
+?>
 
 <div class="article-setting-view">
 
@@ -35,12 +34,10 @@ $attributes = [
 	[
 		'attribute' => 'id',
 		'value' => $model->id ? $model->id : '-',
-		'visible' => !$small,
 	],
 	[
 		'attribute' => 'license',
 		'value' => $model->license,
-		'visible' => !$small,
 	],
 	[
 		'attribute' => 'permission',
@@ -89,12 +86,10 @@ $attributes = [
 	[
 		'attribute' => 'modified_date',
 		'value' => Yii::$app->formatter->asDatetime($model->modified_date, 'medium'),
-		'visible' => !$small,
 	],
 	[
 		'attribute' => 'modifiedDisplayname',
 		'value' => isset($model->modified) ? $model->modified->displayname : '-',
-		'visible' => !$small,
 	],
 	[
 		'attribute' => '',

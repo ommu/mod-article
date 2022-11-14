@@ -64,13 +64,28 @@ class ArticleDownloads extends ArticleDownloadsModel
         if (!($column && is_array($column))) {
             $query = ArticleDownloadsModel::find()->alias('t');
         } else {
-            $query = ArticleDownloadsModel::find()->alias('t')->select($column);
+            $query = ArticleDownloadsModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
-			'file file', 
-			'user user',
-			'file.article article',
+			// 'file file', 
+			// 'user user',
+			// 'file.article article',
 		]);
+        if ((isset($params['sort']) && in_array($params['sort'], ['fileFilename', '-fileFilename'])) || (
+            (isset($params['fileFilename']) && $params['fileFilename'] != '') ||
+            (isset($params['article']) && $params['article'] != '')
+        )) {
+            $query->joinWith(['file file']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['userDisplayname', '-userDisplayname'])) || (isset($params['userDisplayname']) && $params['userDisplayname'] != '')) {
+            $query->joinWith(['user user']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['articleTitle', '-articleTitle'])) ||
+            (isset($params['articleTitle']) && $params['articleTitle'] != '')
+        ) {
+            $query->joinWith(['article article']);
+        }
 
 		$query->groupBy(['id']);
 

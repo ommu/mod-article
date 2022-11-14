@@ -28,6 +28,7 @@
  *
  * The followings are the available model relations:
  * @property ArticleFiles[] $files
+ * @property ArticleGrid $grid
  * @property ArticleLikes[] $likes
  * @property ArticleMedia[] $media
  * @property ArticleTag[] $tags
@@ -44,27 +45,36 @@ use Yii;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\models\Users;
-use ommu\article\models\view\Articles as ArticlesView;
 use yii\web\UploadedFile;
 use thamtech\uuid\helpers\UuidHelper;
 use yii\helpers\ArrayHelper;
 use yii\base\Event;
+use app\models\SourceMessage;
 
 class Articles extends \app\components\ActiveRecord
 {
 	use \ommu\traits\UtilityTrait;
 	use \ommu\traits\FileTrait;
 
-	public $gridForbiddenColumn = ['body', 'headline_date', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date', 'tag', 'medias', 'files', 'views', 'likes'];
+	public $gridForbiddenColumn = ['body', 'headline_date', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
+    //, 'tagBody', 'oFile', 'oMedia'
+
+	public $old_image;
+	public $old_file;
+	public $image;
+	public $file;
+	public $tag;
 
 	public $categoryName;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
-	public $image;
-	public $file;
-	public $tag;
-	public $old_image;
-	public $old_file;
+	public $tagBody;
+	public $tagId;
+    public $oFile;
+    public $oLike;
+    public $oMedia;
+    public $oView;
+
 
 	const EVENT_BEFORE_SAVE_ARTICLE = 'BeforeSaveArticle';
 
@@ -110,26 +120,18 @@ class Articles extends \app\components\ActiveRecord
 			'modified_date' => Yii::t('app', 'Modified Date'),
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
-			'medias' => Yii::t('app', 'Photos'),
-			'files' => Yii::t('app', 'Documents'),
-			'views' => Yii::t('app', 'Views'),
-			'downloads' => Yii::t('app', 'Downloads'),
-			'likes' => Yii::t('app', 'Likes'),
+			'image' => Yii::t('app', 'Cover'),
+			'file' => Yii::t('app', 'Document'),
+			'tag' => Yii::t('app', 'Tag'),
 			'categoryName' => Yii::t('app', 'Category'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
-			'image' => Yii::t('app', 'Cover'),
-			'file' => Yii::t('app', 'Document'),
-			'tag' => Yii::t('app', 'Tags'),
+			'tagBody' => Yii::t('app', 'Tags'),
+            'oFile' => Yii::t('app', 'Documents'),
+            'oLike' => Yii::t('app', 'Likes'),
+            'oMedia' => Yii::t('app', 'Photos'),
+            'oView' => Yii::t('app', 'Views'),
 		];
-	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getView()
-	{
-		return $this->hasOne(ArticlesView::className(), ['id' => 'id']);
 	}
 
 	/**
@@ -139,24 +141,37 @@ class Articles extends \app\components\ActiveRecord
 	{
         if ($count == false) {
             return $this->hasMany(ArticleFiles::className(), ['article_id' => 'id'])
-                ->alias('files')
-                ->andOnCondition([sprintf('%s.publish', 'files') => $publish]);
+                ->alias('t')
+                ->select(['id', 'publish', 'article_id', 'file_filename'])
+                ->andOnCondition([sprintf('%s.publish', 't') => $publish]);
         }
 
 		$model = ArticleFiles::find()
             ->alias('t')
             ->where(['t.article_id' => $this->id]);
-        if ($publish == 0) {
-            $model->unpublish();
-        } else if ($publish == 1) {
-            $model->published();
-        } else if ($publish == 2) {
-            $model->deleted();
+        if ($publish == null) {
+            $model->andWhere(['in', 't.publish', [0,1]]);
+        } else {
+            if ($publish == 0) {
+                $model->unpublish();
+            } else if ($publish == 1) {
+                $model->published();
+            } else if ($publish == 2) {
+                $model->deleted();
+            }
         }
 		$files = $model->count();
 
 		return $files ? $files : 0;
 	}
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getGrid()
+    {
+        return $this->hasOne(ArticleGrid::className(), ['id' => 'id']);
+    }
 
 	/**
 	 * @return \yii\db\ActiveQuery
@@ -192,26 +207,32 @@ class Articles extends \app\components\ActiveRecord
 	{
         if ($type == 'relation') {
             return $this->hasMany(ArticleMedia::className(), ['article_id' => 'id'])
-                ->alias('medias')
-                ->andOnCondition([sprintf('%s.publish', 'medias') => 1]);
+                ->alias('t')
+                ->select(['id', 'publish', 'article_id', 'media_filename'])
+                ->andOnCondition([sprintf('%s.publish', 't') => $publish]);
         }
 
         if ($type == 'cover') {
 			return $this->hasMany(ArticleMedia::className(), ['article_id' => 'id'])
-                ->alias('medias')
-                ->andOnCondition([sprintf('%s.publish', 'medias') => 1])
-                ->andOnCondition([sprintf('%s.cover', 'medias') => 1]);
+                ->alias('t')
+                ->select(['id', 'publish', 'cover', 'article_id', 'media_filename'])
+                ->andOnCondition([sprintf('%s.publish', 't') => $publish])
+                ->andOnCondition([sprintf('%s.cover', 't') => 1]);
         }
 
 		$model = ArticleMedia::find()
             ->alias('t')
             ->where(['t.article_id' => $this->id]);
-        if ($publish == 0) {
-            $model->unpublish();
-        } else if ($publish == 1) {
-            $model->published();
-        } else if ($publish == 2) {
-            $model->deleted();
+        if ($publish == null) {
+            $model->andWhere(['in', 't.publish', [0,1]]);
+        } else {
+            if ($publish == 0) {
+                $model->unpublish();
+            } else if ($publish == 1) {
+                $model->published();
+            } else if ($publish == 2) {
+                $model->deleted();
+            }
         }
 		$media = $model->count();
 
@@ -227,7 +248,8 @@ class Articles extends \app\components\ActiveRecord
             return \yii\helpers\ArrayHelper::map($this->tags, 'tag_id', $val=='id' ? 'id' : 'tag.body');
         }
 
-		return $this->hasMany(ArticleTag::className(), ['article_id' => 'id']);
+		return $this->hasMany(ArticleTag::className(), ['article_id' => 'id'])
+            ->select(['id', 'article_id', 'tag_id']);
 	}
 
 	/**
@@ -261,7 +283,18 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function getCategory()
 	{
-		return $this->hasOne(ArticleCategory::className(), ['id' => 'cat_id']);
+		return $this->hasOne(ArticleCategory::className(), ['id' => 'cat_id'])
+            ->select(['id', 'name']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getCategoryTitle()
+	{
+		return $this->hasOne(SourceMessage::className(), ['id' => 'name'])
+            ->select(['id', 'message'])
+            ->via('category');
 	}
 
 	/**
@@ -269,7 +302,8 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function getCreation()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -277,7 +311,8 @@ class Articles extends \app\components\ActiveRecord
 	 */
 	public function getModified()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'modified_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -348,7 +383,7 @@ class Articles extends \app\components\ActiveRecord
 		$this->templateColumns['cat_id'] = [
 			'attribute' => 'cat_id',
 			'value' => function($model, $key, $index, $column) {
-				return isset($model->category) ? $model->category->title->message : '-';
+				return isset($model->categoryTitle) ? $model->categoryTitle->message : '-';
 				// return $model->categoryName;
 			},
 			'filter' => ArticleCategory::getCategory(null, 'is_null', 'optgroup'),
@@ -366,6 +401,12 @@ class Articles extends \app\components\ActiveRecord
 				return $model->body;
 			},
 			'format' => 'html',
+		];
+		$this->templateColumns['tagBody'] = [
+			'attribute' => 'tagBody',
+			'value' => function($model, $key, $index, $column) {
+				return implode(', ', $model->getTags(true, 'title'));
+			},
 		];
 		$this->templateColumns['published_date'] = [
 			'attribute' => 'published_date',
@@ -418,49 +459,43 @@ class Articles extends \app\components\ActiveRecord
 			},
 			'filter' => $this->filterDatepicker($this, 'updated_date'),
 		];
-		$this->templateColumns['medias'] = [
-			'attribute' => 'medias',
+		$this->templateColumns['oView'] = [
+			'attribute' => 'oView',
 			'value' => function($model, $key, $index, $column) {
-				$media = $model->getMedias('count');
+				$views = $model->grid->view;
+				return Html::a($views, ['view/admin/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} views', ['count' => $views]), 'data-pjax' => 0]);
+			},
+            'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class' => 'text-center'],
+			'format' => 'raw',
+		];
+		$this->templateColumns['oLike'] = [
+			'attribute' => 'oLike',
+			'value' => function($model, $key, $index, $column) {
+				$likes = $model->grid->like;
+				return Html::a($likes, ['like/admin/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} likes', ['count' => $likes]), 'data-pjax' => 0]);
+			},
+            'filter' => $this->filterYesNo(),
+			'contentOptions' => ['class' => 'text-center'],
+			'format' => 'raw',
+		];
+		$this->templateColumns['oMedia'] = [
+			'attribute' => 'oMedia',
+			'value' => function($model, $key, $index, $column) {
+				$media = $model->grid->media;
 				return Html::a($media, ['o/image/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} media', ['count' => $media]), 'data-pjax' => 0]);
 			},
-			'filter' => false,
+            'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 		];
-		$this->templateColumns['files'] = [
-			'attribute' => 'files',
+		$this->templateColumns['oFile'] = [
+			'attribute' => 'oFile',
 			'value' => function($model, $key, $index, $column) {
-				$files = $model->getFiles(true);
+				$files = $model->grid->file;
 				return Html::a($files, ['o/file/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} files', ['count' => $files]), 'data-pjax' => 0]);
 			},
-			'filter' => false,
-			'contentOptions' => ['class' => 'text-center'],
-			'format' => 'raw',
-		];
-		$this->templateColumns['tag'] = [
-			'attribute' => 'tag',
-			'value' => function($model, $key, $index, $column) {
-				return implode(', ', $model->getTags(true, 'title'));
-			},
-		];
-		$this->templateColumns['views'] = [
-			'attribute' => 'views',
-			'value' => function($model, $key, $index, $column) {
-				$views = $model->getViews(true);
-				return Html::a($views, ['o/view/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} views', ['count' => $views]), 'data-pjax' => 0]);
-			},
-			'filter' => false,
-			'contentOptions' => ['class' => 'text-center'],
-			'format' => 'raw',
-		];
-		$this->templateColumns['likes'] = [
-			'attribute' => 'likes',
-			'value' => function($model, $key, $index, $column) {
-				$likes = $model->getLikes(true);
-				return Html::a($likes, ['o/like/manage', 'article' => $model->primaryKey, 'publish' => 1], ['title' => Yii::t('app', '{count} likes', ['count' => $likes]), 'data-pjax' => 0]);
-			},
-			'filter' => false,
+            'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
 			'format' => 'raw',
 		];
@@ -579,6 +614,29 @@ class Articles extends \app\components\ActiveRecord
 	}
 
 	/**
+	 * function parseTag
+	 */
+	public static function parseTag($tags, $attr='tag', $sep='li')
+	{
+        if (!is_array($tags) || (is_array($tags) && empty($tags))) {
+            return '-';
+        }
+
+		$items = [];
+		foreach ($tags as $key => $val) {
+			$items[$val] = Html::a($val, ['admin/manage', $attr => $key], ['title' => $val]);
+		}
+
+        if ($sep == 'li') {
+			return Html::ul($items, ['item' => function($item, $index) {
+				return Html::tag('li', $item);
+			}, 'class' => 'list-boxed']);
+		}
+
+		return implode($sep, $items);
+	}
+
+	/**
 	 * after find attributes
 	 */
 	public function afterFind()
@@ -589,7 +647,7 @@ class Articles extends \app\components\ActiveRecord
 		// $this->categoryName = isset($this->category) ? $this->category->title->message : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';
-		$this->tag = implode(', ', $this->getTags(true, 'title'));
+		// $this->tag = implode(', ', $this->getTags(true, 'title'));
 		$this->old_image = $this->cover;
 		$this->old_file = $this->document;
 	}

@@ -74,7 +74,18 @@ class ArticleViewHistory extends \app\components\ActiveRecord
 	 */
 	public function getView()
 	{
-		return $this->hasOne(ArticleViews::className(), ['id' => 'view_id']);
+		return $this->hasOne(ArticleViews::className(), ['id' => 'view_id'])
+            ->select(['id', 'article_id', 'user_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getArticle()
+	{
+		return $this->hasOne(Articles::className(), ['id' => 'article_id'])
+            ->select(['id', 'cat_id', 'title'])
+            ->via('view');
 	}
 
 	/**
@@ -109,7 +120,7 @@ class ArticleViewHistory extends \app\components\ActiveRecord
 		$this->templateColumns['articleTitle'] = [
 			'attribute' => 'articleTitle',
 			'value' => function($model, $key, $index, $column) {
-				return isset($model->view) ? $model->view->article->title : '-';
+				return isset($model->article) ? $model->article->title : '-';
 				// return $model->articleTitle;
 			},
 			'visible' => !Yii::$app->request->get('view') ? true : false,

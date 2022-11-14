@@ -105,7 +105,18 @@ class ArticleDownloads extends \app\components\ActiveRecord
 	 */
 	public function getFile()
 	{
-		return $this->hasOne(ArticleFiles::className(), ['id' => 'file_id']);
+		return $this->hasOne(ArticleFiles::className(), ['id' => 'file_id'])
+            ->select(['id', 'article_id', 'file_filename']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getArticle()
+	{
+		return $this->hasOne(Articles::className(), ['id' => 'article_id'])
+            ->select(['id', 'cat_id', 'title'])
+            ->via('file');
 	}
 
 	/**
@@ -113,7 +124,8 @@ class ArticleDownloads extends \app\components\ActiveRecord
 	 */
 	public function getUser()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'user_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'user_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -148,7 +160,7 @@ class ArticleDownloads extends \app\components\ActiveRecord
 		$this->templateColumns['articleTitle'] = [
 			'attribute' => 'articleTitle',
 			'value' => function($model, $key, $index, $column) {
-				return isset($model->file->article) ? $model->file->article->title : '-';
+				return isset($model->article) ? $model->article->title : '-';
 				// return $model->articleTitle;
 			},
 			'visible' => !Yii::$app->request->get('file') && !Yii::$app->request->get('article') ? true : false,
@@ -186,7 +198,7 @@ class ArticleDownloads extends \app\components\ActiveRecord
 			'attribute' => 'downloads',
 			'value' => function($model, $key, $index, $column) {
 				$downloads = $model->downloads;
-				return Html::a($downloads, ['history/download/manage', 'download' => $model->primaryKey], ['title' => Yii::t('app', '{count} histories', ['count' => $downloads]), 'data-pjax' => 0]);
+				return Html::a($downloads, ['download/history/manage', 'download' => $model->primaryKey], ['title' => Yii::t('app', '{count} histories', ['count' => $downloads]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class' => 'text-center'],

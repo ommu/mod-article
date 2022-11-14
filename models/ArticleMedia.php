@@ -52,10 +52,14 @@ class ArticleMedia extends \app\components\ActiveRecord
 	public $gridForbiddenColumn = ['caption', 'description', 'creation_date', 'creationDisplayname', 'modified_date', 'modifiedDisplayname', 'updated_date'];
 
 	public $old_media_filename;
+	public $redirectUpdate;
+
 	public $articleTitle;
 	public $creationDisplayname;
 	public $modifiedDisplayname;
-	public $redirectUpdate;
+	public $categoryId;
+	public $oCaption;
+	public $oDescription;
 
 	/**
 	 * @return string the associated database table name
@@ -100,21 +104,14 @@ class ArticleMedia extends \app\components\ActiveRecord
 			'modified_id' => Yii::t('app', 'Modified'),
 			'updated_date' => Yii::t('app', 'Updated Date'),
 			'old_media_filename' => Yii::t('app', 'Old Image'),
+			'redirectUpdate' => Yii::t('app', 'Redirect to Update'),
 			'articleTitle' => Yii::t('app', 'Article'),
 			'creationDisplayname' => Yii::t('app', 'Creation'),
 			'modifiedDisplayname' => Yii::t('app', 'Modified'),
-			'redirectUpdate' => Yii::t('app', 'Redirect to Update'),
-			'captionStatus' => Yii::t('app', 'Caption'),
-			'descriptionStatus' => Yii::t('app', 'Description'),
+			'categoryId' => Yii::t('app', 'Category'),
+			'oCaption' => Yii::t('app', 'Caption'),
+			'oDescription' => Yii::t('app', 'Description'),
 		];
-	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getView()
-	{
-		return $this->hasOne(ArticleMediaView::className(), ['id' => 'id']);
 	}
 
 	/**
@@ -122,7 +119,8 @@ class ArticleMedia extends \app\components\ActiveRecord
 	 */
 	public function getArticle()
 	{
-		return $this->hasOne(Articles::className(), ['id' => 'article_id']);
+		return $this->hasOne(Articles::className(), ['id' => 'article_id'])
+            ->select(['id', 'cat_id', 'title']);
 	}
 
 	/**
@@ -130,7 +128,8 @@ class ArticleMedia extends \app\components\ActiveRecord
 	 */
 	public function getCreation()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'creation_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'creation_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -138,23 +137,8 @@ class ArticleMedia extends \app\components\ActiveRecord
 	 */
 	public function getModified()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'modified_id']);
-	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getCaptionStatus()
-	{
-		return $this->caption ? 1 : 0;
-	}
-
-	/**
-	 * @return \yii\db\ActiveQuery
-	 */
-	public function getDescriptionStatus()
-	{
-		return $this->description ? 1 : 0;
+		return $this->hasOne(Users::className(), ['user_id' => 'modified_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -185,6 +169,15 @@ class ArticleMedia extends \app\components\ActiveRecord
 			'header' => '#',
 			'class' => 'app\components\grid\SerialColumn',
 			'contentOptions' => ['class' => 'text-center'],
+		];
+		$this->templateColumns['categoryId'] = [
+			'attribute' => 'categoryId',
+			'value' => function($model, $key, $index, $column) {
+				return isset($model->article->categoryTitle) ? $model->article->categoryTitle->message : '-';
+				// return $model->articleTitle;
+			},
+			'filter' => ArticleCategory::getCategory(null, 'is_null', 'optgroup'),
+			'visible' => !Yii::$app->request->get('article') && !Yii::$app->request->get('level') ? true : false,
 		];
 		$this->templateColumns['articleTitle'] = [
 			'attribute' => 'articleTitle',
@@ -258,20 +251,20 @@ class ArticleMedia extends \app\components\ActiveRecord
 				return $model->orders;
 			},
 		];
-		$this->templateColumns['captionStatus'] = [
-			'attribute' => 'captionStatus',
+		$this->templateColumns['oCaption'] = [
+			'attribute' => 'oCaption',
 			'value' => function($model, $key, $index, $column) {
-				return $this->filterYesNo($model->captionStatus);
+				return $this->filterYesNo($model->oCaption);
 			},
-			'filter' => false,
+			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
 		];
-		$this->templateColumns['descriptionStatus'] = [
-			'attribute' => 'descriptionStatus',
+		$this->templateColumns['oDescription'] = [
+			'attribute' => 'oDescription',
 			'value' => function($model, $key, $index, $column) {
-				return $this->filterYesNo($model->descriptionStatus);
+				return $this->filterYesNo($model->oDescription);
 			},
-			'filter' => false,
+			'filter' => $this->filterYesNo(),
 			'contentOptions' => ['class' => 'text-center'],
 		];
 		$this->templateColumns['cover'] = [
@@ -315,6 +308,8 @@ class ArticleMedia extends \app\components\ActiveRecord
 		parent::afterFind();
 
 		$this->old_media_filename = $this->media_filename;
+        $this->oCaption = $this->caption != '' ? true : false;
+        $this->oDescription = $this->description != '' ? true : false;
 		// $this->articleTitle = isset($this->article) ? $this->article->title : '-';
 		// $this->creationDisplayname = isset($this->creation) ? $this->creation->displayname : '-';
 		// $this->modifiedDisplayname = isset($this->modified) ? $this->modified->displayname : '-';

@@ -7,15 +7,15 @@
  * FileController implements the CRUD actions for ArticleFiles model.
  * Reference start
  * TOC :
- *	Index
- *	Manage
- *	Create
- *	Update
- *	View
- *	Delete
- *	Upload
+ *  Index
+ *  Manage
+ *  Create
+ *  Update
+ *  View
+ *  Delete
+ *  Upload
  *
- *	findModel
+ *  findModel
  *
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
@@ -90,7 +90,11 @@ class FileController extends Controller
 	public function actionManage()
 	{
         $searchModel = new ArticleFilesSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $queryParams = Yii::$app->request->queryParams;
+        if (($category = Yii::$app->request->get('category')) != null) {
+            $queryParams = ArrayHelper::merge(Yii::$app->request->queryParams, ['categoryId' => $category]);
+        }
+		$dataProvider = $searchModel->search($queryParams);
 
         $gridColumn = Yii::$app->request->get('GridColumn', null);
         $cols = [];
@@ -108,10 +112,10 @@ class FileController extends Controller
 			$article = \ommu\article\models\Articles::findOne($article);
 			$setting = $article->getSetting(['media_image_limit', 'media_file_limit']);
             if ($article->category->single_photo || $setting->media_image_limit == 1) {
-                unset($this->subMenu['photo']);
+                unset($this->subMenu[1]['photo']);
             }
             if ($article->category->single_file || $setting->media_file_limit == 1) {
-                unset($this->subMenu['document']);
+                unset($this->subMenu[1]['document']);
             }
         }
 
@@ -162,10 +166,10 @@ class FileController extends Controller
         }
 
         if ($model->article->category->single_photo || $setting->media_image_limit == 1) {
-            unset($this->subMenu['photo']);
+            unset($this->subMenu[1]['photo']);
         }
         if ($model->article->category->single_file || $setting->media_file_limit == 1) {
-            unset($this->subMenu['document']);
+            unset($this->subMenu[1]['document']);
         }
 
 		$this->view->title = Yii::t('app', 'Create Document');
@@ -210,10 +214,10 @@ class FileController extends Controller
         }
 
         if ($model->article->category->single_photo || $setting->media_image_limit == 1) {
-            unset($this->subMenu['photo']);
+            unset($this->subMenu[1]['photo']);
         }
         if ($model->article->category->single_file || $setting->media_file_limit == 1) {
-			unset($this->subMenu['document']);
+			unset($this->subMenu[1]['document']);
         }
 		$this->view->title = Yii::t('app', 'Update Document: {file-filename}', ['file-filename' => $model->file_filename]);
 		$this->view->description = '';
@@ -237,10 +241,10 @@ class FileController extends Controller
 			$setting = $model->article->getSetting(['media_image_limit', 'media_file_limit']);
 
             if ($model->article->category->single_photo || $setting->media_image_limit == 1) {
-				unset($this->subMenu['photo']);
+				unset($this->subMenu[1]['photo']);
             }
             if ($model->article->category->single_file || $setting->media_file_limit == 1) {
-				unset($this->subMenu['document']);
+				unset($this->subMenu[1]['document']);
             }
         }
 
@@ -249,6 +253,7 @@ class FileController extends Controller
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
 			'model' => $model,
+			'small' => false,
 		]);
 	}
 

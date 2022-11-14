@@ -79,7 +79,18 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 	 */
 	public function getLike()
 	{
-		return $this->hasOne(ArticleLikes::className(), ['id' => 'like_id']);
+		return $this->hasOne(ArticleLikes::className(), ['id' => 'like_id'])
+            ->select(['id', 'article_id', 'user_id']);
+	}
+
+	/**
+	 * @return \yii\db\ActiveQuery
+	 */
+	public function getArticle()
+	{
+		return $this->hasOne(Articles::className(), ['id' => 'article_id'])
+            ->select(['id', 'cat_id', 'title'])
+            ->via('like');
 	}
 
 	/**
@@ -114,7 +125,7 @@ class ArticleLikeHistory extends \app\components\ActiveRecord
 		$this->templateColumns['articleTitle'] = [
 			'attribute' => 'articleTitle',
 			'value' => function($model, $key, $index, $column) {
-				return isset($model->like) ? $model->like->article->title : '-';
+				return isset($model->article) ? $model->article->title : '-';
 				// return $model->articleTitle;
 			},
 			'visible' => !Yii::$app->request->get('like') ? true : false,

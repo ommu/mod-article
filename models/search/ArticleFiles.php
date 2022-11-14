@@ -28,8 +28,10 @@ class ArticleFiles extends ArticleFilesModel
 	public function rules()
 	{
 		return [
-			[['id', 'publish', 'article_id', 'creation_id', 'modified_id'], 'integer'],
-			[['file_filename', 'creation_date', 'modified_date', 'updated_date', 'articleTitle', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
+			[['id', 'publish', 'article_id', 'creation_id', 'modified_id',
+                'categoryId'], 'integer'],
+			[['file_filename', 'creation_date', 'modified_date', 'updated_date', 
+                'articleTitle', 'creationDisplayname', 'modifiedDisplayname'], 'safe'],
 		];
 	}
 
@@ -64,14 +66,35 @@ class ArticleFiles extends ArticleFilesModel
         if (!($column && is_array($column))) {
             $query = ArticleFilesModel::find()->alias('t');
         } else {
-            $query = ArticleFilesModel::find()->alias('t')->select($column);
+            $query = ArticleFilesModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
-			'article article', 
-			'creation creation', 
-			'modified modified', 
+			// 'article article', 
+			// 'creation creation', 
+			// 'modified modified', 
 			'view view',
 		]);
+        if ((isset($params['sort']) && in_array($params['sort'], ['articleTitle', '-articleTitle'])) || (
+            (isset($params['articleTitle']) && $params['articleTitle'] != '') ||
+            (isset($params['categoryId']) && $params['categoryId'] != '') ||
+            (isset($params['category']) && $params['category'] != '')
+        )) {
+            $query->joinWith(['article article']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['creationDisplayname', '-creationDisplayname'])) || 
+            (isset($params['creationDisplayname']) && $params['creationDisplayname'] != '')
+        ) {
+            $query->joinWith(['creation creation']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['modifiedDisplayname', '-modifiedDisplayname'])) || 
+            (isset($params['modifiedDisplayname']) && $params['modifiedDisplayname'] != '')
+        ) {
+            $query->joinWith(['modified modified']);
+        }
+        if (isset($params['sort']) && in_array($params['sort'], ['categoryId', '-categoryId'])) {
+            $query->joinWith(['article.categoryTitle categoryTitle']);
+        }
 
 		$query->groupBy(['id']);
 
@@ -102,6 +125,10 @@ class ArticleFiles extends ArticleFilesModel
 			'asc' => ['view.downloads' => SORT_ASC],
 			'desc' => ['view.downloads' => SORT_DESC],
 		];
+		$attributes['categoryId'] = [
+			'asc' => ['categoryTitle.message' => SORT_ASC],
+			'desc' => ['categoryTitle.message' => SORT_DESC],
+		];
 		$dataProvider->setSort([
 			'attributes' => $attributes,
 			'defaultOrder' => ['id' => SORT_DESC],
@@ -127,16 +154,17 @@ class ArticleFiles extends ArticleFilesModel
 			'cast(t.modified_date as date)' => $this->modified_date,
 			't.modified_id' => isset($params['modified']) ? $params['modified'] : $this->modified_id,
 			'cast(t.updated_date as date)' => $this->updated_date,
+			'article.cat_id' => $this->categoryId,
 		]);
 
-        if (isset($params['trash'])) {
-            $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
+        if ((!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) && !$this->publish) {
+            $query->andFilterWhere(['IN', 't.publish', [0,1]]);
         } else {
-            if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
-                $query->andFilterWhere(['IN', 't.publish', [0,1]]);
-            } else {
-                $query->andFilterWhere(['t.publish' => $this->publish]);
-            }
+            $query->andFilterWhere(['t.publish' => $this->publish]);
+        }
+
+        if (isset($params['trash']) && $params['trash'] == 1) {
+            $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
         }
 
 		$query->andFilterWhere(['like', 't.file_filename', $this->file_filename])

@@ -36,7 +36,7 @@ class m210825_133417_article_module_create_table_downloads extends \yii\db\Migra
 			], $tableOptions);
 
             $this->createIndex(
-                'fileId_userId',
+                'fileWithUser',
                 $tableName,
                 ['file_id', 'user_id']
             );

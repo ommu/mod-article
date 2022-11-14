@@ -7,16 +7,16 @@
  * CategoryController implements the CRUD actions for ArticleCategory model.
  * Reference start
  * TOC :
- *	Index
- *	Manage
- *	Create
- *	Update
- *	View
- *	Delete
- *	RunAction
- *	Publish
+ *  Index
+ *  Manage
+ *  Create
+ *  Update
+ *  View
+ *  Delete
+ *  RunAction
+ *  Publish
  *
- *	findModel
+ *  findModel
  *
  * @author Putra Sudaryanto <putra@ommu.id>
  * @contact (+62)856-299-4114
@@ -38,16 +38,6 @@ use ommu\article\models\search\ArticleCategory as ArticleCategorySearch;
 
 class CategoryController extends Controller
 {
-	/**
-	 * {@inheritdoc}
-	 */
-	public function init()
-	{
-        parent::init();
-
-        $this->subMenu = $this->module->params['setting_submenu'];
-	}
-
 	/**
 	 * {@inheritdoc}
 	 */
@@ -95,6 +85,7 @@ class CategoryController extends Controller
         }
         $columns = $searchModel->getGridColumn($cols);
 
+        $this->subMenu = $this->module->params['setting_submenu'];
 		$this->view->title = Yii::t('app', 'Categories');
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -136,6 +127,7 @@ class CategoryController extends Controller
             }
         }
 
+        $this->subMenu = $this->module->params['setting_submenu'];
 		$this->view->title = Yii::t('app', 'Create Category');
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -174,6 +166,7 @@ class CategoryController extends Controller
             }
         }
 
+        $this->subMenu = $this->module->params['category_submenu'];
 		$this->view->title = Yii::t('app', 'Update Category: {name}', ['name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
@@ -191,11 +184,13 @@ class CategoryController extends Controller
 	{
         $model = $this->findModel($id);
 
+        $this->subMenu = $this->module->params['category_submenu'];
 		$this->view->title = Yii::t('app', 'Detail Category: {name}', ['name' => $model->title->message]);
 		$this->view->description = '';
 		$this->view->keywords = '';
 		return $this->oRender('admin_view', [
 			'model' => $model,
+			'small' => false,
 		]);
 	}
 
@@ -244,6 +239,9 @@ class CategoryController extends Controller
 	protected function findModel($id)
 	{
         if (($model = ArticleCategory::findOne($id)) !== null) {
+            $model->name_i = $model->title->message;
+            $model->desc_i = $model->description->message;
+
             return $model;
         }
 

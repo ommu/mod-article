@@ -64,12 +64,19 @@ class ArticleLikes extends ArticleLikesModel
         if (!($column && is_array($column))) {
             $query = ArticleLikesModel::find()->alias('t');
         } else {
-            $query = ArticleLikesModel::find()->alias('t')->select($column);
+            $query = ArticleLikesModel::find()->alias('t')
+                ->select($column);
         }
 		$query->joinWith([
-			'article article', 
-			'user user'
+			// 'article article', 
+			// 'user user'
 		]);
+        if ((isset($params['sort']) && in_array($params['sort'], ['articleTitle', '-articleTitle'])) || (isset($params['articleTitle']) && $params['articleTitle'] != '')) {
+            $query->joinWith(['article article']);
+        }
+        if ((isset($params['sort']) && in_array($params['sort'], ['userDisplayname', '-userDisplayname'])) || (isset($params['userDisplayname']) && $params['userDisplayname'] != '')) {
+            $query->joinWith(['user user']);
+        }
 
 		$query->groupBy(['id']);
 
@@ -117,14 +124,14 @@ class ArticleLikes extends ArticleLikesModel
 			'cast(t.updated_date as date)' => $this->updated_date,
 		]);
 
-        if (isset($params['trash'])) {
-            $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
+        if ((!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) && !$this->publish) {
+            $query->andFilterWhere(['IN', 't.publish', [0,1]]);
         } else {
-            if (!isset($params['publish']) || (isset($params['publish']) && $params['publish'] == '')) {
-                $query->andFilterWhere(['IN', 't.publish', [0,1]]);
-            } else {
-                $query->andFilterWhere(['t.publish' => $this->publish]);
-            }
+            $query->andFilterWhere(['t.publish' => $this->publish]);
+        }
+
+        if (isset($params['trash']) && $params['trash'] == 1) {
+            $query->andFilterWhere(['NOT IN', 't.publish', [0,1]]);
         }
 
 		$query->andFilterWhere(['like', 't.likes_ip', $this->likes_ip])

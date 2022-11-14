@@ -107,7 +107,8 @@ class ArticleLikes extends \app\components\ActiveRecord
 	 */
 	public function getArticle()
 	{
-		return $this->hasOne(Articles::className(), ['id' => 'article_id']);
+		return $this->hasOne(Articles::className(), ['id' => 'article_id'])
+            ->select(['id', 'cat_id', 'title']);
 	}
 
 	/**
@@ -115,7 +116,8 @@ class ArticleLikes extends \app\components\ActiveRecord
 	 */
 	public function getUser()
 	{
-		return $this->hasOne(Users::className(), ['user_id' => 'user_id']);
+		return $this->hasOne(Users::className(), ['user_id' => 'user_id'])
+            ->select(['user_id', 'displayname']);
 	}
 
 	/**
@@ -187,7 +189,7 @@ class ArticleLikes extends \app\components\ActiveRecord
 			'attribute' => 'histories',
 			'value' => function($model, $key, $index, $column) {
 				$histories = $model->getHistories(true);
-				return Html::a($histories, ['history/like/manage', 'like' => $model->primaryKey], ['title' => Yii::t('app', '{count} histories', ['count' => $histories]), 'data-pjax' => 0]);
+				return Html::a($histories, ['like/history/manage', 'like' => $model->primaryKey], ['title' => Yii::t('app', '{count} histories', ['count' => $histories]), 'data-pjax' => 0]);
 			},
 			'filter' => false,
 			'contentOptions' => ['class' => 'text-center'],
