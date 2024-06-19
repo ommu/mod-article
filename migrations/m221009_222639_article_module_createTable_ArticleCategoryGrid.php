@@ -3,7 +3,7 @@
  * m221009_222639_article_module_createTable_ArticleCategoryGrid
  * 
  * @author Putra Sudaryanto <putra@ommu.id>
- * @contact (+62)856-299-4114
+ * @contact (+62)811-2540-432
  * @copyright Copyright (c) 2022 OMMU (www.ommu.id)
  * @created date 9 October 2022, 22:27 WIB
  * @link https://bitbucket.org/ommu/article

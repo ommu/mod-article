@@ -5,7 +5,7 @@
  * ArticleSetting represents the model behind the search form about `ommu\article\models\ArticleSetting`.
  *
  * @author Putra Sudaryanto <putra@ommu.id>
- * @contact (+62)856-299-4114
+ * @contact (+62)811-2540-432
  * @copyright Copyright (c) 2017 OMMU (www.ommu.id)
  * @created date 20 October 2017, 09:34 WIB
  * @link https://github.com/ommu/mod-article
