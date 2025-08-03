@@ -6,8 +6,7 @@
 		"module",
 		"article",
 		"news",
-		"ommu",
-		"ommu-platform",
+		"ommu2",
 		"yii2"
 	],
 	"license": "Apache-2.0",
